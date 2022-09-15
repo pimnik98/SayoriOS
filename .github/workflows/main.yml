@@ -4,8 +4,6 @@ name: SayoriOS Buildbot
 on:
   # В нашем случае это push в ветку master
   push:
-    tags:
-        - "v*"
     branches: [ "master" ]
   #pull_request:
   #  tags:
