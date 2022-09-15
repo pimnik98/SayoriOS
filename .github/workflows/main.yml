@@ -70,7 +70,7 @@ jobs:
       - name: Публикуем нестабильный релиз
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          repo_token: "${{ secrets.SAYORI }}"
           automatic_release_tag: "latest-unstable"
           prerelease: true
           title: "[Автосборка] Нестабильный релиз"
