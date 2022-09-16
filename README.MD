@@ -136,13 +136,13 @@ python3 build.py
 Простой запуск:
 
 ```bash
-qemu-system-i386 -name SayoriOS -cdrom SayoriOS.iso
+python3 build.py run simple
 ```
 
 С подключением устройств (Спикер, Сетевая карта RTL8139, откладочным портом в лог):
 
 ```bash
-qemu-system-i386 -name SayoriOS -soundhw pcspk -m 16 -netdev socket,id=n0,listen=:2030 -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 -cdrom SynapseOS.iso -serial file:Qemu.log
+python3 build.py run advanced
 ```
 
 Стандартный:

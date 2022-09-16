@@ -114,6 +114,11 @@ def run_qemu():
         
     os.system(qemu_command)
 
+def run_qemu_simple():    
+    qemu_command = f"qemu-system-i386 -name SayoriOS -cdrom SayoriOS.iso"
+        
+    os.system(qemu_command)
+
 def run_kvm():
     " Это помогает запускать SayoriOS быстрее, по сравнению с обычным режимом"
     " Paimon is not emergency food... "
@@ -177,8 +182,19 @@ if __name__ == "__main__":
                     build_apps()
                 elif sys.argv[i] == "iso":
                     create_iso()
+                elif sys.argv[i] == "simple":
+                    "nothing"
+                elif sys.argv[i] == "advanced":
+                    "nothing"
                 elif sys.argv[i] == "run":
-                    run_qemu()
+                    ii = i + 1
+                    if len(sys.argv) > ii:
+                      if sys.argv[ii] == "simple":
+                        run_qemu_simple()
+                      else:
+                        run_qemu()
+                    else:
+                      run_qemu()
                 elif sys.argv[i] == "runk":
                     run_kvm()
                 elif sys.argv[i] == "rund":
