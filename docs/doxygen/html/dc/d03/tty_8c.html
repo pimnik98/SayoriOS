@@ -118,6 +118,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>changeDebugRaw</b> (b
 <tr class="memitem:a4f9d2c8f51d72c77e996932a3de55b62"><td class="memItemLeft" align="right" valign="top"><a id="a4f9d2c8f51d72c77e996932a3de55b62"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>punch</b> ()</td></tr>
 <tr class="separator:a4f9d2c8f51d72c77e996932a3de55b62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22d890129d0650eb304809ff67a7f9df"><td class="memItemLeft" align="right" valign="top"><a id="a22d890129d0650eb304809ff67a7f9df"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>tty_fontConfigurate</b> ()</td></tr>
+<tr class="separator:a22d890129d0650eb304809ff67a7f9df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85e66ecea71028f65c4417865599a547"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d03/tty_8c.html#a85e66ecea71028f65c4417865599a547">tty_changeState</a> (bool state)</td></tr>
 <tr class="memdesc:a85e66ecea71028f65c4417865599a547"><td class="mdescLeft">&#160;</td><td class="mdescRight">Меняет состояние печати через printf.  <a href="../../dc/d03/tty_8c.html#a85e66ecea71028f65c4417865599a547">Подробнее...</a><br /></td></tr>
 <tr class="separator:a85e66ecea71028f65c4417865599a547"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -178,18 +181,18 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>getLazySkip</b> (
 <tr class="memitem:a21e184ff24e57a682c23f8c3451df34d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d03/tty_8c.html#a21e184ff24e57a682c23f8c3451df34d">drawRect</a> (int x, int y, int w, int h, int color)</td></tr>
 <tr class="memdesc:a21e184ff24e57a682c23f8c3451df34d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Рисуем прямоугольник  <a href="../../dc/d03/tty_8c.html#a21e184ff24e57a682c23f8c3451df34d">Подробнее...</a><br /></td></tr>
 <tr class="separator:a21e184ff24e57a682c23f8c3451df34d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2904b8b2a79dc8c33140e2bf18b3ec7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d03/tty_8c.html#ad2904b8b2a79dc8c33140e2bf18b3ec7">_tty_putchar_color</a> (char c, uint32_t txColor, uint32_t bgColor)</td></tr>
-<tr class="memdesc:ad2904b8b2a79dc8c33140e2bf18b3ec7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вывод одного символа с учетом цвета фона и текста  <a href="../../dc/d03/tty_8c.html#ad2904b8b2a79dc8c33140e2bf18b3ec7">Подробнее...</a><br /></td></tr>
-<tr class="separator:ad2904b8b2a79dc8c33140e2bf18b3ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29ba69633eb3a24106a2c48244931903"><td class="memItemLeft" align="right" valign="top"><a id="a29ba69633eb3a24106a2c48244931903"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>tty_putchar_color</b> (char c, uint32_t txColor, uint32_t bgColor)</td></tr>
-<tr class="separator:a29ba69633eb3a24106a2c48244931903"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a341a9e466260ab31b65b4e5e8cd8d183"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d03/tty_8c.html#a341a9e466260ab31b65b4e5e8cd8d183">_tty_putchar</a> (char c)</td></tr>
-<tr class="memdesc:a341a9e466260ab31b65b4e5e8cd8d183"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вывод одного символа  <a href="../../dc/d03/tty_8c.html#a341a9e466260ab31b65b4e5e8cd8d183">Подробнее...</a><br /></td></tr>
-<tr class="separator:a341a9e466260ab31b65b4e5e8cd8d183"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ceb7bcc18bfa52de2d1ce3b69d7ef8f"><td class="memItemLeft" align="right" valign="top"><a id="a5ceb7bcc18bfa52de2d1ce3b69d7ef8f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>tty_putchar</b> (char c)</td></tr>
-<tr class="separator:a5ceb7bcc18bfa52de2d1ce3b69d7ef8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73036d5b07ec835966262008ca6c5d02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d03/tty_8c.html#a73036d5b07ec835966262008ca6c5d02">_tty_putchar_color</a> (char c, char c1, uint32_t txColor, uint32_t bgColor)</td></tr>
+<tr class="memdesc:a73036d5b07ec835966262008ca6c5d02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вывод одного символа с учетом цвета фона и текста  <a href="../../dc/d03/tty_8c.html#a73036d5b07ec835966262008ca6c5d02">Подробнее...</a><br /></td></tr>
+<tr class="separator:a73036d5b07ec835966262008ca6c5d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5454717029f3a68279ea99ee54dc8f0"><td class="memItemLeft" align="right" valign="top"><a id="af5454717029f3a68279ea99ee54dc8f0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>tty_putchar_color</b> (char c, char c1, uint32_t txColor, uint32_t bgColor)</td></tr>
+<tr class="separator:af5454717029f3a68279ea99ee54dc8f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa066c0a91afb8afbaf26b5dbcd886b50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d03/tty_8c.html#aa066c0a91afb8afbaf26b5dbcd886b50">_tty_putchar</a> (char c, char c1)</td></tr>
+<tr class="memdesc:aa066c0a91afb8afbaf26b5dbcd886b50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вывод одного символа  <a href="../../dc/d03/tty_8c.html#aa066c0a91afb8afbaf26b5dbcd886b50">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa066c0a91afb8afbaf26b5dbcd886b50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e0549cb30d17135123ae6ff1613556b"><td class="memItemLeft" align="right" valign="top"><a id="a1e0549cb30d17135123ae6ff1613556b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>tty_putchar</b> (char c, char c1)</td></tr>
+<tr class="separator:a1e0549cb30d17135123ae6ff1613556b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac656691800d9bd94b6c49832866015fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d03/tty_8c.html#ac656691800d9bd94b6c49832866015fc">draw_vga_character</a> (uint8_t c, int32_t x, int32_t y, int32_t fg, int32_t bg, bool bgon)</td></tr>
 <tr class="memdesc:ac656691800d9bd94b6c49832866015fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вывод символа на экран с учетом позиции, цвета текста и фона  <a href="../../dc/d03/tty_8c.html#ac656691800d9bd94b6c49832866015fc">Подробнее...</a><br /></td></tr>
 <tr class="separator:ac656691800d9bd94b6c49832866015fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -280,6 +283,18 @@ int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>tty_pos_x</b></td>
 <tr class="memitem:ae4f71eae31d42b8e169d2b890ab560d2"><td class="memItemLeft" align="right" valign="top"><a id="ae4f71eae31d42b8e169d2b890ab560d2"></a>
 int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>tty_pos_y</b></td></tr>
 <tr class="separator:ae4f71eae31d42b8e169d2b890ab560d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaef61b5da4f45bfc60126d74cf3ae4b8"><td class="memItemLeft" align="right" valign="top"><a id="aaef61b5da4f45bfc60126d74cf3ae4b8"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>tty_off_pos_x</b></td></tr>
+<tr class="separator:aaef61b5da4f45bfc60126d74cf3ae4b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af10b511fc74d5f6e621061c22c4cac26"><td class="memItemLeft" align="right" valign="top"><a id="af10b511fc74d5f6e621061c22c4cac26"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>tty_off_pos_p</b></td></tr>
+<tr class="separator:af10b511fc74d5f6e621061c22c4cac26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab114c1f7a4756356b0cf78f3513a5598"><td class="memItemLeft" align="right" valign="top"><a id="ab114c1f7a4756356b0cf78f3513a5598"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>tty_off_pos_h</b></td></tr>
+<tr class="separator:ab114c1f7a4756356b0cf78f3513a5598"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a131e1d145b731648bea33ba92f0d70ee"><td class="memItemLeft" align="right" valign="top"><a id="a131e1d145b731648bea33ba92f0d70ee"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>tty_oem_mode</b> = false</td></tr>
+<tr class="separator:a131e1d145b731648bea33ba92f0d70ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae538acc0445eac7b4788082e65643f82"><td class="memItemLeft" align="right" valign="top"><a id="ae538acc0445eac7b4788082e65643f82"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>tty_text_color</b></td></tr>
 <tr class="separator:ae538acc0445eac7b4788082e65643f82"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -337,12 +352,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00708">708</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00755">755</a></p>
 
 </div>
 </div>
-<a id="a341a9e466260ab31b65b4e5e8cd8d183"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a341a9e466260ab31b65b4e5e8cd8d183">&#9670;&nbsp;</a></span>_tty_putchar()</h2>
+<a id="aa066c0a91afb8afbaf26b5dbcd886b50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa066c0a91afb8afbaf26b5dbcd886b50">&#9670;&nbsp;</a></span>_tty_putchar()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -351,8 +366,18 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
           <td class="memname">void _tty_putchar </td>
           <td>(</td>
           <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>c</em></td><td>)</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>c1</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -365,12 +390,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00422">422</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00458">458</a></p>
 
 </div>
 </div>
-<a id="ad2904b8b2a79dc8c33140e2bf18b3ec7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad2904b8b2a79dc8c33140e2bf18b3ec7">&#9670;&nbsp;</a></span>_tty_putchar_color()</h2>
+<a id="a73036d5b07ec835966262008ca6c5d02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73036d5b07ec835966262008ca6c5d02">&#9670;&nbsp;</a></span>_tty_putchar_color()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -380,6 +405,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
           <td>(</td>
           <td class="paramtype">char&#160;</td>
           <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>c1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -411,7 +442,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00391">391</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00422">422</a></p>
 
 </div>
 </div>
@@ -439,7 +470,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00649">649</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00696">696</a></p>
 
 </div>
 </div>
@@ -467,7 +498,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00679">679</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00726">726</a></p>
 
 </div>
 </div>
@@ -495,7 +526,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00628">628</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00675">675</a></p>
 
 </div>
 </div>
@@ -523,7 +554,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00515">515</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00556">556</a></p>
 
 </div>
 </div>
@@ -569,7 +600,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00600">600</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00647">647</a></p>
 
 </div>
 </div>
@@ -590,7 +621,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
 
 <p>Очистка экрана </p>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00335">335</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00366">366</a></p>
 
 </div>
 </div>
@@ -611,7 +642,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
 
 <p>Создание второго буффера экрана </p>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00173">173</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00203">203</a></p>
 
 </div>
 </div>
@@ -678,7 +709,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00458">458</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00499">499</a></p>
 
 </div>
 </div>
@@ -738,7 +769,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00375">375</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00406">406</a></p>
 
 </div>
 </div>
@@ -760,7 +791,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
 <p>Получение ширины экрана </p>
 <dl class="section return"><dt>Возвращает</dt><dd>uint32_t - ширина </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00326">326</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00357">357</a></p>
 
 </div>
 </div>
@@ -782,7 +813,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
 <p>Получение позиции по x. </p>
 <dl class="section return"><dt>Возвращает</dt><dd>int32_t - позиция по x </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00087">87</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00112">112</a></p>
 
 </div>
 </div>
@@ -804,7 +835,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
 <p>Получение позиции по y. </p>
 <dl class="section return"><dt>Возвращает</dt><dd>int32_t - позиция по y </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00097">97</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00122">122</a></p>
 
 </div>
 </div>
@@ -826,7 +857,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
 <p>Получение длины экрана </p>
 <dl class="section return"><dt>Возвращает</dt><dd>uint32_t - длина </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00316">316</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00347">347</a></p>
 
 </div>
 </div>
@@ -854,7 +885,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00143">143</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00171">171</a></p>
 
 </div>
 </div>
@@ -914,7 +945,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00358">358</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00389">389</a></p>
 
 </div>
 </div>
@@ -960,7 +991,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00263">263</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00294">294</a></p>
 
 </div>
 </div>
@@ -988,7 +1019,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00296">296</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00327">327</a></p>
 
 </div>
 </div>
@@ -1016,7 +1047,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00306">306</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00337">337</a></p>
 
 </div>
 </div>
@@ -1037,7 +1068,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
 
 <p>Удаление последнего символа </p>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00496">496</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00537">537</a></p>
 
 </div>
 </div>
@@ -1065,7 +1096,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00069">69</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00094">94</a></p>
 
 </div>
 </div>
@@ -1093,7 +1124,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00194">194</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00224">224</a></p>
 
 </div>
 </div>
@@ -1132,7 +1163,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00774">774</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00824">824</a></p>
 
 </div>
 </div>
@@ -1153,7 +1184,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
 
 <p>Прокрутка экрана на 1 строку </p>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00217">217</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00248">248</a></p>
 
 </div>
 </div>
@@ -1181,7 +1212,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00107">107</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00132">132</a></p>
 
 </div>
 </div>
@@ -1213,7 +1244,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
 
 <p>Слияние символа и цвета, для вывода </p>
 
-<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00077">77</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dc/d03/tty_8c_source.html">tty.c</a> строка <a class="el" href="../../dc/d03/tty_8c_source.html#l00102">102</a></p>
 
 </div>
 </div>
@@ -1223,7 +1254,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>mapDebugRaw</b> = fal
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f684e8e1ebea567db7f673c0b997cee3.html">io</a></li><li class="navelem"><a class="el" href="../../dc/d03/tty_8c.html">tty.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 15 Сен 2022 19:58:26. Создано системой
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Сен 2022 02:05:21. Создано системой
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>
