@@ -76,7 +76,7 @@ python3 build.py
 
     Компиляция, без запуска, без приложений:
     ```bash
-    python3 build.py kernel apps iso
+    python3 build.py kernel iso
     ```
 
 ### [Arch Linux]
@@ -112,7 +112,7 @@ python3 build.py
 
     Компиляция, без запуска, без приложений:
     ```bash
-    python3 build.py kernel apps iso
+    python3 build.py kernel iso
     ```
 
 ### [Windows]
