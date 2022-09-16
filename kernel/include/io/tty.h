@@ -71,7 +71,7 @@ void tty_init();
 void init_vbe(multiboot_info *mboot);
 void tty_backspace();
 void tty_printf(char *text, ...);
-void tty_putchar(char c);
+//void tty_putchar(char c);
 void set_line(int32_t x, int32_t y, int32_t xe, int32_t ye, uint32_t color);
 void set_pixel(int32_t x, int32_t y, uint32_t color);
 void tty_setcolor(int32_t color);

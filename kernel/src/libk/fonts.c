@@ -3,15 +3,12 @@
 char* fileFont = "/initrd/var/fonts/MicrosoftLuciaConsole18.duke";
 char* datFont = "/initrd/var/fonts/MicrosoftLuciaConsole.fdat";
 struct DukeImageMeta* fontMeta;
-uint32_t err = 0;
-uint32_t xF = 0;
-uint32_t pF = 0;
+uint32_t err = -1, xF = 0, pF = 0, hF = 0, colorFont = 0xFFFFFF, mW, mH, mA;
 char* imageFont;
 char alphaFont;
 char* configFont;
 char*** array;
-uint32_t colorFont = 0xFFFFFF;
-char* Alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯйцукенгшщзхъфывапролджэячсмитьбюё!«№;%:?*()_+-=@#$^&[]{}|\\/QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890";
+char* Alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯйцукенгшщзхъфывапролджэячсмитьбюё!«№;%:?*()_+-=@#$^&[]{}|\\/QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890.,";
 
 uint32_t Map[250] = {160,159,158,157,156,155,175,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,119,169,172,118,123,115,125,167,166,121,170,165,171,164,126,128,113,175,114,117,124,122,162,160,168,174,116,120,173,163,127,161,158,33,1147,3278,1988,37,58,63,42,40,41,95,43,45,61,64,35,36,94,38,91,93,123,125,124,92,47,81,87,69,82,84,89,85,73,79,80,65,83,68,70,71,72,74,75,76,90,88,67,86,66,78,77,113,119,101,114,116,121,117,105,111,112,97,115,100,102,103,104,106,107,108,122,120,99,118,98,110,109,49,50,51,52,53,54,55,56,57,48,46,44,1144,1151,1149,1142,3238,-68,3236,-81,3242,-96,3242,-95,3242,-86,3242,-85,3242,-84,3242,-78,3242,-96,3242,-95,3242,-78,3242,-70,3242,-68,3240,-124,3240,-118,3240,-117,3240,-116,3240,-113,3240,-90,3238,-70,3238,-69,3270,-98,1149,-61,-105,3278,-123,3278,-109,3278,2166,-124,-94,-50,-87,75,-61,-123,3278,-82,3276,-109,3276,-108,3276,-101,3276,-100,3276,-99,3276,-98,3276,-115,3276,-114,3270,-126,3270,-122,3270,-113,3270,-111,3270,-110,3270,-107,3270,-103,3270,-102,3270,-98,3270,-97,3270,-87,3270,-85,3268,-120,3268,-96,3268,-95,3268,-92,3268,-91,1127,1157,1147,1131,3286,-71,3286,-70,34,3286,-104,3286,-103,3286,-100,3286,-99,3286,-102,3286,-98,1151,1136,3286,-96,3286,-95,3286,-90,3278,-94,1149,1144,3282,-84,3282,-93,1153,1155,3282,-67,1156,1154,3242,-124,3242,-128};
 
@@ -38,9 +35,14 @@ uint32_t getColorFont(){
     return colorFont;
 }
 
-uint32_t setConfigurationFont(uint32_t x,uint32_t p){
+uint32_t getConfigFonts(int k){
+    return (k==3?err:(k==2?hF:(k==1?pF:xF)));
+}
+
+void setConfigurationFont(uint32_t x,uint32_t p,uint32_t h){
     xF = x;
     pF = p;
+    hF = h;
 }
 
 uint32_t SymConvert(char c,char c1,char c2){
@@ -108,6 +110,7 @@ void loadFontData(){
         qemu_log("[FONTS] Patch fonts:\n\tCode:%d\n\tX:%d\n\tY:%d\n\tW:%d\n\tH:%d\n\t",array[(i-3)][0],array[(i-3)][1],array[(i-3)][2],array[(i-3)][3],array[(i-3)][4]);
     }
     tty_printf("[FONTS] Detected:\n\tName:%s\n\tVersion:%s\n\tSize:%d\n\tOffset:%d\n",array[-1][0],array[-1][1],atoi(array[-1][2]),atoi(array[-1][3]));
+    err = 0;
 }
 
 
@@ -122,6 +125,10 @@ void fontInit(){
     struct DukeImageMeta* fontMeta = (struct DukeImageMeta*)meta;
     imageFont = kheap_malloc(fontMeta->data_length);
     vfs_read(fileFont, 9, fontMeta->data_length, imageFont);
+    mW = fontMeta->width;
+    mH = fontMeta->height;
+    mA = fontMeta->alpha;
+
     alphaFont = fontMeta->alpha?4:3;
     qemu_log("[FONTS] Configurate:\n\tFile:%s\n\tSize:%d\n\tAlpha:%d",fileFont,fontMeta->data_length,alphaFont);
     loadFontData();
@@ -199,44 +206,50 @@ uint32_t getPositionChar(uint32_t c,uint32_t offset){
     return -1;
 }
 
-char drawCharFont(uint32_t x, uint32_t y, uint32_t sx, uint32_t sy, uint32_t width, uint32_t height){
+char drawFont(uint32_t x, uint32_t y, uint32_t sx, uint32_t sy, uint32_t width, uint32_t height){
     if (err != 0){
         return "";
     }
-    char meta[9];
-    if(vfs_exists(fileFont)) {
-        vfs_read(fileFont, 0, 9, meta);
-        struct DukeImageMeta* realmeta = (struct DukeImageMeta*)meta;
-
-        if(width>realmeta->width) { width = realmeta->width; }
-        if(height>realmeta->height) { height = realmeta->height; }
-
-        char *imagedata = kheap_malloc(realmeta->data_length);
-
-        vfs_read(fileFont, 9, realmeta->data_length, imagedata);
-
-        int wx = sx, wy = sy;
-        char mod = realmeta->alpha?4:3;
-
-        while(wy<(height-sy)) {
-            wx = sx;
-            while((wx-sx)<(width)) {
-                int px = pixidx(realmeta->width*mod, wx*mod, wy);
-                int r = imagedata[px];
-                int g = imagedata[px+1];
-                int b = imagedata[px+2];
-                int a = imagedata[px+3];
-                int color = ((r&0xff)<<16)|((g&0xff)<<8)|(b&0xff);
-                if(mod && color != 0xFFFFFF) {
-                    set_pixel(x+(wx-sx), y+(wy-sy), colorFont);
-                }
-                wx++;
+    if(width>mW) { width = mW; }
+    if(height>mH) { height = mH; }
+    int wx = sx, wy = sy;
+    char mod = mA?4:3;
+    while(wy<(height-sy)) {
+        wx = sx;
+        while((wx-sx)<(width)) {
+            int px = pixidx(mW*mod, wx*mod, wy);
+            int r = imageFont[px];
+            int g = imageFont[px+1];
+            int b = imageFont[px+2];
+            int a = imageFont[px+3];
+            int color = ((r&0xff)<<16)|((g&0xff)<<8)|(b&0xff);
+            if(mod && color != 0xFFFFFF) {
+                set_pixel(x+(wx-sx), y+(wy-sy), colorFont);
             }
-            wy++;
+            wx++;
         }
-        kheap_free(imagedata);
-    }else{ return 1; }
+        wy++;
+    }
     return 0;
+}
+
+void drawCharFont(char c,char c1,int x,int y){
+    if (err != 0){
+        return;
+    }
+    int idx,X;
+    if (isUTF(c)){
+        idx = getPositionChar(UTFConvert(c,c1),c);
+    } else if (isSymbol(c)){
+        idx = getPositionChar(SymConvert(c,c1,0),(uint32_t) c);
+    } else {
+        idx = getPositionChar((uint32_t) c,0);
+    }
+    if (idx != -1){
+        X = (int) ((idx)*pF-1);
+        //qemu_log("[dF] X:%d PX:%d",X,px);
+        drawFont(x,y,X,0,xF,128);
+    }
 }
 
 /**
@@ -247,7 +260,7 @@ char drawCharFont(uint32_t x, uint32_t y, uint32_t sx, uint32_t sy, uint32_t wid
  * @param int ky - Координаты Y на экране
  * @param int py - Разница в уровне с предыдущей буквы по оси Y
  */
-void drawFont(char str[],int kx,int ky, int py){
+void drawStringFont(char str[],int kx,int ky, int py){
     if (err != 0){
         return;
     }
@@ -258,25 +271,22 @@ void drawFont(char str[],int kx,int ky, int py){
             //qemu_log("[UTF] %d",(uint32_t) str[i]);
             idx = getPositionChar(UTFConvert(str[i],str[i+1]),str[i]);
             //qemu_log("\tidx %d",UTFConvert(str[i],str[i+1]));
-            sd = 0;
             i++;
         } else if (isSymbol(str[i])){
             //qemu_log("[SYM] %d",(uint32_t) str[i]);
             idx = getPositionChar(SymConvert(str[i],str[i+1],str[i+2]),(uint32_t) str[i]);
             //qemu_log("\tidx %d|%d",SymConvert(str[i],str[i+1],str[i+2]),(uint32_t) str[i]);
-            sd = 0;
             i++;
         } else {
-            sd = 0;
             idx = getPositionChar((uint32_t) str[i],0);
         }
         //qemu_log("[dF] `%s` -> IDX: %d | I:%d | SD:%d",str[i],idx,(uint32_t) str[i],sd);
         x = x+px;
         y = y+py;
         if (idx != -1){
-            X = (int) ((idx-sd)*P-1);
+            X = (int) ((idx)*P-1);
             //qemu_log("[dF] X:%d PX:%d",X,px);
-            drawCharFont(x,y,X,0,px,128);
+            drawFont(x,y,X,0,px,128);
         }
     }
 }

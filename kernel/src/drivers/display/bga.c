@@ -51,7 +51,15 @@
 #define VBE_DISPI_INDEX_VBOX_VIDEO 0x0A // используется для чтения информации о конфигурации и записи команд на хост (иногда).
 #define VBE_DISPI_INDEX_FB_BASE_HI 0x0B // содержит старшие 16 бит адреса линейного буфера кадра (младшие 16 бит равны нулю).
 
+#define PREFERRED_VY 4096
+#define PREFERRED_B 32
+
 uint32_t mountPoint;    // Место адресации запросов
+uint16_t lfb_resolution_x = 0;
+uint16_t lfb_resolution_y = 0;
+uint16_t lfb_resolution_b = 0;
+uint8_t * lfb_vid_memory = (uint8_t *)0xE0000000;
+
 
 void bgaWriteData(uint32_t key,uint32_t value){
     qemu_log("[bWrite] %x => %x",key,value);
@@ -71,7 +79,7 @@ void bgaDisabled(){
 }
 
 void bgaEnabled(){
-    bgaWriteData(VBE_DISPI_INDEX_ENABLE,VBE_DISPI_ENABLED);
+    bgaWriteData(VBE_DISPI_INDEX_ENABLE,0x41);
 }
 
 void bgaChangeResize(uint32_t w, uint32_t h, uint32_t bpp){
@@ -79,6 +87,43 @@ void bgaChangeResize(uint32_t w, uint32_t h, uint32_t bpp){
     bgaWriteData(VBE_DISPI_INDEX_YRES,h);
     bgaWriteData(VBE_DISPI_INDEX_BPP,bpp);
 }
+
+
+static void finalize_graphics(uint16_t x, uint16_t y, uint16_t b) {
+	lfb_resolution_x = x;
+	lfb_resolution_y = y;
+	lfb_resolution_b = b;
+    qemu_log("[BGA] [Finale] X:%d Y:%d B:%d Address:%x",x,y,b,lfb_vid_memory);
+    bgaDriverInit(x,y,b,mountPoint);
+}
+
+uintptr_t lfb_get_address() {
+	return (uint8_t)lfb_vid_memory;
+}
+
+uintptr_t current_scroll = 0;
+
+void bochs_set_y_offset(uint16_t y) {
+    bgaWriteData(VBE_DISPI_INDEX_Y_OFFSET,y);
+	current_scroll = y;
+}
+
+uint16_t bochs_current_scroll() {
+	return current_scroll;
+}
+
+void memFound(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t b, uint16_t f){
+    finalize_graphics(w,h,b);
+
+	for (uint16_t y = 0; y < h; y++) {
+		for (uint16_t x = 0; x < w; x++) {
+			uint8_t f = y % 255;
+			((uint32_t *)lfb_vid_memory)[x + y * w] = 0xFF000000 | (f * 0x10000) | (f * 0x100) | f;
+		}
+	}
+}
+
+
 
 void bgaInit(){
     uint32_t status = bgaReadData(VBE_DISPI_INDEX_ID);
@@ -100,16 +145,33 @@ void bgaInit(){
 }
 
 void bgaTest(){
-    uint32_t x = 800;
-    uint32_t y = 600;
-    uint32_t b = VBE_DISPI_BPP_32;
+    uint32_t ax = 800;
+    uint32_t ay = 600;
+    uint32_t ab = PREFERRED_B;
     bgaDisabled();
-    bgaChangeResize(x, y , b);
+    bgaChangeResize(ax, ay , ab);
+    bgaWriteData(VBE_DISPI_INDEX_VIRT_HEIGHT,PREFERRED_VY);
     bgaEnabled();
 
-    //pci_dev_t BGA_device = pci_get_device(0x1234, BGA_FOUND, -1);
-    //uint32_t pci_command_reg = pci_read(BGA_device, PCI_BAR0);
-   // qemu_log("[BGA] %x / %x",BGA_FOUND,pci_command_reg);
+    lfb_vid_memory = (uint8_t *)mountPoint;
+    finalize_graphics(ax,ay,ab);
+    return;
 
-    bgaDriverInit(x,y,b,mountPoint);
+    uint32_t * text_vid_mem = (uint32_t *)0xA0000;
+	text_vid_mem[0] = 0xA5ADFACE;
+
+    for (uint8_t fb_offset = 0xE0000000; fb_offset < 0xFF000000; fb_offset += 0x01000000) {
+		/* Go find it */
+		for (uint8_t x = fb_offset; x < fb_offset + 0xFF0000; x += 0x1000) {
+			if (((uint8_t *)x)[0] == 0xA5ADFACE) {
+				lfb_vid_memory = (uint8_t *)x;
+                finalize_graphics(ax,ay,ab);
+                return;
+				//goto mem_found;
+			}
+		}
+
+	}
+
+    //
 }

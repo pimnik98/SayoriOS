@@ -55,7 +55,7 @@ def build_all():
     except Exception as E:
         print(E)
     
-    print("[\x1b[33;1mNOTICE\x1b[0m] Building apps")
+    print("[\x1b[33;1mВНИМАНИЕ\x1b[0m] Компилируем приложения")
     '''
     os.system(f"{CC} examples/C/HelloWorld.c -o ./bin/HelloWorld.o")
     os.system(f"{CC} examples/C/sound.c -o ./bin/beep.o")
@@ -95,7 +95,7 @@ def build_all():
     build("compile", "examples/C/args.c", "./bin/args.o")
     build("compile", "apps/pimnik98/tshell/main.c", "./bin/tshell.o")
 
-    print("[\x1b[33;1mNOTICE\x1b[0m] Building libc")
+    print("[\x1b[33;1mВНИМАНИЕ\x1b[0m] Компилируем библиотеки")
     '''
     build("copy", "../kernel/src/libk/math.c", "libc/math.c")
     build("copy", "../kernel/include/libk/math.h", "include/math.h")
@@ -113,7 +113,7 @@ def build_all():
     build("compile", "libc/tui.c", "./bin/libc/tui.o")              # Text User-Interface
     build("compile", "libc/time.c", "./bin/libc/time.o")
 
-    print("[\x1b[33;1mNOTICE\x1b[0m] Linking apps")
+    print("[\x1b[33;1mВНИМАНИЕ\x1b[0m] Выполняем линковку приложений")
     # There we should swap the second and third arguments (according to original code)
     build("link", "./bin/HelloWorld.o" + O_LIBC, "../bin/apps/hi")
     build("link", "./bin/popsort_int_test.o" + O_LIBC, "../bin/apps/sort")
@@ -142,7 +142,7 @@ def build_all():
             build("link", "./bin/asm.o", "../bin/apps/asm")
             build("link", "./bin/asmt.o", "../bin/apps/asmt")
         else:
-            print("[\x1b[31;1mERROR\x1b[0m] Binary 'fasm' not found, skipping...")
+            print("[\x1b[31;1mОШИБКА\x1b[0m] 'fasm' не найден, этот этап пропущен...")
     except Exception:
         pass
 
@@ -153,9 +153,9 @@ def build_all():
         os.chdir("extlibs/"+i)
         exw = subprocess.call("make", shell=True)
         if exw:
-            print("[FAIL]")
+            print("[ОШИБКА]")
         else:
-            print("[OKAY]")
+            print("[ОК]")
         os.chdir("../..")
 
     build("compile", "examples/C/valera.c", "./bin/valera.o")

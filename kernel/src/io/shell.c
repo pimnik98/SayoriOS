@@ -321,6 +321,22 @@ uint32_t cmd_debug(uint32_t c,char* v[]){
     }
 }
 
+uint32_t cmd_font(uint32_t c,char* v[]){
+    drawRect(0,0,800,200);
+    setColorFont(0xFFFFF);
+    drawStringFont("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",10,30,0);
+    setColorFont(0xCAFE12);
+    drawStringFont("абвгдеёжзийклмнопрстуфхцчшщъыьэюя",10,60,0);
+    setColorFont(0x333333);
+    drawStringFont("!«№;%:?*()_+-=@#$^&[]{}|\\/",10,90,0);
+    setColorFont(0xDDDDDD);
+    drawStringFont("QWERTYUIOPASDFGHJKLZXCVBNM",10,120,0);
+    setColorFont(0xAAAAAA);
+    drawStringFont("qwertyuiopasdfghjklzxcvbnm",10,150,0);
+    setColorFont(0xFFFFFF);
+    drawStringFont("1234567890.,",10,180,0);
+}
+
 /**
  * @brief Входная точка консоли
  *
@@ -407,6 +423,9 @@ void shell() {
             continue;
         } else if (strcmpn(argv[0],"hostname")){
             cmd_hostname(argc,argv);
+            continue;
+        } else if (strcmpn(argv[0],"font")){
+            cmd_font(argc,argv);
             continue;
         } else {
             char* run[2] = {0};

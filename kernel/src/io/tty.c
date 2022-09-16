@@ -36,6 +36,11 @@ size_t tty_line_fill[1024];
 int32_t tty_pos_x;
 int32_t tty_pos_y;
 
+int32_t tty_off_pos_x;
+int32_t tty_off_pos_p;
+int32_t tty_off_pos_h;
+bool tty_oem_mode = false;
+
 uint32_t tty_text_color;
 bool stateTTY = true;
 bool lazyDraw = true;
@@ -59,6 +64,26 @@ void punch() {
     #if ENABLE_DOUBLE_BUFFERING==1
     memcpy(framebuffer_addr, back_framebuffer_addr, framebuffer_size);
     #endif
+}
+
+void tty_fontConfigurate(){
+    qemu_log("[tFC] Configurate...");
+    qemu_log("\t * 0 -> %d",getConfigFonts(0));
+    qemu_log("\t * 1 -> %d",getConfigFonts(1));
+    qemu_log("\t * 2 -> %d",getConfigFonts(2));
+    qemu_log("\t * 3 -> %d",getConfigFonts(3));
+
+    if (getConfigFonts(3) != 0){
+        qemu_log("\t[tFC] Sorry, but the font system isn't ready to go yet. Preset to work in OEM mode.");
+        tty_off_pos_x = 8;
+        tty_off_pos_p = 0;
+        tty_off_pos_h = 17;
+        tty_oem_mode = true;
+    }
+    tty_off_pos_x = getConfigFonts(0);
+    tty_off_pos_p = getConfigFonts(1);
+    tty_off_pos_h = getConfigFonts(2);
+    tty_oem_mode = false;
 }
 
 /**
@@ -105,6 +130,9 @@ int32_t getPosY(){
  * @param color - цвет
  */
 void tty_setcolor(int32_t color) {
+    if (!tty_oem_mode){
+        setColorFont(color);
+    }
     tty_text_color = color;
 }
 
@@ -127,12 +155,12 @@ void bgaDriverInit(uint32_t x, uint32_t y, uint32_t bpp, uint32_t mount){
         frame += PAGE_SIZE, virt += PAGE_SIZE) {
         vmm_map_page(frame, virt);
     }
-   qemu_log("VBE create_back_framebuffer");
+    qemu_log("VBE create_back_framebuffer");
 
-   create_back_framebuffer(); // PAGE FAULT CAUSES HERE!!!
+    create_back_framebuffer(); // PAGE FAULT CAUSES HERE!!!
 
-
-   qemu_log("^---- OKAY");
+    tty_fontConfigurate();
+    qemu_log("^---- OKAY");
 }
 
 /**
@@ -163,6 +191,8 @@ void init_vbe(multiboot_info *mboot) {
 
    create_back_framebuffer(); // PAGE FAULT CAUSES HERE!!! 
    qemu_log("^---- OKAY");
+
+   tty_fontConfigurate();
 }
 
 
@@ -174,7 +204,7 @@ void create_back_framebuffer() {
 	qemu_log("^---- 1. Allcoating"); // Я не знаю почему, но это предотвратило падение, но устроило его в другом месте
     //back_framebuffer_addr = kheap_malloc(framebuffer_size);
     uint8_t* backfb = kheap_malloc(framebuffer_size);
-
+    qemu_log("^---- 1. Allcoating %d",backfb);
     qemu_log("framebuffer_size = %d", framebuffer_size);
 
     qemu_log("back_framebuffer_addr = %x", back_framebuffer_addr);
@@ -206,6 +236,7 @@ void tty_init(struct multiboot_info *mboot_info) {
     framebuffer_height = svga_mode->screen_height;
     framebuffer_size = framebuffer_height * framebuffer_pitch;
     back_framebuffer_addr = framebuffer_addr;
+    tty_fontConfigurate();
     //tty_printf("[Display] %dx%d@%d\n",framebuffer_width,framebuffer_height,framebuffer_pitch);
 }
 
@@ -216,17 +247,17 @@ void tty_init(struct multiboot_info *mboot_info) {
  */
 void tty_scroll() {
     uint32_t num_rows = 1;
-    tty_pos_y -= 17*num_rows;
+    tty_pos_y -= tty_off_pos_h*num_rows;
 
     // Копируем строки сверху
-    uint8_t *read_ptr = (uint8_t*) back_framebuffer_addr + ((num_rows * 17) * framebuffer_pitch);
+    uint8_t *read_ptr = (uint8_t*) back_framebuffer_addr + ((num_rows * tty_off_pos_h) * framebuffer_pitch);
     uint8_t *write_ptr = (uint8_t*) back_framebuffer_addr;
-    uint32_t num_bytes = (framebuffer_pitch * VESA_HEIGHT) - (framebuffer_pitch * (num_rows * 17));
+    uint32_t num_bytes = (framebuffer_pitch * VESA_HEIGHT) - (framebuffer_pitch * (num_rows * tty_off_pos_h));
     memcpy(write_ptr, read_ptr, num_bytes);
 
     // Очистка строк
-    write_ptr = (uint8_t*) back_framebuffer_addr + (framebuffer_pitch * VESA_HEIGHT) - (framebuffer_pitch * (num_rows * 17));
-    memset(write_ptr, 0, framebuffer_pitch * (num_rows * 17));
+    write_ptr = (uint8_t*) back_framebuffer_addr + (framebuffer_pitch * VESA_HEIGHT) - (framebuffer_pitch * (num_rows * tty_off_pos_h));
+    memset(write_ptr, 0, framebuffer_pitch * (num_rows * tty_off_pos_h));
 
     // Копируем буфферы
     #if ENABLE_DOUBLE_BUFFERING==0
@@ -340,7 +371,7 @@ void clean_screen(){
     }
 
     tty_pos_x = 0;
-    tty_pos_y = -17;
+    tty_pos_y = -tty_off_pos_h;
 
     qemu_log("Screan cleaned!");
 }
@@ -388,29 +419,34 @@ void drawRect(int x,int y,int w, int h,int color){
  * @param txColor - цвет текста
  * @param bgColor - цвет фона
  */
-void _tty_putchar_color(char c, uint32_t txColor, uint32_t bgColor) {
+void _tty_putchar_color(char c,char c1, uint32_t txColor, uint32_t bgColor) {
 
-    if ((tty_pos_x + 8) >= (int)VESA_WIDTH || c == '\n') {
+    if ((tty_pos_x + tty_off_pos_x) >= (int)VESA_WIDTH || c == '\n') {
         tty_line_fill[tty_pos_y] = tty_pos_x;
         tty_pos_x = 0;
 
-        if ((tty_pos_y + 17) >= (int)VESA_HEIGHT) {
+        if ((tty_pos_y + tty_off_pos_h) >= (int)VESA_HEIGHT) {
             tty_scroll();
         } else {
-            tty_pos_y += 17;
+            tty_pos_y += tty_off_pos_h;
         }
     } else {
 
-        if ((tty_pos_y + 17) >= (int)VESA_HEIGHT) {
+        if ((tty_pos_y + tty_off_pos_h) >= (int)VESA_HEIGHT) {
             tty_scroll();
         }
-        draw_vga_character(c, tty_pos_x, tty_pos_y, txColor, bgColor, 1);
-        tty_pos_x += 8;
+        if (!tty_oem_mode){
+            drawCharFont(c,c1,tty_pos_x, tty_pos_y,0);
+            tty_setcolor(txColor);
+        } else {
+            draw_vga_character(c, tty_pos_x, tty_pos_y, txColor, bgColor, 1);
+        }
+        tty_pos_x += tty_off_pos_x;
     }
 }
 
-void tty_putchar_color(char c, uint32_t txColor, uint32_t bgColor) {
-    _tty_putchar_color(c, txColor, bgColor);
+void tty_putchar_color(char c,char c1, uint32_t txColor, uint32_t bgColor) {
+    _tty_putchar_color(c,c1, txColor, bgColor);
     punch();
 }
 
@@ -419,28 +455,33 @@ void tty_putchar_color(char c, uint32_t txColor, uint32_t bgColor) {
  * 
  * @param c - символ
  */
-void _tty_putchar(char c) {
-    if ((tty_pos_x + 8) >= (int)VESA_WIDTH || c == '\n') { 
+void _tty_putchar(char c,char c1) {
+    if ((tty_pos_x + tty_off_pos_x) >= (int)VESA_WIDTH || c == '\n') {
         tty_line_fill[tty_pos_y] = tty_pos_x;
         tty_pos_x = 0;
 
-        if ((tty_pos_y + 17) >= (int)VESA_HEIGHT) { 
+        if ((tty_pos_y + tty_off_pos_h) >= (int)VESA_HEIGHT) {
             tty_scroll();
         } else {
-            tty_pos_y += 17;
+            tty_pos_y += tty_off_pos_h;
         }
     } else {
 
-        if ((tty_pos_y + 17) >= (int)VESA_HEIGHT) {
+        if ((tty_pos_y + tty_off_pos_h) >= (int)VESA_HEIGHT) {
             tty_scroll();
         }
-        draw_vga_character(c, tty_pos_x, tty_pos_y, tty_text_color, 0x000000, 0);
-        tty_pos_x += 8;
+        if (!tty_oem_mode){
+            drawCharFont(c,c1,tty_pos_x, tty_pos_y,0);
+            tty_setcolor(tty_text_color);
+        } else {
+            draw_vga_character(c, tty_pos_x, tty_pos_y, tty_text_color, 0x000000, 0);
+        }
+        tty_pos_x += tty_off_pos_x;
     }
 }
 
-void tty_putchar(char c) {
-    _tty_putchar(c);
+void tty_putchar(char c,char c1) {
+    _tty_putchar(c,c1);
     punch();
 }
 
@@ -494,13 +535,13 @@ void external_draw_grapheme(int* glyphs, int width, int height, unsigned char gr
  * 
  */
 void tty_backspace() {
-    if (tty_pos_x < 8) { // Old: == 0
-        if (tty_pos_y >= 17) {
-            tty_pos_y -= 17;
+    if (tty_pos_x < tty_off_pos_x) { // Old: == 0
+        if (tty_pos_y >= tty_off_pos_h) {
+            tty_pos_y -= tty_off_pos_h;
         }
         tty_pos_x = tty_line_fill[tty_pos_y];
     } else {
-        tty_pos_x -= 8;
+        tty_pos_x -= tty_off_pos_x;
     }
     draw_vga_character(' ', tty_pos_x, tty_pos_y, tty_text_color, 0x000000, 1);
     punch();
@@ -559,10 +600,16 @@ void _tty_puts(const char str[]) {
                                    Experimental_Font_height, extch);
             i++;
         }else{
-            _tty_putchar(str[i]);
+            _tty_putchar(str[i],str[i+1]);
+            if (isUTF(str[i])){
+                i++;
+            }
         }
         #else
-        _tty_putchar(str[i]);
+        _tty_putchar(str[i],str[i+1]);
+        if (isUTF(str[i])){
+                i++;
+            }
         #endif
     }
 }
@@ -606,10 +653,10 @@ void _tty_puts_color(const char str[], uint32_t txColor, uint32_t bgColor) {
                                    Experimental_Font_height, extch, bgColor);
             i++;
         }else{
-            _tty_putchar_color(str[i], txColor, bgColor);
+            _tty_putchar_color(str[i],str[i+1], txColor, bgColor);
         }
     #else
-        _tty_putchar_color(str[i], txColor, bgColor);
+        _tty_putchar_color(str[i],str[i+1], txColor, bgColor);
     #endif
     }
 }
@@ -657,12 +704,12 @@ void _tty_puthex(uint32_t i) {
     n = i;
 
     while( d >= 0xF ) {
-        _tty_putchar(hex[n/d]);
+        _tty_putchar(hex[n/d],0);
         n = n % d;
         d /= 0x10;
     }
 
-    _tty_putchar(hex[n]);
+    _tty_putchar(hex[n],0);
 }
 
 void tty_puthex(uint32_t i) {
@@ -685,12 +732,12 @@ void _tty_puthex_v(uint32_t i) {
     n = i;
 
     while( d >= 0xF ) {
-        _tty_putchar(hex[n/d]);
+        _tty_putchar(hex[n/d],0);
         n = n % d;
         d /= 0x10;
     }
 
-    _tty_putchar(hex[n]);
+    _tty_putchar(hex[n],0);
 }
 
 void tty_puthex_v(uint32_t i) {
@@ -716,10 +763,10 @@ void _tty_print(char *format, va_list args) {
                     _tty_puts(va_arg(args, char*));
                     break;
                 case 'c':
-                    _tty_putchar(va_arg(args, int));
+                    _tty_putchar(va_arg(args, int),0);
                     break;
                 case 'f':
-                    _tty_putchar(va_arg(args, float));
+                    _tty_putchar(va_arg(args, float),0);
                     break;
                 case 'd':
                     _tty_putint(va_arg(args, int));
@@ -737,23 +784,26 @@ void _tty_print(char *format, va_list args) {
                     _tty_puthex_v(va_arg(args, uint32_t));
                     break;
                 default:
-                    _tty_putchar(format[i]);
+                    _tty_putchar(format[i],format[i+1]);
             }
             // \n
         } else if (format[i] == 10) {
             tty_line_fill[tty_pos_y] = tty_pos_x;
             tty_pos_x = 0;
 
-            if ((tty_pos_y + 17) >= (int)VESA_HEIGHT) { 
+            if ((tty_pos_y + tty_off_pos_h) >= (int)VESA_HEIGHT) {
                 tty_scroll();
             } else {
-                tty_pos_y += 17;
+                tty_pos_y += tty_off_pos_h;
             }
             // \t
         } else if (format[i] == 9) {
-            tty_pos_x += 4 * 17;
+            tty_pos_x += 4 * tty_off_pos_h;
         } else {
-            _tty_putchar(format[i]);
+            _tty_putchar(format[i],format[i+1]);
+            if (isUTF(format[i])){
+                i++;
+            }
         }
         i++;
     }

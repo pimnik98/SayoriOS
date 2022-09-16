@@ -81,7 +81,7 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     }
 
     // Загружаем bootScreen
-    bootScreenInit(10);
+    bootScreenInit(12);
     bootScreenLazy(true);
 
     bootScreenPaint("Setting `Global Descriptor Table`...");
@@ -148,6 +148,10 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
 
     bootScreenClose(0x000000,0xFFFFFF);
 
+    setFontPath("/initrd/var/fonts/MicrosoftLuciaConsole9.duke","/initrd/var/fonts/MicrosoftLuciaConsole9.fdat"); // Для 9го размера
+    setConfigurationFont(9,10,10); // Для 9
+    fontInit();
+    tty_fontConfigurate();
     if (autotshell){
         // Автоматический запуск TShell
         run_elf_file("/initrd/apps/tshell", 0, 0);
@@ -169,9 +173,6 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     struct synapse_time TIME = get_time();
     tty_printf("Current datetime is: %d/%d/%d %d:%d:%d\n", TIME.day, TIME.month,
     							TIME.year, TIME.hours, TIME.minutes, TIME.seconds);
-    tty_puts("Experimental font demo: \xFF\x01 \xFF\x02 \xFF\x03 \xFF\x04 \xFF\x05 \xFF\x06 \xFF\x07 \xFF\x08 \xFF\x09 \xFF\x0A \xFF\x0B \xFF\x0C\n");
-    tty_puts("Colors: \xFF\x0D\xFF\x0E\xFF\x0F\n");
-    tty_puts_color("Circles: [\xFF\x10][\xFF\x11]\n", 0, 0xFF0000);
 
     /* Перед тем как раскомментировать, хорошо подумайте, это создает громкий шум вместо звука
     sb16_init();
@@ -193,26 +194,10 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     }
     */
     //setFontPath("/initrd/var/fonts/MicrosoftLuciaConsole18.duke","/initrd/var/fonts/MicrosoftLuciaConsole18.fdat");
-    setFontPath("/initrd/var/fonts/MicrosoftLuciaConsole9.duke","/initrd/var/fonts/MicrosoftLuciaConsole9.fdat"); // Для 9го размера
-    fontInit();
-
     //setConfigurationFont(18,22); // Для 18
-    setConfigurationFont(9,10); // Для 9
-    drawRect(0,0,800,200);
-    drawFont("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",10,30,0);
-    setColorFont(0xCAFE12);
-    drawFont("абвгдеёжзийклмнопрстуфхцчшщъыьэюя",10,60,0);
-    setColorFont(0x333333);
-    drawFont("!«№;%:?*()_+-=@#$^&[]{}|\\/",10,90,0);
-    setColorFont(0xDDDDDD);
-    drawFont("QWERTYUIOPASDFGHJKLZXCVBNM",10,120,0);
-    setColorFont(0xAAAAAA);
-    drawFont("qwertyuiopasdfghjklzxcvbnm",10,150,0);
     setColorFont(0xFFFFFF);
-    drawFont("1234567890.,",10,180,0);
+    tty_printf("\nПробуем писать по русский\n * И помните ребята, ни слова по русский!\n");
 
-
-    tty_printf("[ATOI] %d",atoi("1234567890"));
     shell();                                // Активация терминала
 }
 
