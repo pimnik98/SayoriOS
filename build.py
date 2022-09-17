@@ -110,7 +110,7 @@ def run_qemu():
     
     qemu_command = f"qemu-system-i386 -name SayoriOS -soundhw pcspk -m {MEMORY}" \
         " -netdev socket,id=n0,listen=:2030 -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 " \
-        " -cdrom SayoriOS.iso -fdb fdb.img -hda ata.vhd -serial  file:Qemu.log -d guest_errors -rtc base=localtime"
+        " -cdrom SayoriOS.iso -fdb fdb.img -hda ata.vhd -serial  file:Qemu.log -d guest_errors -rtc base=localtime -usb"
         
     os.system(qemu_command)
 
@@ -122,7 +122,7 @@ def run_kvm():
     
     qemu_command = f"qemu-system-i386 -name SayoriOS -soundhw pcspk -device sb16 -m {MEMORY}" \
         " -netdev socket,id=n0,listen=:2030 -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 " \
-        " -cdrom SayoriOS.iso -hda ata.vhd -serial  file:Qemu.log -accel kvm -d guest_errors -rtc base=localtime"
+        " -cdrom SayoriOS.iso -hda ata.vhd -serial  file:Qemu.log -accel kvm -d guest_errors -rtc base=localtime -usb -show-cursor"
         
     os.system(qemu_command)
 
