@@ -31,6 +31,8 @@ var annotated_dup =
     [ "regs", "d3/da0/structregs.html", "d3/da0/structregs" ],
     [ "rgba_struct", "db/d9d/structrgba__struct.html", "db/d9d/structrgba__struct" ],
     [ "RTL8139_dev", "da/dd2/struct_r_t_l8139__dev.html", "da/dd2/struct_r_t_l8139__dev" ],
+    [ "SAFF_FMT", "d4/dc2/struct_s_a_f_f___f_m_t.html", "d4/dc2/struct_s_a_f_f___f_m_t" ],
+    [ "SAFF_LOAD", "d8/d8a/struct_s_a_f_f___l_o_a_d.html", "d8/d8a/struct_s_a_f_f___l_o_a_d" ],
     [ "STFS_block", "d5/d08/struct_s_t_f_s__block.html", "d5/d08/struct_s_t_f_s__block" ],
     [ "STFS_file", "df/d16/struct_s_t_f_s__file.html", "df/d16/struct_s_t_f_s__file" ],
     [ "STFS_folder", "d3/d49/struct_s_t_f_s__folder.html", "d3/d49/struct_s_t_f_s__folder" ],
