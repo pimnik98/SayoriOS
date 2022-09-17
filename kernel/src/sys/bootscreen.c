@@ -112,14 +112,15 @@ void bootScreenInfo(){
  */
 void bootScreenProcentPaint(){
     curElem++;
-    if (curElem > maxElem){
+    if (curElem >= maxElem){
         curElem = maxElem;
     }
     uint32_t padding_h = maxHeightLine/4;
     uint32_t proc = (curElem*100)/maxElem;
+    qemu_log("[BS] Proc: %d | C: %d | E: %d",proc,curElem,maxElem);
     //setPosX(8*8);
 
-    drawRect(8*8,(16*((maxHeightLine-padding_h+2))),(proc)*8,16,bootScreenTheme(0));
+    drawRect(8*8,(16*((maxHeightLine-padding_h+2))),(proc)*7,16,bootScreenTheme(0));
 }
 
 /**

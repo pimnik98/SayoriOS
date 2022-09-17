@@ -17,13 +17,13 @@
 #define kCMD_BOOTSCREEN_DARK "--bootscreen=dark"
 #define kCMD_EXEC_TSHELL "--tshell"
 #define kCMD_NO_DRIVER_RTL8139 "--nortl8139"
-#define kCMD_NO_DRIVER_BGA "--nobga"
+#define kCMD_DRIVER_BGA "--bga"
 
 int32_t errno = 0;
 uint32_t os_mode = 1; // 0 - мало ОЗУ, 1 - обычный режим, 2 - режим повышенной производительности, 3 - сервер
 bool autotshell = false;
 bool rtl8139_load = true;
-bool bga_load = true;
+bool bga_load = false;
 
 void kernelCMDHandler(char* cmd){
     qemu_log("[kCMD] '%s'",cmd);
@@ -41,9 +41,9 @@ void kernelCMDHandler(char* cmd){
             autotshell = true;
             qemu_log("[kCMD] After loading the kernel, TShell will automatically start.");
             continue;
-        } else if (strcmpn(out[i],kCMD_NO_DRIVER_BGA)){
-            bga_load = false;
-            qemu_log("[kCMD] The BGA driver will not be loaded on kernel startup.");
+        } else if (strcmpn(out[i],kCMD_DRIVER_BGA)){
+            bga_load = true;
+            qemu_log("[kCMD] The BGA driver will be loaded on kernel startup.");
             continue;
         } else if (strcmpn(out[i],kCMD_NO_DRIVER_RTL8139)){
             rtl8139_load = false;
@@ -150,7 +150,7 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     bootScreenClose(0x000000,0xFFFFFF);
 
     setFontPath("/initrd/var/fonts/MicrosoftLuciaConsole9.duke","/initrd/var/fonts/MicrosoftLuciaConsole9.fdat"); // Для 9го размера
-    setConfigurationFont(9,10,10); // Для 9
+    setConfigurationFont(6,10,8); // Для 9
     fontInit();
     tty_fontConfigurate();
     if (autotshell){
