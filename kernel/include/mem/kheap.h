@@ -1,3 +1,4 @@
+#pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -13,3 +14,4 @@ uint32_t kheap_getused();
 void *kheap_morecore(uint32_t size);
 int32_t kheap_free(void *address);
 void *kheap_malloc(uint32_t size);
+void* kheap_realloc(void* mem, uint32_t size);
