@@ -1,6 +1,7 @@
-SynapseOS is a simple x86 C operating system with a well-documented kernel.
+SayoriOS - это открытое публичное ядро операционной системы.
 
-SynapseOS is not a linux distribution, it's a new project that has no company or organization behind it to give guarantees.
-The SynapseOS kernel is open source, you can make sure that there is no malware by examining the files in this repository.
-When using materials, you agree to respect copyright.
-I am not responsible for any damage caused. Use at your own risk.
+Наша команда напоминает, что ядро является нестабильным, если вы решите запустить его на реальном железе, то ВЫ и только ВЫ в ответе за ваше сломанное оборудование.
+
+Поддержать проект можно здесь:
+VK: https://vk.com/sayorios
+GitHub: https://github.com/pimnik98/SayoriOS
