@@ -1,10 +1,10 @@
 /**
  * @file kernel.c
- * @author Арен Елчинян (a2.dev@yandex.com), Никита Пиминов (github.com/pimnik98)
- * @brief Входная точка консоли, Synapse Command Line Interface
- * @version 0.0.3
+ * @author Никита Пиминов (github.com/pimnik98)
+ * @brief Входная точка консоли, Sayori Command Line Interface
+ * @version 0.0.4
  * @date 2022-08-28
- * @copyright Copyright Арен Елчинян (c) 2022
+ * @copyright Copyright SayoriOS
  */
 #include <kernel.h>
 #include <libk/string.h>
@@ -17,19 +17,6 @@ char* cmd = "";
 
 
 /**
- * @brief Функция выводит окно о проекте
- * @warning Функция сделана для консоли
- *
- * @param uint32_t c - Кол-во аргументов
- * @param char* v[] - Аргементы
- *
- * @return uint32_t - Результат работы
- */
-uint32_t cmd_about(uint32_t c,char* v[]){
-    tty_printf("SynapseOS is a simple x86 C operating system with a well-documented kernel.");
-    return 0;
-}
-/**
  * @brief Функция выводит экран справки
  * @warning Функция сделана для консоли
  *
@@ -39,19 +26,21 @@ uint32_t cmd_about(uint32_t c,char* v[]){
  * @return uint32_t - Результат работы
  */
 uint32_t cmd_help(uint32_t c,char* v[]){
-    tty_printf("Commands:\n" \
-        "\t->help                | get list of commands\n" \
-        "\t->cls                 | clean screen\n" \
-        "\t->cat   <filename>    | open file to read\n" \
-        "\t->cd    <folder>      | open folder\n" \
-        "\t->./<file>            | run programm in current folder\n" \
-        "\t->ls                  | list of files\n" \
-        "\t->sysinfo             | information about system\n" \
-        "\t->pcilist             | list of pci devices\n" \
-        "\t->cpuinfo             | info cpu\n" \
-        "\t->reboot              | reboot device\n" \
-        "\t->shutdown            | shutdown device\n" \
-        "\t->view   <filename>   | shows an image\n" \
+    tty_printf("Команды:\n" \
+        "\t->help                | открывает это окно справки\n" \
+        "\t->cls                 | выполняет отчистку экрана\n" \
+        "\t->cat   <filename>    | выводит на экран содержимое файла\n" \
+        "\t->cd    <folder>      | переход в директорию\n" \
+        "\t->./<file>            | запустить программу в текущей директории\n" \
+        "\t->ls                  | отобразить список файлов\n" \
+        "\t->sysinfo             | информация о системе\n" \
+        "\t->pcilist             | Отобразить список PCI-устройств\n" \
+        "\t->cpuinfo             | Информация о процессоре\n" \
+        "\t->reboot              | Перезагрузка устройства\n" \
+        "\t->shutdown            | Выключение устройства\n" \
+        "\t->view   <filename>   | Отобразить картинку (для форматов Duke)\n" \
+        "\t->font                | Рисует все доступные символы для шрифта\n" \
+
         "\n"
     );
     return 0;
@@ -115,7 +104,7 @@ uint32_t cmd_shutdown(uint32_t c,char* v[]){
  * @return uint32_t - Результат работы
  */
 uint32_t cmd_pcilist(uint32_t c,char* v[]){
-    tty_printf("PCI devices:\n");
+    tty_printf("Найденные PCI-устройства:\n");
     checkAllBuses();
     return 0;
 }
@@ -157,13 +146,13 @@ uint32_t cmd_ls(uint32_t c,char* v[]){
 uint32_t cmd_cat(uint32_t c,char* v[]){
     if (c == 0){
         tty_setcolor(COLOR_ERROR);
-        tty_printf("[CMD] [CAT] You must specify the directory to which you want to change the path.\n");
+        tty_printf("[CMD] [CAT] Необходимо указать путь для чтения файла.\n");
         return 1;
     }
     FILE* cat_file = fopen(v[1],"r");
     if (ferror(cat_file) != 0){
         tty_setcolor(COLOR_ERROR);
-        tty_printf("[CMD] [CAT] Could not find file `%s`. Check if the path you entered is correct.\n",v[1]);
+        tty_printf("[CMD] [CAT] Не удалось найти файл `%s`. Проверьте правильность введенного вами пути.\n",v[1]);
         return 2;
     }
     char * buffer = fread(cat_file);
@@ -183,7 +172,7 @@ uint32_t cmd_cat(uint32_t c,char* v[]){
 uint32_t cmd_cd(uint32_t c,char* v[]){
     if (c == 0){
         tty_setcolor(COLOR_ERROR);
-        tty_printf("[CMD] [CD] You must specify the directory to which you want to change the path.\n");
+        tty_printf("[CMD] [CD] Вы должны указать каталог, к которому вы хотите изменить путь.\n");
         return 1;
     }
     char* dname = v[1];
@@ -203,7 +192,7 @@ uint32_t cmd_cd(uint32_t c,char* v[]){
         strcpy(current_dir, dname);
     } else {
         tty_setcolor(COLOR_ERROR);
-        tty_printf("[CMD] [CD] Sorry, but the `%s` folder was not found. Check if the path you entered is correct.\n",v[1]);
+        tty_printf("[CMD] [CD] Извините, но папка `%s` не найдена. Проверьте правильность введенного вами пути.\n",v[1]);
         return 1;
     }
     return 0;
@@ -254,13 +243,13 @@ uint32_t cmd_whoami(uint32_t c,char* v[]){
 uint32_t cmd_view(uint32_t c,char* v[]){
     if (c == 0){
         tty_setcolor(COLOR_ERROR);
-        tty_printf("[CMD] [VIEW] You must specify the path to display the image.\n");
+        tty_printf("[CMD] [VIEW] Необходимо указать путь для отображения изображения.\n");
         return 1;
     }
     FILE* c_view = fopen(v[1],"r");
     if (ferror(c_view) != 0){
         tty_setcolor(COLOR_ERROR);
-        tty_printf("[CMD] [VIEW] Could not find file `%s`. Check if the path you entered is correct.\n",v[1]);
+        tty_printf("[CMD] [VIEW] Не удалось найти файл `%s`. Проверьте правильность введенного вами пути.\n",v[1]);
         return 2;
     }
     struct DukeImageMeta* data = duke_get_image_metadata(v[1]);
@@ -269,7 +258,7 @@ uint32_t cmd_view(uint32_t c,char* v[]){
         return 0;
     }else{
         tty_setcolor(COLOR_ERROR);
-        tty_printf("[CMD] [VIEW] There were problems opening the file `%s`. This file may not be in Duke format.\n",v[1]);
+        tty_printf("[CMD] [VIEW] Возникли проблемы с открытием файла `%s`. Может быть этот файл не в формате Duke.\n",v[1]);
         return 3;
     }
     return 0;
@@ -289,7 +278,7 @@ uint32_t cmd_view(uint32_t c,char* v[]){
 uint32_t cmd_exec(uint32_t c,char* v[]){
     if (c == 0){
         tty_setcolor(COLOR_ERROR);
-        tty_printf("[CMD] [EXEC] To execute this command, you must specify the name of the file to run.\n");
+        tty_printf("[CMD] [EXEC] Для выполнения этой команды необходимо указать имя запускаемого файла.\n");
         return 1;
     }
     char temp[256] = {0};
@@ -298,7 +287,7 @@ uint32_t cmd_exec(uint32_t c,char* v[]){
     FILE* elf_exec = fopen(temp,"r");
     if (ferror(elf_exec) != 0){
         tty_setcolor(COLOR_ERROR);
-        tty_printf("[CMD] [EXEC] The program `%s` was not found in this directory.\n",v[1]);
+        tty_printf("[CMD] [EXEC] Программа `%s` не найдена в текущей папке.\n",v[1]);
         return 2;
     }
     //elf_info(temp);
@@ -344,7 +333,7 @@ uint32_t cmd_font(uint32_t c,char* v[]){
 void shell() {
     changeStageKeyboard(1);
     tty_setcolor(COLOR_ALERT);
-    tty_printf("\nUse \"help\" command to get info about commands.\n");
+    tty_printf("\nВведите \"help\" для получения списка команд.\n");
 
     tty_setcolor(COLOR_TEXT);
 
@@ -415,9 +404,6 @@ void shell() {
         } else if (strcmpn(argv[0],"cpuinfo")){
             cmd_cpuinfo(argc,argv);
             continue;
-        } else if (strcmpn(argv[0],"about")){
-            cmd_about(argc,argv);
-            continue;
         } else if (strcmpn(argv[0],"whoami")){
             cmd_whoami(argc,argv);
             continue;
@@ -442,32 +428,15 @@ void shell() {
  * 
  */
 void sysinfo(){
-    tty_printf("                       ........--........        SynapseOS by Aren Elchinyan\n");
-    tty_printf("                       ....+***:**+*....         Arch %s\n", ARCH_TYPE);
-    tty_printf("                         .**.......**....        Ticks: %d\n", timer_get_ticks());
-    tty_printf("                       ...**.......**...                        \n");
-    tty_printf("                        ..:**.....-**....                       \n");
-    tty_printf("                       . ...+******.....                        \n");
-    tty_printf("                        .  ...***...                            \n");
-    tty_printf("                           ...:**..                             \n");
-    tty_printf("                            ..+**...... .                       \n");
-    tty_printf("                            ..+*+.......                        \n");
-    tty_printf("                    . ........-******:.. ...                    \n");
-    tty_printf("                    ....**..........+**-... .                   \n");
-    tty_printf("                     .-**....:***+....***....                   \n");
-    tty_printf("                    ..**....********...**...                    \n");
-    tty_printf("                   ...**...+********...**-.                     \n");
-    tty_printf("                    ..+*-...*******:...**...                    \n");
-    tty_printf(".  ...........  ......***-....+**-....***-.... ....... ......   \n");
-    tty_printf("  ................-*****+**-........***-+***:.....*****:....    \n");
-    tty_printf("....********...:****......+*********+......+*****+:....+*+..    \n");
-    tty_printf("..***......***+*-...  . . ............  ......:**........*+.    \n");
-    tty_printf(".**.. . .. .-**.         ..   .  .    ...  ...**.... ....**.    \n");
-    tty_printf("**+.    . ...**..                           . .+*.......-*+..   \n");
-    tty_printf(".+*..........**.                            ....+**:..****..    \n");
-    tty_printf(".***.......-**..                            .......-+*.......   \n");
-    tty_printf("...+********+...                            ..  .  .   .        \n");
-    tty_printf("................                                                  ");
+    tty_printf("Системная информация:\n");
+    tty_printf("\tOS:               SayoriOS v%d.%d.%d\n",VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+    tty_printf("\tДата сборки:      %s\n",__TIMESTAMP__);
+    tty_printf("\tАрхитектура:      %s\n",ARCH_TYPE);
+    tty_printf("\tПроцессор:        %s\n",getNameBrand());
+    tty_printf("\tОЗУ:              %d kb\n",getInstalledRam());
+    tty_printf("\tВидеоадаптер:     %s\n","Basic video adapter (Unknown)");
+    tty_printf("\tДисплей:          %s (%dx%d)\n","(???)",getWidthScreen(),getHeightScreen());
+    tty_printf("\tТики:             %d\n",timer_get_ticks());
 }
 
 
