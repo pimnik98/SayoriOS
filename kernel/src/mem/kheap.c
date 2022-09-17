@@ -136,3 +136,7 @@ void *kheap_malloc(uint32_t size) {
 
     return (void*) ((uint32_t) new_item + (uint32_t) sizeof(kheap_item)); // Возвращаем вновь выделенную ячейку памяти
 }
+
+kheap_item* kheap_get_item(void* address) {
+    return (kheap_item*)((uint32_t)address - (uint32_t)sizeof(kheap_item));;
+}
