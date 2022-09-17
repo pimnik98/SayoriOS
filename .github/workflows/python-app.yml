@@ -1,0 +1,63 @@
+name: SayoriOS AutoBuild
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Just lists all version of clang
+        run: sudo apt list "clang-*"
+
+      - name: Step 1
+        run: |
+          sudo apt install python3 build-essential xorriso grub-pc-bin mtools llvm lld fasm zip doxygen
+
+      - name: Step 2
+        run: python3 build.py kernel
+
+      - name: Step 3
+        run: python3 build.py apps
+
+      - name: Step 4
+        run: python3 build.py iso isol
+      
+      - name: Step 5
+        run: |
+          rm -rf docs/doxygen/
+          sudo doxygen Doxyfile
+          ls docs/doxygen/
+          ls
+
+      - name: Step 6
+        run: |
+          echo "done!"
+          ls isodir/boot/
+          ls
+        
+      - name: Step 7
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: Github
+          author_email: github@example.com
+          message: 'Документация: Обновление документации с помощью doxygen [Автосборка]'
+          add: 'docs/doxygen/html/*'
+
+      - name: Step 8
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.SAYORI }}"
+          automatic_release_tag: "latest-unstable"
+          prerelease: true
+          title: "[Автосборка] Нестабильный релиз"
+          description: "Внимание! Данный релиз собран из последних изменений в ядре! Это не окончательная версия содержит ошибки и не рекомендуется к запуску без проверки на виртуальной машине."
+          files: |
+            LICENSE
+            SayoriOS.iso
+            isodir/boot/initrd.tar
+            isodir/boot/kernel.elf
+            docs/doxygen/rtf/refman.rtf
