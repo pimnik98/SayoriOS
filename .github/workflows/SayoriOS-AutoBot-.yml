@@ -1,4 +1,4 @@
-name: SayoriOS AutoBuild
+name: 🤖 SayoriOS Автоматическая сборка при изменениях в репозитории
 
 on:
   push:
@@ -13,33 +13,33 @@ jobs:
       - name: Just lists all version of clang
         run: sudo apt list "clang-*"
 
-      - name: Step 1
+      - name: Step 1 - Software installation
         run: |
           sudo apt install python3 build-essential xorriso grub-pc-bin mtools llvm lld fasm zip doxygen
 
-      - name: Step 2
+      - name: Step 2 - Compiling the kernel
         run: python3 build.py kernel
 
-      - name: Step 3
+      - name: Step 3 - Compiling programs
         run: python3 build.py apps
 
-      - name: Step 4
-        run: python3 build.py iso isol
+      - name: Step 4 - ISO assembly
+        run: python3 build.py iso
       
-      - name: Step 5
+      - name: Step 5 - Preparing for DoxyGen
         run: |
           rm -rf docs/doxygen/
           sudo doxygen Doxyfile
           ls docs/doxygen/
           ls
 
-      - name: Step 6
+      - name: Step 6 - File Existence Check
         run: |
           echo "done!"
           ls isodir/boot/
           ls
         
-      - name: Step 7
+      - name: Step 7 - Updating documentation with DoxyGen
         uses: EndBug/add-and-commit@v9
         with:
           author_name: Github
@@ -47,7 +47,7 @@ jobs:
           message: 'Документация: Обновление документации с помощью doxygen [Автосборка]'
           add: 'docs/doxygen/html/*'
 
-      - name: Step 8
+      - name: Step 8 - Update to the latest unstable release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.SAYORI }}"
