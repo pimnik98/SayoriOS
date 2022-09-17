@@ -87,8 +87,10 @@ void *calloc(size_t number, size_t size) {
 }
 
 void *realloc(void* memory, unsigned int value) {
-	printf("IMPLEMENT REALLOC FIRST!\n");
-	while(1) {}
+	uint32_t address = 0;
+    asm volatile("int $0x80" : "=a"(address) : "a"(SC_CODE_realloc), "b"(memory), "d"(value));
+
+	return (void*)address;
 }
 
 void exit(unsigned int code) {

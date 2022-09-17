@@ -140,3 +140,21 @@ void *kheap_malloc(uint32_t size) {
 kheap_item* kheap_get_item(void* address) {
     return (kheap_item*)((uint32_t)address - (uint32_t)sizeof(kheap_item));;
 }
+
+void* kheap_realloc(void* mem, uint32_t size) {
+    uint32_t origsize = kheap_get_item(mem)->size;
+    qemu_log("realloc(): %d bytes orig | %d bytes will be made");
+
+    void* newptr = kheap_malloc(origsize>size?origsize:size);
+
+    if(origsize>size) {
+        memcpy(newptr, mem, size);
+    }else if(origsize==size) {
+        memcpy(newptr, mem, origsize);
+    }else{
+        memcpy(newptr, mem, origsize);
+    }
+    kheap_free(mem);
+
+    return newptr;
+}

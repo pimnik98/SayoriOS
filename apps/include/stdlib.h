@@ -4,6 +4,7 @@
 
 #define SC_CODE_malloc          4
 #define SC_CODE_free            5
+#define SC_CODE_realloc         6
 
 void strver(char *str);
 int itoa(int n, char *buffer);

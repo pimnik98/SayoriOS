@@ -143,6 +143,10 @@ void syscall_handler(struct regs *r) {
             r->eax = (uint32_t)1;
             break;
         }
+        case SC_CODE_realloc: {
+            r->eax = (uint32_t)kheap_realloc((void*)arg1, (uint32_t)arg2);
+            break;
+        }
         case SC_CODE_setdev: // Хранилище
             r->eax = (uint32_t)-1;
             break;

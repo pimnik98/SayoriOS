@@ -7,6 +7,7 @@
 #define SC_CODE_gets            3
 #define SC_CODE_malloc          4
 #define SC_CODE_free            5
+#define SC_CODE_realloc         6
 #define SC_CODE_setdev          10
 #define SC_CODE_readfile        11
 #define SC_CODE_writefile       12
