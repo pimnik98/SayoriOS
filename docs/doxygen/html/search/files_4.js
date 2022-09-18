@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['ports_2ec_169',['ports.c',['../d0/d6e/ports_8c.html',1,'']]]
+  ['kernel_2ec_178',['kernel.c',['../d9/d26/kernel_8c.html',1,'']]],
+  ['keyboard_2ec_179',['keyboard.c',['../de/dbd/keyboard_8c.html',1,'']]]
 ];

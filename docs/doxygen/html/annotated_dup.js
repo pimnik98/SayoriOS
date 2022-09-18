@@ -5,6 +5,8 @@ var annotated_dup =
     [ "arp_table_entry", "d6/d3c/structarp__table__entry.html", "d6/d3c/structarp__table__entry" ],
     [ "ata_dma_priv", "db/d6f/structata__dma__priv.html", "db/d6f/structata__dma__priv" ],
     [ "blockinfo", "dd/d55/structblockinfo.html", "dd/d55/structblockinfo" ],
+    [ "devmgr_categories", "d9/dbc/structdevmgr__categories.html", "d9/dbc/structdevmgr__categories" ],
+    [ "devmgr_device", "d2/d56/structdevmgr__device.html", "d2/d56/structdevmgr__device" ],
     [ "dhcp_packet", "d3/df5/structdhcp__packet.html", "d3/df5/structdhcp__packet" ],
     [ "dma_prdt", "d6/d78/structdma__prdt.html", "d6/d78/structdma__prdt" ],
     [ "DukeImageMeta", "d0/d76/struct_duke_image_meta.html", "d0/d76/struct_duke_image_meta" ],

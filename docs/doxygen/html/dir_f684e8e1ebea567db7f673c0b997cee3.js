@@ -1,5 +1,6 @@
 var dir_f684e8e1ebea567db7f673c0b997cee3 =
 [
+    [ "devmgr_cli.c", "df/d30/devmgr__cli_8c.html", "df/d30/devmgr__cli_8c" ],
     [ "imaging.c", "d8/d6d/imaging_8c.html", "d8/d6d/imaging_8c" ],
     [ "ports.c", "d0/d6e/ports_8c.html", "d0/d6e/ports_8c" ],
     [ "saff.c", "de/d5a/saff_8c_source.html", null ],
