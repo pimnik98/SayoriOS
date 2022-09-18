@@ -1,0 +1,28 @@
+4098;43560;RV620 HDMI Audio [Radeon HD 3450/3470/3550/3570]
+4153;21779;5513 IDE Controller
+6900;4096;VirtIO Ethernet Adapter
+6900;4176;VirtIO Video Graphics Adapter
+4153;28673;USB 1.1 Controller
+4153;28674;USB 2.0 Controller
+4332;33081;RTL-8100/8101L/8139 PCI Fast Ethernet Adapter
+4486;4864;RTL8139 Ethernet
+5376;4960;RTL81xx RealTek Ethernet
+33006;48879;VirtualBox Video Graphics Adapter
+33006;51966;VirtualBox Guest Additions
+32092;4100;82543GC Gigabit Ethernet Controller (Copper)
+32902;9413;82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller
+32902;9429;82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller
+32902;9832;82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio Controller
+32902;10185;NM10/ICH7 Family USB UHCI Controller #2
+32902;10186;NM10/ICH7 Family USB UHCI Controller #3
+32902;10187;NM10/ICH7 Family USB UHCI Controller #4
+32902;10188;NM10/ICH7 Family USB2 EHCI Controller
+32902;10194;NM10/ICH7 Family PCI Express Port 2
+32902;10198;NM10/ICH7 Family PCI Express Port 4
+32902;10200;NM10/ICH7 Family High Definition Audio Controller
+32902;10202;NM10/ICH7 Family SMBus Controller
+32902;10177;NM10/ICH7 Family SATA Controller [AHCI mode]
+32902;28688;82371SB PIIX3 IDE [Natoma/Triton II]
+32902;28945;82371AB/EB/MB PIIX4 IDE
+32902;28947;82371AB/EB/MB PIIX4 ACPI
+32902;40978;Atom Processor D4xx/D5xx/N4xx/N5xx Integrated Graphics Controller

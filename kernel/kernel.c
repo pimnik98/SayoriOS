@@ -205,18 +205,6 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     saff_display_data(font->meta);
     saff_destroy_font(font);
 
-    // char* grip = kheap_malloc(2); // HAH, IT DOESN'T CAUSE PageFault, WHYYYYYYY?
-    // grip[0] = 'N';
-    // grip[1] = 'D';
-    // grip[2] = 'R';
-    // grip[3] = 'A';
-    // grip[4] = 'E';
-    // grip[5] = 'Y';
-    // grip[6] = 0;
-
-    // tty_printf("STRING IS: %s\n", grip);
-    // kheap_free(grip);
-
     shell();                                // Активация терминала
 }
 

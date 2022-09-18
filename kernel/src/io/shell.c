@@ -2,11 +2,12 @@
  * @file kernel.c
  * @author Никита Пиминов (github.com/pimnik98)
  * @brief Входная точка консоли, Sayori Command Line Interface
- * @version 0.0.4
- * @date 2022-08-28
+ * @version 0.0.5
+ * @date 2022-09-18
  * @copyright Copyright SayoriOS
  */
 #include <kernel.h>
+#include <drivers/devmgr.h>
 #include <libk/string.h>
 #include <io/imaging.h>
 
@@ -14,7 +15,6 @@ char current_dir[256] = "/initrd/apps/";
 char* whoami = "root";
 char* pcname = "oem";
 char* cmd = "";
-
 
 /**
  * @brief Функция выводит экран справки
@@ -40,7 +40,7 @@ uint32_t cmd_help(uint32_t c,char* v[]){
         "\t->shutdown            | Выключение устройства\n" \
         "\t->view   <filename>   | Отобразить картинку (для форматов Duke)\n" \
         "\t->font                | Рисует все доступные символы для шрифта\n" \
-
+        "\t->devmgr              | Менеджер устройств\n" \
         "\n"
     );
     return 0;
@@ -105,7 +105,19 @@ uint32_t cmd_shutdown(uint32_t c,char* v[]){
  */
 uint32_t cmd_pcilist(uint32_t c,char* v[]){
     tty_printf("Найденные PCI-устройства:\n");
-    checkAllBuses();
+    for(uint32_t i = 0;i<getCountDevices();i++){
+        tty_printf("[%d] %s\n",i,getDeviceName(i));
+        tty_printf(" |--- Vendor: [%x] %s\n",getDeviceInfo(i,DEVMGR_KEY_VENDORID),getVendorName(getDeviceInfo(i,DEVMGR_KEY_VENDORID)));
+        tty_printf(" |--- DeviceID: %x\n",getDeviceInfo(i,DEVMGR_KEY_DEVICEID));
+        tty_printf(" |--- Category:\n");
+        tty_printf(" | |--- [%d] %s\n",getDeviceInfo(i,DEVMGR_KEY_CLASS),getCategoryDevice(i,DEVMGR_KEY_CLASS));
+        tty_printf(" |   |--- [%d] %s\n",getDeviceInfo(i,DEVMGR_KEY_SUBCLASS),getCategoryDevice(i,DEVMGR_KEY_SUBCLASS));
+        tty_printf(" |     |--- [%d] %s\n",getDeviceInfo(i,DEVMGR_KEY_PROGIF),getCategoryDevice(i,DEVMGR_KEY_PROGIF));
+        tty_printf(" |--- State: %x\n",getDeviceInfo(i,DEVMGR_KEY_STATE));
+        tty_printf(" |--- CategoryID: %x\n",getDeviceInfo(i,DEVMGR_KEY_CATEGORY));
+        tty_printf("\n");
+    }
+    //checkAllBuses();
     return 0;
 }
 /**
@@ -326,6 +338,77 @@ uint32_t cmd_font(uint32_t c,char* v[]){
     drawStringFont("1234567890.,",10,180,0);
 }
 
+void cmdHandler(char* ncmd){
+        uint32_t argc = str_cdsp(ncmd," ");
+        char* argv[128] = {0};
+        str_split(ncmd,argv," ");
+        cmd = ncmd;
+        tty_printf("\n");
+        for(int i = 0; argc >= i; i++){
+            qemu_log("[CMD] '%s' => argc: %d => argv: %s",ncmd,i,argv[i]);
+        }
+
+        if (strcmpn(argv[0],"help")){
+            cmd_help(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"debug")){
+            tty_printf("debug\n");
+            cmd_debug(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"run")){
+            cmd_exec(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"view")){
+            cmd_view(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"cd")){
+            cmd_cd(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"cat")){
+            cmd_cat(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"cls")){
+            cmd_cls(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"reboot")){
+            cmd_reboot(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"shutdown")){
+            cmd_shutdown(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"pcilist")){
+            cmd_pcilist(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"sysinfo")){
+            cmd_sysinfo(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"ls")){
+            cmd_ls(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"cpuinfo")){
+            cmd_cpuinfo(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"whoami")){
+            cmd_whoami(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"hostname")){
+            cmd_hostname(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"font")){
+            cmd_font(argc,argv);
+            return;
+        } else if (strcmpn(argv[0],"devmgr")){
+            devmgr_cli(argc,argv);
+            return;
+        } else {
+            char* run[2] = {0};
+            run[1] = argv[0];
+            cmd_exec(1,run);
+            return;
+        }
+}
+
+
 /**
  * @brief Входная точка консоли
  *
@@ -355,70 +438,7 @@ void shell() {
             continue;
         }
         qemu_log("[CMD] '%s'",ncmd);
-        uint32_t argc = str_cdsp(ncmd," ");
-        char* argv[128] = {0};
-        str_split(ncmd,argv," ");
-        cmd = ncmd;
-        tty_printf("\n");
-        for(int i = 0; argc >= i; i++){
-            qemu_log("[CMD] '%s' => argc: %d => argv: %s",ncmd,i,argv[i]);
-        }
-
-        if (strcmpn(argv[0],"help")){
-            cmd_help(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"debug")){
-            tty_printf("debug\n");
-            cmd_debug(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"run")){
-            cmd_exec(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"view")){
-            cmd_view(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"cd")){
-            cmd_cd(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"cat")){
-            cmd_cat(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"cls")){
-            cmd_cls(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"reboot")){
-            cmd_reboot(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"shutdown")){
-            cmd_shutdown(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"pcilist")){
-            cmd_pcilist(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"sysinfo")){
-            cmd_sysinfo(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"ls")){
-            cmd_ls(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"cpuinfo")){
-            cmd_cpuinfo(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"whoami")){
-            cmd_whoami(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"hostname")){
-            cmd_hostname(argc,argv);
-            continue;
-        } else if (strcmpn(argv[0],"font")){
-            cmd_font(argc,argv);
-            continue;
-        } else {
-            char* run[2] = {0};
-            run[1] = argv[0];
-            cmd_exec(1,run);
-            continue;
-        }
+        cmdHandler(ncmd);
     }
 }
 

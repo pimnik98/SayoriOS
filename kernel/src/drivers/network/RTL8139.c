@@ -89,7 +89,11 @@ void RTL8139_handler(struct regs *r){
 // Настраивает RTL8139
 int RTL8139_init() {
     outb(RTL8139_io_addres + 0x52, 0x0);                // Включаем RTL
-
+    uint32_t installRTL = registerDevice(RTL8139_VENDOR_ID,RTL8139_ret_ID);
+    if (installRTL == -1){
+        qemu_log("[Ethernet] The RTL8139 device was not detected.");
+        return -1;
+    }
     RTL8139_ret = pci_read(                           // Ищем среди устройств
             pci_get_device(RTL8139_VENDOR_ID, RTL8139_ret_ID, -1), 
             PCI_BAR0
