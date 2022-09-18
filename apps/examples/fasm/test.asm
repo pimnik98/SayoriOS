@@ -23,4 +23,4 @@ main:
 ; Сообщение сохраняем в message, также попрошу заметить:
 ; 10 это \n
 ; 0 это конец строки
-message db '#ILOVESYNAPSEOS', 10, 'xd)', 10, 0
+message db '#ILOVESAYORIOS', 10, 'xd)', 10, 0

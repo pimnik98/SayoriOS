@@ -128,7 +128,7 @@ unsigned  char keyboard_map_shifted[] = {
  * @brief Очищает последний ввод клавиатуры
  */
 void keyboard_clean(){
-    char string_mem[128];
+    char string_mem[128] = {0};
 
     // ndraey-warn: Example above is more correct
     // |            (Invalid variable clean declaration!)
