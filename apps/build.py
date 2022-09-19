@@ -1,18 +1,9 @@
 import os, shutil, sys, tarfile, os.path, subprocess
 
 LD = "ld.lld"
-# LDFLAGS = " -nostdlib -T link.ld -o"
 LDFLAGS = " -nostdlib -T link.ld -o"
 CC = "clang -target i386-pc-none-elf"
 CFLAGS = " -Wno-unused-command-line-argument -mno-sse -mno-avx -O0 -ffreestanding -I include/ -c"
-
-# BUILD_BASIC = False # Change this to enable or disable BASIC build.
-# BUILD_ZLIB  = True
-
-'''
-    WARNING: Due to kernel ports, I say, I DISABLED ALL PORTS FOR A WHILE!
-                                                                NDRAEY
-'''
 
 CC = f"{CC} {CFLAGS}"
 LD = f"{LD} {LDFLAGS}"
@@ -32,9 +23,18 @@ files = []
 # Сборка
 def build(typ, infile, outfile):
     if typ=="compile":
-        print(f"[\x1b[32;1mСБОРКА\x1b[0m]: Компилируем {infile}")
         cmd = f"{CC} {infile} -o {outfile}"
-        subprocess.call(cmd, shell=True)
+        if os.path.isfile(outfile):
+            if os.path.getmtime(infile)>os.path.getmtime(outfile):
+                print(f"[\x1b[32;1mСБОРКА\x1b[0m] UPD: Компилируем {infile}")
+                subprocess.call(cmd, shell=True)
+            else:
+                # print(f"[\x1b[33;1mСБОРКА\x1b[0m]: Пропускаем {infile}")
+                pass
+        else:
+            print(f"[\x1b[32;1mСБОРКА\x1b[0m] NOE: Компилируем {infile}")
+            subprocess.call(cmd, shell=True)
+                
     if typ=="link":
         # print(f"[\x1b[32mBUILD\x1b[0m]: Linking   {infile.split(" ")[0]}") # Error
         print(f"[\x1b[32;1mСБОРКА\x1b[0m]: Линкуем  ", infile.split(" ")[0])
@@ -44,11 +44,10 @@ def build(typ, infile, outfile):
         print(f"[\x1b[34;1mКОПИРУЕМ\x1b[0m]: Копируируем  ", infile+" -> "+outfile)
         shutil.copy(infile, outfile)
 
-
 def build_all():
     try:
-        shutil.rmtree("../bin/apps/", ignore_errors=True)
-        shutil.rmtree("./bin", ignore_errors=True)
+        # shutil.rmtree("../bin/apps/", ignore_errors=True)
+        # shutil.rmtree("./bin", ignore_errors=True)
         os.mkdir("./bin")
         os.mkdir("./bin/libc")
         os.mkdir("../bin/apps/")
@@ -192,4 +191,3 @@ if __name__ == "__main__":
         build_all()
     except Exception as E:
         print(E)
-        input()
