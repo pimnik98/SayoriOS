@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Файл kernel/src/io/devmgr_cli.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.2.12</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('df/d30/devmgr__cli_8c.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Функции</a>  </div>
+  <div class="headertitle">
+<div class="title">Файл devmgr_cli.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Менеджер устройств CLI.  
+<a href="#details">Подробнее...</a></p>
+<div class="textblock"><code>#include &lt;kernel.h&gt;</code><br />
+<code>#include &lt;drivers/devmgr.h&gt;</code><br />
+</div>
+<p><a href="../../df/d30/devmgr__cli_8c_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Функции</h2></td></tr>
+<tr class="memitem:a0f21d56efada0dfea531d98f147a59a9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d30/devmgr__cli_8c.html#a0f21d56efada0dfea531d98f147a59a9">devmgr_cli_help</a> ()</td></tr>
+<tr class="memdesc:a0f21d56efada0dfea531d98f147a59a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">DevMgr - Вывод справки  <a href="../../df/d30/devmgr__cli_8c.html#a0f21d56efada0dfea531d98f147a59a9">Подробнее...</a><br /></td></tr>
+<tr class="separator:a0f21d56efada0dfea531d98f147a59a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0bf3c8f15bc4743f858d35bfabcd526"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d30/devmgr__cli_8c.html#ac0bf3c8f15bc4743f858d35bfabcd526">devmgr_cli_reg</a> (uint32_t VendorID, uint32_t DeviceID)</td></tr>
+<tr class="memdesc:ac0bf3c8f15bc4743f858d35bfabcd526"><td class="mdescLeft">&#160;</td><td class="mdescRight">DevMgr - Регистрация устройства  <a href="../../df/d30/devmgr__cli_8c.html#ac0bf3c8f15bc4743f858d35bfabcd526">Подробнее...</a><br /></td></tr>
+<tr class="separator:ac0bf3c8f15bc4743f858d35bfabcd526"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec2de6e5af0014191cbf28a17d52c3a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d30/devmgr__cli_8c.html#aec2de6e5af0014191cbf28a17d52c3a0">devmgr_cli_info</a> (uint32_t id)</td></tr>
+<tr class="memdesc:aec2de6e5af0014191cbf28a17d52c3a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">DevMgr - Вывод информации об устройстве  <a href="../../df/d30/devmgr__cli_8c.html#aec2de6e5af0014191cbf28a17d52c3a0">Подробнее...</a><br /></td></tr>
+<tr class="separator:aec2de6e5af0014191cbf28a17d52c3a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab21d442f6ec6d4a6c6bf815e4e6e2c90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d30/devmgr__cli_8c.html#ab21d442f6ec6d4a6c6bf815e4e6e2c90">devmgr_cli_vendor</a> (uint32_t id)</td></tr>
+<tr class="memdesc:ab21d442f6ec6d4a6c6bf815e4e6e2c90"><td class="mdescLeft">&#160;</td><td class="mdescRight">DevMgr - Вывод информации об провайдере  <a href="../../df/d30/devmgr__cli_8c.html#ab21d442f6ec6d4a6c6bf815e4e6e2c90">Подробнее...</a><br /></td></tr>
+<tr class="separator:ab21d442f6ec6d4a6c6bf815e4e6e2c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade2cda8fd86969f25df2f4cc23f4411f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d30/devmgr__cli_8c.html#ade2cda8fd86969f25df2f4cc23f4411f">devmgr_cli</a> (uint32_t c, char *v[])</td></tr>
+<tr class="memdesc:ade2cda8fd86969f25df2f4cc23f4411f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Функция делает обращание к DevMgr.  <a href="../../df/d30/devmgr__cli_8c.html#ade2cda8fd86969f25df2f4cc23f4411f">Подробнее...</a><br /></td></tr>
+<tr class="separator:ade2cda8fd86969f25df2f4cc23f4411f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Менеджер устройств CLI. </p>
+<dl class="section author"><dt>Автор</dt><dd>Никита Пиминов (github.com/pimnik98) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.0.3 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2022-09-18 </dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d30/devmgr__cli_8c_source.html">devmgr_cli.c</a></p>
+</div><h2 class="groupheader">Функции</h2>
+<a id="ade2cda8fd86969f25df2f4cc23f4411f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade2cda8fd86969f25df2f4cc23f4411f">&#9670;&nbsp;</a></span>devmgr_cli()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void devmgr_cli </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>v</em>[]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Функция делает обращание к DevMgr. </p>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Функция сделана для консоли</dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint32_t</td><td>c - Кол-во аргументов </td></tr>
+    <tr><td class="paramname">char*</td><td>v[] - Аргементы</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>uint32_t - Результат работы </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d30/devmgr__cli_8c_source.html">devmgr_cli.c</a> строка <a class="el" href="../../df/d30/devmgr__cli_8c_source.html#l00095">95</a></p>
+
+</div>
+</div>
+<a id="a0f21d56efada0dfea531d98f147a59a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f21d56efada0dfea531d98f147a59a9">&#9670;&nbsp;</a></span>devmgr_cli_help()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void devmgr_cli_help </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>DevMgr - Вывод справки </p>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Функция сделана для консоли </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d30/devmgr__cli_8c_source.html">devmgr_cli.c</a> строка <a class="el" href="../../df/d30/devmgr__cli_8c_source.html#l00015">15</a></p>
+
+</div>
+</div>
+<a id="aec2de6e5af0014191cbf28a17d52c3a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec2de6e5af0014191cbf28a17d52c3a0">&#9670;&nbsp;</a></span>devmgr_cli_info()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void devmgr_cli_info </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>DevMgr - Вывод информации об устройстве </p>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Функция сделана для консоли</dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint32_t</td><td>id - Индекс устройства </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d30/devmgr__cli_8c_source.html">devmgr_cli.c</a> строка <a class="el" href="../../df/d30/devmgr__cli_8c_source.html#l00060">60</a></p>
+
+</div>
+</div>
+<a id="ac0bf3c8f15bc4743f858d35bfabcd526"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0bf3c8f15bc4743f858d35bfabcd526">&#9670;&nbsp;</a></span>devmgr_cli_reg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void devmgr_cli_reg </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>VendorID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>DeviceID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>DevMgr - Регистрация устройства </p>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Функция сделана для консоли</dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint32_t</td><td>VendorID - ID Поставщика </td></tr>
+    <tr><td class="paramname">uint32_t</td><td>DeviceID - ID Устройства </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d30/devmgr__cli_8c_source.html">devmgr_cli.c</a> строка <a class="el" href="../../df/d30/devmgr__cli_8c_source.html#l00041">41</a></p>
+
+</div>
+</div>
+<a id="ab21d442f6ec6d4a6c6bf815e4e6e2c90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab21d442f6ec6d4a6c6bf815e4e6e2c90">&#9670;&nbsp;</a></span>devmgr_cli_vendor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void devmgr_cli_vendor </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>DevMgr - Вывод информации об провайдере </p>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Функция сделана для консоли</dd></dl>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint32_t</td><td>id - Индентификатор провайдера </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d30/devmgr__cli_8c_source.html">devmgr_cli.c</a> строка <a class="el" href="../../df/d30/devmgr__cli_8c_source.html#l00080">80</a></p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f684e8e1ebea567db7f673c0b997cee3.html">io</a></li><li class="navelem"><a class="el" href="../../df/d30/devmgr__cli_8c.html">devmgr_cli.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пн 19 Сен 2022 13:11:53. Создано системой
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+  </ul>
+</div>
+</body>
+</html>
