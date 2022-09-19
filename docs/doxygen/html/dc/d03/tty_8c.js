@@ -45,6 +45,7 @@ var tty_8c =
     [ "tty_puts", "dc/d03/tty_8c.html#a79782800e3f61983c15af255ad5a8758", null ],
     [ "tty_puts_color", "dc/d03/tty_8c.html#abf4e64692ae612697f663edf8629505b", null ],
     [ "tty_scroll", "dc/d03/tty_8c.html#ac9271ceddd74126f7673e98bbd87309b", null ],
+    [ "tty_set_oem", "dc/d03/tty_8c.html#aa9e2ce6a397ddcc0027fa482e707542d", null ],
     [ "tty_setcolor", "dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a", null ],
     [ "vga_entry", "dc/d03/tty_8c.html#ac3fd406df8ed388f03d8b94a340660b9", null ],
     [ "back_framebuffer_addr", "dc/d03/tty_8c.html#a1a9cc00ee0c9eac1bdc60e3ba10b1fe4", null ],
