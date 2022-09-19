@@ -26,13 +26,13 @@ def build(typ, infile, outfile):
         cmd = f"{CC} {infile} -o {outfile}"
         if os.path.isfile(outfile):
             if os.path.getmtime(infile)>os.path.getmtime(outfile):
-                print(f"[\x1b[32;1mСБОРКА\x1b[0m] UPD: Компилируем {infile}")
+                print(f"[\x1b[32;1mСБОРКА\x1b[0m] Компилируем {infile}")
                 subprocess.call(cmd, shell=True)
             else:
                 # print(f"[\x1b[33;1mСБОРКА\x1b[0m]: Пропускаем {infile}")
                 pass
         else:
-            print(f"[\x1b[32;1mСБОРКА\x1b[0m] NOE: Компилируем {infile}")
+            print(f"[\x1b[32;1mСБОРКА\x1b[0m] Компилируем {infile}")
             subprocess.call(cmd, shell=True)
                 
     if typ=="link":
@@ -41,7 +41,7 @@ def build(typ, infile, outfile):
         cmd = f"{LD} {outfile} {infile}"
         subprocess.call(cmd, shell=True)
     if typ=="copy":
-        print(f"[\x1b[34;1mКОПИРУЕМ\x1b[0m]: Копируируем  ", infile+" -> "+outfile)
+        print(f"[\x1b[34;1mКОПИРУЕМ\x1b[0m]: Копируем  ", infile+" -> "+outfile)
         shutil.copy(infile, outfile)
 
 def build_all():
