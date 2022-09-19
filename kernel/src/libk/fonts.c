@@ -207,7 +207,7 @@ uint32_t getPositionChar(uint32_t c,uint32_t offset){
 
 char drawFont(uint32_t x, uint32_t y, uint32_t sx, uint32_t sy, uint32_t width, uint32_t height){
     if (err != 0){
-        return "";
+        return 1;
     }
     if(width>mW) { width = mW; }
     if(height>mH) { height = mH; }

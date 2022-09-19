@@ -66,6 +66,19 @@ void punch() {
     #endif
 }
 
+void tty_set_oem(bool oem) {
+    if(oem) {
+        tty_off_pos_x = 8;
+        tty_off_pos_p = 0;
+        tty_off_pos_h = 17;
+    }else{
+        tty_off_pos_x = getConfigFonts(0);
+        tty_off_pos_p = getConfigFonts(1);
+        tty_off_pos_h = getConfigFonts(2);
+    }
+    tty_oem_mode = oem;
+}
+
 void tty_fontConfigurate(){
     qemu_log("[tFC] Configurate...");
     qemu_log("\t * 0 -> %d",getConfigFonts(0));

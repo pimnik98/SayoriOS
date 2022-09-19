@@ -100,6 +100,7 @@ def create_iso():
     
     print(f"Сборка ISO/Grub образа заняла: {(time.time() - start_time):2f} сек.")
 
+SHARED_PARAMS = "-d guest_errors -rtc base=localtime -usb -show-cursor -device ac97 -soundhw pcspk"
 
 def run_qemu():
     if os.path.exists("ata.vhd"):
@@ -108,9 +109,9 @@ def run_qemu():
         os.system("qemu-img create -f raw ata.vhd 32M")
     os.system("qemu-img create -f raw fdb.img 1440K")
     
-    qemu_command = f"qemu-system-i386 -name SayoriOS -soundhw pcspk -m {MEMORY}" \
+    qemu_command = f"qemu-system-i386 -name SayoriOS -m {MEMORY}" \
         " -netdev socket,id=n0,listen=:2030 -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 " \
-        " -cdrom SayoriOS.iso -fdb fdb.img -hda ata.vhd -serial  file:Qemu.log -d guest_errors -rtc base=localtime -usb"
+        " -cdrom SayoriOS.iso -fdb fdb.img -hda ata.vhd -serial file:Qemu.log "+SHARED_PARAMS
         
     os.system(qemu_command)
 
@@ -120,9 +121,9 @@ def run_kvm():
     if not os.path.exists("ata.vhd"):
         os.system("qemu-img create -f raw ata.vhd 32M")
     
-    qemu_command = f"qemu-system-i386 -name SayoriOS -soundhw pcspk -device sb16 -m {MEMORY}" \
+    qemu_command = f"qemu-system-i386 -name SayoriOS -m {MEMORY}" \
         " -netdev socket,id=n0,listen=:2030 -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 " \
-        " -cdrom SayoriOS.iso -hda ata.vhd -serial  file:Qemu.log -accel kvm -d guest_errors -rtc base=localtime -usb -show-cursor"
+        " -cdrom SayoriOS.iso -hda ata.vhd -serial  file:Qemu.log -accel kvm "+SHARED_PARAMS
         
     os.system(qemu_command)
 
@@ -134,7 +135,7 @@ def run_qemu_debug():
         os.system("qemu-img create -f raw ata.vhd 32M")
 
     
-    qemu_command = f"qemu-system-i386 -name SayoriOS -soundhw pcspk -m {MEMORY}" \
+    qemu_command = f"qemu-system-i386 -name SayoriOS -m {MEMORY}" \
         " -netdev socket,id=n0,listen=:2030 -device rtl8139,netdev=n0,mac=11:11:11:11:11:11 " \
         " -d guest_errors -cdrom SynapseOS.iso -hda ata.vhd -serial  file:Qemu.log -rtc base=localtime" 
     print("gdb kernel.elf -ex \"target remote localhost:1234\"")

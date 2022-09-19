@@ -84,6 +84,7 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     // Загружаем bootScreen
     bootScreenInit(12);
     bootScreenLazy(true);
+    tty_set_oem(true);
 
     bootScreenPaint("Setting `Global Descriptor Table`...");
     gdt_init(); // Установка и настройка прерываний
@@ -107,6 +108,7 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     kheap_init();                           // Инициализация кучи ядра
 
     init_vbe(mboot_info);                   // Активация графики 1024x768
+    tty_set_oem(true);
 
     bootScreenPaint("Setting up a virtual file system...");
     vfs_init();                             // Инициализация виртуальной файловой системы
@@ -146,6 +148,10 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     bootScreenPaint("Determining the device's processor...");
     detect_cpu(1);
 
+    bootScreenPaint("Checking for AC'97 driver...");
+    unsigned int ac = ac97_init();
+
+    tty_set_oem(false);
 
     bootScreenClose(0x000000,0xFFFFFF);
 
@@ -153,6 +159,7 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     setConfigurationFont(6,10,8); // Для 9
     fontInit();
     tty_fontConfigurate();
+
     if (autotshell){
         // Автоматический запуск TShell
         run_elf_file("/initrd/apps/tshell", 0, 0);
