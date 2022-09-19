@@ -1,5 +1,6 @@
 var NAVTREEINDEX3 =
 {
+"df/d9f/structmultiboot__info.html#a2aa050a4a5f45f2300cbbbee56cc8410":[0,0,27,2],
 "df/d9f/structmultiboot__info.html#a2db921dc755e1d69f229c9701ebb115d":[0,0,27,35],
 "df/d9f/structmultiboot__info.html#a396e9ff77165a9915dc4c8beb79d1f57":[0,0,27,16],
 "df/d9f/structmultiboot__info.html#a3bd760cabc47d4c0057452efd395e127":[0,0,27,33],

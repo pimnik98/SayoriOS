@@ -295,7 +295,7 @@ $(document).ready(function(){initNavTree('d8/d57/fonts_8c_source.html','../../')
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="keywordtype">char</span> drawFont(uint32_t x, uint32_t y, uint32_t sx, uint32_t sy, uint32_t width, uint32_t height){</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="keywordflow">if</span> (err != 0){</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        <span class="keywordflow">return</span> 1;</div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    }</div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    <span class="keywordflow">if</span>(width&gt;mW) { width = mW; }</div>
 <div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keywordflow">if</span>(height&gt;mH) { height = mH; }</div>
@@ -411,15 +411,15 @@ $(document).ready(function(){initNavTree('d8/d57/fonts_8c_source.html','../../')
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aimaging_8c_html_ad63a4f5885a51dd5b1d104c22e18d91f"><div class="ttname"><a href="../../d8/d6d/imaging_8c.html#ad63a4f5885a51dd5b1d104c22e18d91f">pixidx</a></div><div class="ttdeci">int pixidx(int width, int x, int y)</div><div class="ttdoc">Функция вычисления позиции по координатам</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d6d/imaging_8c_source.html#l00019">imaging.c:19</a></div></div>
-<div class="ttc" id="atty_8c_html_a3a9ec5bcc1f8f7ca830e80c491e4512f"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a></div><div class="ttdeci">void tty_printf(char *text,...)</div><div class="ttdoc">Вывод форматированной строки на экран (аналог printf)</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00824">tty.c:824</a></div></div>
+<div class="ttc" id="atty_8c_html_a3a9ec5bcc1f8f7ca830e80c491e4512f"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a></div><div class="ttdeci">void tty_printf(char *text,...)</div><div class="ttdoc">Вывод форматированной строки на экран (аналог printf)</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00837">tty.c:837</a></div></div>
 <div class="ttc" id="astruct_duke_image_meta_html"><div class="ttname"><a href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a></div><div class="ttdoc">Структура изображения Duke.</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/da7/imaging_8h_source.html#l00018">imaging.h:18</a></div></div>
 <div class="ttc" id="astruct_f_i_l_e_html"><div class="ttname"><a href="../../dd/d90/struct_f_i_l_e.html">FILE</a></div><div class="ttdoc">Структура файла. Требуется для работы с VFS.</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/dd1/stdio_8h_source.html#l00018">stdio.h:18</a></div></div>
-<div class="ttc" id="atty_8c_html_a68d5b7fc5eb1355c7a4c626d30207c29"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a68d5b7fc5eb1355c7a4c626d30207c29">set_pixel</a></div><div class="ttdeci">void set_pixel(int32_t x, int32_t y, uint32_t color)</div><div class="ttdoc">Вывод одного пикселя на экран</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00294">tty.c:294</a></div></div>
+<div class="ttc" id="atty_8c_html_a68d5b7fc5eb1355c7a4c626d30207c29"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a68d5b7fc5eb1355c7a4c626d30207c29">set_pixel</a></div><div class="ttdeci">void set_pixel(int32_t x, int32_t y, uint32_t color)</div><div class="ttdoc">Вывод одного пикселя на экран</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00307">tty.c:307</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_1a5b85ea993c03033d57d06b4ba138d9.html">libk</a></li><li class="navelem"><b>fonts.c</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пн 19 Сен 2022 03:47:45. Создано системой
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пн 19 Сен 2022 12:40:00. Создано системой
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>
