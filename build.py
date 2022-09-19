@@ -100,7 +100,7 @@ def create_iso():
     
     print(f"Сборка ISO/Grub образа заняла: {(time.time() - start_time):2f} сек.")
 
-SHARED_PARAMS = "-d guest_errors -rtc base=localtime -usb -show-cursor -device ac97 -soundhw pcspk"
+SHARED_PARAMS = "-d guest_errors -rtc base=localtime -usb -device ac97 -soundhw pcspk"
 
 def run_qemu():
     if os.path.exists("ata.vhd"):
