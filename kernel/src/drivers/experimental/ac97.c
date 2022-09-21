@@ -7,12 +7,38 @@
 #include "../../../include/libk/stdio.h"
 #include <io/ports.h>
 
-#define RESET 0x00
-#define MASTER_VOL 0x02
-#define MIC_VOL 0x0E
-#define PCM_VOL 0x18
-#define SELECT_INPUT 0x1A
-#define SAMPLE_RATE_FRONT 0x2C
+#define NAM_RESET 0x00
+#define NAM_MASTER_VOL 0x02
+#define NAM_MIC_VOL 0x0E
+#define NAM_PCM_VOL 0x18
+#define NAM_SELECT_INPUT 0x1A
+#define NAM_SAMPLE_RATE_FRONT 0x2C
+
+/*
+0x00	NABM register box for PCM IN	below
+0x10	NABM register box for PCM OUT	below
+0x20	NABM register box for Microphone	below
+0x2C	Global Control Register	dword
+0x30	Global Status Register	dword
+*/
+
+/*
+0x00	Physical Address of Buffer Descriptor List	dword
+0x04	Number of Actual Processed Buffer Descriptor Entry	byte
+0x05	Number of all Descriptor Entries	byte
+0x06	Status of transferring Data	word
+0x08	Number of transferred Samples in Actual Processed Entry	word
+0x0A	Number of next processed Buffer Entry	byte
+0x0B	Transfer Control	byte
+*/
+
+#define NABM_PHYSADDR_BDL 0x00
+#define NABM_ACTUAL_PROCENTRY 0x04
+#define NABM_ALL_ENTRIES 0x05
+#define NABM_DATA_TRANSFER_STATUS 0x06
+#define NABM_TRANSFERRED 0x08
+#define NABM_NEXT_PROCESSED 0x0A
+#define NABM_TRANSFER_CONTROL 0x0B
 
 struct MasterVol {
 	unsigned int right : 5;
