@@ -30,14 +30,25 @@ struct PCMVol {
 	unsigned int mute : 1;
 };
 
-unsigned int ac97_init() {
-	int retval = pci_read(
-		pci_get_device(0x8086, 0x2415, -1),
-		PCI_BAR0
-	);
+int nam_base;
+int nabm_base;
 
-	qemu_log("[AC'97] Returned value: %d\n", retval);
-	return retval;
+pci_dev_t ac97_dev;
+
+void ac97_init() {
+	ac97_dev = pci_get_device(0x8086, 0x2415, -1);
+	nam_base = pci_read(ac97_dev, PCI_BAR0);
+	nabm_base = pci_read(ac97_dev, PCI_BAR1);
+
+	qemu_log("[AC'97] NAM: %x; NABM: %x;", nam_base, nabm_base);
+}
+
+void ac97_nam_write(unsigned int field, unsigned int value) {
+	pci_write(ac97_dev, nam_base+field, value);
+}
+
+void ac97_nabm_write(unsigned int field, unsigned int value) {
+	pci_write(ac97_dev, nabm_base+field, value);
 }
 
 void ac97_test() {

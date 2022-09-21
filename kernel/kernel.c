@@ -149,7 +149,7 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     detect_cpu(1);
 
     bootScreenPaint("Checking for AC'97 driver...");
-    unsigned int ac = ac97_init();
+    ac97_init();
 
     tty_set_oem(false);
 
