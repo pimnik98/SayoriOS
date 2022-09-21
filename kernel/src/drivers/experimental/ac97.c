@@ -32,13 +32,9 @@
 0x0B	Transfer Control	byte
 */
 
-#define NABM_PHYSADDR_BDL 0x00
-#define NABM_ACTUAL_PROCENTRY 0x04
-#define NABM_ALL_ENTRIES 0x05
-#define NABM_DATA_TRANSFER_STATUS 0x06
-#define NABM_TRANSFERRED 0x08
-#define NABM_NEXT_PROCESSED 0x0A
-#define NABM_TRANSFER_CONTROL 0x0B
+
+#define GLOBAL_CONTROL_REGISTER 0x2C
+#define GLOBAL_STATUS_REGISTER 0x2C
 
 struct MasterVol {
 	unsigned int right : 5;
