@@ -141,7 +141,7 @@ def build_all():
             build("link", "./bin/asm.o", "../bin/apps/asm")
             build("link", "./bin/asmt.o", "../bin/apps/asmt")
         else:
-            print("[\x1b[31;1mОШИБКА\x1b[0m] 'fasm' не найден, этот этап пропущен...")
+            print("[\x1b[33;1mОШИБКА\x1b[0m] 'fasm' не найден, этот этап пропущен...")
     except Exception:
         pass
 
