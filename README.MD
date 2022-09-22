@@ -4,7 +4,7 @@
 ![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white) ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
 SayoriOS - простая x86 операционная система на языке C с хорошо документированным ядром.
-![SayoriOS](https://raw.githubusercontent.com/0Nera/SynapseOS/master/screenshots/test.png "SynapseOS")
+![SayoriOS](https://raw.githubusercontent.com/pimnik98/SayoriOS/master/screens/v0.2.15.png "SayoriOS")
 
 ## Имеется
 
