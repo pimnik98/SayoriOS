@@ -63,11 +63,9 @@ void kernelCMDHandler(char* cmd){
             continue;
         } else if (strcmpn(out[i],kCMD_BOOTSCREEN_LIGHT)){
             bootScreenChangeTheme(1);
-            qemu_log("[kCMD] The Realtek RTL8139 driver will not be loaded on kernel startup.");
             continue;
         } else if (strcmpn(out[i],kCMD_BOOTSCREEN_DARK)){
             bootScreenChangeTheme(0);
-            qemu_log("[kCMD] The Realtek RTL8139 driver will not be loaded on kernel startup.");
             continue;
         }
     }
