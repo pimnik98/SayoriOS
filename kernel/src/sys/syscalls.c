@@ -14,7 +14,6 @@
  */
 #include <kernel.h>
 
-
 static uint64_t next_rnd = 1;
 
 

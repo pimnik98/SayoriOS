@@ -17,13 +17,16 @@
 #define kCMD_BOOTSCREEN_DARK "--bootscreen=dark"
 #define kCMD_EXEC_TSHELL "--tshell"
 #define kCMD_NO_DRIVER_RTL8139 "--nortl8139"
+#define kCMD_NO_DRIVER_AC97 "--noac97"
 #define kCMD_DRIVER_BGA "--bga"
+#define kCMD_NOPCISSAN "--nopci"
 
 int32_t errno = 0;
 uint32_t os_mode = 1; // 0 - мало ОЗУ, 1 - обычный режим, 2 - режим повышенной производительности, 3 - сервер
 bool autotshell = false;
 bool rtl8139_load = true;
 bool bga_load = false;
+bool ac97_load = true;
 
 void kernelCMDHandler(char* cmd){
     qemu_log("[kCMD] '%s'",cmd);
@@ -37,6 +40,11 @@ void kernelCMDHandler(char* cmd){
             bootScreenChangeMode(1);
             qemu_log("[kCMD] The minimum operating mode for BootScreen is selected.");
             continue;
+        } else if (strcmpn(out[i],kCMD_NOPCISSAN)){
+            rtl8139_load = false;
+            changeScanToInit(false);
+            qemu_log("[kCMD] PCI devices will not be initialized at boot.");
+            continue;
         } else if (strcmpn(out[i],kCMD_EXEC_TSHELL)){
             autotshell = true;
             qemu_log("[kCMD] After loading the kernel, TShell will automatically start.");
@@ -49,13 +57,15 @@ void kernelCMDHandler(char* cmd){
             rtl8139_load = false;
             qemu_log("[kCMD] The Realtek RTL8139 driver will not be loaded on kernel startup.");
             continue;
-        }  else if (strcmpn(out[i],kCMD_BOOTSCREEN_LIGHT)){
+        } else if (strcmpn(out[i],kCMD_NO_DRIVER_AC97)){
+            ac97_load = false;
+            qemu_log("[kCMD] The AC97 driver will not be loaded when the operating system starts.");
+            continue;
+        } else if (strcmpn(out[i],kCMD_BOOTSCREEN_LIGHT)){
             bootScreenChangeTheme(1);
-            qemu_log("[kCMD] The Realtek RTL8139 driver will not be loaded on kernel startup.");
             continue;
         } else if (strcmpn(out[i],kCMD_BOOTSCREEN_DARK)){
             bootScreenChangeTheme(0);
-            qemu_log("[kCMD] The Realtek RTL8139 driver will not be loaded on kernel startup.");
             continue;
         }
     }
@@ -148,8 +158,15 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     bootScreenPaint("Determining the device's processor...");
     detect_cpu(1);
 
+<<<<<<< HEAD
     bootScreenPaint("Checking for AC'97 driver...");
     ac97_init();
+=======
+    if (ac97_load){
+        bootScreenPaint("Checking for AC'97 driver...");
+        ac97_init();
+    }
+>>>>>>> 29637b092d1b0ce612079e9a18022288f571465f
 
     tty_set_oem(false);
 

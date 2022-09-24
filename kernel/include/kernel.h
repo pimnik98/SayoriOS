@@ -8,6 +8,7 @@
 #include <libk/string.h>
 #include <libk/stdlib.h>
 #include <libk/list.h>
+#include <libk/fonts.h>
 #include <libk/math.h>
 
 #include <multyboot.h>

@@ -2,7 +2,11 @@
 
 pci_dev_t dev_zero = {0};
 uint32_t pci_size_map[100];
+bool scanToInit = true;
 
+void changeScanToInit(bool m){
+	scanToInit = m;
+}
 
 uint16_t pci_read_word(uint16_t bus, uint16_t slot, uint16_t func, uint16_t offset) {
 	uint64_t address;
@@ -197,6 +201,8 @@ void pci_init() {
 	pci_size_map[PCI_BAR5] = 4;
 	pci_size_map[PCI_INTERRUPT_LINE]	= 1;
 	pci_size_map[PCI_SECONDARY_BUS]		= 1;
-	checkAllBuses();
+	if (scanToInit){
+		checkAllBuses();
+	}
 	qemu_log("PCI installed");
 }
