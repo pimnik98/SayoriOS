@@ -23,6 +23,44 @@ uint16_t pci_read_word(uint16_t bus, uint16_t slot, uint16_t func, uint16_t offs
     return (tmp);
 }
 
+uint32_t pci_read_dword(uint16_t bus, uint16_t slot, uint16_t func, uint16_t offset) {
+	uint64_t address;
+    uint64_t lbus = (uint64_t)bus;
+    uint64_t lslot = (uint64_t)slot;
+    uint64_t lfunc = (uint64_t)func;
+    uint16_t tmp = 0;
+    address = (uint64_t)((lbus << 16) | (lslot << 11) |
+              (lfunc << 8) | (offset & 0xfc) | ((uint32_t)0x80000000));
+    outl(0xCF8, address);
+    return inl(0xCFC);
+}
+
+void pci_write_dword(uint16_t bus, uint16_t slot, uint16_t func, uint16_t offset, uint32_t value) {
+	uint64_t address;
+    uint64_t lbus = (uint64_t)bus;
+    uint64_t lslot = (uint64_t)slot;
+    uint64_t lfunc = (uint64_t)func;
+    uint16_t tmp = 0;
+    address = (uint64_t)((lbus << 16) | (lslot << 11) |
+              (lfunc << 8) | (offset & 0xfc) | ((uint32_t)0x80000000));
+    outl(0xCF8, address);
+	outl(0xCFC, value);
+}
+
+void pci_mmio_enable_master(uint16_t bus, uint16_t device, uint16_t function) {
+	uint32_t reg = pci_read_dword(bus, device, function, 0x04);
+	//reg |= 0x06;
+	reg |= 1 << 2;
+	pci_write_dword(bus, device, function, 0x04, reg);
+
+	qemu_log("[PCI] Enabled MMIO mastering at: BUS: %x; DEVICE: %d; FUNCTION: %d", bus, device, function);
+}
+
+void pci_io_enable_master(uint16_t bus, uint16_t device, uint16_t function) {
+	uint32_t reg = pci_read_dword(bus, device, function, 0x04);
+	reg |= 1 << 0;
+	pci_write_dword(bus, device, function, 0x04, reg);
+}
 
 uint16_t getVendorID(uint16_t bus, uint16_t device, uint16_t function) {
         uint32_t r0 = pci_read_word(bus,device,function,0);

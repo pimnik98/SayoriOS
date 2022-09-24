@@ -26,6 +26,7 @@
 #include <drivers/time.h>
 #include <drivers/net.h>
 #include <drivers/floppy.h>
+#include <drivers/experimental/ac97.h>
 
 #include <io/tui.h>
 #include <io/tty.h>

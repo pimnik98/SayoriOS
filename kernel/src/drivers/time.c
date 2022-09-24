@@ -48,7 +48,7 @@ uint32_t timer_get_ticks() {
 void timer_install() {
     register_interrupt_handler(32, &timer_handler);
     IRQ_clear_mask(32 - 32); // - 32 потому что после ремаппинга номера смещаются на 32
-    timer_set_frequency(50); // 50 герц
+    timer_set_frequency(500); // 500 герц, every 2 ms
     qemu_log("Timer installed");
 }
 

@@ -94,7 +94,7 @@ def create_iso():
     start_time = time.time()
 
     if sys.platform == "linux" or sys.platform == "linux2": 
-        os.system("grub-mkrescue -o \"SayoriOS.iso\" isodir/ -V SayoriOS")
+        os.system("grub-mkrescue -o \"SayoriOS.iso\" isodir/ --locale-directory=\"/usr/share/locale/\" --locales=\"ru\" -V SayoriOS")
     else:
         os.system("ubuntu run grub-mkrescue -o \"SayoriOS.iso\" isodir/ -V SayoriOS ")
     

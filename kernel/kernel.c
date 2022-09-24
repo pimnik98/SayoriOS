@@ -177,6 +177,66 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
         run_elf_file("/initrd/apps/tshell", 0, 0);
     }
 
+	char* fname = "/initrd/carol_tea_voice.wav";
+
+	if(vfs_exists(fname)) {
+		unsigned int vsize = vfs_get_size(fname);
+		tty_printf("File found! File size is: %d\n", vsize);
+
+        char* filedata = kheap_malloc(vsize);
+        memset(filedata, 0, vsize);
+
+        vfs_read(fname, 0, vsize, filedata);
+
+        unsigned int sound_blocks = ((uint32_t*)(filedata+4))[0]/(0xFFFF*2);
+        tty_printf("Sound blocks: %d\n", sound_blocks);
+
+        uint32_t sample_rate = ((uint32_t*)(filedata+24))[0];
+        tty_printf("Sample rate: %d\n", sample_rate);
+
+        uint32_t samples = ((uint32_t*)(filedata+40))[0];
+        tty_printf("Samples: %d\n", samples);
+
+        unsigned int sound_size = ((uint32_t*)(filedata+4))[0];
+        tty_printf("Sound blocks: %d\n", sound_size);
+
+        tty_printf("%c", filedata[0]);
+        tty_printf("%c", filedata[1]);
+        tty_printf("%c", filedata[2]);
+        tty_printf("%c\n", filedata[3]);
+
+        char* rawdata = filedata+44;
+
+        ac97_set_volume(100, 100);
+        ac97_set_sample_rate(sample_rate);
+        tty_printf("SETTING BDL\n");
+        if(samples > 0xFFFF*2) {
+            qemu_log("[AC'97] Multiload");
+            for(int i = 0; i < samples; i++) {
+                ac97_do_operate_bdl_once(rawdata+(0xFFFF*2*i), 0xFFFF);
+            }
+        }else{
+            qemu_log("[AC'97] One Block");
+            ac97_do_operate_bdl_once(rawdata, sound_size);
+        }
+        ac97_nabm_write_byte(0x1B, 0x2);
+        ac97_set_bdl_default();
+        ac97_write_lve();
+        tty_printf("PLAYING...\n");
+        ac97_play_sound();
+
+        ac97_debug();
+
+        for(int i = 0; i<32; i++) {
+            tty_printf("> %d ", ac97_nabm_read_byte(0x14));
+            sleep_ms(200);
+        }
+
+        kheap_free(filedata);
+	}else{
+		tty_printf("File to test was not found!\n");
+	}
+
     tty_printf("SayoriOS kernel version: %d.%d.%d, Built: %s\n\n",
         VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH,    // Версия ядра
         __TIMESTAMP__                                   // Время окончания компиляции ядра
