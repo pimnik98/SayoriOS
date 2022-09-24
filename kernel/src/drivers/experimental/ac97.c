@@ -120,7 +120,7 @@ void ac97_init(unsigned int memory) {
 	ac97_set_memory(memory);
 }
 
-void ac97_set_master_volume(unsigned char left, unsigned char right) {
+void ac97_set_volume(unsigned char left, unsigned char right) {
 	if(left>100) left = 100;
 	if(right>100) right = 100;
 	if(left<0) left = 0;
