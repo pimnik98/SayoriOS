@@ -86,4 +86,3 @@ uint32_t getHeightScreen();
 SynapseTTYInfo* get_tty_info();
 void tty_puts(const char str[]);
 void punch();
-void drawRect(int x,int y,int w, int h,int color);

@@ -143,6 +143,11 @@ def run_qemu_debug():
         qemu_command + """ -s -S"""
         )
 
+def clean_build():
+    files = glob.glob("bin/*.o") + glob.glob("bin/apps/*")
+    for i in files:
+        os.remove(i)
+
 if __name__ == "__main__":
     try:
         start_time = time.time()
@@ -184,6 +189,8 @@ if __name__ == "__main__":
                     run_kvm()
                 elif sys.argv[i] == "rund":
                     run_qemu_debug()
+                elif sys.argv[i] == "clean":
+                    clean_build()
                 else:
                     print(f"Ошибка, неизвестный аргумент: {sys.argv[i]}")
         print(f"Конец: {time.time() - start_time}")

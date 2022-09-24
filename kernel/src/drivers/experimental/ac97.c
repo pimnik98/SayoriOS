@@ -60,23 +60,6 @@ struct PCMVol {
 	unsigned int mute : 1;
 };
 
-<<<<<<< HEAD
-int nam_base;
-int nabm_base;
-
-void ac97_init() {
-	nam_base = pci_read(
-		pci_get_device(0x8086, 0x2415, -1),
-		PCI_BAR0
-	);
-	
-	nabm_base = pci_read(
-		pci_get_device(0x8086, 0x2415, -1),
-		PCI_BAR1
-	);
-
-	qemu_log("[AC'97] NAM: %x NABM: %x\n", nam_base, nabm_base);
-=======
 struct PCMVol_rev {
 	unsigned int mute : 1;
 	unsigned int zero2 : 1;
@@ -100,7 +83,6 @@ void ac97_nabm_write_dword(unsigned int field, unsigned int value) {outl(nabm_ba
 
 unsigned int ac97_read(unsigned int field) {
 	return pci_read(ac97_dev, field);
->>>>>>> 29637b092d1b0ce612079e9a18022288f571465f
 }
 
 void ac97_set_memory(unsigned int address) {
@@ -144,11 +126,15 @@ void ac97_set_volume(unsigned char left, unsigned char right) {
 	if(left<0) left = 0;
 	if(right<0) right = 0;
 
+	qemu_log("Requested: L%dR%d;", left, right);
+
 	left = 100 - left;
 	right = 100 - right;
 
 	left /= 31;
 	right /= 31;
+
+	qemu_log("Converted: L%dR%d;", left, right);
 
 	if(left==0 && right==0) {
 		ac97_nam_write_word(NAM_PCM_VOL, (unsigned short)(

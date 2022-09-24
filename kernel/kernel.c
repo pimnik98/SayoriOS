@@ -158,15 +158,10 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
     bootScreenPaint("Determining the device's processor...");
     detect_cpu(1);
 
-<<<<<<< HEAD
-    bootScreenPaint("Checking for AC'97 driver...");
-    ac97_init();
-=======
     if (ac97_load){
         bootScreenPaint("Checking for AC'97 driver...");
         ac97_init();
     }
->>>>>>> 29637b092d1b0ce612079e9a18022288f571465f
 
     tty_set_oem(false);
 
