@@ -42,7 +42,7 @@ var NAVTREEINDEX =
 "annotated.html",
 "d5/d29/structtss__entry.html#a0dacdc927bbcc6457b629ad88119cdc2",
 "da/dc7/structelf__hdr.html#ad5a78e4f6e8489d756f13809e3b5a7bf",
-"df/d49/cmos_8c.html#a5738eda2128338b29678313966279fb7"
+"df/d49/cmos_8c.html#a1e5f798ee4fd32e25464ff06fda11093"
 ];
 
 var SYNCONMSG = 'нажмите на выключить для синхронизации панелей';
