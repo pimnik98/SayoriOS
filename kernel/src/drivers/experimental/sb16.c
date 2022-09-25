@@ -13,6 +13,7 @@
 #include <drivers/experimental/sb16.h>
 #include <libk/string.h>
 #include <mem/mem.h>
+#include <mem/vmm.h>
 
 char can_play_audio = 0;
 char* driver_memory = (char*)LOAD;
