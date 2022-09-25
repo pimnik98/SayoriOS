@@ -1,50 +1,134 @@
-#include <kernel.h>
+/*!
+     \brief list_destroy
+      удаляет список из памяти                  
+ */
 
-
-// Инициализация списка
-void list_init(list_t* list) {
-    list->first = NULL; // Первого элемента пока нет 
-    list->count = 0;    // В списке нет элементов 
+void list_destroy(list_t * list) {
+	/* Free all of the contents of a list */
+	node_t * n = list->head;
+	while (n) {
+		free(n->value);
+		n = n->next;
+	}
 }
 
-
-// Добавить элемент в список
-void list_add(list_t* list, list_item_t* item) {
-    if (item->list == NULL) { // Если элемент не принадлежит никакому списку 
-       
-        // Если в списке есть первый элемент 
-        if (list->first){
-            item->list = list; // Помечаем элемент как принадлежащий данному списку 
-            item->next = list->first; // Следующий за ним элемент - это первый элемент 
-            item->prev = list->first->prev; // Делаем предыдущим элемент идущий перед первым 
-            item->prev->next = item; // Наш новый элемент - следующий для идущего перед первым 
-            item->next->prev = item; // и предыдущий для следующего за ним 
-        } else { // Если список пуст - новый элемент первый в списке 
-            item->list = list;  // Этот элемент в данном списке 
-            item->next = item;  // Он и следующий 
-            item->prev = item;  // и предыдущий для себя самого 
-            list->first = item; // а также первый в списке 
-        }
-
-        list->count++; // Увеличиваем число элементов списка 
-    }
+void list_free(list_t * list) {
+	/* Free the actual structure of a list */
+	node_t * n = list->head;
+	while (n) {
+		node_t * s = n->next;
+		free(n);
+		n = s;
+	}
 }
 
+void list_append(list_t * list, node_t * node) {
+	node->next = NULL;
+	/* Insert a node onto the end of a list */
+	if (!list->tail) {
+		list->head = node;
+	} else {
+		list->tail->next = node;
+		node->prev = list->tail;
+	}
+	list->tail = node;
+	list->length++;
+}
 
-// Удалить элемент из списка
-void list_remove(list_item_t* item) {
-    // Если данный элемент - первый в списке 
-    if (item->list->first == item) {
-        item->list->first = item->next; // Первым будет следующий элемент 
+void list_insert(list_t * list, void * item) {
+	/* Insert an item into a list */
+	node_t * node = malloc(sizeof(node_t));
+	node->value = item;
+	node->next  = NULL;
+	node->prev  = NULL;
+	list_append(list, node);
+}
 
-        // Если следующий опять наш элемент, тогда он был единственным в списке 
-        if (item->list->first == item) {
-            item->list->first = NULL; // и теперь список пуст 
-        }
-    }
-    
-    item->next->prev = item->prev; // Предыдущий для данного элемента будет предыдущим для следующего  за ним 
-    item->prev->next = item->next; // а следующим за предыдущим будет следующий для удаляемого элемента 
+list_t * list_create() {
+	/* создаёт новый спислк */
+	list_t * out = malloc(sizeof(list_t));
+	out->head = NULL;
+	out->tail = NULL;
+	out->length = 0;
+	return out;
+}
 
-    item->list->count--;
+node_t * list_find(list_t * list, void * value) {
+	foreach(item, list) {
+		if (item->value == value) {
+			return item;
+		}
+	}
+	return NULL;
+}
+
+void list_remove(list_t * list, size_t index) {
+	/* remove index from the list */
+	if (index > list->length) return;
+	size_t i = 0;
+	node_t * n = list->head;
+	while (i < index) {
+		n = n->next;
+		i++;
+	}
+	list_delete(list, n);
+}
+
+void list_delete(list_t * list, node_t * node) {
+	/* remove node from the list */
+	if (node == list->head) {
+		list->head = node->next;
+	}
+	if (node == list->tail) {
+		list->tail = node->prev;
+	}
+	if (node->prev) {
+		node->prev->next = node->next;
+	}
+	if (node->next) {
+		node->next->prev = node->prev;
+	}
+	list->length--;
+}
+
+node_t * list_pop(list_t * list) {
+	/* Remove and return the last value in the list
+	 * If you don't need it, you still probably want to free it!
+	 * Try free(list_pop(list)); !
+	 * */
+	if (!list->tail) return NULL;
+	node_t * out = list->tail;
+	list_delete(list, list->tail);
+	return out;
+}
+
+node_t * list_dequeue(list_t * list) {
+	if (!list->head) return NULL;
+	node_t * out = list->head;
+	list_delete(list, list->head);
+	return out;
+}
+
+list_t * list_copy(list_t * original) {
+	/* Create a new copy of original */
+	list_t * out = list_create();
+	node_t * node = original->head;
+	while (node) {
+		list_insert(out, node->value);
+	}
+	return out;
+}
+
+void list_merge(list_t * target, list_t * source) {
+	/* Destructively merges source into target */
+	if (target->tail) {
+		target->tail->next = source->head;
+	} else {
+		target->head = source->head;
+	}
+	if (source->tail) {
+		target->tail = source->tail;
+	}
+	target->length += source->length;
+	free(source);
 }
