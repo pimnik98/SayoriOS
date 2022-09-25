@@ -1,25 +1,35 @@
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
+#ifndef LIST_H
+#define LIST_H
 
+#include <kernel.h>
 
-typedef struct list_item list_item_t;
-
+typedef struct node {
+	struct node * next;
+	struct node * prev;
+	void * value;
+} node_t;
 
 typedef struct {
-    list_item_t*    first; // Указатель на первый элемент 
-    size_t          count; // Число элементов в списке 
+	node_t * head;
+	node_t * tail;
+	size_t length;
 } list_t;
 
+void list_destroy(list_t * list);
+void list_free(list_t * list);
+void list_append(list_t * list, node_t * item);
+void list_insert(list_t * list, void * item);
+list_t * list_create();
+node_t * list_find(list_t * list, void * value);
+void list_remove(list_t * list, size_t index);
+void list_delete(list_t * list, node_t * node);
+node_t * list_pop(list_t * list);
+node_t * list_dequeue(list_t * list);
+list_t * list_copy(list_t * original);
+void list_merge(list_t * target, list_t * source);
 
-typedef struct list_item {
-    list_item_t*    prev; // Предыдущий элемент списка 
-    list_item_t*    next; // Следующий элемент списка 
-    list_t*         list; // Список которому принадлежит данный элемент 
-} list_item_t;
+#define foreach(i, list) for (node_t * i = list->head; i != NULL; i = i->next)
 
-
-void list_init(list_t* list); //Инициализация списка 
-void list_add(list_t* list, list_item_t* item); // Добавление элемента в список 
-void list_remove(list_item_t* item); // Удаление элемента из списка 
+#endif
