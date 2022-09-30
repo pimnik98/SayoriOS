@@ -163,6 +163,9 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
         ac97_init();
     }
 
+    bootScreenPaint("Installing mouse...");
+    mouse_install();
+
     tty_set_oem(false);
 
     bootScreenClose(0x000000,0xFFFFFF);
@@ -177,7 +180,7 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
         run_elf_file("/initrd/apps/tshell", 0, 0);
     }
 
-	char* fname = "/initrd/carol_tea_voice.wav";
+	/*char* fname = "/initrd/carol_tea_voice.wav";
 
 	if(vfs_exists(fname)) {
 		unsigned int vsize = vfs_get_size(fname);
@@ -235,7 +238,7 @@ void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
         kheap_free(filedata);
 	}else{
 		tty_printf("File to test was not found!\n");
-	}
+	}*/
 
     tty_printf("SayoriOS kernel version: %d.%d.%d, Built: %s\n\n",
         VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH,    // Версия ядра

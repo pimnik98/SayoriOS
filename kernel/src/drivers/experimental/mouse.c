@@ -162,7 +162,10 @@ void mouse_install() {
     mouse_x = 0;
     mouse_y = 0;
 
+    qemu_log("[MOUSE]: Installing to IDT: %d", MOUSE_IDT_INDEX);
     register_interrupt_handler(MOUSE_IDT_INDEX, &mouse_handler);
     IRQ_clear_mask(MOUSE_IDT_INDEX - 32);
+    qemu_log("[MOUSE]: Cleared mask: %d", MOUSE_IDT_INDEX - 32);
+    
     mouse_ready = 1;
 }
