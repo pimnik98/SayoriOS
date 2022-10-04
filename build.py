@@ -5,7 +5,7 @@ MEMORY = "64M"
 
 _CC = "clang -target i386-pc-none-elf"
 LD = "ld.lld"
-CFLAGS = " -nostdlib -mno-sse -mno-avx -ggdb -O0 -ffreestanding -I kernel/include/ -c"
+CFLAGS = " -nostdlib -mno-sse -mno-avx -Wno-error -ggdb -O0 -ffreestanding -I kernel/include/ -c"
 
 CC = f"{_CC} {CFLAGS}"
 
@@ -94,7 +94,7 @@ def create_iso():
     start_time = time.time()
 
     if sys.platform == "linux" or sys.platform == "linux2": 
-        os.system("grub-mkrescue -o \"SayoriOS.iso\" isodir/ -V SayoriOS")
+        os.system("grub-mkrescue -o \"SayoriOS.iso\" isodir/ --locale-directory=\"/usr/share/locale/\" --locales=\"ru\" -V SayoriOS")
     else:
         os.system("ubuntu run grub-mkrescue -o \"SayoriOS.iso\" isodir/ -V SayoriOS ")
     
@@ -143,6 +143,11 @@ def run_qemu_debug():
         qemu_command + """ -s -S"""
         )
 
+def clean_build():
+    files = glob.glob("bin/*.o") + glob.glob("bin/apps/*")
+    for i in files:
+        os.remove(i)
+
 if __name__ == "__main__":
     try:
         start_time = time.time()
@@ -184,6 +189,8 @@ if __name__ == "__main__":
                     run_kvm()
                 elif sys.argv[i] == "rund":
                     run_qemu_debug()
+                elif sys.argv[i] == "clean":
+                    clean_build()
                 else:
                     print(f"Ошибка, неизвестный аргумент: {sys.argv[i]}")
         print(f"Конец: {time.time() - start_time}")

@@ -90,6 +90,8 @@ void mouse_handler(__attribute__((unused)) struct regs *r) {
         if (mouse_x > xmax) mouse_x = xmax;
         if (mouse_y > ymax) mouse_y = ymax;
     }
+
+    qemu_log("[MOUSE] Mouse X: %d; Mouse Y: %d;", mouse_x, mouse_y);
 }
 
 int mouse_getx() { return mouse_x; }
@@ -160,6 +162,10 @@ void mouse_install() {
     mouse_x = 0;
     mouse_y = 0;
 
+    qemu_log("[MOUSE]: Installing to IDT: %d", MOUSE_IDT_INDEX);
     register_interrupt_handler(MOUSE_IDT_INDEX, &mouse_handler);
+    IRQ_clear_mask(MOUSE_IDT_INDEX - 32);
+    qemu_log("[MOUSE]: Cleared mask: %d", MOUSE_IDT_INDEX - 32);
+    
     mouse_ready = 1;
 }

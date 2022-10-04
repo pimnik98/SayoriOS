@@ -8,6 +8,7 @@
 #include <libk/string.h>
 #include <libk/stdlib.h>
 #include <libk/list.h>
+#include <libk/fonts.h>
 #include <libk/math.h>
 
 #include <multyboot.h>
@@ -25,6 +26,7 @@
 #include <drivers/time.h>
 #include <drivers/net.h>
 #include <drivers/floppy.h>
+#include <drivers/experimental/ac97.h>
 
 #include <io/tui.h>
 #include <io/tty.h>

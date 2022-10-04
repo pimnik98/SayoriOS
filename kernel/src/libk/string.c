@@ -19,7 +19,7 @@ void *memcpy(void *destination, const void *source, size_t n){
     return destination;
 }
 
-void *memset(void *destination, int32_t c, size_t n){
+void *memset(void *destination, size_t c, size_t n){
     if (destination){
         char *tmp_mem = (char *)destination;
         while (n--)

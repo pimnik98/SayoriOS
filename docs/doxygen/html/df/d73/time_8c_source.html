@@ -136,7 +136,7 @@ $(document).ready(function(){initNavTree('df/d73/time_8c_source.html','../../');
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keywordtype">void</span> timer_install() {</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    register_interrupt_handler(32, &amp;timer_handler);</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    IRQ_clear_mask(32 - 32); <span class="comment">// - 32 потому что после ремаппинга номера смещаются на 32</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    timer_set_frequency(50); <span class="comment">// 50 герц</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    timer_set_frequency(500); <span class="comment">// 500 герц, every 2 ms</span></div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    qemu_log(<span class="stringliteral">&quot;Timer installed&quot;</span>);</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
@@ -167,7 +167,7 @@ $(document).ready(function(){initNavTree('df/d73/time_8c_source.html','../../');
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_79cdf04718782f286da113044bf76c98.html">drivers</a></li><li class="navelem"><b>time.c</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 22 Сен 2022 18:48:48. Создано системой
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 30 Сен 2022 10:12:16. Создано системой
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

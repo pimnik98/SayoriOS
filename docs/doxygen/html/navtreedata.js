@@ -40,9 +40,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d5/d29/structtss__entry.html#a6fe20edd854a1a653ae71ccf541a6b8b",
-"da/dd2/struct_r_t_l8139__dev.html#a2f182bcaa1853b7adbae3c7128ec14cf",
-"df/d49/cmos_8c.html#aea55b3847c288586e4a0350d92427369"
+"d5/d29/structtss__entry.html#a0dacdc927bbcc6457b629ad88119cdc2",
+"da/dc7/structelf__hdr.html#ad5a78e4f6e8489d756f13809e3b5a7bf",
+"df/d49/cmos_8c.html#a1e5f798ee4fd32e25464ff06fda11093"
 ];
 
 var SYNCONMSG = 'нажмите на выключить для синхронизации панелей';
