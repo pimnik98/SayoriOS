@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.2.15</span>
+   &#160;<span id="projectnumber">0.2.16</span>
    </div>
   </td>
  </tr>
@@ -143,13 +143,13 @@ $(document).ready(function(){initNavTree('d6/d4f/shell_8c_source.html','../../')
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;Найденные PCI-устройства:\n&quot;</span>);</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordflow">for</span>(uint32_t i = 0;i&lt;getCountDevices();i++){</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[%d] %s\n&quot;</span>,i,getDeviceName(i));</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; |--- Vendor: [%x] %s\n&quot;</span>,getDeviceInfo(i,DEVMGR_KEY_VENDORID),getVendorName(getDeviceInfo(i,DEVMGR_KEY_VENDORID)));</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; |--- Поставщик: [%x] %s\n&quot;</span>,getDeviceInfo(i,DEVMGR_KEY_VENDORID),getVendorName(getDeviceInfo(i,DEVMGR_KEY_VENDORID)));</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; |--- DeviceID: %x\n&quot;</span>,getDeviceInfo(i,DEVMGR_KEY_DEVICEID));</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; |--- Category:\n&quot;</span>);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; |--- Категория:\n&quot;</span>);</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; | |--- [%d] %s\n&quot;</span>,getDeviceInfo(i,DEVMGR_KEY_CLASS),getCategoryDevice(i,DEVMGR_KEY_CLASS));</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; |   |--- [%d] %s\n&quot;</span>,getDeviceInfo(i,DEVMGR_KEY_SUBCLASS),getCategoryDevice(i,DEVMGR_KEY_SUBCLASS));</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; |     |--- [%d] %s\n&quot;</span>,getDeviceInfo(i,DEVMGR_KEY_PROGIF),getCategoryDevice(i,DEVMGR_KEY_PROGIF));</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; |--- State: %x\n&quot;</span>,getDeviceInfo(i,DEVMGR_KEY_STATE));</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; |--- Статус: %x\n&quot;</span>,getDeviceInfo(i,DEVMGR_KEY_STATE));</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot; |--- CategoryID: %x\n&quot;</span>,getDeviceInfo(i,DEVMGR_KEY_CATEGORY));</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\n&quot;</span>);</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    }</div>
@@ -395,18 +395,19 @@ $(document).ready(function(){initNavTree('d6/d4f/shell_8c_source.html','../../')
 <div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160; </div>
 <div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160; </div>
 <div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;<span class="keywordtype">void</span> sysinfo(){</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;Системная информация:\n&quot;</span>);</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tOS:               SayoriOS v%d.%d.%d\n&quot;</span>,VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tДата сборки:      %s\n&quot;</span>,__TIMESTAMP__);</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tАрхитектура:      %s\n&quot;</span>,ARCH_TYPE);</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tПроцессор:        %s\n&quot;</span>,getNameBrand());</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tОЗУ:              %d kb\n&quot;</span>,getInstalledRam());</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tВидеоадаптер:     %s\n&quot;</span>,<span class="stringliteral">&quot;Basic video adapter (Unknown)&quot;</span>);</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tДисплей:          %s (%dx%d)\n&quot;</span>,<span class="stringliteral">&quot;(???)&quot;</span>,<a class="code" href="../../dc/d03/tty_8c.html#a28a3f902f557e9cf9c3dddd7cad609f0">getWidthScreen</a>(),<a class="code" href="../../dc/d03/tty_8c.html#adccb23d81da461b513fcc1a8d27b94a5">getHeightScreen</a>());</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tТики:             %d\n&quot;</span>,timer_get_ticks());</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;}</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160; </div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    drawASCIILogo(1);</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;Системная информация:\n&quot;</span>);</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tOS:               SayoriOS v%d.%d.%d\n&quot;</span>,VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tДата сборки:      %s\n&quot;</span>,__TIMESTAMP__);</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tАрхитектура:      %s\n&quot;</span>,ARCH_TYPE);</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tПроцессор:        %s\n&quot;</span>,getNameBrand());</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tОЗУ:              %d kb\n&quot;</span>,getInstalledRam());</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tВидеоадаптер:     %s\n&quot;</span>,<span class="stringliteral">&quot;Basic video adapter (Unknown)&quot;</span>);</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tДисплей:          %s (%dx%d)\n&quot;</span>,<span class="stringliteral">&quot;(???)&quot;</span>,<a class="code" href="../../dc/d03/tty_8c.html#a28a3f902f557e9cf9c3dddd7cad609f0">getWidthScreen</a>(),<a class="code" href="../../dc/d03/tty_8c.html#adccb23d81da461b513fcc1a8d27b94a5">getHeightScreen</a>());</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tТики:             %d\n&quot;</span>,timer_get_ticks());</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;}</div>
 <div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160; </div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aimaging_8h_html_a04189c5b1bd699efb92812c7dbcbe1db"><div class="ttname"><a href="../../d4/da7/imaging_8h.html#a04189c5b1bd699efb92812c7dbcbe1db">duke_get_image_metadata</a></div><div class="ttdeci">struct DukeImageMeta * duke_get_image_metadata(char *filename)</div><div class="ttdoc">Получает метаданные изображения Duke.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d6d/imaging_8c_source.html#l00029">imaging.c:29</a></div></div>
@@ -425,7 +426,7 @@ $(document).ready(function(){initNavTree('d6/d4f/shell_8c_source.html','../../')
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f684e8e1ebea567db7f673c0b997cee3.html">io</a></li><li class="navelem"><b>shell.c</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Вт 4 Окт 2022 10:02:29. Создано системой
+    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 5 Ноя 2022 14:33:49. Создано системой
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

@@ -107,13 +107,13 @@ uint32_t cmd_pcilist(uint32_t c,char* v[]){
     tty_printf("Найденные PCI-устройства:\n");
     for(uint32_t i = 0;i<getCountDevices();i++){
         tty_printf("[%d] %s\n",i,getDeviceName(i));
-        tty_printf(" |--- Vendor: [%x] %s\n",getDeviceInfo(i,DEVMGR_KEY_VENDORID),getVendorName(getDeviceInfo(i,DEVMGR_KEY_VENDORID)));
+        tty_printf(" |--- Поставщик: [%x] %s\n",getDeviceInfo(i,DEVMGR_KEY_VENDORID),getVendorName(getDeviceInfo(i,DEVMGR_KEY_VENDORID)));
         tty_printf(" |--- DeviceID: %x\n",getDeviceInfo(i,DEVMGR_KEY_DEVICEID));
-        tty_printf(" |--- Category:\n");
+        tty_printf(" |--- Категория:\n");
         tty_printf(" | |--- [%d] %s\n",getDeviceInfo(i,DEVMGR_KEY_CLASS),getCategoryDevice(i,DEVMGR_KEY_CLASS));
         tty_printf(" |   |--- [%d] %s\n",getDeviceInfo(i,DEVMGR_KEY_SUBCLASS),getCategoryDevice(i,DEVMGR_KEY_SUBCLASS));
         tty_printf(" |     |--- [%d] %s\n",getDeviceInfo(i,DEVMGR_KEY_PROGIF),getCategoryDevice(i,DEVMGR_KEY_PROGIF));
-        tty_printf(" |--- State: %x\n",getDeviceInfo(i,DEVMGR_KEY_STATE));
+        tty_printf(" |--- Статус: %x\n",getDeviceInfo(i,DEVMGR_KEY_STATE));
         tty_printf(" |--- CategoryID: %x\n",getDeviceInfo(i,DEVMGR_KEY_CATEGORY));
         tty_printf("\n");
     }
@@ -448,6 +448,7 @@ void shell() {
  * 
  */
 void sysinfo(){
+    drawASCIILogo(1);
     tty_printf("Системная информация:\n");
     tty_printf("\tOS:               SayoriOS v%d.%d.%d\n",VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
     tty_printf("\tДата сборки:      %s\n",__TIMESTAMP__);
