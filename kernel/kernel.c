@@ -77,6 +77,7 @@ void kernelCMDHandler(char* cmd){
 	\warning Отсутствует проверка multiboot!
 */
 void kernel(uint32_t magic_number, struct multiboot_info *mboot_info) {
+    drawASCIILogo(0);
     if (magic_number != MULTIBOOT_BOOTLOADER_MAGIC) {
         qemu_log("Invalid magic number: %x, valid = %x", magic_number, MULTIBOOT_BOOTLOADER_MAGIC);
     }
