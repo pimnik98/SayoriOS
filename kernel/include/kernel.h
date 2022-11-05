@@ -44,7 +44,7 @@
 
 #define VERSION_MAJOR   0       // Версия ядра
 #define VERSION_MINOR   2       // Пре-релиз 
-#define VERSION_PATCH   15       // Патч
+#define VERSION_PATCH   16       // Патч
 #define ARCH_TYPE       "i386"   // Архитектура
 
 #define COLOR_TEXT      VESA_LIGHT_GREY
