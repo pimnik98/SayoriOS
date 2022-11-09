@@ -1,0 +1,28 @@
+var text__framebuffer_8c =
+[
+    [ "byte2hex_str", "d3/d22/text__framebuffer_8c.html#a02534d26584a97a766dd4bc4dc57413a", null ],
+    [ "clear", "d3/d22/text__framebuffer_8c.html#ae683fe63c33c388e9ba1c6392dd477eb", null ],
+    [ "debug_msg", "d3/d22/text__framebuffer_8c.html#a92135bc36834679c2e1cc5961844fa32", null ],
+    [ "dec2dec_str", "d3/d22/text__framebuffer_8c.html#a1117338741edd20324a57972b61d3ed6", null ],
+    [ "dec2hex_str", "d3/d22/text__framebuffer_8c.html#ad912732cfa9c0382b178ee23b0f92fe7", null ],
+    [ "move_cursor", "d3/d22/text__framebuffer_8c.html#a30f902ac982f8557b527ba9214cadad2", null ],
+    [ "print_byte", "d3/d22/text__framebuffer_8c.html#a0603681fbcc5967c6332ef298ed5ba92", null ],
+    [ "print_dec_value", "d3/d22/text__framebuffer_8c.html#a7521085973d9ad337c180082ed5f52bd", null ],
+    [ "print_dump", "d3/d22/text__framebuffer_8c.html#a5971424e96d4a37a770a17e69c51139a", null ],
+    [ "print_hex_value", "d3/d22/text__framebuffer_8c.html#a4b7b515b58690bbfed82a14854e69755", null ],
+    [ "print_text", "d3/d22/text__framebuffer_8c.html#ae8e3dd8e8d20f14d8521c893acaa69b2", null ],
+    [ "put_char", "d3/d22/text__framebuffer_8c.html#af222ebbc29d68d52a0e2664968e09108", null ],
+    [ "set_bkground_color", "d3/d22/text__framebuffer_8c.html#aa9f613b8d2dc928fe81c807c1d1dbae6", null ],
+    [ "set_text_color", "d3/d22/text__framebuffer_8c.html#a46ab5b3b65bcbf9322299851feeeaca2", null ],
+    [ "set_video_vaddr", "d3/d22/text__framebuffer_8c.html#afebacb8a2ad229f417630f983e33f244", null ],
+    [ "background_color", "d3/d22/text__framebuffer_8c.html#a61dd38e056e5087e5be4aab5bc6ad1ba", null ],
+    [ "cur_x", "d3/d22/text__framebuffer_8c.html#a614e21210283a0349e7d0f3664cb4fcc", null ],
+    [ "cur_y", "d3/d22/text__framebuffer_8c.html#a750f0a088d07af56503b05e9ec44fc0d", null ],
+    [ "default_background_color", "d3/d22/text__framebuffer_8c.html#a8240e3f0a060f6f38eedc7ce3576f775", null ],
+    [ "default_text_color", "d3/d22/text__framebuffer_8c.html#a5d2f1346f651f86389b898ec1f903398", null ],
+    [ "height", "d3/d22/text__framebuffer_8c.html#adcf201a8aabf55cb352ec05331242594", null ],
+    [ "hex_table", "d3/d22/text__framebuffer_8c.html#ae337764e0deff55521c57f8803f9b846", null ],
+    [ "text_color", "d3/d22/text__framebuffer_8c.html#a24309a6022ea2f7cbc1413c947a5bf50", null ],
+    [ "video_memory", "d3/d22/text__framebuffer_8c.html#a7d994144cbc9650a9811f2f27635f25c", null ],
+    [ "width", "d3/d22/text__framebuffer_8c.html#a09a2a45f731b02946ff6d3cd15c1a476", null ]
+];

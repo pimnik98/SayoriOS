@@ -1,0 +1,637 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Файл kernel/src/sys/memory.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.0</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('df/dd5/memory_8c.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Функции</a> &#124;
+<a href="#var-members">Переменные</a>  </div>
+  <div class="headertitle">
+<div class="title">Файл memory.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Менеджер памяти  
+<a href="#details">Подробнее...</a></p>
+<div class="textblock"><code>#include &quot;sys/memory.h&quot;</code><br />
+<code>#include &quot;drv/text_framebuffer.h&quot;</code><br />
+<code>#include &quot;io/ports.h&quot;</code><br />
+</div>
+<p><a href="../../df/dd5/memory_8c_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Функции</h2></td></tr>
+<tr class="memitem:a22481ed8afdb6463d74ba89f7500bd19"><td class="memItemLeft" align="right" valign="top"><a id="a22481ed8afdb6463d74ba89f7500bd19"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a22481ed8afdb6463d74ba89f7500bd19">switch_page_mode</a> (void)</td></tr>
+<tr class="memdesc:a22481ed8afdb6463d74ba89f7500bd19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Переключение режима страничной памяти <br /></td></tr>
+<tr class="separator:a22481ed8afdb6463d74ba89f7500bd19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3feee7ce23627a6a93b3f3f89eac783a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a3feee7ce23627a6a93b3f3f89eac783a">check_memory_map</a> (<a class="el" href="../../de/d47/structmemory__map__entry.html">memory_map_entry_t</a> *mmap_addr, uint32_t length)</td></tr>
+<tr class="memdesc:a3feee7ce23627a6a93b3f3f89eac783a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверка карты памяти  <a href="../../df/dd5/memory_8c.html#a3feee7ce23627a6a93b3f3f89eac783a">Подробнее...</a><br /></td></tr>
+<tr class="separator:a3feee7ce23627a6a93b3f3f89eac783a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d00c4c7f2a02f9a8f8123b779792042"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a4d00c4c7f2a02f9a8f8123b779792042">temp_map_page</a> (physaddr_t addr)</td></tr>
+<tr class="memdesc:a4d00c4c7f2a02f9a8f8123b779792042"><td class="mdescLeft">&#160;</td><td class="mdescRight">???  <a href="../../df/dd5/memory_8c.html#a4d00c4c7f2a02f9a8f8123b779792042">Подробнее...</a><br /></td></tr>
+<tr class="separator:a4d00c4c7f2a02f9a8f8123b779792042"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9509c7689259e6105be055bf2b694a15"><td class="memItemLeft" align="right" valign="top">physmemory_pages_block_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a9509c7689259e6105be055bf2b694a15">get_free_block</a> (physaddr_t paddr)</td></tr>
+<tr class="memdesc:a9509c7689259e6105be055bf2b694a15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить ближайщий свободный блок  <a href="../../df/dd5/memory_8c.html#a9509c7689259e6105be055bf2b694a15">Подробнее...</a><br /></td></tr>
+<tr class="separator:a9509c7689259e6105be055bf2b694a15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b52ce401e5ce57e85648157c5e70a11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a4b52ce401e5ce57e85648157c5e70a11">free_phys_pages</a> (physaddr_t base, size_t count)</td></tr>
+<tr class="memdesc:a4b52ce401e5ce57e85648157c5e70a11"><td class="mdescLeft">&#160;</td><td class="mdescRight">???  <a href="../../df/dd5/memory_8c.html#a4b52ce401e5ce57e85648157c5e70a11">Подробнее...</a><br /></td></tr>
+<tr class="separator:a4b52ce401e5ce57e85648157c5e70a11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa68e19c97170e149989b72272236928a"><td class="memItemLeft" align="right" valign="top">physaddr_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#aa68e19c97170e149989b72272236928a">alloc_phys_pages</a> (size_t count)</td></tr>
+<tr class="memdesc:aa68e19c97170e149989b72272236928a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Выделить страницу в физической памяти  <a href="../../df/dd5/memory_8c.html#aa68e19c97170e149989b72272236928a">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa68e19c97170e149989b72272236928a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22ada60fd8cc82839a79cb23b627c710"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a22ada60fd8cc82839a79cb23b627c710">init_memory_manager</a> (uint32_t stack)</td></tr>
+<tr class="memdesc:a22ada60fd8cc82839a79cb23b627c710"><td class="mdescLeft">&#160;</td><td class="mdescRight">Инициализация менеджера памяти  <a href="../../df/dd5/memory_8c.html#a22ada60fd8cc82839a79cb23b627c710">Подробнее...</a><br /></td></tr>
+<tr class="separator:a22ada60fd8cc82839a79cb23b627c710"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a759248d60b7fbd98fb4c11251591db95"><td class="memItemLeft" align="right" valign="top"><a id="a759248d60b7fbd98fb4c11251591db95"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>vmm_alloc_page</b> (virtual_addr_t vaddr)</td></tr>
+<tr class="separator:a759248d60b7fbd98fb4c11251591db95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a156fa48873ddea3b28e8223d1747bc58"><td class="memItemLeft" align="right" valign="top"><a id="a156fa48873ddea3b28e8223d1747bc58"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>vmm_free_page</b> (virtual_addr_t vaddr)</td></tr>
+<tr class="separator:a156fa48873ddea3b28e8223d1747bc58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7853eaef3d9ceb8cc4bd6e1941c14ec"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#ad7853eaef3d9ceb8cc4bd6e1941c14ec">map_pages</a> (physaddr_t page_dir, void *vaddr, physaddr_t paddr, size_t count, uint32_t flags)</td></tr>
+<tr class="memdesc:ad7853eaef3d9ceb8cc4bd6e1941c14ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">???  <a href="../../df/dd5/memory_8c.html#ad7853eaef3d9ceb8cc4bd6e1941c14ec">Подробнее...</a><br /></td></tr>
+<tr class="separator:ad7853eaef3d9ceb8cc4bd6e1941c14ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2d465bbba160eacb1da00b1f307f059"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#aa2d465bbba160eacb1da00b1f307f059">kmalloc_common</a> (size_t size, bool align)</td></tr>
+<tr class="memdesc:aa2d465bbba160eacb1da00b1f307f059"><td class="mdescLeft">&#160;</td><td class="mdescRight">Выделение памяти  <a href="../../df/dd5/memory_8c.html#aa2d465bbba160eacb1da00b1f307f059">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa2d465bbba160eacb1da00b1f307f059"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f52d7c56b7d67dc2f96b2e93dfdc7be"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a> (size_t size)</td></tr>
+<tr class="memdesc:a5f52d7c56b7d67dc2f96b2e93dfdc7be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Выделение памяти  <a href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">Подробнее...</a><br /></td></tr>
+<tr class="separator:a5f52d7c56b7d67dc2f96b2e93dfdc7be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a318550772b51044488252d1dad14469f"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a318550772b51044488252d1dad14469f">kmalloc_a</a> (size_t size)</td></tr>
+<tr class="memdesc:a318550772b51044488252d1dad14469f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Выделение памяти  <a href="../../df/dd5/memory_8c.html#a318550772b51044488252d1dad14469f">Подробнее...</a><br /></td></tr>
+<tr class="separator:a318550772b51044488252d1dad14469f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed506f8be19e508533954916a0be0b3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a> (void *vaddr)</td></tr>
+<tr class="memdesc:aed506f8be19e508533954916a0be0b3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Освобождение памяти  <a href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">Подробнее...</a><br /></td></tr>
+<tr class="separator:aed506f8be19e508533954916a0be0b3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bf3165f89335118ba3ff70e5cf71c93"><td class="memItemLeft" align="right" valign="top">physaddr_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a5bf3165f89335118ba3ff70e5cf71c93">get_kernel_dir</a> (void)</td></tr>
+<tr class="memdesc:a5bf3165f89335118ba3ff70e5cf71c93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получение точки входа ядра  <a href="../../df/dd5/memory_8c.html#a5bf3165f89335118ba3ff70e5cf71c93">Подробнее...</a><br /></td></tr>
+<tr class="separator:a5bf3165f89335118ba3ff70e5cf71c93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67e65412410d23cb46ec9b464a4b7027"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a67e65412410d23cb46ec9b464a4b7027">getInstalledRam</a> ()</td></tr>
+<tr class="memdesc:a67e65412410d23cb46ec9b464a4b7027"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получение установленого количества ОЗУ  <a href="../../df/dd5/memory_8c.html#a67e65412410d23cb46ec9b464a4b7027">Подробнее...</a><br /></td></tr>
+<tr class="separator:a67e65412410d23cb46ec9b464a4b7027"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Переменные</h2></td></tr>
+<tr class="memitem:aeda7d5b785cbbded0be429b41b7a0497"><td class="memItemLeft" align="right" valign="top"><a id="aeda7d5b785cbbded0be429b41b7a0497"></a>
+physaddr_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#aeda7d5b785cbbded0be429b41b7a0497">kernel_page_dir</a> = KERNEL_PAGE_TABLE</td></tr>
+<tr class="memdesc:aeda7d5b785cbbded0be429b41b7a0497"><td class="mdescLeft">&#160;</td><td class="mdescRight">Адрес каталога страницы ядра <br /></td></tr>
+<tr class="separator:aeda7d5b785cbbded0be429b41b7a0497"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b897fd36bcfb3504d5ac0040beb55e8"><td class="memItemLeft" align="right" valign="top"><a id="a9b897fd36bcfb3504d5ac0040beb55e8"></a>
+<a class="el" href="../../de/d47/structmemory__map__entry.html">memory_map_entry_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a9b897fd36bcfb3504d5ac0040beb55e8">mentry</a> = 0</td></tr>
+<tr class="memdesc:a9b897fd36bcfb3504d5ac0040beb55e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">... <br /></td></tr>
+<tr class="separator:a9b897fd36bcfb3504d5ac0040beb55e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4e08ae66c76c99b2044d310fba61537"><td class="memItemLeft" align="right" valign="top"><a id="ae4e08ae66c76c99b2044d310fba61537"></a>
+uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#ae4e08ae66c76c99b2044d310fba61537">phys_memory_size</a> = 0</td></tr>
+<tr class="memdesc:ae4e08ae66c76c99b2044d310fba61537"><td class="mdescLeft">&#160;</td><td class="mdescRight">Всего ОЗУ <br /></td></tr>
+<tr class="separator:ae4e08ae66c76c99b2044d310fba61537"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ab976103be4ff5e6b5581c3ff0492cb"><td class="memItemLeft" align="right" valign="top"><a id="a6ab976103be4ff5e6b5581c3ff0492cb"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a6ab976103be4ff5e6b5581c3ff0492cb">free_pages_count</a> = 0</td></tr>
+<tr class="memdesc:a6ab976103be4ff5e6b5581c3ff0492cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Количество свободных страниц <br /></td></tr>
+<tr class="separator:a6ab976103be4ff5e6b5581c3ff0492cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6fc14b7e777bcbae824688eefa21deb"><td class="memItemLeft" align="right" valign="top"><a id="ad6fc14b7e777bcbae824688eefa21deb"></a>
+physaddr_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#ad6fc14b7e777bcbae824688eefa21deb">free_phys_memory_pointer</a> = -1</td></tr>
+<tr class="memdesc:ad6fc14b7e777bcbae824688eefa21deb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Свободная ячейка ОЗУ <br /></td></tr>
+<tr class="separator:ad6fc14b7e777bcbae824688eefa21deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2832551d1020699d893eafaa0150702f"><td class="memItemLeft" align="right" valign="top"><a id="a2832551d1020699d893eafaa0150702f"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a2832551d1020699d893eafaa0150702f">kernel_stack</a> = 0</td></tr>
+<tr class="memdesc:a2832551d1020699d893eafaa0150702f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Точка входа <br /></td></tr>
+<tr class="separator:a2832551d1020699d893eafaa0150702f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa720d7b457a80ef9f27d644a51ad157"><td class="memItemLeft" align="right" valign="top"><a id="afa720d7b457a80ef9f27d644a51ad157"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#afa720d7b457a80ef9f27d644a51ad157">memory_size</a> = 0</td></tr>
+<tr class="memdesc:afa720d7b457a80ef9f27d644a51ad157"><td class="mdescLeft">&#160;</td><td class="mdescRight">... <br /></td></tr>
+<tr class="separator:afa720d7b457a80ef9f27d644a51ad157"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab18276b758b671778bcef772dee38c85"><td class="memItemLeft" align="right" valign="top"><a id="ab18276b758b671778bcef772dee38c85"></a>
+heap_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#ab18276b758b671778bcef772dee38c85">kheap</a></td></tr>
+<tr class="memdesc:ab18276b758b671778bcef772dee38c85"><td class="mdescLeft">&#160;</td><td class="mdescRight">... <br /></td></tr>
+<tr class="separator:ab18276b758b671778bcef772dee38c85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab6cb87c9288025ebb21a94e779e658b"><td class="memItemLeft" align="right" valign="top"><a id="aab6cb87c9288025ebb21a94e779e658b"></a>
+mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#aab6cb87c9288025ebb21a94e779e658b">phys_memory_mutex</a></td></tr>
+<tr class="memdesc:aab6cb87c9288025ebb21a94e779e658b"><td class="mdescLeft">&#160;</td><td class="mdescRight">... <br /></td></tr>
+<tr class="separator:aab6cb87c9288025ebb21a94e779e658b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Менеджер памяти </p>
+<dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (nikita.piminoff@yandex,ru) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.3.0 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2022-10-01 </dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022 </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a></p>
+</div><h2 class="groupheader">Функции</h2>
+<a id="aa68e19c97170e149989b72272236928a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa68e19c97170e149989b72272236928a">&#9670;&nbsp;</a></span>alloc_phys_pages()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">physaddr_t alloc_phys_pages </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>count</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Выделить страницу в физической памяти </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size_t</td><td>count - Количество</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>physaddr_t - Адрес </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00259">259</a></p>
+
+</div>
+</div>
+<a id="a3feee7ce23627a6a93b3f3f89eac783a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3feee7ce23627a6a93b3f3f89eac783a">&#9670;&nbsp;</a></span>check_memory_map()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void check_memory_map </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../de/d47/structmemory__map__entry.html">memory_map_entry_t</a> *&#160;</td>
+          <td class="paramname"><em>mmap_addr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>length</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Проверка карты памяти </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">memory_map_entry_t*</td><td>mmap_addr - Карта </td></tr>
+    <tr><td class="paramname">uint32_t</td><td>length - Длина </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00081">81</a></p>
+
+</div>
+</div>
+<a id="a4b52ce401e5ce57e85648157c5e70a11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b52ce401e5ce57e85648157c5e70a11">&#9670;&nbsp;</a></span>free_phys_pages()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void free_phys_pages </td>
+          <td>(</td>
+          <td class="paramtype">physaddr_t&#160;</td>
+          <td class="paramname"><em>base</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>??? </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">physaddr_t</td><td>base - Карта </td></tr>
+    <tr><td class="paramname">size_t</td><td>count - Количество </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00130">130</a></p>
+
+</div>
+</div>
+<a id="a9509c7689259e6105be055bf2b694a15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9509c7689259e6105be055bf2b694a15">&#9670;&nbsp;</a></span>get_free_block()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">physmemory_pages_block_t* get_free_block </td>
+          <td>(</td>
+          <td class="paramtype">physaddr_t&#160;</td>
+          <td class="paramname"><em>paddr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить ближайщий свободный блок </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">physaddr_t</td><td>addr - Карта</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>physmemory_pages_block_t* - Блок </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00118">118</a></p>
+
+</div>
+</div>
+<a id="a5bf3165f89335118ba3ff70e5cf71c93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bf3165f89335118ba3ff70e5cf71c93">&#9670;&nbsp;</a></span>get_kernel_dir()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">physaddr_t get_kernel_dir </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получение точки входа ядра </p>
+<dl class="section return"><dt>Возвращает</dt><dd>physaddr_t - Получить точку входа ядра </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00573">573</a></p>
+
+</div>
+</div>
+<a id="a67e65412410d23cb46ec9b464a4b7027"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67e65412410d23cb46ec9b464a4b7027">&#9670;&nbsp;</a></span>getInstalledRam()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t getInstalledRam </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получение установленого количества ОЗУ </p>
+<dl class="section return"><dt>Возвращает</dt><dd>uint64_t - Кол-во установленной ОЗУ </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00582">582</a></p>
+
+</div>
+</div>
+<a id="a22ada60fd8cc82839a79cb23b627c710"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22ada60fd8cc82839a79cb23b627c710">&#9670;&nbsp;</a></span>init_memory_manager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void init_memory_manager </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>stack</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Инициализация менеджера памяти </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint32_t</td><td>stack - Стек </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00345">345</a></p>
+
+</div>
+</div>
+<a id="aed506f8be19e508533954916a0be0b3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed506f8be19e508533954916a0be0b3a">&#9670;&nbsp;</a></span>kfree()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kfree </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>vaddr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Освобождение памяти </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">void*</td><td>vaddr - Адрес или объект </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00534">534</a></p>
+
+</div>
+</div>
+<a id="a5f52d7c56b7d67dc2f96b2e93dfdc7be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f52d7c56b7d67dc2f96b2e93dfdc7be">&#9670;&nbsp;</a></span>kmalloc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* kmalloc </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Выделение памяти </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size_t</td><td>size - Размер</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>void* - ??? </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00514">514</a></p>
+
+</div>
+</div>
+<a id="a318550772b51044488252d1dad14469f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a318550772b51044488252d1dad14469f">&#9670;&nbsp;</a></span>kmalloc_a()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* kmalloc_a </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Выделение памяти </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size_t</td><td>size - Размер</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>void* - ??? </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00525">525</a></p>
+
+</div>
+</div>
+<a id="aa2d465bbba160eacb1da00b1f307f059"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2d465bbba160eacb1da00b1f307f059">&#9670;&nbsp;</a></span>kmalloc_common()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* kmalloc_common </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>align</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Выделение памяти </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size_t</td><td>size - Размер </td></tr>
+    <tr><td class="paramname">bool</td><td>align - Выравнивание</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>void* - ??? </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00472">472</a></p>
+
+</div>
+</div>
+<a id="ad7853eaef3d9ceb8cc4bd6e1941c14ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7853eaef3d9ceb8cc4bd6e1941c14ec">&#9670;&nbsp;</a></span>map_pages()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t map_pages </td>
+          <td>(</td>
+          <td class="paramtype">physaddr_t&#160;</td>
+          <td class="paramname"><em>page_dir</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>vaddr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">physaddr_t&#160;</td>
+          <td class="paramname"><em>paddr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>??? </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">physaddr_t</td><td>page_dir - Каталог страниц </td></tr>
+    <tr><td class="paramname">void*</td><td>vaddr - Стартовый виртуальный адрес </td></tr>
+    <tr><td class="paramname">physaddr_t</td><td>paddr - Начальный физический адрес </td></tr>
+    <tr><td class="paramname">size_t</td><td>count - Размер памяти </td></tr>
+    <tr><td class="paramname">uint32_t</td><td>flags - Флаги страницы</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>uint8_t - Адрес </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00414">414</a></p>
+
+</div>
+</div>
+<a id="a4d00c4c7f2a02f9a8f8123b779792042"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d00c4c7f2a02f9a8f8123b779792042">&#9670;&nbsp;</a></span>temp_map_page()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void temp_map_page </td>
+          <td>(</td>
+          <td class="paramtype">physaddr_t&#160;</td>
+          <td class="paramname"><em>addr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>??? </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">physaddr_t</td><td>addr - Карта </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00101">101</a></p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../df/dd5/memory_8c.html">memory.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 13:03:39. Создано системой
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+  </ul>
+</div>
+</body>
+</html>

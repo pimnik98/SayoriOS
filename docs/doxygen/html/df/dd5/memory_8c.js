@@ -1,0 +1,28 @@
+var memory_8c =
+[
+    [ "alloc_phys_pages", "df/dd5/memory_8c.html#aa68e19c97170e149989b72272236928a", null ],
+    [ "check_memory_map", "df/dd5/memory_8c.html#a3feee7ce23627a6a93b3f3f89eac783a", null ],
+    [ "free_phys_pages", "df/dd5/memory_8c.html#a4b52ce401e5ce57e85648157c5e70a11", null ],
+    [ "get_free_block", "df/dd5/memory_8c.html#a9509c7689259e6105be055bf2b694a15", null ],
+    [ "get_kernel_dir", "df/dd5/memory_8c.html#a5bf3165f89335118ba3ff70e5cf71c93", null ],
+    [ "getInstalledRam", "df/dd5/memory_8c.html#a67e65412410d23cb46ec9b464a4b7027", null ],
+    [ "init_memory_manager", "df/dd5/memory_8c.html#a22ada60fd8cc82839a79cb23b627c710", null ],
+    [ "kfree", "df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a", null ],
+    [ "kmalloc", "df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be", null ],
+    [ "kmalloc_a", "df/dd5/memory_8c.html#a318550772b51044488252d1dad14469f", null ],
+    [ "kmalloc_common", "df/dd5/memory_8c.html#aa2d465bbba160eacb1da00b1f307f059", null ],
+    [ "map_pages", "df/dd5/memory_8c.html#ad7853eaef3d9ceb8cc4bd6e1941c14ec", null ],
+    [ "switch_page_mode", "df/dd5/memory_8c.html#a22481ed8afdb6463d74ba89f7500bd19", null ],
+    [ "temp_map_page", "df/dd5/memory_8c.html#a4d00c4c7f2a02f9a8f8123b779792042", null ],
+    [ "vmm_alloc_page", "df/dd5/memory_8c.html#a759248d60b7fbd98fb4c11251591db95", null ],
+    [ "vmm_free_page", "df/dd5/memory_8c.html#a156fa48873ddea3b28e8223d1747bc58", null ],
+    [ "free_pages_count", "df/dd5/memory_8c.html#a6ab976103be4ff5e6b5581c3ff0492cb", null ],
+    [ "free_phys_memory_pointer", "df/dd5/memory_8c.html#ad6fc14b7e777bcbae824688eefa21deb", null ],
+    [ "kernel_page_dir", "df/dd5/memory_8c.html#aeda7d5b785cbbded0be429b41b7a0497", null ],
+    [ "kernel_stack", "df/dd5/memory_8c.html#a2832551d1020699d893eafaa0150702f", null ],
+    [ "kheap", "df/dd5/memory_8c.html#ab18276b758b671778bcef772dee38c85", null ],
+    [ "memory_size", "df/dd5/memory_8c.html#afa720d7b457a80ef9f27d644a51ad157", null ],
+    [ "mentry", "df/dd5/memory_8c.html#a9b897fd36bcfb3504d5ac0040beb55e8", null ],
+    [ "phys_memory_mutex", "df/dd5/memory_8c.html#aab6cb87c9288025ebb21a94e779e658b", null ],
+    [ "phys_memory_size", "df/dd5/memory_8c.html#ae4e08ae66c76c99b2044d310fba61537", null ]
+];

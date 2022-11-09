@@ -1,0 +1,554 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Файл kernel/src/drv/text_framebuffer.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.0</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d3/d22/text__framebuffer_8c.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Функции</a> &#124;
+<a href="#var-members">Переменные</a>  </div>
+  <div class="headertitle">
+<div class="title">Файл text_framebuffer.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Драйвер виртуального текстового буфера  
+<a href="#details">Подробнее...</a></p>
+<div class="textblock"><code>#include &quot;drv/text_framebuffer.h&quot;</code><br />
+</div>
+<p><a href="../../d3/d22/text__framebuffer_8c_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Функции</h2></td></tr>
+<tr class="memitem:a30f902ac982f8557b527ba9214cadad2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a30f902ac982f8557b527ba9214cadad2">move_cursor</a> (uint8_t x, uint8_t y)</td></tr>
+<tr class="memdesc:a30f902ac982f8557b527ba9214cadad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить позицию курсора по X Y.  <a href="../../d3/d22/text__framebuffer_8c.html#a30f902ac982f8557b527ba9214cadad2">Подробнее...</a><br /></td></tr>
+<tr class="separator:a30f902ac982f8557b527ba9214cadad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9f613b8d2dc928fe81c807c1d1dbae6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#aa9f613b8d2dc928fe81c807c1d1dbae6">set_bkground_color</a> (uint8_t color)</td></tr>
+<tr class="memdesc:aa9f613b8d2dc928fe81c807c1d1dbae6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить цвет заднего фона  <a href="../../d3/d22/text__framebuffer_8c.html#aa9f613b8d2dc928fe81c807c1d1dbae6">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa9f613b8d2dc928fe81c807c1d1dbae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46ab5b3b65bcbf9322299851feeeaca2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a46ab5b3b65bcbf9322299851feeeaca2">set_text_color</a> (uint8_t color)</td></tr>
+<tr class="memdesc:a46ab5b3b65bcbf9322299851feeeaca2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить цвет текста  <a href="../../d3/d22/text__framebuffer_8c.html#a46ab5b3b65bcbf9322299851feeeaca2">Подробнее...</a><br /></td></tr>
+<tr class="separator:a46ab5b3b65bcbf9322299851feeeaca2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af222ebbc29d68d52a0e2664968e09108"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#af222ebbc29d68d52a0e2664968e09108">put_char</a> (char c)</td></tr>
+<tr class="memdesc:af222ebbc29d68d52a0e2664968e09108"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вывести символ на экран  <a href="../../d3/d22/text__framebuffer_8c.html#af222ebbc29d68d52a0e2664968e09108">Подробнее...</a><br /></td></tr>
+<tr class="separator:af222ebbc29d68d52a0e2664968e09108"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae683fe63c33c388e9ba1c6392dd477eb"><td class="memItemLeft" align="right" valign="top"><a id="ae683fe63c33c388e9ba1c6392dd477eb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#ae683fe63c33c388e9ba1c6392dd477eb">clear</a> (void)</td></tr>
+<tr class="memdesc:ae683fe63c33c388e9ba1c6392dd477eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отчистка экрана <br /></td></tr>
+<tr class="separator:ae683fe63c33c388e9ba1c6392dd477eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8e3dd8e8d20f14d8521c893acaa69b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#ae8e3dd8e8d20f14d8521c893acaa69b2">print_text</a> (char *s)</td></tr>
+<tr class="memdesc:ae8e3dd8e8d20f14d8521c893acaa69b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Печать текста на экран  <a href="../../d3/d22/text__framebuffer_8c.html#ae8e3dd8e8d20f14d8521c893acaa69b2">Подробнее...</a><br /></td></tr>
+<tr class="separator:ae8e3dd8e8d20f14d8521c893acaa69b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad912732cfa9c0382b178ee23b0f92fe7"><td class="memItemLeft" align="right" valign="top"><a id="ad912732cfa9c0382b178ee23b0f92fe7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>dec2hex_str</b> (uint64_t value, char *hex_str)</td></tr>
+<tr class="separator:ad912732cfa9c0382b178ee23b0f92fe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02534d26584a97a766dd4bc4dc57413a"><td class="memItemLeft" align="right" valign="top"><a id="a02534d26584a97a766dd4bc4dc57413a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>byte2hex_str</b> (uint8_t value, char *hex_str)</td></tr>
+<tr class="separator:a02534d26584a97a766dd4bc4dc57413a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1117338741edd20324a57972b61d3ed6"><td class="memItemLeft" align="right" valign="top"><a id="a1117338741edd20324a57972b61d3ed6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>dec2dec_str</b> (uint32_t value, char *dec_str)</td></tr>
+<tr class="separator:a1117338741edd20324a57972b61d3ed6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b7b515b58690bbfed82a14854e69755"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a4b7b515b58690bbfed82a14854e69755">print_hex_value</a> (uint64_t value)</td></tr>
+<tr class="memdesc:a4b7b515b58690bbfed82a14854e69755"><td class="mdescLeft">&#160;</td><td class="mdescRight">Печать HEX строки  <a href="../../d3/d22/text__framebuffer_8c.html#a4b7b515b58690bbfed82a14854e69755">Подробнее...</a><br /></td></tr>
+<tr class="separator:a4b7b515b58690bbfed82a14854e69755"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7521085973d9ad337c180082ed5f52bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a7521085973d9ad337c180082ed5f52bd">print_dec_value</a> (uint32_t value)</td></tr>
+<tr class="memdesc:a7521085973d9ad337c180082ed5f52bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Печать числа  <a href="../../d3/d22/text__framebuffer_8c.html#a7521085973d9ad337c180082ed5f52bd">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7521085973d9ad337c180082ed5f52bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0603681fbcc5967c6332ef298ed5ba92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a0603681fbcc5967c6332ef298ed5ba92">print_byte</a> (uint8_t value)</td></tr>
+<tr class="memdesc:a0603681fbcc5967c6332ef298ed5ba92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Печать байтов  <a href="../../d3/d22/text__framebuffer_8c.html#a0603681fbcc5967c6332ef298ed5ba92">Подробнее...</a><br /></td></tr>
+<tr class="separator:a0603681fbcc5967c6332ef298ed5ba92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92135bc36834679c2e1cc5961844fa32"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a92135bc36834679c2e1cc5961844fa32">debug_msg</a> (char *s, uint32_t value)</td></tr>
+<tr class="memdesc:a92135bc36834679c2e1cc5961844fa32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Печать откладочного сообщения  <a href="../../d3/d22/text__framebuffer_8c.html#a92135bc36834679c2e1cc5961844fa32">Подробнее...</a><br /></td></tr>
+<tr class="separator:a92135bc36834679c2e1cc5961844fa32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5971424e96d4a37a770a17e69c51139a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a5971424e96d4a37a770a17e69c51139a">print_dump</a> (void *address, uint32_t size)</td></tr>
+<tr class="memdesc:a5971424e96d4a37a770a17e69c51139a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Печать откладочного части кода  <a href="../../d3/d22/text__framebuffer_8c.html#a5971424e96d4a37a770a17e69c51139a">Подробнее...</a><br /></td></tr>
+<tr class="separator:a5971424e96d4a37a770a17e69c51139a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afebacb8a2ad229f417630f983e33f244"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#afebacb8a2ad229f417630f983e33f244">set_video_vaddr</a> (void *vaddr)</td></tr>
+<tr class="memdesc:afebacb8a2ad229f417630f983e33f244"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить видеоадрес  <a href="../../d3/d22/text__framebuffer_8c.html#afebacb8a2ad229f417630f983e33f244">Подробнее...</a><br /></td></tr>
+<tr class="separator:afebacb8a2ad229f417630f983e33f244"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Переменные</h2></td></tr>
+<tr class="memitem:a7d994144cbc9650a9811f2f27635f25c"><td class="memItemLeft" align="right" valign="top"><a id="a7d994144cbc9650a9811f2f27635f25c"></a>
+uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a7d994144cbc9650a9811f2f27635f25c">video_memory</a> = (uint16_t*) VIDEO_MEMORY</td></tr>
+<tr class="memdesc:a7d994144cbc9650a9811f2f27635f25c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Точка входа <br /></td></tr>
+<tr class="separator:a7d994144cbc9650a9811f2f27635f25c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61dd38e056e5087e5be4aab5bc6ad1ba"><td class="memItemLeft" align="right" valign="top"><a id="a61dd38e056e5087e5be4aab5bc6ad1ba"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a61dd38e056e5087e5be4aab5bc6ad1ba">background_color</a> = BLACK</td></tr>
+<tr class="memdesc:a61dd38e056e5087e5be4aab5bc6ad1ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Текущий задний фон <br /></td></tr>
+<tr class="separator:a61dd38e056e5087e5be4aab5bc6ad1ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8240e3f0a060f6f38eedc7ce3576f775"><td class="memItemLeft" align="right" valign="top"><a id="a8240e3f0a060f6f38eedc7ce3576f775"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a8240e3f0a060f6f38eedc7ce3576f775">default_background_color</a> = BLACK</td></tr>
+<tr class="memdesc:a8240e3f0a060f6f38eedc7ce3576f775"><td class="mdescLeft">&#160;</td><td class="mdescRight">Стандартный задний фон <br /></td></tr>
+<tr class="separator:a8240e3f0a060f6f38eedc7ce3576f775"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24309a6022ea2f7cbc1413c947a5bf50"><td class="memItemLeft" align="right" valign="top"><a id="a24309a6022ea2f7cbc1413c947a5bf50"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a24309a6022ea2f7cbc1413c947a5bf50">text_color</a> = LIGHT_GRAY</td></tr>
+<tr class="memdesc:a24309a6022ea2f7cbc1413c947a5bf50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Текущий цвет текста <br /></td></tr>
+<tr class="separator:a24309a6022ea2f7cbc1413c947a5bf50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d2f1346f651f86389b898ec1f903398"><td class="memItemLeft" align="right" valign="top"><a id="a5d2f1346f651f86389b898ec1f903398"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a5d2f1346f651f86389b898ec1f903398">default_text_color</a> = LIGHT_GRAY</td></tr>
+<tr class="memdesc:a5d2f1346f651f86389b898ec1f903398"><td class="mdescLeft">&#160;</td><td class="mdescRight">Стандартный цвет текста <br /></td></tr>
+<tr class="separator:a5d2f1346f651f86389b898ec1f903398"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09a2a45f731b02946ff6d3cd15c1a476"><td class="memItemLeft" align="right" valign="top"><a id="a09a2a45f731b02946ff6d3cd15c1a476"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a09a2a45f731b02946ff6d3cd15c1a476">width</a> = SCREEN_WIDTH</td></tr>
+<tr class="memdesc:a09a2a45f731b02946ff6d3cd15c1a476"><td class="mdescLeft">&#160;</td><td class="mdescRight">Длина экрана <br /></td></tr>
+<tr class="separator:a09a2a45f731b02946ff6d3cd15c1a476"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcf201a8aabf55cb352ec05331242594"><td class="memItemLeft" align="right" valign="top"><a id="adcf201a8aabf55cb352ec05331242594"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#adcf201a8aabf55cb352ec05331242594">height</a> = SCREEN_HEIGHT</td></tr>
+<tr class="memdesc:adcf201a8aabf55cb352ec05331242594"><td class="mdescLeft">&#160;</td><td class="mdescRight">Высота экрана <br /></td></tr>
+<tr class="separator:adcf201a8aabf55cb352ec05331242594"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a614e21210283a0349e7d0f3664cb4fcc"><td class="memItemLeft" align="right" valign="top"><a id="a614e21210283a0349e7d0f3664cb4fcc"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a614e21210283a0349e7d0f3664cb4fcc">cur_x</a> = 0</td></tr>
+<tr class="memdesc:a614e21210283a0349e7d0f3664cb4fcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Текущия позиция курсора по X. <br /></td></tr>
+<tr class="separator:a614e21210283a0349e7d0f3664cb4fcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a750f0a088d07af56503b05e9ec44fc0d"><td class="memItemLeft" align="right" valign="top"><a id="a750f0a088d07af56503b05e9ec44fc0d"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#a750f0a088d07af56503b05e9ec44fc0d">cur_y</a> = 0</td></tr>
+<tr class="memdesc:a750f0a088d07af56503b05e9ec44fc0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Текущия позиция курсора по Y. <br /></td></tr>
+<tr class="separator:a750f0a088d07af56503b05e9ec44fc0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae337764e0deff55521c57f8803f9b846"><td class="memItemLeft" align="right" valign="top"><a id="ae337764e0deff55521c57f8803f9b846"></a>
+char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d22/text__framebuffer_8c.html#ae337764e0deff55521c57f8803f9b846">hex_table</a> [16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A','B', 'C', 'D', 'E', 'F'}</td></tr>
+<tr class="memdesc:ae337764e0deff55521c57f8803f9b846"><td class="mdescLeft">&#160;</td><td class="mdescRight">Таблица HEX <br  />
+ <br /></td></tr>
+<tr class="separator:ae337764e0deff55521c57f8803f9b846"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Драйвер виртуального текстового буфера </p>
+<dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (nikita.piminoff@yandex,ru) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.3.0 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2022-10-01 </dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022 </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a></p>
+</div><h2 class="groupheader">Функции</h2>
+<a id="a92135bc36834679c2e1cc5961844fa32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92135bc36834679c2e1cc5961844fa32">&#9670;&nbsp;</a></span>debug_msg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void debug_msg </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Печать откладочного сообщения </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">char*</td><td>s - Строка </td></tr>
+    <tr><td class="paramname">uint32_t</td><td>value - Число </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00249">249</a></p>
+
+</div>
+</div>
+<a id="a30f902ac982f8557b527ba9214cadad2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30f902ac982f8557b527ba9214cadad2">&#9670;&nbsp;</a></span>move_cursor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void move_cursor </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Установить позицию курсора по X Y. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint8_t</td><td>x - Позиция по X </td></tr>
+    <tr><td class="paramname">uint8_t</td><td>y - Позиция по Y </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00028">28</a></p>
+
+</div>
+</div>
+<a id="a0603681fbcc5967c6332ef298ed5ba92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0603681fbcc5967c6332ef298ed5ba92">&#9670;&nbsp;</a></span>print_byte()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void print_byte </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Печать байтов </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint8_t</td><td>value - Байты </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00237">237</a></p>
+
+</div>
+</div>
+<a id="a7521085973d9ad337c180082ed5f52bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7521085973d9ad337c180082ed5f52bd">&#9670;&nbsp;</a></span>print_dec_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void print_dec_value </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Печать числа </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint32_t</td><td>value - Число </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00226">226</a></p>
+
+</div>
+</div>
+<a id="a5971424e96d4a37a770a17e69c51139a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5971424e96d4a37a770a17e69c51139a">&#9670;&nbsp;</a></span>print_dump()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void print_dump </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Печать откладочного части кода </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">void*</td><td>address - Адрес </td></tr>
+    <tr><td class="paramname">uint32_t</td><td>size - Размер </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00261">261</a></p>
+
+</div>
+</div>
+<a id="a4b7b515b58690bbfed82a14854e69755"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b7b515b58690bbfed82a14854e69755">&#9670;&nbsp;</a></span>print_hex_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void print_hex_value </td>
+          <td>(</td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Печать HEX строки </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint64_t</td><td>value - HEX строка </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00214">214</a></p>
+
+</div>
+</div>
+<a id="ae8e3dd8e8d20f14d8521c893acaa69b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8e3dd8e8d20f14d8521c893acaa69b2">&#9670;&nbsp;</a></span>print_text()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void print_text </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Печать текста на экран </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">char*</td><td>s - Строка </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00142">142</a></p>
+
+</div>
+</div>
+<a id="af222ebbc29d68d52a0e2664968e09108"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af222ebbc29d68d52a0e2664968e09108">&#9670;&nbsp;</a></span>put_char()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void put_char </td>
+          <td>(</td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>c</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Вывести символ на экран </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">char</td><td>c - Символ </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00092">92</a></p>
+
+</div>
+</div>
+<a id="aa9f613b8d2dc928fe81c807c1d1dbae6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9f613b8d2dc928fe81c807c1d1dbae6">&#9670;&nbsp;</a></span>set_bkground_color()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void set_bkground_color </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>color</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Установить цвет заднего фона </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint8_t</td><td>color - Цвет </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00043">43</a></p>
+
+</div>
+</div>
+<a id="a46ab5b3b65bcbf9322299851feeeaca2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46ab5b3b65bcbf9322299851feeeaca2">&#9670;&nbsp;</a></span>set_text_color()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void set_text_color </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>color</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Установить цвет текста </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint8_t</td><td>color - Цвет </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00052">52</a></p>
+
+</div>
+</div>
+<a id="afebacb8a2ad229f417630f983e33f244"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afebacb8a2ad229f417630f983e33f244">&#9670;&nbsp;</a></span>set_video_vaddr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void set_video_vaddr </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>vaddr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Установить видеоадрес </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">void*</td><td>address - Адрес </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html">text_framebuffer.c</a> строка <a class="el" href="../../d3/d22/text__framebuffer_8c_source.html#l00270">270</a></p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_294885e234569f555c14a529bc5dac14.html">drv</a></li><li class="navelem"><a class="el" href="../../d3/d22/text__framebuffer_8c.html">text_framebuffer.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 13:03:39. Создано системой
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+var sefs_8c =
+[
+    [ "sefs_countElemFolder", "d1/d6e/sefs_8c.html#a3f47dada270bc356f11d318e0e9e7799", null ],
+    [ "sefs_diskSize", "d1/d6e/sefs_8c.html#ab48e7e7924d23243ec85af63d2a13417", null ],
+    [ "sefs_diskSpace", "d1/d6e/sefs_8c.html#a77f46401030c7ef14cb101f50aaa619b", null ],
+    [ "sefs_diskUsed", "d1/d6e/sefs_8c.html#ab8d723e812a64ff80bf77b06bd5289b5", null ],
+    [ "sefs_findDir", "d1/d6e/sefs_8c.html#a757695422b83041ad28fe61c6dd54b57", null ],
+    [ "sefs_findFile", "d1/d6e/sefs_8c.html#a513b6c570ed78759eb3da171bfa8c905", null ],
+    [ "sefs_getDevName", "d1/d6e/sefs_8c.html#a46ecd523e05e588220af026c67c38290", null ],
+    [ "sefs_getLengthFile", "d1/d6e/sefs_8c.html#ae9acce144593bcd25b0a62e3a43b93ad", null ],
+    [ "sefs_getOffsetFile", "d1/d6e/sefs_8c.html#a9e5878840203d0b3d98f1e4caba13e6b", null ],
+    [ "sefs_initrd", "d1/d6e/sefs_8c.html#ad6612ef1a0a8a35222fe7bae735586d5", null ],
+    [ "sefs_list", "d1/d6e/sefs_8c.html#afea21460c8fa828684f58b706f7d28e1", null ],
+    [ "sefs_read", "d1/d6e/sefs_8c.html#ab89f5f84ced95d256f6c8bfef366c234", null ],
+    [ "sefs_readChar", "d1/d6e/sefs_8c.html#a4fcb285ca10a127ebb3e714d4c6616ba", null ],
+    [ "sefs_write", "d1/d6e/sefs_8c.html#aa0f8e32bce9455eaa5cc73cde06093c0", null ],
+    [ "dirCount", "d1/d6e/sefs_8c.html#a918317e1773f261d2282c5a8a628c1d9", null ],
+    [ "dirent", "d1/d6e/sefs_8c.html#a85a0945a3cb128517bfcd352d3c43c97", null ],
+    [ "dirName", "d1/d6e/sefs_8c.html#a5c3695d03b1618cc37dc0e7ed881dade", null ],
+    [ "diskSize", "d1/d6e/sefs_8c.html#a7ff90a40c61cf392f8130ae37186d2ae", null ],
+    [ "diskUsed", "d1/d6e/sefs_8c.html#ac12ae40370c204928313c3af7083d749", null ],
+    [ "file_headers", "d1/d6e/sefs_8c.html#adcceec21ff43ffe4a61e9e8f9b987aad", null ],
+    [ "nroot_nodes", "d1/d6e/sefs_8c.html#a5802b6d8bba6cc4f156a5cf3426872d6", null ],
+    [ "root_nodes", "d1/d6e/sefs_8c.html#a200d7633f318e20f7a0e9988dc9323d5", null ],
+    [ "sefs_dev", "d1/d6e/sefs_8c.html#ace94a8f8b78565d399485c720053b263", null ],
+    [ "sefs_header", "d1/d6e/sefs_8c.html#a2862bc902533aa8f8682e2ca54982b29", null ],
+    [ "sefs_root", "d1/d6e/sefs_8c.html#a121921ae828669ceb8633de85e71d51c", null ]
+];

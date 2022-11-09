@@ -1,0 +1,434 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/io/shell.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.0</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d6/d4f/shell_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">shell.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;io/colors.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;lib/stdio.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keywordtype">char</span>* cmd = <span class="stringliteral">&quot;&quot;</span>;             </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;uint32_t cmd_help(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;Команды:\n&quot;</span> \</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="stringliteral">&quot;\t-&gt;help                | Открывает это окно справки\n&quot;</span> \</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cls                 | Выполняет отчистку экрана\n&quot;</span> \</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cat   &lt;filename&gt;    | Выводит на экран содержимое файла\n&quot;</span> \</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cd    &lt;folder&gt;      | Переход в директорию\n&quot;</span> \</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="stringliteral">&quot;\t-&gt;./&lt;file&gt;            | [ОТКЛ] Запустить программу в текущей директории\n&quot;</span> \</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="stringliteral">&quot;\t-&gt;ls                  | Отобразить список файлов (при указании второго параметра будет вывод файлов с той папки)\n&quot;</span> \</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="stringliteral">&quot;\t-&gt;sysinfo             | Информация о системе\n&quot;</span> \</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="stringliteral">&quot;\t-&gt;pcilist             | Отобразить список PCI-устройств\n&quot;</span> \</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cpuinfo             | Информация о процессоре\n&quot;</span> \</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="stringliteral">&quot;\t-&gt;reboot              | Перезагрузка устройства\n&quot;</span> \</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="stringliteral">&quot;\t-&gt;shutdown            | Выключение устройства\n&quot;</span> \</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="stringliteral">&quot;\t-&gt;view   &lt;filename&gt;   | [ОТКЛ] Отобразить картинку (для форматов Duke)\n&quot;</span> \</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="stringliteral">&quot;\t-&gt;font                | Рисует все доступные символы для шрифта\n&quot;</span> \</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="stringliteral">&quot;\t-&gt;devmgr              | [ОТКЛ] Менеджер устройств\n&quot;</span> \</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="stringliteral">&quot;\t-&gt;crash               | Вызывает BSOD\n&quot;</span> \</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="stringliteral">&quot;\n&quot;</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    );</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;uint32_t cmd_cpuinfo(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="../../df/d59/cpuinfo_8c.html#ad52cb00c670846fb921959bf188da233">detect_cpu</a>(0);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;uint32_t cmd_cls(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a0d199b5702695c4d7b78ef83759c32d5">clean_screen</a>();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;uint32_t cmd_reboot(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;REBOOT NOW!\n&quot;</span>);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <a class="code" href="../../df/d41/timer_8c.html#ac27fcc4dbee83e960b0ac08c511b382e">sleep_ms</a>(100);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="../../d4/dfd/system_8c.html#ac0a43b99fdf8950fb14112fd963881c3">reboot</a>();</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;uint32_t cmd_shutdown(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;SHUTDOWN NOW!\n&quot;</span>);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <a class="code" href="../../df/d41/timer_8c.html#ac27fcc4dbee83e960b0ac08c511b382e">sleep_ms</a>(100);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <a class="code" href="../../d4/dfd/system_8c.html#a7861ee1569802186a619778efc85af13">shutdown</a>();</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;}</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keywordtype">void</span> sysinfo(){</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;Системная информация:\n&quot;</span>);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tOS:               SayoriOS v%d.%d.%d\n&quot;</span>,VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tДата сборки:      %s\n&quot;</span>,__TIMESTAMP__);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tАрхитектура:      %s\n&quot;</span>,ARCH_TYPE);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tПроцессор:        %s\n&quot;</span>,<a class="code" href="../../df/d59/cpuinfo_8c.html#a450008ad8700321b0144cb3e890784e0">getNameBrand</a>());</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tОЗУ:              %d kb\n&quot;</span>,<a class="code" href="../../df/dd5/memory_8c.html#a67e65412410d23cb46ec9b464a4b7027">getInstalledRam</a>());</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tВидеоадаптер:     %s\n&quot;</span>,<span class="stringliteral">&quot;Basic video adapter (Unknown)&quot;</span>);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tДисплей:          %s (%dx%d)\n&quot;</span>,<span class="stringliteral">&quot;(???)&quot;</span>,<a class="code" href="../../dc/d03/tty_8c.html#a28a3f902f557e9cf9c3dddd7cad609f0">getWidthScreen</a>(),<a class="code" href="../../dc/d03/tty_8c.html#adccb23d81da461b513fcc1a8d27b94a5">getHeightScreen</a>());</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\tТики:             %d\n&quot;</span>,<a class="code" href="../../df/d41/timer_8c.html#a36a66ad7528a25782bfded91d76dbe23">getTicks</a>());</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;}</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;uint32_t cmd_sysinfo(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    sysinfo();</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;}</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;uint32_t cmd_cat(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="keywordflow">if</span> (c == 0){</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ERROR);</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[CMD] [CAT] Необходимо указать путь для чтения файла.\n&quot;</span>);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    }</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <a class="code" href="../../dd/d90/struct_f_i_l_e.html">FILE</a>* cat_file = <a class="code" href="../../d9/df6/stdio_8c.html#afffa3e442e49895773d564f422e1be1c">fopen</a>(v[1],<span class="stringliteral">&quot;r&quot;</span>);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d9/df6/stdio_8c.html#a97b40f2756b39511cb85a479b900d59a">ferror</a>(cat_file) != 0){</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ERROR);</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[CMD] [CAT] Не удалось найти файл `%s`. Проверьте правильность введенного вами пути.\n&quot;</span>,v[1]);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">return</span> 2;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    }</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="keywordtype">char</span> * buffer = <a class="code" href="../../d9/df6/stdio_8c.html#a08d4c6e3c08cfc857140d5bd2f048919">fread</a>(cat_file);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <a class="code" href="../../d9/df6/stdio_8c.html#a339e549606415666d4342bb56cffe976">fclose</a>(cat_file);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;%s\n&quot;</span>,buffer);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;}</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;uint32_t cmd_hostname(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keywordflow">if</span> (c == 0){</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;%s\n&quot;</span>,<a class="code" href="../../d4/dfd/system_8c.html#ad901ad50dd972302b50aaa75a93a6495">getHostname</a>());</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        <a class="code" href="../../d4/dfd/system_8c.html#a4711630948b3e756016129b705158406">setHostname</a>(v[1]);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;%s\n&quot;</span>,<a class="code" href="../../d4/dfd/system_8c.html#ad901ad50dd972302b50aaa75a93a6495">getHostname</a>());</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    }</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;}</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;uint32_t cmd_whoami(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;%s\n&quot;</span>,<a class="code" href="../../d4/dfd/system_8c.html#ab4e1d3c2b842991b7c4fdf2b1ab0f4e1">getUserName</a>());</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;}</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;uint32_t cmd_debug(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; c &gt;= i; i++){</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        qemu_log(<span class="stringliteral">&quot;[CMD] argc: %d =&gt; argv: %s&quot;</span>,i,v[i]);</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    }</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;}</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;uint32_t cmd_font(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a21e184ff24e57a682c23f8c3451df34d">drawRect</a>(0,0,800,200);</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a0a0efde9cb0adfa2b47a3d8d0f7e1312">setColorFont</a>(0xFFFFF);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a01c948900ba81ffde9058e1768a3ef35">drawStringFont</a>(<span class="stringliteral">&quot;АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ&quot;</span>,10,30,0);</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a0a0efde9cb0adfa2b47a3d8d0f7e1312">setColorFont</a>(0xCAFE12);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a01c948900ba81ffde9058e1768a3ef35">drawStringFont</a>(<span class="stringliteral">&quot;абвгдеёжзийклмнопрстуфхцчшщъыьэюя&quot;</span>,10,60,0);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a0a0efde9cb0adfa2b47a3d8d0f7e1312">setColorFont</a>(0x333333);</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a01c948900ba81ffde9058e1768a3ef35">drawStringFont</a>(<span class="stringliteral">&quot;!«№;%:?*()_+-=@#$^&amp;[]{}|\\/ &lt;&gt;&quot;</span>,10,90,0);</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a0a0efde9cb0adfa2b47a3d8d0f7e1312">setColorFont</a>(0xDDDDDD);</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a01c948900ba81ffde9058e1768a3ef35">drawStringFont</a>(<span class="stringliteral">&quot;QWERTYUIOPASDFGHJKLZXCVBNM&quot;</span>,10,120,0);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a0a0efde9cb0adfa2b47a3d8d0f7e1312">setColorFont</a>(0xAAAAAA);</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a01c948900ba81ffde9058e1768a3ef35">drawStringFont</a>(<span class="stringliteral">&quot;qwertyuiopasdfghjklzxcvbnm&quot;</span>,10,150,0);</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a0a0efde9cb0adfa2b47a3d8d0f7e1312">setColorFont</a>(0xFFFFFF);</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <a class="code" href="../../d8/d57/fonts_8c.html#a01c948900ba81ffde9058e1768a3ef35">drawStringFont</a>(<span class="stringliteral">&quot;1234567890.,&quot;</span>,10,180,0);</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;}</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;uint32_t cmd_cd(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="keywordflow">if</span> (c == 0){</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ERROR);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[CMD] [CD] Необходимо указать путь для смены дириктории.\n&quot;</span>);</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    }</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    uint32_t inxDir = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a84939ec064dde8aa28882d6fd5bfda46">vfs_findDir</a>(v[1]);</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    <span class="keywordflow">if</span> (inxDir == -1){</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ERROR);</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[CMD] [CD] Папка `%s` не найдена.\n&quot;</span>,v[1]);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    }</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <a class="code" href="../../d4/dfd/system_8c.html#a98788b3a7d6abcd555474ce9f4c24edb">setSysPath</a>(v[1]);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;}</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;uint32_t cmd_ls(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    <span class="keywordtype">char</span> path[256] = {0};</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    <a class="code" href="../../d1/db0/string_8c.html#a727907c1b36ae2a714f7c93c89efa8e2">strcpy</a>(path,(c == 0?<a class="code" href="../../d4/dfd/system_8c.html#ae476db912ed65e9d9d59fcea9064804e">getSysPath</a>():v[1]));</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(path) &lt;= 0){</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ERROR);</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[CMD] [LS] Некорректные данные `%s`.\n&quot;</span>,path);</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    }</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    uint32_t inxDir = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a84939ec064dde8aa28882d6fd5bfda46">vfs_findDir</a>(path);</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    <span class="keywordflow">if</span> (inxDir == -1){</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ERROR);</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[CMD] [LS] Папка `%s` не найдена.\n&quot;</span>,v[1]);</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    }</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    <span class="keywordtype">size_t</span> sss = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a5eb8e650941b902b977f596544bbe98d">vfs_getCountElemDir</a>(path);</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    <span class="keyword">struct </span><a class="code" href="../../d5/de2/structdirent.html">dirent</a>* testFS = <a class="code" href="../../d1/d8d/vfs__new_8c.html#ab08cf14f9c294d64a4091aaa3d7f7ec8">vfs_getListFolder</a>(path);</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> f = 0;sss &gt; f;f++){</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[%s] %s (%d б)\n&quot;</span>,(testFS[f].<a class="code" href="../../d5/de2/structdirent.html#a1d127017fb298b889f4ba24752d08b8e">type</a> == FS_FILE?<span class="stringliteral">&quot;Файл&quot;</span>:<span class="stringliteral">&quot;Папка&quot;</span>),testFS[f].<a class="code" href="../../d5/de2/structdirent.html#a93a4209b66c75fd711969ba8dcd926f5">name</a>,testFS[f].<a class="code" href="../../d5/de2/structdirent.html#a190b76b1f3d5bd26920300e5f073739b">length</a>);</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    }</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;}</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;uint32_t cmdDisabled(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ERROR);</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[CMD] [ОШИБКА] Команда `%s` отключена или не реализована.\n&quot;</span>,v[0]);</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;}</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160; </div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;uint32_t cmd_exec(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    <span class="keywordflow">if</span> (c == 0){</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ERROR);</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[CMD] [EXEC] Для выполнения этой команды необходимо указать имя запускаемого файла.\n&quot;</span>);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    }</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    <span class="keywordtype">char</span> temp[256] = {0};</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <a class="code" href="../../d1/db0/string_8c.html#a727907c1b36ae2a714f7c93c89efa8e2">strcpy</a>(temp, <a class="code" href="../../d4/dfd/system_8c.html#ae476db912ed65e9d9d59fcea9064804e">getSysPath</a>());</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    <a class="code" href="../../d1/db0/string_8c.html#abd448613a180b3805b939bcb059db4be">strcat</a>(temp, v[1]);</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    <a class="code" href="../../dd/d90/struct_f_i_l_e.html">FILE</a>* elf_exec = <a class="code" href="../../d9/df6/stdio_8c.html#afffa3e442e49895773d564f422e1be1c">fopen</a>(temp,<span class="stringliteral">&quot;r&quot;</span>);</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d9/df6/stdio_8c.html#a97b40f2756b39511cb85a479b900d59a">ferror</a>(elf_exec) != 0){</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ERROR);</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;[CMD] [EXEC] Программа `%s` не найдена в текущей папке.\n&quot;</span>,v[1]);</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        <span class="keywordflow">return</span> 2;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    }</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    <span class="comment">//elf_info(temp);</span></div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    run_elf_file(temp, 0, 0);</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;}</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160; </div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="keywordtype">void</span> cmdHandler(<span class="keywordtype">char</span>* ncmd){</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        uint32_t argc = <a class="code" href="../../d7/de7/split_8c.html#a6e0c044df33ec92cf2a944048b3672f7">str_cdsp</a>(ncmd,<span class="stringliteral">&quot; &quot;</span>);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        <span class="keywordtype">char</span>* argv[128] = {0};</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        <a class="code" href="../../d7/de7/split_8c.html#ace837b64cb0965b7fd55bd8b47fd4384">str_split</a>(ncmd,argv,<span class="stringliteral">&quot; &quot;</span>);</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        cmd = ncmd;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; argc &gt;= i; i++){</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;            qemu_log(<span class="stringliteral">&quot;[CMD] &#39;%s&#39; =&gt; argc: %d =&gt; argv: %s&quot;</span>,ncmd,i,argv[i]);</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        }</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;help&quot;</span>)){</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            cmd_help(argc,argv);</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;debug&quot;</span>)){</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;            <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;debug\n&quot;</span>);</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;            cmd_debug(argc,argv);</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;run&quot;</span>)){</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;            <span class="comment">//cmdDisabled(argc,argv);</span></div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;            cmd_exec(argc,argv);</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;view&quot;</span>)){</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;            cmdDisabled(argc,argv);</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;            <span class="comment">//cmd_view(argc,argv);</span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;cd&quot;</span>)){</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;            cmd_cd(argc,argv);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;cat&quot;</span>)){</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;            cmd_cat(argc,argv);</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;cls&quot;</span>)){</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;            cmd_cls(argc,argv);</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;reboot&quot;</span>)){</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;            cmd_reboot(argc,argv);</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;shutdown&quot;</span>)){</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;            cmd_shutdown(argc,argv);</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;pcilist&quot;</span>)){</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;            cmdDisabled(argc,argv);</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;            <span class="comment">//cmd_pcilist(argc,argv);</span></div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;sysinfo&quot;</span>)){</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;            cmd_sysinfo(argc,argv);</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;ls&quot;</span>)){</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;            cmd_ls(argc,argv);</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;cpuinfo&quot;</span>)){</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;            cmd_cpuinfo(argc,argv);</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;whoami&quot;</span>)){</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;            cmd_whoami(argc,argv);</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;hostname&quot;</span>)){</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;            cmd_hostname(argc,argv);</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;font&quot;</span>)){</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;            cmd_font(argc,argv);</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;crash&quot;</span>)){</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;            <span class="keywordtype">int</span> a = 0/0;</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(argv[0],<span class="stringliteral">&quot;devmgr&quot;</span>)){</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;            cmdDisabled(argc,argv);</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;            <span class="comment">//devmgr_cli(argc,argv);</span></div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;            <span class="comment">//tty_setcolor(COLOR_ERROR);</span></div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;            <span class="comment">//tty_printf(&quot;[CMD] Команда `%s` не найдена. Введите \&quot;help\&quot; для получения списка команд.\n&quot;,argv[0]);</span></div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;            <span class="comment">//return;</span></div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;            <span class="keywordtype">char</span>* run[2] = {0};</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;            run[1] = argv[0];</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;            cmd_exec(1,run);</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;        }</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;}</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160; </div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="keywordtype">void</span> shell(){</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    <span class="comment">//changeStageKeyboard(1);</span></div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ALERT);</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\nВведите \&quot;help\&quot; для получения списка команд.\n&quot;</span>);</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;    <span class="keywordtype">char</span>* ncmd = <a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) * 256);</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_TEXT);</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    <span class="keywordflow">while</span> (1) {</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_SYS_TEXT);</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\n%s@%s:&quot;</span>,<a class="code" href="../../d4/dfd/system_8c.html#ab4e1d3c2b842991b7c4fdf2b1ab0f4e1">getUserName</a>(),<a class="code" href="../../d4/dfd/system_8c.html#ad901ad50dd972302b50aaa75a93a6495">getHostname</a>());</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_SYS_PATH);</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;%s&gt;&quot;</span>, <a class="code" href="../../d4/dfd/system_8c.html#ae476db912ed65e9d9d59fcea9064804e">getSysPath</a>());</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160; </div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;        <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_TEXT);</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160; </div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;        <a class="code" href="../../d1/db0/string_8c.html#aa8045b75c034a635046b3b2fe69a9c20">memset</a>(ncmd, 0, 256);</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;        <a class="code" href="../../d1/db0/string_8c.html#a727907c1b36ae2a714f7c93c89efa8e2">strcpy</a>(ncmd,<a class="code" href="../../de/dbd/keyboard_8c.html#addf34070370c2b3384b3e21ce2a34c26">getStringBufferKeyboard</a>());</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(ncmd) &gt; 256) {</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(COLOR_ERROR);</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\nERROR: limit 256 char&#39;s!&quot;</span>);</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;        }</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;        qemu_log(<span class="stringliteral">&quot;[CMD] &#39;%s&#39;&quot;</span>,ncmd);</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;        cmdHandler(ncmd);</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    }</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;}</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160; </div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<div class="ttc" id="asystem_8c_html_a7861ee1569802186a619778efc85af13"><div class="ttname"><a href="../../d4/dfd/system_8c.html#a7861ee1569802186a619778efc85af13">shutdown</a></div><div class="ttdeci">void shutdown()</div><div class="ttdoc">Выключение устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dfd/system_8c_source.html#l00052">system.c:52</a></div></div>
+<div class="ttc" id="acpuinfo_8c_html_ad52cb00c670846fb921959bf188da233"><div class="ttname"><a href="../../df/d59/cpuinfo_8c.html#ad52cb00c670846fb921959bf188da233">detect_cpu</a></div><div class="ttdeci">int detect_cpu(bool silent)</div><div class="ttdoc">Получение имени процессора (Инициализация)</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d59/cpuinfo_8c_source.html#l00023">cpuinfo.c:23</a></div></div>
+<div class="ttc" id="astring_8c_html_a008e171a518fe0e0352f31b245e03875"><div class="ttname"><a href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a></div><div class="ttdeci">size_t strlen(const char *str)</div><div class="ttdoc">Возращает длину строки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00076">string.c:76</a></div></div>
+<div class="ttc" id="atimer_8c_html_ac27fcc4dbee83e960b0ac08c511b382e"><div class="ttname"><a href="../../df/d41/timer_8c.html#ac27fcc4dbee83e960b0ac08c511b382e">sleep_ms</a></div><div class="ttdeci">void sleep_ms(uint32_t milliseconds)</div><div class="ttdoc">Ожидание по милисекундам</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d41/timer_8c_source.html#l00076">timer.c:76</a></div></div>
+<div class="ttc" id="asystem_8c_html_a4711630948b3e756016129b705158406"><div class="ttname"><a href="../../d4/dfd/system_8c.html#a4711630948b3e756016129b705158406">setHostname</a></div><div class="ttdeci">char * setHostname(char *new)</div><div class="ttdoc">Устанавливает имя устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dfd/system_8c_source.html#l00096">system.c:96</a></div></div>
+<div class="ttc" id="astdio_8c_html_a08d4c6e3c08cfc857140d5bd2f048919"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a08d4c6e3c08cfc857140d5bd2f048919">fread</a></div><div class="ttdeci">char * fread(FILE *stream)</div><div class="ttdoc">Получение содержимого файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00206">stdio.c:206</a></div></div>
+<div class="ttc" id="amemory_8c_html_a5f52d7c56b7d67dc2f96b2e93dfdc7be"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a></div><div class="ttdeci">void * kmalloc(size_t size)</div><div class="ttdoc">Выделение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00514">memory.c:514</a></div></div>
+<div class="ttc" id="astdio_8c_html_afffa3e442e49895773d564f422e1be1c"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#afffa3e442e49895773d564f422e1be1c">fopen</a></div><div class="ttdeci">FILE * fopen(const char *filename, const char *mode)</div><div class="ttdoc">Открыть файл для работы с ним</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00145">stdio.c:145</a></div></div>
+<div class="ttc" id="asystem_8c_html_ae476db912ed65e9d9d59fcea9064804e"><div class="ttname"><a href="../../d4/dfd/system_8c.html#ae476db912ed65e9d9d59fcea9064804e">getSysPath</a></div><div class="ttdeci">char * getSysPath()</div><div class="ttdoc">Получить текущий путь</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dfd/system_8c_source.html#l00019">system.c:19</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_ab08cf14f9c294d64a4091aaa3d7f7ec8"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#ab08cf14f9c294d64a4091aaa3d7f7ec8">vfs_getListFolder</a></div><div class="ttdeci">struct direct * vfs_getListFolder(char *path)</div><div class="ttdoc">[VFS] Поиск папки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00293">vfs_new.c:293</a></div></div>
+<div class="ttc" id="akeyboard_8c_html_addf34070370c2b3384b3e21ce2a34c26"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#addf34070370c2b3384b3e21ce2a34c26">getStringBufferKeyboard</a></div><div class="ttdeci">char * getStringBufferKeyboard()</div><div class="ttdoc">Получение виртуального буфера с клавиатуры</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00214">keyboard.c:214</a></div></div>
+<div class="ttc" id="asplit_8c_html_ace837b64cb0965b7fd55bd8b47fd4384"><div class="ttname"><a href="../../d7/de7/split_8c.html#ace837b64cb0965b7fd55bd8b47fd4384">str_split</a></div><div class="ttdeci">char * str_split(char a_str[], char *out[], char *dec)</div><div class="ttdoc">Функция для деления строк</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/de7/split_8c_source.html#l00038">split.c:38</a></div></div>
+<div class="ttc" id="atty_8c_html_a3a9ec5bcc1f8f7ca830e80c491e4512f"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a></div><div class="ttdeci">void tty_printf(char *text,...)</div><div class="ttdoc">Вывод форматированной строки на экран (аналог printf)</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00747">tty.c:747</a></div></div>
+<div class="ttc" id="atty_8c_html_a28a3f902f557e9cf9c3dddd7cad609f0"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a28a3f902f557e9cf9c3dddd7cad609f0">getWidthScreen</a></div><div class="ttdeci">uint32_t getWidthScreen()</div><div class="ttdoc">Получение длины экрана</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00379">tty.c:379</a></div></div>
+<div class="ttc" id="acpuinfo_8c_html_a450008ad8700321b0144cb3e890784e0"><div class="ttname"><a href="../../df/d59/cpuinfo_8c.html#a450008ad8700321b0144cb3e890784e0">getNameBrand</a></div><div class="ttdeci">char * getNameBrand()</div><div class="ttdoc">Получение имени процессора</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d59/cpuinfo_8c_source.html#l00054">cpuinfo.c:54</a></div></div>
+<div class="ttc" id="astructdirent_html_a1d127017fb298b889f4ba24752d08b8e"><div class="ttname"><a href="../../d5/de2/structdirent.html#a1d127017fb298b889f4ba24752d08b8e">dirent::type</a></div><div class="ttdeci">uint8_t type</div><div class="ttdoc">Тип файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00072">vfs_new.h:72</a></div></div>
+<div class="ttc" id="astring_8c_html_abd448613a180b3805b939bcb059db4be"><div class="ttname"><a href="../../d1/db0/string_8c.html#abd448613a180b3805b939bcb059db4be">strcat</a></div><div class="ttdeci">char * strcat(char *s, const char *t)</div><div class="ttdoc">Объединение строк</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00390">string.c:390</a></div></div>
+<div class="ttc" id="asystem_8c_html_a98788b3a7d6abcd555474ce9f4c24edb"><div class="ttname"><a href="../../d4/dfd/system_8c.html#a98788b3a7d6abcd555474ce9f4c24edb">setSysPath</a></div><div class="ttdeci">void setSysPath(char *path)</div><div class="ttdoc">Установить текущий путь</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dfd/system_8c_source.html#l00030">system.c:30</a></div></div>
+<div class="ttc" id="astdio_8c_html_a339e549606415666d4342bb56cffe976"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a339e549606415666d4342bb56cffe976">fclose</a></div><div class="ttdeci">void fclose(FILE *stream)</div><div class="ttdoc">Закончить работу с файлом</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00176">stdio.c:176</a></div></div>
+<div class="ttc" id="asystem_8c_html_ac0a43b99fdf8950fb14112fd963881c3"><div class="ttname"><a href="../../d4/dfd/system_8c.html#ac0a43b99fdf8950fb14112fd963881c3">reboot</a></div><div class="ttdeci">void reboot()</div><div class="ttdoc">Перезагрузка устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dfd/system_8c_source.html#l00038">system.c:38</a></div></div>
+<div class="ttc" id="asplit_8c_html_a6e0c044df33ec92cf2a944048b3672f7"><div class="ttname"><a href="../../d7/de7/split_8c.html#a6e0c044df33ec92cf2a944048b3672f7">str_cdsp</a></div><div class="ttdeci">uint32_t str_cdsp(char *a_str, char *del)</div><div class="ttdoc">Функция откладки</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/de7/split_8c_source.html#l00019">split.c:19</a></div></div>
+<div class="ttc" id="astructdirent_html_a93a4209b66c75fd711969ba8dcd926f5"><div class="ttname"><a href="../../d5/de2/structdirent.html#a93a4209b66c75fd711969ba8dcd926f5">dirent::name</a></div><div class="ttdeci">char name[128]</div><div class="ttdoc">Имя файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00070">vfs_new.h:70</a></div></div>
+<div class="ttc" id="astructdirent_html"><div class="ttname"><a href="../../d5/de2/structdirent.html">dirent</a></div><div class="ttdoc">Согласно POSIX, один из них возвращается вызовом readdir.</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00068">vfs_new.h:68</a></div></div>
+<div class="ttc" id="astruct_f_i_l_e_html"><div class="ttname"><a href="../../dd/d90/struct_f_i_l_e.html">FILE</a></div><div class="ttdoc">Структура файла. Требуется для работы с VFS.</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/dd1/stdio_8h_source.html#l00018">stdio.h:18</a></div></div>
+<div class="ttc" id="astring_8c_html_a727907c1b36ae2a714f7c93c89efa8e2"><div class="ttname"><a href="../../d1/db0/string_8c.html#a727907c1b36ae2a714f7c93c89efa8e2">strcpy</a></div><div class="ttdeci">int strcpy(char *dest, char *src)</div><div class="ttdoc">Копирование строк</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00206">string.c:206</a></div></div>
+<div class="ttc" id="asystem_8c_html_ab4e1d3c2b842991b7c4fdf2b1ab0f4e1"><div class="ttname"><a href="../../d4/dfd/system_8c.html#ab4e1d3c2b842991b7c4fdf2b1ab0f4e1">getUserName</a></div><div class="ttdeci">char * getUserName()</div><div class="ttdoc">Возращает имя пользователя</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dfd/system_8c_source.html#l00064">system.c:64</a></div></div>
+<div class="ttc" id="atty_8c_html_a9d34baa3dbc9bf7228a036f9b4dad57a"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a></div><div class="ttdeci">void tty_setcolor(int32_t color)</div><div class="ttdoc">Изменение цвета текста</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00168">tty.c:168</a></div></div>
+<div class="ttc" id="amemory_8c_html_a67e65412410d23cb46ec9b464a4b7027"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a67e65412410d23cb46ec9b464a4b7027">getInstalledRam</a></div><div class="ttdeci">uint64_t getInstalledRam()</div><div class="ttdoc">Получение установленого количества ОЗУ</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00582">memory.c:582</a></div></div>
+<div class="ttc" id="atimer_8c_html_a36a66ad7528a25782bfded91d76dbe23"><div class="ttname"><a href="../../df/d41/timer_8c.html#a36a66ad7528a25782bfded91d76dbe23">getTicks</a></div><div class="ttdeci">uint64_t getTicks()</div><div class="ttdoc">Получить количество тиков</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d41/timer_8c_source.html#l00025">timer.c:25</a></div></div>
+<div class="ttc" id="atty_8c_html_a0d199b5702695c4d7b78ef83759c32d5"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a0d199b5702695c4d7b78ef83759c32d5">clean_screen</a></div><div class="ttdeci">void clean_screen()</div><div class="ttdoc">Очистка экрана</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00398">tty.c:398</a></div></div>
+<div class="ttc" id="astring_8c_html_a1a4814aa8c5608eab160349cfa3023f4"><div class="ttname"><a href="../../d1/db0/string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a></div><div class="ttdeci">bool strcmpn(const char *str1, const char *str2)</div><div class="ttdoc">Сравнение строк</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00194">string.c:194</a></div></div>
+<div class="ttc" id="afonts_8c_html_a01c948900ba81ffde9058e1768a3ef35"><div class="ttname"><a href="../../d8/d57/fonts_8c.html#a01c948900ba81ffde9058e1768a3ef35">drawStringFont</a></div><div class="ttdeci">void drawStringFont(char str[], int kx, int ky, int py)</div><div class="ttdoc">Рисуем строку при помощи шрифта</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d57/fonts_8c_source.html#l00295">fonts.c:295</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a84939ec064dde8aa28882d6fd5bfda46"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a84939ec064dde8aa28882d6fd5bfda46">vfs_findDir</a></div><div class="ttdeci">uint32_t vfs_findDir(char *path)</div><div class="ttdoc">[VFS] Поиск папки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00165">vfs_new.c:165</a></div></div>
+<div class="ttc" id="atty_8c_html_a21e184ff24e57a682c23f8c3451df34d"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a21e184ff24e57a682c23f8c3451df34d">drawRect</a></div><div class="ttdeci">void drawRect(int x, int y, int w, int h, int color)</div><div class="ttdoc">Рисуем прямоугольник</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00438">tty.c:438</a></div></div>
+<div class="ttc" id="astructdirent_html_a190b76b1f3d5bd26920300e5f073739b"><div class="ttname"><a href="../../d5/de2/structdirent.html#a190b76b1f3d5bd26920300e5f073739b">dirent::length</a></div><div class="ttdeci">uint64_t length</div><div class="ttdoc">Размер файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00074">vfs_new.h:74</a></div></div>
+<div class="ttc" id="astdio_8c_html_a97b40f2756b39511cb85a479b900d59a"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a97b40f2756b39511cb85a479b900d59a">ferror</a></div><div class="ttdeci">uint32_t ferror(FILE *stream)</div><div class="ttdoc">Получение кода ошибки</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00102">stdio.c:102</a></div></div>
+<div class="ttc" id="afonts_8c_html_a0a0efde9cb0adfa2b47a3d8d0f7e1312"><div class="ttname"><a href="../../d8/d57/fonts_8c.html#a0a0efde9cb0adfa2b47a3d8d0f7e1312">setColorFont</a></div><div class="ttdeci">void setColorFont(int color)</div><div class="ttdoc">Установка цвета</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d57/fonts_8c_source.html#l00038">fonts.c:38</a></div></div>
+<div class="ttc" id="astring_8c_html_aa8045b75c034a635046b3b2fe69a9c20"><div class="ttname"><a href="../../d1/db0/string_8c.html#aa8045b75c034a635046b3b2fe69a9c20">memset</a></div><div class="ttdeci">void memset(void *ptr, uint8_t value, size_t size)</div><div class="ttdoc">Заполнение массива указанными символами</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00126">string.c:126</a></div></div>
+<div class="ttc" id="asystem_8c_html_ad901ad50dd972302b50aaa75a93a6495"><div class="ttname"><a href="../../d4/dfd/system_8c.html#ad901ad50dd972302b50aaa75a93a6495">getHostname</a></div><div class="ttdeci">char * getHostname()</div><div class="ttdoc">Возращает имя устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dfd/system_8c_source.html#l00085">system.c:85</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a5eb8e650941b902b977f596544bbe98d"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a5eb8e650941b902b977f596544bbe98d">vfs_getCountElemDir</a></div><div class="ttdeci">size_t vfs_getCountElemDir(char *path)</div><div class="ttdoc">[VFS] Получить количество файлов в папке</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00277">vfs_new.c:277</a></div></div>
+<div class="ttc" id="atty_8c_html_adccb23d81da461b513fcc1a8d27b94a5"><div class="ttname"><a href="../../dc/d03/tty_8c.html#adccb23d81da461b513fcc1a8d27b94a5">getHeightScreen</a></div><div class="ttdeci">uint32_t getHeightScreen()</div><div class="ttdoc">Получение ширины экрана</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00389">tty.c:389</a></div></div>
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f684e8e1ebea567db7f673c0b997cee3.html">io</a></li><li class="navelem"><b>shell.c</b></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 13:03:39. Создано системой
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+  </ul>
+</div>
+</body>
+</html>

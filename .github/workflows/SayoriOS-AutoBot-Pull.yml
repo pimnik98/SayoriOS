@@ -1,4 +1,4 @@
-name: 🤖 SayoriOS Автоматическая сборка при получении Пулл-реквестов
+name: 🤖 SayoriOS Soul Автоматическая сборка при получении Пулл-реквестов
 
 on:
   pull_request:
@@ -18,10 +18,7 @@ jobs:
           sudo apt install python3 build-essential xorriso grub-pc-bin mtools llvm lld fasm zip doxygen
 
       - name: Step 2 - Compiling the kernel
-        run: python3 build.py kernel
+        run: make
 
-      - name: Step 3 - Compiling programs
-        run: python3 build.py apps
-
-      - name: Step 4 - ISO assembly
-        run: python3 build.py iso
+      - name: Step 3 - ISO assembly
+        run: make geniso
