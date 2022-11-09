@@ -126,10 +126,10 @@ $(document).ready(function(){initNavTree('d1/db0/string_8c_source.html','../../'
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
 <div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="../../d1/db0/string_8c.html#a83e6afe99245f8c2eec21fe3bf2f2cb9">   91</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d1/db0/string_8c.html#a83e6afe99245f8c2eec21fe3bf2f2cb9">mb_strlen</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *str){</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">size_t</span> len = 0;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordflow">while</span> (str[len] != 0){</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keywordflow">if</span> (!<a class="code" href="../../d1/db0/string_8c.html#ab5bf39343cc7880e21ca8e82763a2f44">isUTF</a>(str[len])){</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            len++;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">size_t</span> def = <a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(str);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; def;i++){</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#ab5bf39343cc7880e21ca8e82763a2f44">isUTF</a>(str[i])) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        len++;</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    }</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordflow">return</span> len;</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;}</div>
@@ -451,7 +451,7 @@ $(document).ready(function(){initNavTree('d1/db0/string_8c_source.html','../../'
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_30344f54b1e95ac4cceded48601d8b77.html">lib</a></li><li class="navelem"><a class="el" href="../../d1/db0/string_8c.html">string.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 13:03:39. Создано системой
+    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 16:32:35. Создано системой
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

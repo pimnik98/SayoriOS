@@ -99,7 +99,7 @@ $(document).ready(function(){initNavTree('d8/d6d/imaging_8c.html','../../'); ini
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Функции</h2></td></tr>
-<tr class="memitem:ad63a4f5885a51dd5b1d104c22e18d91f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d6d/imaging_8c.html#ad63a4f5885a51dd5b1d104c22e18d91f">pixidx</a> (int <a class="el" href="../../d3/d22/text__framebuffer_8c.html#a09a2a45f731b02946ff6d3cd15c1a476">width</a>, int x, int y)</td></tr>
+<tr class="memitem:ad63a4f5885a51dd5b1d104c22e18d91f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d6d/imaging_8c.html#ad63a4f5885a51dd5b1d104c22e18d91f">pixidx</a> (int width, int x, int y)</td></tr>
 <tr class="memdesc:ad63a4f5885a51dd5b1d104c22e18d91f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Функция вычисления позиции по координатам  <a href="../../d8/d6d/imaging_8c.html#ad63a4f5885a51dd5b1d104c22e18d91f">Подробнее...</a><br /></td></tr>
 <tr class="separator:ad63a4f5885a51dd5b1d104c22e18d91f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04189c5b1bd699efb92812c7dbcbe1db"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d6d/imaging_8c.html#a04189c5b1bd699efb92812c7dbcbe1db">duke_get_image_metadata</a> (char *filename)</td></tr>
@@ -109,7 +109,7 @@ $(document).ready(function(){initNavTree('d8/d6d/imaging_8c.html','../../'); ini
 void&#160;</td><td class="memItemRight" valign="bottom"><b>duke_get_image_data</b> (char *filename, struct <a class="el" href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a> meta, char *out)</td></tr>
 <tr class="separator:a152368e41326c80549c795874292f399"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa41fd34bd9832f50f10ff9d17cd9e9f"><td class="memItemLeft" align="right" valign="top"><a id="afa41fd34bd9832f50f10ff9d17cd9e9f"></a>
-char&#160;</td><td class="memItemRight" valign="bottom"><b>duke_draw_area_from_file</b> (char *filename, int x, int y, int sx, int sy, int <a class="el" href="../../d3/d22/text__framebuffer_8c.html#a09a2a45f731b02946ff6d3cd15c1a476">width</a>, int <a class="el" href="../../d3/d22/text__framebuffer_8c.html#adcf201a8aabf55cb352ec05331242594">height</a>)</td></tr>
+char&#160;</td><td class="memItemRight" valign="bottom"><b>duke_draw_area_from_file</b> (char *filename, int x, int y, int sx, int sy, int width, int height)</td></tr>
 <tr class="separator:afa41fd34bd9832f50f10ff9d17cd9e9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac43168fd2c97f024521f901f29cd7de2"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d6d/imaging_8c.html#ac43168fd2c97f024521f901f29cd7de2">duke_draw_from_file</a> (char *filename, int sx, int sy)</td></tr>
 <tr class="memdesc:ac43168fd2c97f024521f901f29cd7de2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Функция отрисовки изображения  <a href="../../d8/d6d/imaging_8c.html#ac43168fd2c97f024521f901f29cd7de2">Подробнее...</a><br /></td></tr>
@@ -121,17 +121,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>duke_rawdraw</b> (cha
 void&#160;</td><td class="memItemRight" valign="bottom"><b>duke_scale</b> (char *pixels, unsigned int w1, unsigned int h1, int w2, int h2, char alpha, char *out)</td></tr>
 <tr class="separator:adb7c0ec51e3e084542fa585eb82861ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe73e6b32826b5fad72c85b5b9785b06"><td class="memItemLeft" align="right" valign="top"><a id="afe73e6b32826b5fad72c85b5b9785b06"></a>
-unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>duke_calculate_bufsize</b> (unsigned int <a class="el" href="../../d3/d22/text__framebuffer_8c.html#a09a2a45f731b02946ff6d3cd15c1a476">width</a>, unsigned int <a class="el" href="../../d3/d22/text__framebuffer_8c.html#adcf201a8aabf55cb352ec05331242594">height</a>, unsigned int alpha)</td></tr>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>duke_calculate_bufsize</b> (unsigned int width, unsigned int height, unsigned int alpha)</td></tr>
 <tr class="separator:afe73e6b32826b5fad72c85b5b9785b06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf7fda803c46c30ce2eb44390e8283ae"><td class="memItemLeft" align="right" valign="top"><a id="abf7fda803c46c30ce2eb44390e8283ae"></a>
-char&#160;</td><td class="memItemRight" valign="bottom"><b>duke_draw_scaled</b> (char *filename, int <a class="el" href="../../d3/d22/text__framebuffer_8c.html#a09a2a45f731b02946ff6d3cd15c1a476">width</a>, int <a class="el" href="../../d3/d22/text__framebuffer_8c.html#adcf201a8aabf55cb352ec05331242594">height</a>, int x, int y)</td></tr>
+char&#160;</td><td class="memItemRight" valign="bottom"><b>duke_draw_scaled</b> (char *filename, int width, int height, int x, int y)</td></tr>
 <tr class="separator:abf7fda803c46c30ce2eb44390e8283ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
 <div class="textblock"><p>Встраиваемая библиотека рисования изображений формата Duke. </p>
-<dl class="section author"><dt>Автор</dt><dd>Андрей(Давид) Павленко (<a href="#" onclick="location.href='mai'+'lto:'+'and'+'re'+'jpa'+'vl'+'enk'+'o6'+'66@'+'gm'+'ail'+'.c'+'om'; return false;">andre<span style="display: none;">.nosp@m.</span>jpav<span style="display: none;">.nosp@m.</span>lenko<span style="display: none;">.nosp@m.</span>666@<span style="display: none;">.nosp@m.</span>gmail<span style="display: none;">.nosp@m.</span>.com</a>) </dd></dl>
+<dl class="section author"><dt>Автор</dt><dd>Андрей Павленко (<a href="#" onclick="location.href='mai'+'lto:'+'and'+'re'+'jpa'+'vl'+'enk'+'o6'+'66@'+'gm'+'ail'+'.c'+'om'; return false;">andre<span style="display: none;">.nosp@m.</span>jpav<span style="display: none;">.nosp@m.</span>lenko<span style="display: none;">.nosp@m.</span>666@<span style="display: none;">.nosp@m.</span>gmail<span style="display: none;">.nosp@m.</span>.com</a>) </dd></dl>
 <dl class="section version"><dt>Версия</dt><dd>0.3.0 </dd></dl>
-<dl class="section date"><dt>Дата</dt><dd>2022-10-01 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2022-11-01 </dd></dl>
 <dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022 </dd></dl>
 
 <p class="definition">См. определение в файле <a class="el" href="../../d8/d6d/imaging_8c_source.html">imaging.c</a></p>
@@ -265,7 +265,7 @@ char&#160;</td><td class="memItemRight" valign="bottom"><b>duke_draw_scaled</b> 
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f684e8e1ebea567db7f673c0b997cee3.html">io</a></li><li class="navelem"><a class="el" href="../../d8/d6d/imaging_8c.html">imaging.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 13:03:39. Создано системой
+    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 16:32:35. Создано системой
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

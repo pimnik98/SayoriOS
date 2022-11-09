@@ -95,21 +95,21 @@ $(document).ready(function(){initNavTree('d6/d4f/shell_8c_source.html','../../')
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;uint32_t cmd_help(uint32_t c,<span class="keywordtype">char</span>* v[]){</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;Команды:\n&quot;</span> \</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="stringliteral">&quot;\t-&gt;help                | Открывает это окно справки\n&quot;</span> \</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cls                 | Выполняет отчистку экрана\n&quot;</span> \</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cat   &lt;filename&gt;    | Выводит на экран содержимое файла\n&quot;</span> \</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cd    &lt;folder&gt;      | Переход в директорию\n&quot;</span> \</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="stringliteral">&quot;\t-&gt;./&lt;file&gt;            | [ОТКЛ] Запустить программу в текущей директории\n&quot;</span> \</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="stringliteral">&quot;\t-&gt;ls                  | Отобразить список файлов (при указании второго параметра будет вывод файлов с той папки)\n&quot;</span> \</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="stringliteral">&quot;\t-&gt;sysinfo             | Информация о системе\n&quot;</span> \</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="stringliteral">&quot;\t-&gt;pcilist             | Отобразить список PCI-устройств\n&quot;</span> \</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cpuinfo             | Информация о процессоре\n&quot;</span> \</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="stringliteral">&quot;\t-&gt;reboot              | Перезагрузка устройства\n&quot;</span> \</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="stringliteral">&quot;\t-&gt;shutdown            | Выключение устройства\n&quot;</span> \</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="stringliteral">&quot;\t-&gt;view   &lt;filename&gt;   | [ОТКЛ] Отобразить картинку (для форматов Duke)\n&quot;</span> \</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="stringliteral">&quot;\t-&gt;font                | Рисует все доступные символы для шрифта\n&quot;</span> \</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="stringliteral">&quot;\t-&gt;devmgr              | [ОТКЛ] Менеджер устройств\n&quot;</span> \</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="stringliteral">&quot;\t-&gt;crash               | Вызывает BSOD\n&quot;</span> \</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="stringliteral">&quot;\t-&gt;./&lt;file&gt;            | Запустить программу в текущей директории\n&quot;</span> \</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cat   &lt;filename&gt;    | Выводит на экран содержимое файла\n&quot;</span> \</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cd    &lt;folder&gt;      | Переход в директорию\n&quot;</span> \</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cls                 | Выполняет отчистку экрана\n&quot;</span> \</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="stringliteral">&quot;\t-&gt;cpuinfo             | Информация о процессоре\n&quot;</span> \</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="stringliteral">&quot;\t-&gt;crash               | Вызывает BSOD\n&quot;</span> \</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="stringliteral">&quot;\t-&gt;font                | Рисует все доступные символы для шрифта\n&quot;</span> \</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="stringliteral">&quot;\t-&gt;help                | Открывает это окно справки\n&quot;</span> \</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="stringliteral">&quot;\t-&gt;ls                  | Отобразить список файлов (при указании второго параметра будет вывод файлов с той папки)\n&quot;</span> \</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="stringliteral">&quot;\t-&gt;shutdown            | Выключение устройства\n&quot;</span> \</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="stringliteral">&quot;\t-&gt;sysinfo             | Информация о системе\n&quot;</span> \</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="stringliteral">&quot;\t-&gt;reboot              | Перезагрузка устройства\n&quot;</span> \</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="stringliteral">&quot;\t-&gt;devmgr              | [ОТКЛ] Менеджер устройств\n&quot;</span> \</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="stringliteral">&quot;\t-&gt;pcilist             | [ОТКЛ] Отобразить список PCI-устройств\n&quot;</span> \</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="stringliteral">&quot;\t-&gt;view   &lt;filename&gt;   | [ОТКЛ] Отобразить картинку (для форматов Duke)\n&quot;</span> \</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="stringliteral">&quot;\n&quot;</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    );</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">return</span> 0;</div>
@@ -425,7 +425,7 @@ $(document).ready(function(){initNavTree('d6/d4f/shell_8c_source.html','../../')
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f684e8e1ebea567db7f673c0b997cee3.html">io</a></li><li class="navelem"><b>shell.c</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 13:03:39. Создано системой
+    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 16:32:35. Создано системой
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

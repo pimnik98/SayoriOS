@@ -86,7 +86,7 @@ $(document).ready(function(){initNavTree('db/d36/base64_8c_source.html','../../'
 <div class="title">base64.c</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<a href="../../db/d36/base64_8c.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> encoding_table[] = {</div>
@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('db/d36/base64_8c_source.html','../../'
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;};</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* b64e(<span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keywordtype">string</span>){</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="../../db/d36/base64_8c.html#aed25a17df04c4adc6245fc2121835c66">   47</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* <a class="code" href="../../db/d36/base64_8c.html#aed25a17df04c4adc6245fc2121835c66">b64e</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keywordtype">string</span>){</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    uint32_t len = ((<a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(<span class="keywordtype">string</span>)));</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">int</span> i;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">char</span> *p;</div>
@@ -146,7 +146,7 @@ $(document).ready(function(){initNavTree('db/d36/base64_8c_source.html','../../'
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">return</span> encoded;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;}</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* b64d(<span class="keyword">const</span> <span class="keywordtype">char</span> *data) {</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="../../db/d36/base64_8c.html#a9e75ebf27b734b47a7c88031753d4820">   82</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* <a class="code" href="../../db/d36/base64_8c.html#a9e75ebf27b734b47a7c88031753d4820">b64d</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *data) {</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordtype">size_t</span> decode_size = <a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(data);</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordtype">size_t</span> output_length = <a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(data);</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordflow">if</span> (decode_size % 4 != 0){</div>
@@ -180,11 +180,13 @@ $(document).ready(function(){initNavTree('db/d36/base64_8c_source.html','../../'
 </div><!-- doc-content -->
 <div class="ttc" id="astring_8c_html_a008e171a518fe0e0352f31b245e03875"><div class="ttname"><a href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a></div><div class="ttdeci">size_t strlen(const char *str)</div><div class="ttdoc">Возращает длину строки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00076">string.c:76</a></div></div>
 <div class="ttc" id="amemory_8c_html_a5f52d7c56b7d67dc2f96b2e93dfdc7be"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a></div><div class="ttdeci">void * kmalloc(size_t size)</div><div class="ttdoc">Выделение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00514">memory.c:514</a></div></div>
+<div class="ttc" id="abase64_8c_html_aed25a17df04c4adc6245fc2121835c66"><div class="ttname"><a href="../../db/d36/base64_8c.html#aed25a17df04c4adc6245fc2121835c66">b64e</a></div><div class="ttdeci">unsigned char * b64e(const char *string)</div><div class="ttdoc">Кодирует строку в Base64.</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d36/base64_8c_source.html#l00047">base64.c:47</a></div></div>
+<div class="ttc" id="abase64_8c_html_a9e75ebf27b734b47a7c88031753d4820"><div class="ttname"><a href="../../db/d36/base64_8c.html#a9e75ebf27b734b47a7c88031753d4820">b64d</a></div><div class="ttdeci">unsigned char * b64d(const char *data)</div><div class="ttdoc">Декодирует строку Base64.</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d36/base64_8c_source.html#l00082">base64.c:82</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_30344f54b1e95ac4cceded48601d8b77.html">lib</a></li><li class="navelem"><b>base64.c</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 13:03:39. Создано системой
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_30344f54b1e95ac4cceded48601d8b77.html">lib</a></li><li class="navelem"><a class="el" href="../../db/d36/base64_8c.html">base64.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 16:32:35. Создано системой
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

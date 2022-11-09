@@ -47,9 +47,9 @@ var NAVTREEINDEX =
 [
 "annotated.html",
 "d2/dfd/structsvga__mode__info.html#aea399bf1ee5c1c440ea91f5f100260fb",
-"d9/d26/kernel_8c.html#aec2927f8a04206a42f92be03277f9f78",
-"dc/dfa/structmultiboot__header.html#acfcbd061ff04368b3981e50dca7eaab2",
-"dir_63ad402ee0b4f0ab258f5e7abbb673c6.html"
+"da/d34/struct_elf32___shdr.html#a44bff009f8cd38b77854ca666a43cc3b",
+"dd/d3f/struct____attribute____.html#a924e82f88cb93ae50099a7c72b61d243",
+"globals_func_u.html"
 ];
 
 var SYNCONMSG = 'нажмите на выключить для синхронизации панелей';

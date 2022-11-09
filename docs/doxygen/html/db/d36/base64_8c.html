@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SayoriOS: Файл kernel/src/sys/sync.c</title>
+<title>SayoriOS: Файл kernel/src/lib/base64.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('db/dc2/sync_8c.html','../../'); initResizable(); });
+$(document).ready(function(){initNavTree('db/d36/base64_8c.html','../../'); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -85,100 +85,89 @@ $(document).ready(function(){initNavTree('db/dc2/sync_8c.html','../../'); initRe
   <div class="summary">
 <a href="#func-members">Функции</a>  </div>
   <div class="headertitle">
-<div class="title">Файл sync.c</div>  </div>
+<div class="title">Файл base64.c</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Примитивы синхронизации  
+<p>Base64 Encode/Decode.  
 <a href="#details">Подробнее...</a></p>
-<div class="textblock"><code>#include &quot;sys/sync.h&quot;</code><br />
+<div class="textblock"><code>#include &lt;kernel.h&gt;</code><br />
 </div>
-<p><a href="../../db/dc2/sync_8c_source.html">См. исходные тексты.</a></p>
+<p><a href="../../db/d36/base64_8c_source.html">См. исходные тексты.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Функции</h2></td></tr>
-<tr class="memitem:a44e891a7c2b3e1a3b8c54542660589b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dc2/sync_8c.html#a44e891a7c2b3e1a3b8c54542660589b8">mutex_get</a> (mutex_t *mutex, bool wait)</td></tr>
-<tr class="memdesc:a44e891a7c2b3e1a3b8c54542660589b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить мьютекс  <a href="../../db/dc2/sync_8c.html#a44e891a7c2b3e1a3b8c54542660589b8">Подробнее...</a><br /></td></tr>
-<tr class="separator:a44e891a7c2b3e1a3b8c54542660589b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d075b581b67eb748d5e67c06f441309"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dc2/sync_8c.html#a8d075b581b67eb748d5e67c06f441309">mutex_release</a> (mutex_t *mutex)</td></tr>
-<tr class="memdesc:a8d075b581b67eb748d5e67c06f441309"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить ближайщий свободный блок  <a href="../../db/dc2/sync_8c.html#a8d075b581b67eb748d5e67c06f441309">Подробнее...</a><br /></td></tr>
-<tr class="separator:a8d075b581b67eb748d5e67c06f441309"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed25a17df04c4adc6245fc2121835c66"><td class="memItemLeft" align="right" valign="top">unsigned char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d36/base64_8c.html#aed25a17df04c4adc6245fc2121835c66">b64e</a> (const char *string)</td></tr>
+<tr class="memdesc:aed25a17df04c4adc6245fc2121835c66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Кодирует строку в Base64.  <a href="../../db/d36/base64_8c.html#aed25a17df04c4adc6245fc2121835c66">Подробнее...</a><br /></td></tr>
+<tr class="separator:aed25a17df04c4adc6245fc2121835c66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e75ebf27b734b47a7c88031753d4820"><td class="memItemLeft" align="right" valign="top">unsigned char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d36/base64_8c.html#a9e75ebf27b734b47a7c88031753d4820">b64d</a> (const char *data)</td></tr>
+<tr class="memdesc:a9e75ebf27b734b47a7c88031753d4820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Декодирует строку Base64.  <a href="../../db/d36/base64_8c.html#a9e75ebf27b734b47a7c88031753d4820">Подробнее...</a><br /></td></tr>
+<tr class="separator:a9e75ebf27b734b47a7c88031753d4820"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
-<div class="textblock"><p>Примитивы синхронизации </p>
+<div class="textblock"><p>Base64 Encode/Decode. </p>
 <dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (<a href="#" onclick="location.href='mai'+'lto:'+'nik'+'it'+'a.p'+'im'+'ino'+'ff'+'@ya'+'nd'+'ex.'+'ru'; return false;">nikit<span style="display: none;">.nosp@m.</span>a.pi<span style="display: none;">.nosp@m.</span>minof<span style="display: none;">.nosp@m.</span>f@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>ru</a>) </dd></dl>
 <dl class="section version"><dt>Версия</dt><dd>0.3.0 </dd></dl>
 <dl class="section date"><dt>Дата</dt><dd>2022-10-01 </dd></dl>
 <dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022 </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../db/dc2/sync_8c_source.html">sync.c</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../db/d36/base64_8c_source.html">base64.c</a></p>
 </div><h2 class="groupheader">Функции</h2>
-<a id="a44e891a7c2b3e1a3b8c54542660589b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a44e891a7c2b3e1a3b8c54542660589b8">&#9670;&nbsp;</a></span>mutex_get()</h2>
+<a id="a9e75ebf27b734b47a7c88031753d4820"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e75ebf27b734b47a7c88031753d4820">&#9670;&nbsp;</a></span>b64d()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool mutex_get </td>
+          <td class="memname">unsigned char* b64d </td>
           <td>(</td>
-          <td class="paramtype">mutex_t *&#160;</td>
-          <td class="paramname"><em>mutex</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>wait</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Получить мьютекс </p>
+<p>Декодирует строку Base64. </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">mutex_t*</td><td>mutex - Мьютекс </td></tr>
-    <tr><td class="paramname">bool</td><td>wait - Время ожидания</td></tr>
+    <tr><td class="paramname">char*</td><td>string - Строка для декодирования</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd>bool </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>char* - Возращает декодированую строку </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../db/dc2/sync_8c_source.html">sync.c</a> строка <a class="el" href="../../db/dc2/sync_8c_source.html#l00019">19</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../db/d36/base64_8c_source.html">base64.c</a> строка <a class="el" href="../../db/d36/base64_8c_source.html#l00082">82</a></p>
 
 </div>
 </div>
-<a id="a8d075b581b67eb748d5e67c06f441309"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d075b581b67eb748d5e67c06f441309">&#9670;&nbsp;</a></span>mutex_release()</h2>
+<a id="aed25a17df04c4adc6245fc2121835c66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed25a17df04c4adc6245fc2121835c66">&#9670;&nbsp;</a></span>b64e()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void mutex_release </td>
+          <td class="memname">unsigned char* b64e </td>
           <td>(</td>
-          <td class="paramtype">mutex_t *&#160;</td>
-          <td class="paramname"><em>mutex</em></td><td>)</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>string</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Получить ближайщий свободный блок </p>
+<p>Кодирует строку в Base64. </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">mutex_t*</td><td>mutex - Мьютекс</td></tr>
+    <tr><td class="paramname">char*</td><td>string - Строка для кодирования</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd>physmemory_pages_block_t* - Блок </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>char* - Возращает закодированую строку </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../db/dc2/sync_8c_source.html">sync.c</a> строка <a class="el" href="../../db/dc2/sync_8c_source.html#l00038">38</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../db/d36/base64_8c_source.html">base64.c</a> строка <a class="el" href="../../db/d36/base64_8c_source.html#l00047">47</a></p>
 
 </div>
 </div>
@@ -187,7 +176,7 @@ $(document).ready(function(){initNavTree('db/dc2/sync_8c.html','../../'); initRe
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../db/dc2/sync_8c.html">sync.c</a></li>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_30344f54b1e95ac4cceded48601d8b77.html">lib</a></li><li class="navelem"><a class="el" href="../../db/d36/base64_8c.html">base64.c</a></li>
     <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 16:32:35. Создано системой
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>

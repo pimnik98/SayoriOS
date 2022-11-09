@@ -127,41 +127,41 @@ $(document).ready(function(){initNavTree('d7/d06/text__framebuffer_8h_source.htm
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">//----------------------------------------------------------------------------*/</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    uint8_t     <a class="code" href="../../d3/d22/text__framebuffer_8c.html#a614e21210283a0349e7d0f3664cb4fcc">cur_x</a>;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    uint8_t     <a class="code" href="../../d3/d22/text__framebuffer_8c.html#a750f0a088d07af56503b05e9ec44fc0d">cur_y</a>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    uint8_t     cur_x;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    uint8_t     cur_y;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    uint16_t*       vmemory;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}<a class="code" href="../../dd/d3f/struct____attribute____.html">__attribute__</a>((packed)) vscreen_t;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="comment">/* Move hardware cursor to reference screen position */</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <span class="keywordtype">void</span>  <a class="code" href="../../d3/d22/text__framebuffer_8c.html#a30f902ac982f8557b527ba9214cadad2">move_cursor</a>(uint8_t x, uint8_t y);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <span class="keywordtype">void</span>  move_cursor(uint8_t x, uint8_t y);</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  <span class="comment">/*    Set colors  */</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordtype">void</span>  <a class="code" href="../../d3/d22/text__framebuffer_8c.html#aa9f613b8d2dc928fe81c807c1d1dbae6">set_bkground_color</a>(uint8_t color);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keywordtype">void</span>  <a class="code" href="../../d3/d22/text__framebuffer_8c.html#a46ab5b3b65bcbf9322299851feeeaca2">set_text_color</a>(uint8_t color);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordtype">void</span>  set_bkground_color(uint8_t color);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keywordtype">void</span>  set_text_color(uint8_t color);</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="comment">/* Clean screen */</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keywordtype">void</span>  <a class="code" href="../../d3/d22/text__framebuffer_8c.html#ae683fe63c33c388e9ba1c6392dd477eb">clear</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keywordtype">void</span>  clear(<span class="keywordtype">void</span>);</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  </div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="comment">/* Print text string */</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="keywordtype">void</span>  <a class="code" href="../../d3/d22/text__framebuffer_8c.html#ae8e3dd8e8d20f14d8521c893acaa69b2">print_text</a>(<span class="keywordtype">char</span>* s);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="keywordtype">void</span>  print_text(<span class="keywordtype">char</span>* s);</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  </div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="comment">/* Print hexadecimal value on screen */</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  <span class="keywordtype">void</span>  <a class="code" href="../../d3/d22/text__framebuffer_8c.html#a4b7b515b58690bbfed82a14854e69755">print_hex_value</a>(uint64_t value);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  <span class="keywordtype">void</span>  print_hex_value(uint64_t value);</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  </div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <span class="comment">/* Print decimal value on screen */</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="keywordtype">void</span>  <a class="code" href="../../d3/d22/text__framebuffer_8c.html#a7521085973d9ad337c180082ed5f52bd">print_dec_value</a>(uint32_t value);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="keywordtype">void</span>  print_dec_value(uint32_t value);</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="comment">/* Print byte */</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d3/d22/text__framebuffer_8c.html#a0603681fbcc5967c6332ef298ed5ba92">print_byte</a>(uint8_t value);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keywordtype">void</span> print_byte(uint8_t value);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <span class="comment">/* Print debug message */</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d3/d22/text__framebuffer_8c.html#a92135bc36834679c2e1cc5961844fa32">debug_msg</a>(<span class="keywordtype">char</span>* s, uint32_t value);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keywordtype">void</span> debug_msg(<span class="keywordtype">char</span>* s, uint32_t value);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  </div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="comment">/* Print memory dump */</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d3/d22/text__framebuffer_8c.html#a5971424e96d4a37a770a17e69c51139a">print_dump</a>(<span class="keywordtype">void</span>* address, uint32_t size);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="keywordtype">void</span> print_dump(<span class="keywordtype">void</span>* address, uint32_t size);</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d3/d22/text__framebuffer_8c.html#afebacb8a2ad229f417630f983e33f244">set_video_vaddr</a>(<span class="keywordtype">void</span>* vaddr);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <span class="keywordtype">void</span> set_video_vaddr(<span class="keywordtype">void</span>* vaddr);</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  </div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="comment">/* Convert decimal memory in string */</span></div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  <span class="keywordtype">void</span> dec2dec_str(uint32_t value, <span class="keywordtype">char</span>* dec_str);</div>
@@ -179,26 +179,13 @@ $(document).ready(function(){initNavTree('d7/d06/text__framebuffer_8h_source.htm
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="atext__framebuffer_8c_html_a0603681fbcc5967c6332ef298ed5ba92"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#a0603681fbcc5967c6332ef298ed5ba92">print_byte</a></div><div class="ttdeci">void print_byte(uint8_t value)</div><div class="ttdoc">Печать байтов</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00237">text_framebuffer.c:237</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_ae683fe63c33c388e9ba1c6392dd477eb"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#ae683fe63c33c388e9ba1c6392dd477eb">clear</a></div><div class="ttdeci">void clear(void)</div><div class="ttdoc">Отчистка экрана</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00124">text_framebuffer.c:124</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_a750f0a088d07af56503b05e9ec44fc0d"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#a750f0a088d07af56503b05e9ec44fc0d">cur_y</a></div><div class="ttdeci">uint8_t cur_y</div><div class="ttdoc">Текущия позиция курсора по Y.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00019">text_framebuffer.c:19</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_a7521085973d9ad337c180082ed5f52bd"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#a7521085973d9ad337c180082ed5f52bd">print_dec_value</a></div><div class="ttdeci">void print_dec_value(uint32_t value)</div><div class="ttdoc">Печать числа</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00226">text_framebuffer.c:226</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_a614e21210283a0349e7d0f3664cb4fcc"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#a614e21210283a0349e7d0f3664cb4fcc">cur_x</a></div><div class="ttdeci">uint8_t cur_x</div><div class="ttdoc">Текущия позиция курсора по X.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00018">text_framebuffer.c:18</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_a4b7b515b58690bbfed82a14854e69755"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#a4b7b515b58690bbfed82a14854e69755">print_hex_value</a></div><div class="ttdeci">void print_hex_value(uint64_t value)</div><div class="ttdoc">Печать HEX строки</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00214">text_framebuffer.c:214</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_aa9f613b8d2dc928fe81c807c1d1dbae6"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#aa9f613b8d2dc928fe81c807c1d1dbae6">set_bkground_color</a></div><div class="ttdeci">void set_bkground_color(uint8_t color)</div><div class="ttdoc">Установить цвет заднего фона</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00043">text_framebuffer.c:43</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_a30f902ac982f8557b527ba9214cadad2"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#a30f902ac982f8557b527ba9214cadad2">move_cursor</a></div><div class="ttdeci">void move_cursor(uint8_t x, uint8_t y)</div><div class="ttdoc">Установить позицию курсора по X Y.</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00028">text_framebuffer.c:28</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_a5971424e96d4a37a770a17e69c51139a"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#a5971424e96d4a37a770a17e69c51139a">print_dump</a></div><div class="ttdeci">void print_dump(void *address, uint32_t size)</div><div class="ttdoc">Печать откладочного части кода</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00261">text_framebuffer.c:261</a></div></div>
 <div class="ttc" id="acommon_8h_html"><div class="ttname"><a href="../../dc/d54/common_8h.html">common.h</a></div><div class="ttdoc">Основные определения ядра</div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_afebacb8a2ad229f417630f983e33f244"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#afebacb8a2ad229f417630f983e33f244">set_video_vaddr</a></div><div class="ttdeci">void set_video_vaddr(void *vaddr)</div><div class="ttdoc">Установить видеоадрес</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00270">text_framebuffer.c:270</a></div></div>
 <div class="ttc" id="astruct____attribute_____html"><div class="ttname"><a href="../../dd/d3f/struct____attribute____.html">__attribute__</a></div><div class="ttdoc">Структура файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/d77/ramdisk_8h_source.html#l00015">ramdisk.h:15</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_ae8e3dd8e8d20f14d8521c893acaa69b2"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#ae8e3dd8e8d20f14d8521c893acaa69b2">print_text</a></div><div class="ttdeci">void print_text(char *s)</div><div class="ttdoc">Печать текста на экран</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00142">text_framebuffer.c:142</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_a92135bc36834679c2e1cc5961844fa32"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#a92135bc36834679c2e1cc5961844fa32">debug_msg</a></div><div class="ttdeci">void debug_msg(char *s, uint32_t value)</div><div class="ttdoc">Печать откладочного сообщения</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00249">text_framebuffer.c:249</a></div></div>
-<div class="ttc" id="atext__framebuffer_8c_html_a46ab5b3b65bcbf9322299851feeeaca2"><div class="ttname"><a href="../../d3/d22/text__framebuffer_8c.html#a46ab5b3b65bcbf9322299851feeeaca2">set_text_color</a></div><div class="ttdeci">void set_text_color(uint8_t color)</div><div class="ttdoc">Установить цвет текста</div><div class="ttdef"><b>Definition:</b> <a href="../../d3/d22/text__framebuffer_8c_source.html#l00052">text_framebuffer.c:52</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_009f605b833ac4622acd6c3c0c26c0f0.html">include</a></li><li class="navelem"><a class="el" href="../../dir_10a9efac6b88e559a53b8b01b99bfe83.html">drv</a></li><li class="navelem"><b>text_framebuffer.h</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 13:03:39. Создано системой
+    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 9 Ноя 2022 16:32:35. Создано системой
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>
