@@ -1,6 +1,7 @@
 <html><body>
 <h1>SayoriOS - открытое публичное ядро операционной системы</h1>
 <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" alt="C">
+<img src="https://img.shields.io/github/workflow/status/pimnik98/SayoriOS/%F0%9F%A4%96%20SayoriOS%20Soul%20%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F%20%D1%81%D0%B1%D0%BE%D1%80%D0%BA%D0%B0%20%D0%BF%D1%80%D0%B8%20%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%D1%85%20%D0%B2%20%D1%80%D0%B5%D0%BF%D0%BE%D0%B7%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%B8?style=plastic" alt="build">
 <p>Простая x86 операционная система на языке C с хорошо документированным ядром.<br>
     Для работы с ядром, могут потребоваться инструменты <a href="https://github.com/pimnik98/SayoriSDK"><b>SayoriSDK</b></a>
 </p>
