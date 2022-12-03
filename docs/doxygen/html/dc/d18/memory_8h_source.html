@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Исходный файл kernel/include/sys/memory.h</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -34,10 +34,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -215,23 +215,21 @@ $(document).ready(function(){initNavTree('dc/d18/memory_8h_source.html','../../'
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;physaddr_t <a class="code" href="../../df/dd5/memory_8c.html#a5bf3165f89335118ba3ff70e5cf71c93">get_kernel_dir</a>(<span class="keywordtype">void</span>);</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="acommon_8h_html"><div class="ttname"><a href="../../dc/d54/common_8h.html">common.h</a></div><div class="ttdoc">Основные определения ядра</div></div>
+<div class="ttc" id="amemory_8c_html_a22481ed8afdb6463d74ba89f7500bd19"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a22481ed8afdb6463d74ba89f7500bd19">switch_page_mode</a></div><div class="ttdeci">void switch_page_mode(void)</div><div class="ttdoc">Переключение режима страничной памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00026">memory.c:26</a></div></div>
+<div class="ttc" id="amemory_8c_html_a22ada60fd8cc82839a79cb23b627c710"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a22ada60fd8cc82839a79cb23b627c710">init_memory_manager</a></div><div class="ttdeci">void init_memory_manager(uint32_t stack)</div><div class="ttdoc">Инициализация менеджера памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00345">memory.c:345</a></div></div>
+<div class="ttc" id="amemory_8c_html_a3feee7ce23627a6a93b3f3f89eac783a"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a3feee7ce23627a6a93b3f3f89eac783a">check_memory_map</a></div><div class="ttdeci">void check_memory_map(memory_map_entry_t *mmap_addr, uint32_t length)</div><div class="ttdoc">Проверка карты памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00081">memory.c:81</a></div></div>
+<div class="ttc" id="amemory_8c_html_a5bf3165f89335118ba3ff70e5cf71c93"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a5bf3165f89335118ba3ff70e5cf71c93">get_kernel_dir</a></div><div class="ttdeci">physaddr_t get_kernel_dir(void)</div><div class="ttdoc">Получение точки входа ядра</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00573">memory.c:573</a></div></div>
+<div class="ttc" id="amemory_8c_html_ad7853eaef3d9ceb8cc4bd6e1941c14ec"><div class="ttname"><a href="../../df/dd5/memory_8c.html#ad7853eaef3d9ceb8cc4bd6e1941c14ec">map_pages</a></div><div class="ttdeci">uint8_t map_pages(physaddr_t page_dir, void *vaddr, physaddr_t paddr, size_t count, uint32_t flags)</div><div class="ttdoc">???</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00414">memory.c:414</a></div></div>
+<div class="ttc" id="astruct____attribute_____html"><div class="ttname"><a href="../../dd/d3f/struct____attribute____.html">__attribute__</a></div><div class="ttdoc">Структура файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/d77/ramdisk_8h_source.html#l00015">ramdisk.h:15</a></div></div>
+<div class="ttc" id="astructmemory__map__entry_html"><div class="ttname"><a href="../../de/d47/structmemory__map__entry.html">memory_map_entry</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d1/dc0/multiboot_8h_source.html#l00103">multiboot.h:104</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="astructmemory__map__entry_html"><div class="ttname"><a href="../../de/d47/structmemory__map__entry.html">memory_map_entry</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d1/dc0/multiboot_8h_source.html#l00103">multiboot.h:103</a></div></div>
-<div class="ttc" id="amemory_8c_html_a3feee7ce23627a6a93b3f3f89eac783a"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a3feee7ce23627a6a93b3f3f89eac783a">check_memory_map</a></div><div class="ttdeci">void check_memory_map(memory_map_entry_t *mmap_addr, uint32_t length)</div><div class="ttdoc">Проверка карты памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00081">memory.c:81</a></div></div>
-<div class="ttc" id="amemory_8c_html_ad7853eaef3d9ceb8cc4bd6e1941c14ec"><div class="ttname"><a href="../../df/dd5/memory_8c.html#ad7853eaef3d9ceb8cc4bd6e1941c14ec">map_pages</a></div><div class="ttdeci">uint8_t map_pages(physaddr_t page_dir, void *vaddr, physaddr_t paddr, size_t count, uint32_t flags)</div><div class="ttdoc">???</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00414">memory.c:414</a></div></div>
-<div class="ttc" id="amemory_8c_html_a22481ed8afdb6463d74ba89f7500bd19"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a22481ed8afdb6463d74ba89f7500bd19">switch_page_mode</a></div><div class="ttdeci">void switch_page_mode(void)</div><div class="ttdoc">Переключение режима страничной памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00026">memory.c:26</a></div></div>
-<div class="ttc" id="acommon_8h_html"><div class="ttname"><a href="../../dc/d54/common_8h.html">common.h</a></div><div class="ttdoc">Основные определения ядра</div></div>
-<div class="ttc" id="astruct____attribute_____html"><div class="ttname"><a href="../../dd/d3f/struct____attribute____.html">__attribute__</a></div><div class="ttdoc">Структура файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/d77/ramdisk_8h_source.html#l00015">ramdisk.h:15</a></div></div>
-<div class="ttc" id="amemory_8c_html_a22ada60fd8cc82839a79cb23b627c710"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a22ada60fd8cc82839a79cb23b627c710">init_memory_manager</a></div><div class="ttdeci">void init_memory_manager(uint32_t stack)</div><div class="ttdoc">Инициализация менеджера памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00345">memory.c:345</a></div></div>
-<div class="ttc" id="amemory_8c_html_a5bf3165f89335118ba3ff70e5cf71c93"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a5bf3165f89335118ba3ff70e5cf71c93">get_kernel_dir</a></div><div class="ttdeci">physaddr_t get_kernel_dir(void)</div><div class="ttdoc">Получение точки входа ядра</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00573">memory.c:573</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_009f605b833ac4622acd6c3c0c26c0f0.html">include</a></li><li class="navelem"><a class="el" href="../../dir_3783a9e4629973085aab7079e437c286.html">sys</a></li><li class="navelem"><b>memory.h</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Вт 22 Ноя 2022 00:46:43. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 3 Дек 2022 06:29:38. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

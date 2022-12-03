@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Исходный файл kernel/src/sys/gdt.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -34,10 +34,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -128,7 +128,7 @@ $(document).ready(function(){initNavTree('de/d68/gdt_8c_source.html','../../'); 
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    gdt_entries[num].base_high = (base &gt;&gt; 24) &amp; 0xFF;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    </div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    gdt_entries[num].limit_low = (limit &amp; 0xFFFF);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    gdt_entries[num].granularity = (limit &gt;&gt; 16) &amp; 0<a class="code" href="../../d8/d57/fonts_8c.html#aa3d665c6789c63c1601c338c4a3f17ec">xF</a>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    gdt_entries[num].granularity = (limit &gt;&gt; 16) &amp; 0xF;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    gdt_entries[num].granularity |= gran &amp; 0xF0;</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    gdt_entries[num].access = access;</div>
@@ -149,7 +149,7 @@ $(document).ready(function(){initNavTree('de/d68/gdt_8c_source.html','../../'); 
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    tss_d-&gt;base_23_16 = (base &gt;&gt; 16) &amp; 0xFF;</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    tss_d-&gt;base_31_24 = (base &gt;&gt; 24) &amp; 0xFF;</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    tss_d-&gt;limit_15_0 = limit &amp; 0xFFFF;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    tss_d-&gt;limit_19_16 = (limit &gt;&gt; 16) &amp; 0<a class="code" href="../../d8/d57/fonts_8c.html#aa3d665c6789c63c1601c338c4a3f17ec">xF</a>;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    tss_d-&gt;limit_19_16 = (limit &gt;&gt; 16) &amp; 0xF;</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    tss_d-&gt;present = 1;</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    tss_d-&gt;sys = 0;</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    tss_d-&gt;DPL = 0;</div>
@@ -253,28 +253,25 @@ $(document).ready(function(){initNavTree('de/d68/gdt_8c_source.html','../../'); 
 <div class="line"><a name="l00215"></a><span class="lineno"><a class="line" href="../../de/d68/gdt_8c.html#a12db464b4f34fe0c932c2fc86d8cd6ca">  215</a></span>&#160;uint32_t <a class="code" href="../../de/d68/gdt_8c.html#a12db464b4f34fe0c932c2fc86d8cd6ca">get_tss_esp0</a>(){</div>
 <div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <span class="keywordflow">return</span> tss.esp0;</div>
 <div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;}</div>
-</div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
-<div class="ttc" id="aports_8c_html_a8bf7a9af91c08e6f876aaffeccd48ff3"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a8bf7a9af91c08e6f876aaffeccd48ff3">outb</a></div><div class="ttdeci">void outb(uint16_t port, uint8_t val)</div><div class="ttdoc">Запись одного байта в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00019">ports.c:19</a></div></div>
-<div class="ttc" id="afonts_8c_html_aa3d665c6789c63c1601c338c4a3f17ec"><div class="ttname"><a href="../../d8/d57/fonts_8c.html#aa3d665c6789c63c1601c338c4a3f17ec">xF</a></div><div class="ttdeci">uint32_t xF</div><div class="ttdoc">Конфигуратор 1.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d57/fonts_8c_source.html#l00017">fonts.c:17</a></div></div>
-<div class="ttc" id="astructidt__ptr__struct_html"><div class="ttname"><a href="../../d7/d46/structidt__ptr__struct.html">idt_ptr_struct</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00122">descriptor_tables.h:122</a></div></div>
-<div class="ttc" id="astructgdt__ptr__struct_html"><div class="ttname"><a href="../../d2/d07/structgdt__ptr__struct.html">gdt_ptr_struct</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00093">descriptor_tables.h:93</a></div></div>
-<div class="ttc" id="agdt_8c_html_aa4f8cddc800b64001ea860a80ab3ac0b"><div class="ttname"><a href="../../de/d68/gdt_8c.html#aa4f8cddc800b64001ea860a80ab3ac0b">set_kernel_stack_in_tss</a></div><div class="ttdeci">void set_kernel_stack_in_tss(uint32_t stack)</div><div class="ttdoc">???</div><div class="ttdef"><b>Definition:</b> <a href="../../de/d68/gdt_8c_source.html#l00108">gdt.c:108</a></div></div>
-<div class="ttc" id="astructgdt__entry__struct_html"><div class="ttname"><a href="../../d1/d8f/structgdt__entry__struct.html">gdt_entry_struct</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00076">descriptor_tables.h:76</a></div></div>
-<div class="ttc" id="agdt_8c_html_ada852e417fea66ce4f0c6d01c6a8bb4e"><div class="ttname"><a href="../../de/d68/gdt_8c.html#ada852e417fea66ce4f0c6d01c6a8bb4e">write_tss</a></div><div class="ttdeci">void write_tss(int32_t num, uint32_t ss0, uint32_t esp0)</div><div class="ttdoc">???</div><div class="ttdef"><b>Definition:</b> <a href="../../de/d68/gdt_8c_source.html#l00078">gdt.c:78</a></div></div>
-<div class="ttc" id="astructidt__entry__struct_html"><div class="ttname"><a href="../../dd/d1a/structidt__entry__struct.html">idt_entry_struct</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00106">descriptor_tables.h:106</a></div></div>
-<div class="ttc" id="astructtss__descriptor_html"><div class="ttname"><a href="../../d9/d63/structtss__descriptor.html">tss_descriptor</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00016">descriptor_tables.h:16</a></div></div>
 <div class="ttc" id="agdt_8c_html_a12db464b4f34fe0c932c2fc86d8cd6ca"><div class="ttname"><a href="../../de/d68/gdt_8c.html#a12db464b4f34fe0c932c2fc86d8cd6ca">get_tss_esp0</a></div><div class="ttdeci">uint32_t get_tss_esp0()</div><div class="ttdoc">???</div><div class="ttdef"><b>Definition:</b> <a href="../../de/d68/gdt_8c_source.html#l00215">gdt.c:215</a></div></div>
 <div class="ttc" id="agdt_8c_html_a1915982109b640821234bf8e0de3116c"><div class="ttname"><a href="../../de/d68/gdt_8c.html#a1915982109b640821234bf8e0de3116c">init_descriptor_tables</a></div><div class="ttdeci">void init_descriptor_tables(void)</div><div class="ttdoc">Инициализация GDT и IDT.</div><div class="ttdef"><b>Definition:</b> <a href="../../de/d68/gdt_8c_source.html#l00045">gdt.c:45</a></div></div>
-<div class="ttc" id="astructtss__entry_html"><div class="ttname"><a href="../../d5/d29/structtss__entry.html">tss_entry</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00038">descriptor_tables.h:38</a></div></div>
+<div class="ttc" id="agdt_8c_html_aa4f8cddc800b64001ea860a80ab3ac0b"><div class="ttname"><a href="../../de/d68/gdt_8c.html#aa4f8cddc800b64001ea860a80ab3ac0b">set_kernel_stack_in_tss</a></div><div class="ttdeci">void set_kernel_stack_in_tss(uint32_t stack)</div><div class="ttdoc">???</div><div class="ttdef"><b>Definition:</b> <a href="../../de/d68/gdt_8c_source.html#l00108">gdt.c:108</a></div></div>
+<div class="ttc" id="agdt_8c_html_ada852e417fea66ce4f0c6d01c6a8bb4e"><div class="ttname"><a href="../../de/d68/gdt_8c.html#ada852e417fea66ce4f0c6d01c6a8bb4e">write_tss</a></div><div class="ttdeci">void write_tss(int32_t num, uint32_t ss0, uint32_t esp0)</div><div class="ttdoc">???</div><div class="ttdef"><b>Definition:</b> <a href="../../de/d68/gdt_8c_source.html#l00078">gdt.c:78</a></div></div>
+<div class="ttc" id="aports_8c_html_a8bf7a9af91c08e6f876aaffeccd48ff3"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a8bf7a9af91c08e6f876aaffeccd48ff3">outb</a></div><div class="ttdeci">void outb(uint16_t port, uint8_t val)</div><div class="ttdoc">Запись одного байта в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00019">ports.c:19</a></div></div>
 <div class="ttc" id="astring_8c_html_aa8045b75c034a635046b3b2fe69a9c20"><div class="ttname"><a href="../../d1/db0/string_8c.html#aa8045b75c034a635046b3b2fe69a9c20">memset</a></div><div class="ttdeci">void memset(void *ptr, uint8_t value, size_t size)</div><div class="ttdoc">Заполнение массива указанными символами</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00126">string.c:126</a></div></div>
+<div class="ttc" id="astructgdt__entry__struct_html"><div class="ttname"><a href="../../d1/d8f/structgdt__entry__struct.html">gdt_entry_struct</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00076">descriptor_tables.h:77</a></div></div>
+<div class="ttc" id="astructgdt__ptr__struct_html"><div class="ttname"><a href="../../d2/d07/structgdt__ptr__struct.html">gdt_ptr_struct</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00093">descriptor_tables.h:94</a></div></div>
+<div class="ttc" id="astructidt__entry__struct_html"><div class="ttname"><a href="../../dd/d1a/structidt__entry__struct.html">idt_entry_struct</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00106">descriptor_tables.h:107</a></div></div>
+<div class="ttc" id="astructidt__ptr__struct_html"><div class="ttname"><a href="../../d7/d46/structidt__ptr__struct.html">idt_ptr_struct</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00122">descriptor_tables.h:123</a></div></div>
+<div class="ttc" id="astructtss__descriptor_html"><div class="ttname"><a href="../../d9/d63/structtss__descriptor.html">tss_descriptor</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00016">descriptor_tables.h:17</a></div></div>
+<div class="ttc" id="astructtss__entry_html"><div class="ttname"><a href="../../d5/d29/structtss__entry.html">tss_entry</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d38/descriptor__tables_8h_source.html#l00038">descriptor_tables.h:39</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../de/d68/gdt_8c.html">gdt.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Вт 22 Ноя 2022 00:46:43. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 3 Дек 2022 06:29:38. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

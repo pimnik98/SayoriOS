@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Исходный файл kernel/include/sys/scheduler.h</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -34,10 +34,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -165,27 +165,25 @@ $(document).ready(function(){initNavTree('d2/dd8/scheduler_8h_source.html','../.
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dd/d6c/scheduler_8c.html#ac316118d6cd39a61fe44cb7921d285ad">init_user_mode</a>(<span class="keywordtype">void</span>* entry_point, <span class="keywordtype">size_t</span> stack_size);</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#endif</span></div>
-</div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
-<div class="ttc" id="ascheduler_8c_html_a4588155b95b99709f003d042ded83eeb"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a4588155b95b99709f003d042ded83eeb">init_task_manager</a></div><div class="ttdeci">void init_task_manager(void)</div><div class="ttdoc">Инициализация менеджера задач</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00025">scheduler.c:25</a></div></div>
-<div class="ttc" id="ascheduler_8c_html_a3bfee6a8ed6319708dbc7ecb0a828a2d"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a3bfee6a8ed6319708dbc7ecb0a828a2d">thread_create</a></div><div class="ttdeci">thread_t * thread_create(process_t *proc, void *entry_point, size_t stack_size, bool kernel, bool suspend)</div><div class="ttdoc">Создание потока</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00117">scheduler.c:117</a></div></div>
-<div class="ttc" id="ascheduler_8c_html_a1c500bc4623e1f9c12262fb67abf8106"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a1c500bc4623e1f9c12262fb67abf8106">switch_task</a></div><div class="ttdeci">void switch_task(void)</div><div class="ttdoc">Переключение задач</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00076">scheduler.c:76</a></div></div>
-<div class="ttc" id="ascheduler_8c_html_a72aa14db67948f0ada5c11b3ceba46e3"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a72aa14db67948f0ada5c11b3ceba46e3">thread_suspend</a></div><div class="ttdeci">void thread_suspend(thread_t *thread, bool suspend)</div><div class="ttdoc">Остановить поток</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00176">scheduler.c:176</a></div></div>
-<div class="ttc" id="astruct__list__item__t_html"><div class="ttname"><a href="../../dc/d24/struct__list__item__t.html">_list_item_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../da/d23/list_8h_source.html#l00032">list.h:32</a></div></div>
 <div class="ttc" id="acommon_8h_html"><div class="ttname"><a href="../../dc/d54/common_8h.html">common.h</a></div><div class="ttdoc">Основные определения ядра</div></div>
-<div class="ttc" id="astruct____attribute_____html"><div class="ttname"><a href="../../dd/d3f/struct____attribute____.html">__attribute__</a></div><div class="ttdoc">Структура файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/d77/ramdisk_8h_source.html#l00015">ramdisk.h:15</a></div></div>
-<div class="ttc" id="ascheduler_8c_html_aee2c8183f499368eeafe0d95a2bffc5f"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#aee2c8183f499368eeafe0d95a2bffc5f">is_multitask</a></div><div class="ttdeci">bool is_multitask(void)</div><div class="ttdoc">Получение состояния о мультипотоке</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00213">scheduler.c:213</a></div></div>
-<div class="ttc" id="ascheduler_8c_html_ac316118d6cd39a61fe44cb7921d285ad"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#ac316118d6cd39a61fe44cb7921d285ad">init_user_mode</a></div><div class="ttdeci">void init_user_mode(void *entry_point, size_t stack_size)</div><div class="ttdoc">Переключиться в пользовательский режим</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00223">scheduler.c:223</a></div></div>
-<div class="ttc" id="ascheduler_8c_html_a46e1e4a24fc7550788f7507f1282a7b9"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a46e1e4a24fc7550788f7507f1282a7b9">get_current_proc</a></div><div class="ttdeci">process_t * get_current_proc(void)</div><div class="ttdoc">Получить текущий обработчик процесса</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00101">scheduler.c:101</a></div></div>
 <div class="ttc" id="akernel_8c_html_a0aa10e95d9117d81d8089103e22d00fa"><div class="ttname"><a href="../../d9/d26/kernel_8c.html#a0aa10e95d9117d81d8089103e22d00fa">kernel</a></div><div class="ttdeci">int kernel(multiboot_header_t *mboot, uint32_t initial_esp)</div><div class="ttdoc">Точка входа в ядро</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/d26/kernel_8c_source.html#l00069">kernel.c:69</a></div></div>
 <div class="ttc" id="ascheduler_8c_html_a105ef3d6d1df202eba90e0e6f8322c72"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a105ef3d6d1df202eba90e0e6f8322c72">thread_exit</a></div><div class="ttdeci">void thread_exit(thread_t *thread)</div><div class="ttdoc">Завершить текущий поток</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00185">scheduler.c:185</a></div></div>
+<div class="ttc" id="ascheduler_8c_html_a1c500bc4623e1f9c12262fb67abf8106"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a1c500bc4623e1f9c12262fb67abf8106">switch_task</a></div><div class="ttdeci">void switch_task(void)</div><div class="ttdoc">Переключение задач</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00076">scheduler.c:76</a></div></div>
+<div class="ttc" id="ascheduler_8c_html_a3bfee6a8ed6319708dbc7ecb0a828a2d"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a3bfee6a8ed6319708dbc7ecb0a828a2d">thread_create</a></div><div class="ttdeci">thread_t * thread_create(process_t *proc, void *entry_point, size_t stack_size, bool kernel, bool suspend)</div><div class="ttdoc">Создание потока</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00117">scheduler.c:117</a></div></div>
+<div class="ttc" id="ascheduler_8c_html_a4588155b95b99709f003d042ded83eeb"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a4588155b95b99709f003d042ded83eeb">init_task_manager</a></div><div class="ttdeci">void init_task_manager(void)</div><div class="ttdoc">Инициализация менеджера задач</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00025">scheduler.c:25</a></div></div>
+<div class="ttc" id="ascheduler_8c_html_a46e1e4a24fc7550788f7507f1282a7b9"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a46e1e4a24fc7550788f7507f1282a7b9">get_current_proc</a></div><div class="ttdeci">process_t * get_current_proc(void)</div><div class="ttdoc">Получить текущий обработчик процесса</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00101">scheduler.c:101</a></div></div>
+<div class="ttc" id="ascheduler_8c_html_a72aa14db67948f0ada5c11b3ceba46e3"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a72aa14db67948f0ada5c11b3ceba46e3">thread_suspend</a></div><div class="ttdeci">void thread_suspend(thread_t *thread, bool suspend)</div><div class="ttdoc">Остановить поток</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00176">scheduler.c:176</a></div></div>
+<div class="ttc" id="ascheduler_8c_html_ac316118d6cd39a61fe44cb7921d285ad"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#ac316118d6cd39a61fe44cb7921d285ad">init_user_mode</a></div><div class="ttdeci">void init_user_mode(void *entry_point, size_t stack_size)</div><div class="ttdoc">Переключиться в пользовательский режим</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00223">scheduler.c:223</a></div></div>
+<div class="ttc" id="ascheduler_8c_html_aee2c8183f499368eeafe0d95a2bffc5f"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#aee2c8183f499368eeafe0d95a2bffc5f">is_multitask</a></div><div class="ttdeci">bool is_multitask(void)</div><div class="ttdoc">Получение состояния о мультипотоке</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00213">scheduler.c:213</a></div></div>
+<div class="ttc" id="astruct____attribute_____html"><div class="ttname"><a href="../../dd/d3f/struct____attribute____.html">__attribute__</a></div><div class="ttdoc">Структура файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/d77/ramdisk_8h_source.html#l00015">ramdisk.h:15</a></div></div>
+<div class="ttc" id="astruct__list__item__t_html"><div class="ttname"><a href="../../dc/d24/struct__list__item__t.html">_list_item_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../da/d23/list_8h_source.html#l00032">list.h:33</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_009f605b833ac4622acd6c3c0c26c0f0.html">include</a></li><li class="navelem"><a class="el" href="../../dir_3783a9e4629973085aab7079e437c286.html">sys</a></li><li class="navelem"><b>scheduler.h</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Вт 22 Ноя 2022 00:46:43. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 3 Дек 2022 06:29:38. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
