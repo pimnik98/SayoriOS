@@ -1,6 +1,6 @@
 /**
  * @file kernel.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru) and Andrey (Drew) Pavlenko (pikachu.andrey@vk.com)
  * @brief Основная точка входа в ядро
  * @version 0.3.0
  * @date 2022-11-01
@@ -11,9 +11,55 @@
 
 #include "kernel.h"
 #include "lib/stdio.h"
+#include "sys/float.h"
+#include "sys/rsdp.h"
+#include <io/colors.h>
+
 multiboot_header_t* multiboot;
 uint32_t init_esp = 0;
 bool initRD = false;
+bool autoexec = false;
+char* cmd_autoexec = "";
+
+/**
+ * @brief Обработка комманд указаных ядру при загрузке
+ *
+ * @param char* cmd - Команды
+ */
+void kHandlerCMD(char* cmd){
+    qemu_log("[kCMD] '%s'",cmd);
+    uint32_t kCMDc = str_cdsp(cmd," ");
+    uint32_t kCMDc_c = 0;
+    char* out[128] = {0};
+    str_split(cmd,out," ");
+     for(int i = 0; kCMDc >= i; i++){
+        kCMDc_c = str_cdsp(out[i],"=");
+        char* out_data[128] = {0};
+        if (kCMDc_c != 1){
+            qemu_log("[kCMD] [%d] %s is ignore.",i,out[i]);
+            continue;
+        }
+        str_split(out[i],out_data,"=");
+        if (strcmpn(out_data[0],"bootscreen")){
+            // Config BOOTSCREEN
+            if (strcmpn(out_data[1],"minimal")){
+                bootScreenChangeMode(1);
+            } else if (strcmpn(out_data[1],"light")){
+                bootScreenChangeTheme(1);
+            } else if (strcmpn(out_data[1],"dark")){
+                bootScreenChangeTheme(0);
+            } else {
+                qemu_log("\t Sorry, no support bootscreen mode!");
+            }
+        }
+        if (strcmpn(out_data[0],"exec")){
+            cmd_autoexec = out_data[1];
+            autoexec = true;
+            qemu_log("\t After the kernel has fully started, the `%s` program will be launched",cmd_autoexec);
+        }
+        //qemu_log("[kCMD] [%d] %s >\n\tKey: %s\n\tValue:%s",i,out[i],out_data[0],out_data[1]);
+     }
+}
 
 /**
  * @brief Монтирует виртуальный диск с файловой системой Sayori Easy File System
@@ -29,6 +75,7 @@ void initrd_sefs(int irdst){
     vfs_reg(irdst,VFS_TYPE_MOUNT_SEFS);
     initRD = true;
 }
+
 
 /**
  * @brief Инициализирует модули подключенные к ОС
@@ -73,6 +120,7 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp){
         VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH,    // Версия ядра
         __TIMESTAMP__                                   // Время окончания компиляции ядра
     );
+    kHandlerCMD(mboot->cmdline);
     qemu_log("Setting `Interrupt Descriptor Table`...");
     init_descriptor_tables();
     qemu_log("Setting `RIH`...");
@@ -81,17 +129,23 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp){
     check_memory_map((memory_map_entry_t*) mboot->mmap_addr, mboot->mmap_length);
     qemu_log("Memory manager initialization...");
     init_memory_manager(initial_esp);
+
     kModules_Init();
     setFontPath("/var/fonts/fonts.duke","/var/fonts/fonts.fdat"); // Для 9го размера
     setConfigurationFont(6,10,12); // Для 9
     qemu_log("Initializing the virtual video memory manager...");
     init_vbe(mboot);
     fontInit();
-    qemu_log("Font system initialization...");
+    qemu_log("Initalizing fonts...");
     tty_fontConfigurate();
     setColorFont(0xFFFFFF);
+
+    qemu_log("Initializing FPU...");
+	fpu_init();
+
     bootScreenInit(7);
     bootScreenLazy(true);
+
     bootScreenPaint("Настройка таймеров...");
     init_timer(BASE_FREQ);
     asm volatile ("sti");
@@ -105,10 +159,15 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp){
 
     bootScreenPaint("Настройка системных вызовов...");
     qemu_log("Registering System Calls...");
-    sleep_ms(2500);
+    // sleep_ms(2500);
     init_syscalls();
 
+    bootScreenPaint("Настройка ENV...");
+    qemu_log("Registering ENV...");
+    confidEnv();
+
     bootScreenPaint("Настройка I/O диспечера...");
+    qemu_log("Init I/O dispatcher...");
     init_io_dispatcher();
 
     bootScreenPaint("Определение процессора...");
@@ -117,6 +176,7 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp){
     bootScreenPaint("Готово...");
     sleep_ms(250);
     bootScreenClose(0x000000,0xFFFFFF);
+    tty_set_bgcolor(COLOR_BG);
     tty_printf("SayoriOS v%d.%d.%d\nДата компиляции: %s\n",
         VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH,    // Версия ядра
         __TIMESTAMP__                                   // Время окончания компиляции ядра
@@ -126,31 +186,22 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp){
     sayori_time_t time = get_time();
     tty_printf("\nВремя: %d:%d:%d\n", time.hours, time.minutes, time.seconds);
     keyboardInit();
+    mouse_install();
+
     tty_taskInit();
+    qemu_log("Initialized cursor animation...");
 
+    if (autoexec){
+        // Данное условие сработает, если указан параметр ядра exec
+        FILE* elf_auto = fopen(cmd_autoexec,"r");
+        if (ferror(elf_auto) != 0){
+            qemu_log("Autorun: Программа `%s` не найдена.\n",cmd_autoexec);
+        } else {
+            run_elf_file(cmd_autoexec, 0, 0);
+        }
+    }
+    
 	// TEST ZONE
-
-	/*
-	char buf[64] = {0};
-	FILE* fo = fopen("/initrd/test.txt", "r");
-		int ret = fread_c(fo, 5, 1, buf);
-	tty_printf("File contents: %s\n", buf);
-
-	*/
-	
-	/* WORKS -----v
-	int tnode = vfs_foundMount("/initrd/test.txt");
-	int telem = vfs_findFile("/initrd/test.txt");
-
-	vfs_read(tnode, telem, 0, 5, buf);
-	tty_printf("File contents: %s\n", buf);	
-	*/
-
-	// WORKS -----v
-	//tty_printf("File contents: %s\n", fread(fopen("/initrd/test.txt", "r")));
-
-    //int icode = run_elf_file("/start", 0, 0);
-    //tty_printf("ELF Run Code: %d\n", icode);
 
     struct dirent* testFS = vfs_getListFolder("/");
     size_t sss = vfs_getCountElemDir("/");
@@ -159,13 +210,23 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp){
     }
     qemu_log("[%d] %d [%s | %s]",sss,sizeof(testFS),testFS[0].name,testFS[1].name);
 
-    #if KEYBOARD_TEST==1
-    tty_printf("\n> Print any characters here. Go ahead!\n\n");
-    keyboardctl(KEYBOARD_ECHO, false);
-    while(1) {
-        tty_printf(".%s", getCharKeyboardWait(false));
-    }
-    #endif
+	// tty_printf("Finding RSDP...\n");
+
+    // int saddr;
+
+	// for(saddr = 0x000E0000; saddr < 0x000FFFFF; saddr++) {
+	// 	if(memcmp(saddr, rsdp_ptr, 8) == 0) {
+	// 		tty_printf("Found! At: %x\n", saddr);
+    //         break;
+	// 	}
+	// }
+
+    // RSDPDescriptor* rsdp = saddr;
+    // tty_printf("RSDP sig: %s\n", rsdp->signature);
+    // tty_printf("RSDP checksum: %d\n", rsdp->checksum);
+    // tty_printf("RSDP OEMID: %s\n", rsdp->OEMID);
+    // tty_printf("RSDP revision: %d\n", rsdp->revision);
+    // tty_printf("RSDP address: %x\n", rsdp->RSDTaddress);
 
     shell();
     

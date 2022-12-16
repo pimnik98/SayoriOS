@@ -9,7 +9,13 @@
 #define PORT_COM7 0x5E8
 #define PORT_COM8 0x4E8
 
-#define qemu_log(M, ...) qemu_printf("[LOG] (%s:%s:%d) " M "\n", __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define LOG_WITH_TIME 0
+
+#if LOG_WITH_TIME==0
+	#define qemu_log(M, ...) qemu_printf("[LOG] (%s:%s:%d) " M "\n", __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#else
+	#define qemu_log(M, ...) qemu_printf("[LOG] [%f] (%s:%s:%d) " M "\n", getUptime(), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#endif
 
 #define assert(condition) if (condition){                 \
     qemu_log("ASSERT FAIL");                                   \

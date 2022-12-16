@@ -29,13 +29,9 @@ void init_io_dispatcher(void){
  */
 uint8_t in_byte(uint16_t port){
 	uint8_t value = 0;
-
 	mutex_get(&port_mutex[port], true);
-
 	value = inb(port);
-
 	mutex_release(&port_mutex[port]);
-
 	return value;
 }
 
@@ -49,4 +45,31 @@ void out_byte(uint16_t port, uint8_t value){
 	mutex_get(&port_mutex[port], true);
 	outb(port, value);
 	mutex_release(&port_mutex[port]);
+}
+
+/**
+ * @brief Прочитать данные с порта
+ *
+ * @param uint16_t port - Порт
+ *
+ * @return uint16_t - Данные с порта
+ */
+uint8_t in_word(uint16_t port){
+    uint8_t value = 0;
+    mutex_get(&port_mutex[port], true);
+    value = ins(port);
+    mutex_release(&port_mutex[port]);
+    return value;
+}
+
+/**
+ * @brief Записать данные в порт
+ *
+ * @param uint16_t port - Порт
+ * @param uint16_t value - Значение
+ */
+void out_word(uint16_t port, uint8_t value){
+    mutex_get(&port_mutex[port], true);
+    outs(port, value);
+    mutex_release(&port_mutex[port]);
 }

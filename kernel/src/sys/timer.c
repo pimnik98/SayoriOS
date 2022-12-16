@@ -16,6 +16,7 @@ uint64_t tick = 0;			///< Количество тиков
 //uint8_t min = 0;			///< Минуты
 //uint8_t sec = 0;			///< Секунды
 uint32_t frequency = 0;		///< Частота
+float uptime = 0;
 
 /**
  * @brief Получить количество тиков
@@ -24,6 +25,10 @@ uint32_t frequency = 0;		///< Частота
  */
 uint64_t getTicks(){
 	return tick;
+}
+
+float getUptime() {
+	return uptime;
 }
 
 /**
@@ -42,6 +47,14 @@ uint64_t getFrequency(){
  */
 static void timer_callback(registers_t regs){
 	tick++;
+
+	if(fpu_isInitialized()) {
+		// uptime += 1/frequency;
+		float a = 1;
+		a /= frequency;
+		uptime += a;
+	}
+	
 	if (is_multitask())
 		task_switch();
 }
@@ -59,14 +72,6 @@ void sleep_ticks(uint32_t delay){
 		}
 	}
 }
-/**
- * @brief Ожидание по секундам
- *
- * @param uint32_t _d - Секунды
- */
-void sleep(uint32_t _d) {
-	sleep_ms(_d);
-}
 
 /**
  * @brief Ожидание по милисекундам
@@ -76,6 +81,15 @@ void sleep(uint32_t _d) {
 void sleep_ms(uint32_t milliseconds) {
 	uint32_t needticks = milliseconds*frequency;
 	sleep_ticks(needticks/1000);
+}
+
+/**
+ * @brief Ожидание по секундам
+ *
+ * @param uint32_t _d - Секунды
+ */
+void sleep(uint32_t _d) {
+	sleep_ms(_d);
 }
 
 /**

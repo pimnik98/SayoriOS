@@ -10,11 +10,11 @@ syscall_entry_call:
         push    %ecx
         push    %ebx
         
-        mov    16(%esp), %edx   
+        mov    16(%esp), %edx
         
         call    *%edx           
         
-        add     $12, %esp      
+        add     $12, %esp
         
         ret
 

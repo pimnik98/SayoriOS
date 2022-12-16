@@ -17,6 +17,7 @@ typedef void (*list_type_t)();
 typedef uint32_t (*write_type_t)(uint32_t,size_t,size_t,void *);
 typedef uint32_t (*findFile_type_t)(char*);
 typedef char* (*charData_type_t)(char*);
+typedef char* (*charintData_type_t)(int);
 typedef int (*getLengthFile_type_t)(int);
 typedef int (*getOffsetFile_type_t)(int);
 typedef uint64_t (*getDeviceSize_type_t)(int);
@@ -53,7 +54,7 @@ typedef struct fs_node
    getLengthFile_type_t getLengthFile;    ///< Функция FS - Функция для получения размера файла
    getLengthFile_type_t getOffsetFile;    ///< Функция FS - Функция для получения позиции файла (отступ)
    dirlist_type_t getListElem;            ///< Функция FS - Функция для получения списка файлов
-   charData_type_t getDevName;            ///< Функция для получения имени устройства
+   charintData_type_t getDevName;            ///< Функция для получения имени устройства
    char devName[512];                     ///< Имя устройства
    getDeviceSize_type_t diskUsed;         ///< Сколько использовано места
    getDeviceSize_type_t diskSpace;        ///< Сколько свободно места
@@ -79,9 +80,34 @@ extern fs_node_t *fs_root; // The root of the filesystem.
 // Стандартные функции чтения, записи, открытия, закрытия. Обратите внимание,
 //  что у них всех используется суффикс _fs с тем, чтобы отличать от функций чтения,
 // записи, открытия и закрытия дескрипторов файлов, а не нодов файлов.
-uint32_t read_fs(fs_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer);
-uint32_t write_fs(fs_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer);
-void open_fs(fs_node_t *node, uint8_t read, uint8_t write);
-void close_fs(fs_node_t *node);
-struct dirent *readdir_fs(fs_node_t *node, uint32_t index);
-fs_node_t *finddir_fs(fs_node_t *node, char *name);
+// uint32_t read_fs(fs_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer);
+// uint32_t write_fs(fs_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer);
+// void open_fs(fs_node_t *node, uint8_t read, uint8_t write);
+// void close_fs(fs_node_t *node);
+// struct dirent *readdir_fs(fs_node_t *node, uint32_t index);
+// fs_node_t *finddir_fs(fs_node_t *node, char *name);
+
+char* vfs_getPath(int node, char* path);
+int vfs_foundMount(char* path);
+void vfs_reg(int location,int type);
+int vfs_write(int node,int elem, size_t offset, size_t size, void *buf);
+int vfs_findFile(char* filename);
+bool vfs_exists(char* filename);
+uint32_t vfs_read(int node, int elem, size_t offset, size_t size, void *buf);
+char* vfs_readChar(int node,int elem);
+uint32_t vfs_findDir(char* path);
+uint64_t vfs_getLengthFilePath(char* filename);
+uint64_t vfs_getLengthFile(int node,int elem);
+int vfs_getOffsetFile(int node,int elem);
+uint64_t vfs_getDiskSize(int node);
+uint64_t vfs_getDiskSpace(int node);
+uint64_t vfs_getDiskUsed(int node);
+char* vfs_getName(int node);
+size_t vfs_getCountElemDir(char* path);
+struct dirent* vfs_getListFolder(char* path);
+void vfs_createFile();
+void vfs_createDir();
+void vfs_list();
+void vfs_deleteFile();
+void vfs_getType();
+void vfs_getMountPoint();

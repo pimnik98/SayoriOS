@@ -57,3 +57,16 @@ typedef struct svga_mode_info {
 } __attribute__ ((packed)) svga_mode_info_t;
 
 void tty_puts(const char str[]);
+void tty_printf(char *text, ...);
+
+
+void drawRect(int x,int y,int w, int h,int color);
+uint32_t getWidthScreen();
+uint32_t getHeightScreen();
+void setPosX(int32_t x);
+void setPosY(int32_t y);
+
+void punch();
+void tty_setcolor(int32_t color);
+void tty_changeState(bool state);
+void tty_set_bgcolor(int32_t color);

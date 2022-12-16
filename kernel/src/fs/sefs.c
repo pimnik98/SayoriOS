@@ -50,10 +50,14 @@ char* sefs_readChar(uint32_t node){
  */
 uint32_t sefs_read(uint32_t node, size_t offset, size_t size, void *buffer){
     sefs_file_header_t header = file_headers[node];
-    //qemu_log("[SEFS] [Read] Elem: %d | Off: %d | Size: %d",node,offset,size);
-    if (offset > size){
+    //qemu_log("[SEFS] [Read] Elem: %d | Off: %d | Size: %d", node, offset, size);
+    /*if (offset > size){
+        qemu_log("Offset larger that size!!! (%x > %x)", offset, size);
         return -2;
-    } else if (header.length < size){
+    } else*/
+
+    // Did you mean: offset+size > header.length
+    if (header.length < size){
         size = header.length;
     }
     memcpy(buffer, header.offset+offset, size);
@@ -333,7 +337,7 @@ fs_node_t *sefs_initrd(uint32_t location){
         strcpy(root_nodes[i].path, root_nodes[(sefs_header->nfiles - dirCount) + root_nodes[i].root].name);
         strcat(root_nodes[i].path,root_nodes[i].name);
         int fpath_len = strlen(root_nodes[i].path);
-        root_nodes[i].path[fpath_len+1] = "\0";
+        root_nodes[i].path[fpath_len+1] = '\0';
     }
     return sefs_root;
 }

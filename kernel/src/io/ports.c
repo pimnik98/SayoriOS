@@ -127,7 +127,7 @@ int32_t com1_is_transmit_empty() {
 /**
  * @brief Вывод одного символа через порт COM1
  *
- * @param a
+ * @param a - символ
  */
 void com1_write_char(char a) {
     while (com1_is_transmit_empty() == 0);
@@ -332,6 +332,26 @@ void qemu_print(char *format, va_list args) {
             case 'd':
                 qemu_putint(va_arg(args, int));
                 break;
+            case 'f': {
+                double a = va_arg(args, double);
+				if(!fpu_isInitialized()) {
+					qemu_putstring("0.0000000");
+					break;
+				}
+
+				if((int)a<0) {
+					a = -a;
+					com1_write_char('-');
+				}
+				
+				float rem = a-(int)a;
+				qemu_putint((int)a);
+				com1_write_char('.');
+				for(int n=0; n<7; n++) {
+				    qemu_putuint((int)(rem*ipow(10, n+1))%10);
+				}
+            	break;
+            }
             case 'i':
                 qemu_putint(va_arg(args, int));
                 break;
