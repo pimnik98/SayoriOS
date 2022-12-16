@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -300,43 +301,63 @@ $(document).ready(function(){initNavTree('d0/d6e/ports_8c_source.html','../../')
 <div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;d&#39;</span>:</div>
 <div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a84d0170205fce20a62b4cffc86f9a8cc">qemu_putint</a>(va_arg(args, <span class="keywordtype">int</span>));</div>
 <div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;i&#39;</span>:</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a84d0170205fce20a62b4cffc86f9a8cc">qemu_putint</a>(va_arg(args, <span class="keywordtype">int</span>));</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;u&#39;</span>:</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#ad5842c290ab8a1a78d940767cac2b6dc">qemu_putuint</a>(va_arg(args, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>));</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;x&#39;</span>:</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a2216758193db5eabef5e7fa495c8bf2c">qemu_puthex</a>(va_arg(args, uint32_t));</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;v&#39;</span>:</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a5a5239f2e39f9059e41d3a495a7a2309">qemu_puthex_v</a>(va_arg(args, uint32_t));</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;            <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(format[i]);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;            }</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;            <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(format[i]);</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        }</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        i++;</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    }</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;}</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160; </div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
-<div class="line"><a name="l00363"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a472b28888890793b0a49433fb0770496">  363</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a472b28888890793b0a49433fb0770496">qemu_printf</a>(<span class="keywordtype">char</span> *text, ...) {</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <a class="code" href="../../d5/d6b/structva__list.html">va_list</a> args;</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="comment">// find the first argument</span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    va_start(args, text);</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    <span class="comment">// pass print32_t the output handle the format text and the first argument</span></div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a304de0721ad1449f8a6d8474052ca25b">qemu_print</a>(text, args);</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160; </div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    va_end(args);</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;}</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;f&#39;</span>: {</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                <span class="keywordtype">double</span> a = va_arg(args, <span class="keywordtype">double</span>);</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                <span class="keywordflow">if</span>(!fpu_isInitialized()) {</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                    <a class="code" href="../../d0/d6e/ports_8c.html#a6b7ec8eb484a6472271ddf8a2add51cd">qemu_putstring</a>(<span class="stringliteral">&quot;0.0000000&quot;</span>);</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                }</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160; </div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                <span class="keywordflow">if</span>((<span class="keywordtype">int</span>)a&lt;0) {</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                    a = -a;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                    <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(<span class="charliteral">&#39;-&#39;</span>);</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                }</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                </div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                <span class="keywordtype">float</span> rem = a-(int)a;</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a84d0170205fce20a62b4cffc86f9a8cc">qemu_putint</a>((<span class="keywordtype">int</span>)a);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(<span class="charliteral">&#39;.&#39;</span>);</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> n=0; n&lt;7; n++) {</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                    <a class="code" href="../../d0/d6e/ports_8c.html#ad5842c290ab8a1a78d940767cac2b6dc">qemu_putuint</a>((<span class="keywordtype">int</span>)(rem*ipow(10, n+1))%10);</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                }</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;            }</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;i&#39;</span>:</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a84d0170205fce20a62b4cffc86f9a8cc">qemu_putint</a>(va_arg(args, <span class="keywordtype">int</span>));</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;u&#39;</span>:</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#ad5842c290ab8a1a78d940767cac2b6dc">qemu_putuint</a>(va_arg(args, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>));</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;x&#39;</span>:</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a2216758193db5eabef5e7fa495c8bf2c">qemu_puthex</a>(va_arg(args, uint32_t));</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;v&#39;</span>:</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a5a5239f2e39f9059e41d3a495a7a2309">qemu_puthex_v</a>(va_arg(args, uint32_t));</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;            <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(format[i]);</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;            }</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;            <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(format[i]);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        }</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        i++;</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    }</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;}</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160; </div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160; </div>
+<div class="line"><a name="l00383"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a472b28888890793b0a49433fb0770496">  383</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a472b28888890793b0a49433fb0770496">qemu_printf</a>(<span class="keywordtype">char</span> *text, ...) {</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <a class="code" href="../../d5/d6b/structva__list.html">va_list</a> args;</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    <span class="comment">// find the first argument</span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    va_start(args, text);</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    <span class="comment">// pass print32_t the output handle the format text and the first argument</span></div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a304de0721ad1449f8a6d8474052ca25b">qemu_print</a>(text, args);</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    va_end(args);</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;}</div>
 <div class="ttc" id="aports_8c_html_a1523588ef57e794dedb0e3b33ca52015"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a1523588ef57e794dedb0e3b33ca52015">ins</a></div><div class="ttdeci">uint16_t ins(uint16_t port)</div><div class="ttdoc">Чтение word из порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00071">ports.c:71</a></div></div>
 <div class="ttc" id="aports_8c_html_a2216758193db5eabef5e7fa495c8bf2c"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a2216758193db5eabef5e7fa495c8bf2c">qemu_puthex</a></div><div class="ttdeci">void qemu_puthex(uint32_t i)</div><div class="ttdoc">Вывод числа через порт COM1 в формате HEX.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00217">ports.c:217</a></div></div>
 <div class="ttc" id="aports_8c_html_a2e1e8e2c5724c1e8fd2dff2eada06479"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a2e1e8e2c5724c1e8fd2dff2eada06479">inb</a></div><div class="ttdeci">uint8_t inb(uint16_t port)</div><div class="ttdoc">Получение одного байта из порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00030">ports.c:30</a></div></div>
 <div class="ttc" id="aports_8c_html_a304de0721ad1449f8a6d8474052ca25b"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a304de0721ad1449f8a6d8474052ca25b">qemu_print</a></div><div class="ttdeci">void qemu_print(char *format, va_list args)</div><div class="ttdoc">Подфункция-обработчик аргументов для qemu_printf.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00316">ports.c:316</a></div></div>
-<div class="ttc" id="aports_8c_html_a472b28888890793b0a49433fb0770496"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a472b28888890793b0a49433fb0770496">qemu_printf</a></div><div class="ttdeci">void qemu_printf(char *text,...)</div><div class="ttdoc">Вывод через COM1 информации</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00363">ports.c:363</a></div></div>
+<div class="ttc" id="aports_8c_html_a472b28888890793b0a49433fb0770496"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a472b28888890793b0a49433fb0770496">qemu_printf</a></div><div class="ttdeci">void qemu_printf(char *text,...)</div><div class="ttdoc">Вывод через COM1 информации</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00383">ports.c:383</a></div></div>
 <div class="ttc" id="aports_8c_html_a4e8f950edfd03bbb83a734632d8bfb54"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a4e8f950edfd03bbb83a734632d8bfb54">outsl</a></div><div class="ttdeci">void outsl(uint16_t port, uint32_t *buffer, int32_t times)</div><div class="ttdoc">Запись длинного слова через порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00110">ports.c:110</a></div></div>
 <div class="ttc" id="aports_8c_html_a5a5239f2e39f9059e41d3a495a7a2309"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a5a5239f2e39f9059e41d3a495a7a2309">qemu_puthex_v</a></div><div class="ttdeci">void qemu_puthex_v(uint32_t i)</div><div class="ttdoc">Вывод числа через порт COM1 в формате HEX без 0x.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00242">ports.c:242</a></div></div>
 <div class="ttc" id="aports_8c_html_a62948b77073b9ce03d0ec4e27d28ad56"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a62948b77073b9ce03d0ec4e27d28ad56">insl</a></div><div class="ttdeci">void insl(uint16_t port, uint32_t *buffer, int32_t times)</div><div class="ttdoc">Чтение длинного слова через порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00096">ports.c:96</a></div></div>
@@ -361,7 +382,7 @@ $(document).ready(function(){initNavTree('d0/d6e/ports_8c_source.html','../../')
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f684e8e1ebea567db7f673c0b997cee3.html">io</a></li><li class="navelem"><a class="el" href="../../d0/d6e/ports_8c.html">ports.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

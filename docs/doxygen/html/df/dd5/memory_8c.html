@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -95,6 +96,7 @@ $(document).ready(function(){initNavTree('df/dd5/memory_8c.html','../../'); init
 <div class="textblock"><code>#include &quot;sys/memory.h&quot;</code><br />
 <code>#include &quot;drv/text_framebuffer.h&quot;</code><br />
 <code>#include &quot;io/ports.h&quot;</code><br />
+<code>#include &quot;lib/string.h&quot;</code><br />
 </div>
 <p><a href="../../df/dd5/memory_8c_source.html">См. исходные тексты.</a></p>
 <table class="memberdecls">
@@ -128,8 +130,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>vmm_alloc_page</b> (v
 <tr class="memitem:a156fa48873ddea3b28e8223d1747bc58"><td class="memItemLeft" align="right" valign="top"><a id="a156fa48873ddea3b28e8223d1747bc58"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>vmm_free_page</b> (virtual_addr_t vaddr)</td></tr>
 <tr class="separator:a156fa48873ddea3b28e8223d1747bc58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7b5f6aea54ff1e3355740f5941c5408"><td class="memItemLeft" align="right" valign="top"><a id="ad7b5f6aea54ff1e3355740f5941c5408"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>vmm_set_flags</b> (physaddr_t page_dir, void *vaddr)</td></tr>
+<tr class="separator:ad7b5f6aea54ff1e3355740f5941c5408"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7853eaef3d9ceb8cc4bd6e1941c14ec"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#ad7853eaef3d9ceb8cc4bd6e1941c14ec">map_pages</a> (physaddr_t page_dir, void *vaddr, physaddr_t paddr, size_t count, uint32_t flags)</td></tr>
-<tr class="memdesc:ad7853eaef3d9ceb8cc4bd6e1941c14ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">???  <a href="../../df/dd5/memory_8c.html#ad7853eaef3d9ceb8cc4bd6e1941c14ec">Подробнее...</a><br /></td></tr>
+<tr class="memdesc:ad7853eaef3d9ceb8cc4bd6e1941c14ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Привязывает физический адрес к виртуальному  <a href="../../df/dd5/memory_8c.html#ad7853eaef3d9ceb8cc4bd6e1941c14ec">Подробнее...</a><br /></td></tr>
 <tr class="separator:ad7853eaef3d9ceb8cc4bd6e1941c14ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2d465bbba160eacb1da00b1f307f059"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#aa2d465bbba160eacb1da00b1f307f059">kmalloc_common</a> (size_t size, bool align)</td></tr>
 <tr class="memdesc:aa2d465bbba160eacb1da00b1f307f059"><td class="mdescLeft">&#160;</td><td class="mdescRight">Выделение памяти  <a href="../../df/dd5/memory_8c.html#aa2d465bbba160eacb1da00b1f307f059">Подробнее...</a><br /></td></tr>
@@ -149,6 +154,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>vmm_free_page</b> (vi
 <tr class="memitem:a67e65412410d23cb46ec9b464a4b7027"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a67e65412410d23cb46ec9b464a4b7027">getInstalledRam</a> ()</td></tr>
 <tr class="memdesc:a67e65412410d23cb46ec9b464a4b7027"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получение установленого количества ОЗУ  <a href="../../df/dd5/memory_8c.html#a67e65412410d23cb46ec9b464a4b7027">Подробнее...</a><br /></td></tr>
 <tr class="separator:a67e65412410d23cb46ec9b464a4b7027"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a143321ed844f982bb8bdb6403df4b7ef"><td class="memItemLeft" align="right" valign="top"><a id="a143321ed844f982bb8bdb6403df4b7ef"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/memory_8c.html#a143321ed844f982bb8bdb6403df4b7ef">kcalloc</a> (size_t count, size_t size)</td></tr>
+<tr class="memdesc:a143321ed844f982bb8bdb6403df4b7ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Выделение памяти <br /></td></tr>
+<tr class="separator:a143321ed844f982bb8bdb6403df4b7ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Переменные</h2></td></tr>
@@ -223,7 +232,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>physaddr_t - Адрес </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00259">259</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00260">260</a></p>
 
 </div>
 </div>
@@ -262,7 +271,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00081">81</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00082">82</a></p>
 
 </div>
 </div>
@@ -301,7 +310,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00130">130</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00131">131</a></p>
 
 </div>
 </div>
@@ -330,7 +339,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>physmemory_pages_block_t* - Блок </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00118">118</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00119">119</a></p>
 
 </div>
 </div>
@@ -353,7 +362,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 <p>Получение точки входа ядра </p>
 <dl class="section return"><dt>Возвращает</dt><dd>physaddr_t - Получить точку входа ядра </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00573">573</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00603">603</a></p>
 
 </div>
 </div>
@@ -375,7 +384,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 <p>Получение установленого количества ОЗУ </p>
 <dl class="section return"><dt>Возвращает</dt><dd>uint64_t - Кол-во установленной ОЗУ </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00582">582</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00612">612</a></p>
 
 </div>
 </div>
@@ -403,7 +412,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00345">345</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00346">346</a></p>
 
 </div>
 </div>
@@ -431,7 +440,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00534">534</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00560">560</a></p>
 
 </div>
 </div>
@@ -460,7 +469,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>void* - ??? </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00514">514</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00540">540</a></p>
 
 </div>
 </div>
@@ -489,7 +498,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>void* - ??? </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00525">525</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00551">551</a></p>
 
 </div>
 </div>
@@ -529,7 +538,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>void* - ??? </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00472">472</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00494">494</a></p>
 
 </div>
 </div>
@@ -577,7 +586,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
       </table>
 </div><div class="memdoc">
 
-<p>??? </p>
+<p>Привязывает физический адрес к виртуальному </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
     <tr><td class="paramname">physaddr_t</td><td>page_dir - Каталог страниц </td></tr>
@@ -588,9 +597,9 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Возвращает</dt><dd>uint8_t - Адрес </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>uint8_t - Возвращает 1 если нет ошибок, иначе 0 </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00414">414</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00436">436</a></p>
 
 </div>
 </div>
@@ -618,7 +627,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00101">101</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/dd5/memory_8c_source.html">memory.c</a> строка <a class="el" href="../../df/dd5/memory_8c_source.html#l00102">102</a></p>
 
 </div>
 </div>
@@ -628,7 +637,7 @@ mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../df/dd5/memory_8c.html">memory.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

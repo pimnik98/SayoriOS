@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -119,6 +120,10 @@ char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d48/structenv.html#ae2c0d0678be0ecdd0ec0e4a323495458">OS_Arch</a> [128]</td></tr>
 <tr class="memdesc:ae2c0d0678be0ecdd0ec0e4a323495458"><td class="mdescLeft">&#160;</td><td class="mdescRight">Архитектура ядра <br /></td></tr>
 <tr class="separator:ae2c0d0678be0ecdd0ec0e4a323495458"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fb04b8e065ef5eb9105648c39ee1bb3"><td class="memItemLeft" align="right" valign="top"><a id="a6fb04b8e065ef5eb9105648c39ee1bb3"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d48/structenv.html#a6fb04b8e065ef5eb9105648c39ee1bb3">OS_VERSION_ENV</a></td></tr>
+<tr class="memdesc:a6fb04b8e065ef5eb9105648c39ee1bb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Версия ENV. <br /></td></tr>
+<tr class="separator:a6fb04b8e065ef5eb9105648c39ee1bb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8daed03cdc6b06a51d21adef07aba021"><td class="memItemLeft" align="right" valign="top"><a id="a8daed03cdc6b06a51d21adef07aba021"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d48/structenv.html#a8daed03cdc6b06a51d21adef07aba021">OS_VERSION_MAJOR</a></td></tr>
 <tr class="memdesc:a8daed03cdc6b06a51d21adef07aba021"><td class="mdescLeft">&#160;</td><td class="mdescRight">Версия ядра <br /></td></tr>
@@ -151,6 +156,14 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../..
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d48/structenv.html#a9aba0c9fbca4d5bf9462d8bc372b557f">Display_B</a></td></tr>
 <tr class="memdesc:a9aba0c9fbca4d5bf9462d8bc372b557f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Смещение экрана <br /></td></tr>
 <tr class="separator:a9aba0c9fbca4d5bf9462d8bc372b557f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72c3089204385d067dd1541de3a6cf38"><td class="memItemLeft" align="right" valign="top"><a id="a72c3089204385d067dd1541de3a6cf38"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d48/structenv.html#a72c3089204385d067dd1541de3a6cf38">Display_P</a></td></tr>
+<tr class="memdesc:a72c3089204385d067dd1541de3a6cf38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Глубина экрана <br /></td></tr>
+<tr class="separator:a72c3089204385d067dd1541de3a6cf38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5be63d1e4aa0141adba86211e893ff84"><td class="memItemLeft" align="right" valign="top"><a id="a5be63d1e4aa0141adba86211e893ff84"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d48/structenv.html#a5be63d1e4aa0141adba86211e893ff84">Display_S</a></td></tr>
+<tr class="memdesc:a5be63d1e4aa0141adba86211e893ff84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Размер буфера <br /></td></tr>
+<tr class="separator:a5be63d1e4aa0141adba86211e893ff84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04cce47a97834591b694ba050d4da42f"><td class="memItemLeft" align="right" valign="top"><a id="a04cce47a97834591b694ba050d4da42f"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d48/structenv.html#a04cce47a97834591b694ba050d4da42f">Ticks</a></td></tr>
 <tr class="memdesc:a04cce47a97834591b694ba050d4da42f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Количество текущих тиков <br /></td></tr>
@@ -180,7 +193,7 @@ uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../da/d48/structenv.html">env</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

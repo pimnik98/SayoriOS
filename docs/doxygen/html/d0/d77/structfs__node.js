@@ -9,7 +9,7 @@ var structfs__node =
     [ "findFile", "d0/d77/structfs__node.html#ab6254159890502c2abeb997100440366", null ],
     [ "flags", "d0/d77/structfs__node.html#a773b39d480759f67926cb18ae2219281", null ],
     [ "getCountElemFolder", "d0/d77/structfs__node.html#abbb5441d66cf92be029d307488f1483f", null ],
-    [ "getDevName", "d0/d77/structfs__node.html#a886994f8d2e9fb9acc388a6c13e1393e", null ],
+    [ "getDevName", "d0/d77/structfs__node.html#a20d297a1874c26a10246508e25ddc26b", null ],
     [ "getFileInfo", "d0/d77/structfs__node.html#ae6ef34ef41444423d27e697c1b24c526", null ],
     [ "getLengthFile", "d0/d77/structfs__node.html#a53cd85a2aed1978f7e2286d775e640be", null ],
     [ "getListElem", "d0/d77/structfs__node.html#a1b2c25a94fb7bb31ae9b8aedbdaf9afd", null ],

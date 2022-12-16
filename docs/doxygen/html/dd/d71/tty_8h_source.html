@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -142,19 +143,42 @@ $(document).ready(function(){initNavTree('dd/d71/tty_8h_source.html','../../'); 
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    uint32_t offScreenMemOff;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    uint16_t offScreenMemSize;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    uint8_t reserved1[206];</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;} <a class="code" href="../../dd/d3f/struct____attribute____.html">__attribute__</a> ((packed)) svga_mode_info_t;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;} <a class="code" href="../../dc/d54/common_8h.html#afbe98bd1f8d3c7a65d8a8048fdd8cd99">__attribute__</a> ((packed)) svga_mode_info_t;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keywordtype">void</span> tty_puts(<span class="keyword">const</span> <span class="keywordtype">char</span> str[]);</div>
-<div class="ttc" id="astruct____attribute_____html"><div class="ttname"><a href="../../dd/d3f/struct____attribute____.html">__attribute__</a></div><div class="ttdoc">Структура файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/d77/ramdisk_8h_source.html#l00015">ramdisk.h:15</a></div></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="keywordtype">char</span> *text, ...);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a21e184ff24e57a682c23f8c3451df34d">drawRect</a>(<span class="keywordtype">int</span> x,<span class="keywordtype">int</span> y,<span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h,<span class="keywordtype">int</span> color);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;uint32_t <a class="code" href="../../dc/d03/tty_8c.html#a28a3f902f557e9cf9c3dddd7cad609f0">getWidthScreen</a>();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;uint32_t <a class="code" href="../../dc/d03/tty_8c.html#adccb23d81da461b513fcc1a8d27b94a5">getHeightScreen</a>();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a5f33f1945627909dccc422eeb74e131d">setPosX</a>(int32_t x);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#abebc6971cdcd819d860931e3eba72209">setPosY</a>(int32_t y);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a4f9d2c8f51d72c77e996932a3de55b62">punch</a>();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a>(int32_t color);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a85e66ecea71028f65c4417865599a547">tty_changeState</a>(<span class="keywordtype">bool</span> state);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#af82f68a01c91ea5ae016fec63d77c0d0">tty_set_bgcolor</a>(int32_t color);</div>
+<div class="ttc" id="acommon_8h_html_afbe98bd1f8d3c7a65d8a8048fdd8cd99"><div class="ttname"><a href="../../dc/d54/common_8h.html#afbe98bd1f8d3c7a65d8a8048fdd8cd99">__attribute__</a></div><div class="ttdeci">struct registers __attribute__((packed))</div><div class="ttdoc">Структура данных пакета от мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00063">mouse.c:80</a></div></div>
 <div class="ttc" id="astructrgba__struct_html"><div class="ttname"><a href="../../db/d9d/structrgba__struct.html">rgba_struct</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d71/tty_8h_source.html#l00006">tty.h:6</a></div></div>
 <div class="ttc" id="astructsvga__mode__info_html"><div class="ttname"><a href="../../d2/dfd/structsvga__mode__info.html">svga_mode_info</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d71/tty_8h_source.html#l00032">tty.h:32</a></div></div>
+<div class="ttc" id="atty_8c_html_a21e184ff24e57a682c23f8c3451df34d"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a21e184ff24e57a682c23f8c3451df34d">drawRect</a></div><div class="ttdeci">void drawRect(int x, int y, int w, int h, int color)</div><div class="ttdoc">Рисуем прямоугольник</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00501">tty.c:501</a></div></div>
+<div class="ttc" id="atty_8c_html_a28a3f902f557e9cf9c3dddd7cad609f0"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a28a3f902f557e9cf9c3dddd7cad609f0">getWidthScreen</a></div><div class="ttdeci">uint32_t getWidthScreen()</div><div class="ttdoc">Получение длины экрана</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00442">tty.c:442</a></div></div>
+<div class="ttc" id="atty_8c_html_a3a9ec5bcc1f8f7ca830e80c491e4512f"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a></div><div class="ttdeci">void tty_printf(char *text,...)</div><div class="ttdoc">Вывод форматированной строки на экран (аналог printf)</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00827">tty.c:827</a></div></div>
+<div class="ttc" id="atty_8c_html_a4f9d2c8f51d72c77e996932a3de55b62"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a4f9d2c8f51d72c77e996932a3de55b62">punch</a></div><div class="ttdeci">void punch()</div><div class="ttdoc">Обновить информацию на основном экране</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00045">tty.c:45</a></div></div>
+<div class="ttc" id="atty_8c_html_a5f33f1945627909dccc422eeb74e131d"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a5f33f1945627909dccc422eeb74e131d">setPosX</a></div><div class="ttdeci">void setPosX(int32_t x)</div><div class="ttdoc">Изменяем позицию курсора по X.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00422">tty.c:422</a></div></div>
+<div class="ttc" id="atty_8c_html_a85e66ecea71028f65c4417865599a547"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a85e66ecea71028f65c4417865599a547">tty_changeState</a></div><div class="ttdeci">void tty_changeState(bool state)</div><div class="ttdoc">Меняет состояние печати через printf.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00110">tty.c:110</a></div></div>
+<div class="ttc" id="atty_8c_html_a9d34baa3dbc9bf7228a036f9b4dad57a"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a">tty_setcolor</a></div><div class="ttdeci">void tty_setcolor(int32_t color)</div><div class="ttdoc">Изменение цвета текста</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00183">tty.c:183</a></div></div>
+<div class="ttc" id="atty_8c_html_abebc6971cdcd819d860931e3eba72209"><div class="ttname"><a href="../../dc/d03/tty_8c.html#abebc6971cdcd819d860931e3eba72209">setPosY</a></div><div class="ttdeci">void setPosY(int32_t y)</div><div class="ttdoc">Изменяем позицию курсора по Y.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00432">tty.c:432</a></div></div>
+<div class="ttc" id="atty_8c_html_adccb23d81da461b513fcc1a8d27b94a5"><div class="ttname"><a href="../../dc/d03/tty_8c.html#adccb23d81da461b513fcc1a8d27b94a5">getHeightScreen</a></div><div class="ttdeci">uint32_t getHeightScreen()</div><div class="ttdoc">Получение ширины экрана</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00452">tty.c:452</a></div></div>
+<div class="ttc" id="atty_8c_html_af82f68a01c91ea5ae016fec63d77c0d0"><div class="ttname"><a href="../../dc/d03/tty_8c.html#af82f68a01c91ea5ae016fec63d77c0d0">tty_set_bgcolor</a></div><div class="ttdeci">void tty_set_bgcolor(int32_t color)</div><div class="ttdoc">Изменение цвета заднего фона</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00196">tty.c:196</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_009f605b833ac4622acd6c3c0c26c0f0.html">include</a></li><li class="navelem"><a class="el" href="../../dir_0ce41d1bfbdf4ab9b4258a3465401108.html">io</a></li><li class="navelem"><b>tty.h</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

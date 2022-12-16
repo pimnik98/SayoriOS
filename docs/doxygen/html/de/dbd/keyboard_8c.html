@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -163,6 +164,9 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><b>getCharKeyboardWait
 <tr class="memitem:addf34070370c2b3384b3e21ce2a34c26"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/dbd/keyboard_8c.html#addf34070370c2b3384b3e21ce2a34c26">getStringBufferKeyboard</a> ()</td></tr>
 <tr class="memdesc:addf34070370c2b3384b3e21ce2a34c26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получение виртуального буфера с клавиатуры  <a href="../../de/dbd/keyboard_8c.html#addf34070370c2b3384b3e21ce2a34c26">Подробнее...</a><br /></td></tr>
 <tr class="separator:addf34070370c2b3384b3e21ce2a34c26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf90c92080a1f12ac732ca9adbf62167"><td class="memItemLeft" align="right" valign="top"><a id="adf90c92080a1f12ac732ca9adbf62167"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>kbd_add_char</b> (char *buf, char *key)</td></tr>
+<tr class="separator:adf90c92080a1f12ac732ca9adbf62167"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad7ae301634574e081e571cfac7c1982"><td class="memItemLeft" align="right" valign="top"><a id="aad7ae301634574e081e571cfac7c1982"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>gets</b> (char *buffer)</td></tr>
 <tr class="separator:aad7ae301634574e081e571cfac7c1982"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -209,6 +213,15 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/dbd/keyboard_8c.html#a38c2832fe7bc03527479255bfc0afe62">echo</a> = true</td></tr>
 <tr class="memdesc:a38c2832fe7bc03527479255bfc0afe62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Включен ли вывод? <br /></td></tr>
 <tr class="separator:a38c2832fe7bc03527479255bfc0afe62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53a987bc949dbf3b6f6a458869b400e1"><td class="memItemLeft" align="right" valign="top"><a id="a53a987bc949dbf3b6f6a458869b400e1"></a>
+char&#160;</td><td class="memItemRight" valign="bottom"><b>kmode</b> = 0</td></tr>
+<tr class="separator:a53a987bc949dbf3b6f6a458869b400e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4194408fe5a2303e3bd182928c6e98f2"><td class="memItemLeft" align="right" valign="top"><a id="a4194408fe5a2303e3bd182928c6e98f2"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>curbuf</b> = 0</td></tr>
+<tr class="separator:a4194408fe5a2303e3bd182928c6e98f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e62124a66b5c2160e83bb343ced83f1"><td class="memItemLeft" align="right" valign="top"><a id="a3e62124a66b5c2160e83bb343ced83f1"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>chartyped</b> = 0</td></tr>
+<tr class="separator:a3e62124a66b5c2160e83bb343ced83f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
 <div class="textblock"><p>Драйвер клавиатуры </p>
@@ -274,7 +287,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>char* - Символ в зависимости от раскладки и языка </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../de/dbd/keyboard_8c_source.html">keyboard.c</a> строка <a class="el" href="../../de/dbd/keyboard_8c_source.html#l00044">44</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../de/dbd/keyboard_8c_source.html">keyboard.c</a> строка <a class="el" href="../../de/dbd/keyboard_8c_source.html#l00048">48</a></p>
 
 </div>
 </div>
@@ -313,7 +326,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>void* - Или символ или код </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../de/dbd/keyboard_8c_source.html">keyboard.c</a> строка <a class="el" href="../../de/dbd/keyboard_8c_source.html#l00055">55</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../de/dbd/keyboard_8c_source.html">keyboard.c</a> строка <a class="el" href="../../de/dbd/keyboard_8c_source.html#l00059">59</a></p>
 
 </div>
 </div>
@@ -335,7 +348,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 <p>Получение виртуального буфера с клавиатуры </p>
 <dl class="section return"><dt>Возвращает</dt><dd>char* - Или символ или код </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../de/dbd/keyboard_8c_source.html">keyboard.c</a> строка <a class="el" href="../../de/dbd/keyboard_8c_source.html#l00214">214</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../de/dbd/keyboard_8c_source.html">keyboard.c</a> строка <a class="el" href="../../de/dbd/keyboard_8c_source.html#l00238">238</a></p>
 
 </div>
 </div>
@@ -345,7 +358,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_294885e234569f555c14a529bc5dac14.html">drv</a></li><li class="navelem"><a class="el" href="../../dir_bf1ddc5a5b8aa5c92d494143c6d7edd1.html">input</a></li><li class="navelem"><a class="el" href="../../de/dbd/keyboard_8c.html">keyboard.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

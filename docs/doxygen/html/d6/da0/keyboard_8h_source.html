@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -99,19 +100,19 @@ $(document).ready(function(){initNavTree('d6/da0/keyboard_8h_source.html','../..
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keywordtype">void</span>* getCharKeyboardWait();</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../de/dbd/keyboard_8c.html#a4086efde111a48b75f2a1f29cb4b1a5d">keyboardInit</a>();</div>
 <div class="ttc" id="abootscreen_8c_html_a6b29e4f37f4482274af785ad5ffe96a7"><div class="ttname"><a href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a></div><div class="ttdeci">uint32_t mode</div><div class="ttdoc">Режим работы (0 - Обычный | 1 - Режим логирования)</div><div class="ttdef"><b>Definition:</b> <a href="../../d2/d2c/bootscreen_8c_source.html#l00022">bootscreen.c:22</a></div></div>
-<div class="ttc" id="akeyboard_8c_html_a0021c14f3590c3c90fe4fb7c34a59180"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#a0021c14f3590c3c90fe4fb7c34a59180">keyboardHandler</a></div><div class="ttdeci">void keyboardHandler(registers_t regs)</div><div class="ttdoc">Обработчик клавиатуры</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00271">keyboard.c:271</a></div></div>
-<div class="ttc" id="akeyboard_8c_html_a39bca6befc7b381e9822c08b58f6be31"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#a39bca6befc7b381e9822c08b58f6be31">__getCharKeyboard</a></div><div class="ttdeci">char * __getCharKeyboard(char *en_s, char *en_b, char *ru_s, char *ru_b)</div><div class="ttdoc">Выводит правильный символ, в зависимости от языка и шифта</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00044">keyboard.c:44</a></div></div>
-<div class="ttc" id="akeyboard_8c_html_a4086efde111a48b75f2a1f29cb4b1a5d"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#a4086efde111a48b75f2a1f29cb4b1a5d">keyboardInit</a></div><div class="ttdeci">void keyboardInit()</div><div class="ttdoc">Выполняет инициализацию клавиатуры</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00318">keyboard.c:318</a></div></div>
-<div class="ttc" id="akeyboard_8c_html_acdbd35d6ef3547bcc718dcff6528d58e"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#acdbd35d6ef3547bcc718dcff6528d58e">getCharKeyboard</a></div><div class="ttdeci">void * getCharKeyboard(int key, bool mode)</div><div class="ttdoc">Выводит символ, в зависимости от кода полученного с клавиатуры</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00055">keyboard.c:55</a></div></div>
-<div class="ttc" id="akeyboard_8c_html_addf34070370c2b3384b3e21ce2a34c26"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#addf34070370c2b3384b3e21ce2a34c26">getStringBufferKeyboard</a></div><div class="ttdeci">char * getStringBufferKeyboard()</div><div class="ttdoc">Получение виртуального буфера с клавиатуры</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00214">keyboard.c:214</a></div></div>
-<div class="ttc" id="astructregisters_html"><div class="ttname"><a href="../../df/d94/structregisters.html">registers</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d54/common_8h_source.html#l00041">common.h:41</a></div></div>
+<div class="ttc" id="akeyboard_8c_html_a0021c14f3590c3c90fe4fb7c34a59180"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#a0021c14f3590c3c90fe4fb7c34a59180">keyboardHandler</a></div><div class="ttdeci">void keyboardHandler(registers_t regs)</div><div class="ttdoc">Обработчик клавиатуры</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00315">keyboard.c:315</a></div></div>
+<div class="ttc" id="akeyboard_8c_html_a39bca6befc7b381e9822c08b58f6be31"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#a39bca6befc7b381e9822c08b58f6be31">__getCharKeyboard</a></div><div class="ttdeci">char * __getCharKeyboard(char *en_s, char *en_b, char *ru_s, char *ru_b)</div><div class="ttdoc">Выводит правильный символ, в зависимости от языка и шифта</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00048">keyboard.c:48</a></div></div>
+<div class="ttc" id="akeyboard_8c_html_a4086efde111a48b75f2a1f29cb4b1a5d"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#a4086efde111a48b75f2a1f29cb4b1a5d">keyboardInit</a></div><div class="ttdeci">void keyboardInit()</div><div class="ttdoc">Выполняет инициализацию клавиатуры</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00362">keyboard.c:362</a></div></div>
+<div class="ttc" id="akeyboard_8c_html_acdbd35d6ef3547bcc718dcff6528d58e"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#acdbd35d6ef3547bcc718dcff6528d58e">getCharKeyboard</a></div><div class="ttdeci">void * getCharKeyboard(int key, bool mode)</div><div class="ttdoc">Выводит символ, в зависимости от кода полученного с клавиатуры</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00059">keyboard.c:59</a></div></div>
+<div class="ttc" id="akeyboard_8c_html_addf34070370c2b3384b3e21ce2a34c26"><div class="ttname"><a href="../../de/dbd/keyboard_8c.html#addf34070370c2b3384b3e21ce2a34c26">getStringBufferKeyboard</a></div><div class="ttdeci">char * getStringBufferKeyboard()</div><div class="ttdoc">Получение виртуального буфера с клавиатуры</div><div class="ttdef"><b>Definition:</b> <a href="../../de/dbd/keyboard_8c_source.html#l00238">keyboard.c:238</a></div></div>
+<div class="ttc" id="astructregisters_html"><div class="ttname"><a href="../../df/d94/structregisters.html">registers</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d54/common_8h_source.html#l00040">common.h:40</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_009f605b833ac4622acd6c3c0c26c0f0.html">include</a></li><li class="navelem"><a class="el" href="../../dir_10a9efac6b88e559a53b8b01b99bfe83.html">drv</a></li><li class="navelem"><a class="el" href="../../dir_69db35e104a88d1e4b88a831c723a181.html">input</a></li><li class="navelem"><b>keyboard.h</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

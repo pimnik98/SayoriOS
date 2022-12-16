@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -107,6 +108,12 @@ $(document).ready(function(){initNavTree('d1/dce/io__disp_8c.html','../../'); in
 <tr class="memitem:a1b38d0c1f286b740ae6ad17f334934fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/dce/io__disp_8c.html#a1b38d0c1f286b740ae6ad17f334934fc">out_byte</a> (uint16_t port, uint8_t value)</td></tr>
 <tr class="memdesc:a1b38d0c1f286b740ae6ad17f334934fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Записать данные в порт  <a href="../../d1/dce/io__disp_8c.html#a1b38d0c1f286b740ae6ad17f334934fc">Подробнее...</a><br /></td></tr>
 <tr class="separator:a1b38d0c1f286b740ae6ad17f334934fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7615536924bff7d78484eec5e10afc64"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/dce/io__disp_8c.html#a7615536924bff7d78484eec5e10afc64">in_word</a> (uint16_t port)</td></tr>
+<tr class="memdesc:a7615536924bff7d78484eec5e10afc64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Прочитать данные с порта  <a href="../../d1/dce/io__disp_8c.html#a7615536924bff7d78484eec5e10afc64">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7615536924bff7d78484eec5e10afc64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8f6053fb34988fce63c4bf21a186e42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/dce/io__disp_8c.html#ac8f6053fb34988fce63c4bf21a186e42">out_word</a> (uint16_t port, uint8_t value)</td></tr>
+<tr class="memdesc:ac8f6053fb34988fce63c4bf21a186e42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Записать данные в порт  <a href="../../d1/dce/io__disp_8c.html#ac8f6053fb34988fce63c4bf21a186e42">Подробнее...</a><br /></td></tr>
+<tr class="separator:ac8f6053fb34988fce63c4bf21a186e42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Переменные</h2></td></tr>
@@ -149,6 +156,35 @@ mutex_t *&#160;</td><td class="memItemRight" valign="bottom"><b>port_mutex</b></
 <dl class="section return"><dt>Возвращает</dt><dd>uint8_t - Данные с порта </dd></dl>
 
 <p class="definition">См. определение в файле <a class="el" href="../../d1/dce/io__disp_8c_source.html">io_disp.c</a> строка <a class="el" href="../../d1/dce/io__disp_8c_source.html#l00030">30</a></p>
+
+</div>
+</div>
+<a id="a7615536924bff7d78484eec5e10afc64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7615536924bff7d78484eec5e10afc64">&#9670;&nbsp;</a></span>in_word()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t in_word </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Прочитать данные с порта </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint16_t</td><td>port - Порт</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>uint16_t - Данные с порта </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/dce/io__disp_8c_source.html">io_disp.c</a> строка <a class="el" href="../../d1/dce/io__disp_8c_source.html#l00057">57</a></p>
 
 </div>
 </div>
@@ -210,7 +246,46 @@ mutex_t *&#160;</td><td class="memItemRight" valign="bottom"><b>port_mutex</b></
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d1/dce/io__disp_8c_source.html">io_disp.c</a> строка <a class="el" href="../../d1/dce/io__disp_8c_source.html#l00048">48</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d1/dce/io__disp_8c_source.html">io_disp.c</a> строка <a class="el" href="../../d1/dce/io__disp_8c_source.html#l00044">44</a></p>
+
+</div>
+</div>
+<a id="ac8f6053fb34988fce63c4bf21a186e42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8f6053fb34988fce63c4bf21a186e42">&#9670;&nbsp;</a></span>out_word()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void out_word </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Записать данные в порт </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint16_t</td><td>port - Порт </td></tr>
+    <tr><td class="paramname">uint16_t</td><td>value - Значение </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/dce/io__disp_8c_source.html">io_disp.c</a> строка <a class="el" href="../../d1/dce/io__disp_8c_source.html#l00071">71</a></p>
 
 </div>
 </div>
@@ -220,7 +295,7 @@ mutex_t *&#160;</td><td class="memItemRight" valign="bottom"><b>port_mutex</b></
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../d1/dce/io__disp_8c.html">io_disp.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -95,6 +96,9 @@ $(document).ready(function(){initNavTree('d9/d26/kernel_8c.html','../../'); init
 <a href="#details">Подробнее...</a></p>
 <div class="textblock"><code>#include &quot;kernel.h&quot;</code><br />
 <code>#include &quot;lib/stdio.h&quot;</code><br />
+<code>#include &quot;sys/float.h&quot;</code><br />
+<code>#include &quot;sys/rsdp.h&quot;</code><br />
+<code>#include &lt;io/colors.h&gt;</code><br />
 </div>
 <p><a href="../../d9/d26/kernel_8c_source.html">См. исходные тексты.</a></p>
 <table class="memberdecls">
@@ -106,6 +110,9 @@ $(document).ready(function(){initNavTree('d9/d26/kernel_8c.html','../../'); init
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Функции</h2></td></tr>
+<tr class="memitem:a5f600bd4d5828cdbfcd56e333b89b388"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a5f600bd4d5828cdbfcd56e333b89b388">kHandlerCMD</a> (char *cmd)</td></tr>
+<tr class="memdesc:a5f600bd4d5828cdbfcd56e333b89b388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработка комманд указаных ядру при загрузке  <a href="../../d9/d26/kernel_8c.html#a5f600bd4d5828cdbfcd56e333b89b388">Подробнее...</a><br /></td></tr>
+<tr class="separator:a5f600bd4d5828cdbfcd56e333b89b388"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03f86edef756d3c7d802352f35eefba5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a03f86edef756d3c7d802352f35eefba5">initrd_sefs</a> (int irdst)</td></tr>
 <tr class="memdesc:a03f86edef756d3c7d802352f35eefba5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Монтирует виртуальный диск с файловой системой Sayori Easy File System.  <a href="../../d9/d26/kernel_8c.html#a03f86edef756d3c7d802352f35eefba5">Подробнее...</a><br /></td></tr>
 <tr class="separator:a03f86edef756d3c7d802352f35eefba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -128,10 +135,16 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>init_esp</b> = 0<
 <tr class="memitem:aec2927f8a04206a42f92be03277f9f78"><td class="memItemLeft" align="right" valign="top"><a id="aec2927f8a04206a42f92be03277f9f78"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>initRD</b> = false</td></tr>
 <tr class="separator:aec2927f8a04206a42f92be03277f9f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0126a860c202d761837450c3f523a7c"><td class="memItemLeft" align="right" valign="top"><a id="aa0126a860c202d761837450c3f523a7c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>autoexec</b> = false</td></tr>
+<tr class="separator:aa0126a860c202d761837450c3f523a7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7df307e5085354056f66a3dac1240864"><td class="memItemLeft" align="right" valign="top"><a id="a7df307e5085354056f66a3dac1240864"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>cmd_autoexec</b> = &quot;&quot;</td></tr>
+<tr class="separator:a7df307e5085354056f66a3dac1240864"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
 <div class="textblock"><p>Основная точка входа в ядро </p>
-<dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (<a href="#" onclick="location.href='mai'+'lto:'+'nik'+'it'+'a.p'+'im'+'ino'+'ff'+'@ya'+'nd'+'ex.'+'ru'; return false;">nikit<span style="display: none;">.nosp@m.</span>a.pi<span style="display: none;">.nosp@m.</span>minof<span style="display: none;">.nosp@m.</span>f@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>ru</a>) </dd></dl>
+<dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (<a href="#" onclick="location.href='mai'+'lto:'+'nik'+'it'+'a.p'+'im'+'ino'+'ff'+'@ya'+'nd'+'ex.'+'ru'; return false;">nikit<span style="display: none;">.nosp@m.</span>a.pi<span style="display: none;">.nosp@m.</span>minof<span style="display: none;">.nosp@m.</span>f@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>ru</a>) and Andrey (Drew) Pavlenko (<a href="#" onclick="location.href='mai'+'lto:'+'pik'+'ac'+'hu.'+'an'+'dre'+'y@'+'vk.'+'co'+'m'; return false;">pikac<span style="display: none;">.nosp@m.</span>hu.a<span style="display: none;">.nosp@m.</span>ndrey<span style="display: none;">.nosp@m.</span>@vk.<span style="display: none;">.nosp@m.</span>com</a>) </dd></dl>
 <dl class="section version"><dt>Версия</dt><dd>0.3.0 </dd></dl>
 <dl class="section date"><dt>Дата</dt><dd>2022-11-01 </dd></dl>
 <dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022 </dd></dl>
@@ -162,7 +175,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>initRD</b> = false</t
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a> строка <a class="el" href="../../d9/d26/kernel_8c_source.html#l00023">23</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a> строка <a class="el" href="../../d9/d26/kernel_8c_source.html#l00069">69</a></p>
 
 </div>
 </div>
@@ -201,7 +214,35 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>initRD</b> = false</t
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a> строка <a class="el" href="../../d9/d26/kernel_8c_source.html#l00069">69</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a> строка <a class="el" href="../../d9/d26/kernel_8c_source.html#l00116">116</a></p>
+
+</div>
+</div>
+<a id="a5f600bd4d5828cdbfcd56e333b89b388"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f600bd4d5828cdbfcd56e333b89b388">&#9670;&nbsp;</a></span>kHandlerCMD()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kHandlerCMD </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>cmd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Обработка комманд указаных ядру при загрузке </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">char*</td><td>cmd - Команды </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a> строка <a class="el" href="../../d9/d26/kernel_8c_source.html#l00029">29</a></p>
 
 </div>
 </div>
@@ -211,7 +252,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>initRD</b> = false</t
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../d9/d26/kernel_8c.html">kernel.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
