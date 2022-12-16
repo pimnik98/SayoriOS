@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Исходный файл kernel/src/io/imaging.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -34,10 +34,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -94,7 +94,7 @@ $(document).ready(function(){initNavTree('d8/d6d/imaging_8c_source.html','../../
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">return</span> width*y + x;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;}</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="../../d8/d6d/imaging_8c.html#a04189c5b1bd699efb92812c7dbcbe1db">   33</a></span>&#160;<span class="keyword">struct </span><a class="code" href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a>* <a class="code" href="../../d8/d6d/imaging_8c.html#a04189c5b1bd699efb92812c7dbcbe1db">duke_get_image_metadata</a>(<span class="keywordtype">char</span> *filename) {</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="../../d4/da7/imaging_8h.html#a04189c5b1bd699efb92812c7dbcbe1db">   33</a></span>&#160;<span class="keyword">struct </span><a class="code" href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a>* <a class="code" href="../../d8/d6d/imaging_8c.html#a04189c5b1bd699efb92812c7dbcbe1db">duke_get_image_metadata</a>(<span class="keywordtype">char</span> *filename) {</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="../../d1/d8d/vfs__new_8c.html#adbc1f71f288ad0ecb432f7d7c04d087a">vfs_exists</a>(filename)) {</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordtype">char</span>* rmeta = <a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> <a class="code" href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a>));</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="../../d1/d8d/vfs__new_8c.html#a6fde56e5f7f7bc546ccd70b91809178b">vfs_read</a>(filename, 0, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> <a class="code" href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a>), rmeta);</div>
@@ -148,7 +148,7 @@ $(document).ready(function(){initNavTree('d8/d6d/imaging_8c_source.html','../../
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="../../d8/d6d/imaging_8c.html#ac43168fd2c97f024521f901f29cd7de2">   96</a></span>&#160;<span class="keywordtype">char</span> <a class="code" href="../../d8/d6d/imaging_8c.html#ac43168fd2c97f024521f901f29cd7de2">duke_draw_from_file</a>(<span class="keywordtype">char</span> *filename, <span class="keywordtype">int</span> sx, <span class="keywordtype">int</span> sy) {</div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="../../d4/da7/imaging_8h.html#ac43168fd2c97f024521f901f29cd7de2">   96</a></span>&#160;<span class="keywordtype">char</span> <a class="code" href="../../d8/d6d/imaging_8c.html#ac43168fd2c97f024521f901f29cd7de2">duke_draw_from_file</a>(<span class="keywordtype">char</span> *filename, <span class="keywordtype">int</span> sx, <span class="keywordtype">int</span> sy) {</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">char</span> meta[<span class="keyword">sizeof</span>(<span class="keyword">struct </span><a class="code" href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a>)];</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="../../d1/d8d/vfs__new_8c.html#adbc1f71f288ad0ecb432f7d7c04d087a">vfs_exists</a>(filename)) {</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <a class="code" href="../../d1/d8d/vfs__new_8c.html#a6fde56e5f7f7bc546ccd70b91809178b">vfs_read</a>(filename, 0, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> <a class="code" href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a>), meta);</div>
@@ -286,25 +286,23 @@ $(document).ready(function(){initNavTree('d8/d6d/imaging_8c_source.html','../../
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <a class="code" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a>(ndata);</div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;}</div>
-</div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
-<div class="ttc" id="aimaging_8c_html_ad63a4f5885a51dd5b1d104c22e18d91f"><div class="ttname"><a href="../../d8/d6d/imaging_8c.html#ad63a4f5885a51dd5b1d104c22e18d91f">pixidx</a></div><div class="ttdeci">int pixidx(int width, int x, int y)</div><div class="ttdoc">Функция вычисления позиции по координатам</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d6d/imaging_8c_source.html#l00022">imaging.c:22</a></div></div>
-<div class="ttc" id="avfs__new_8c_html_a6fde56e5f7f7bc546ccd70b91809178b"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a6fde56e5f7f7bc546ccd70b91809178b">vfs_read</a></div><div class="ttdeci">uint32_t vfs_read(int node, int elem, size_t offset, size_t size, void *buf)</div><div class="ttdoc">[VFS] Чтение файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00130">vfs_new.c:130</a></div></div>
-<div class="ttc" id="amemory_8c_html_a5f52d7c56b7d67dc2f96b2e93dfdc7be"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a></div><div class="ttdeci">void * kmalloc(size_t size)</div><div class="ttdoc">Выделение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00514">memory.c:514</a></div></div>
-<div class="ttc" id="avfs__new_8c_html_adbc1f71f288ad0ecb432f7d7c04d087a"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#adbc1f71f288ad0ecb432f7d7c04d087a">vfs_exists</a></div><div class="ttdeci">bool vfs_exists(char *filename)</div><div class="ttdoc">[VFS] Проверить существует ли файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00112">vfs_new.c:112</a></div></div>
 <div class="ttc" id="aimaging_8c_html_a04189c5b1bd699efb92812c7dbcbe1db"><div class="ttname"><a href="../../d8/d6d/imaging_8c.html#a04189c5b1bd699efb92812c7dbcbe1db">duke_get_image_metadata</a></div><div class="ttdeci">struct DukeImageMeta * duke_get_image_metadata(char *filename)</div><div class="ttdoc">Получает метаданные изображения Duke.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d6d/imaging_8c_source.html#l00033">imaging.c:33</a></div></div>
+<div class="ttc" id="aimaging_8c_html_ac43168fd2c97f024521f901f29cd7de2"><div class="ttname"><a href="../../d8/d6d/imaging_8c.html#ac43168fd2c97f024521f901f29cd7de2">duke_draw_from_file</a></div><div class="ttdeci">char duke_draw_from_file(char *filename, int sx, int sy)</div><div class="ttdoc">Функция отрисовки изображения</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d6d/imaging_8c_source.html#l00096">imaging.c:96</a></div></div>
+<div class="ttc" id="aimaging_8c_html_ad63a4f5885a51dd5b1d104c22e18d91f"><div class="ttname"><a href="../../d8/d6d/imaging_8c.html#ad63a4f5885a51dd5b1d104c22e18d91f">pixidx</a></div><div class="ttdeci">int pixidx(int width, int x, int y)</div><div class="ttdoc">Функция вычисления позиции по координатам</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d6d/imaging_8c_source.html#l00022">imaging.c:22</a></div></div>
 <div class="ttc" id="aimaging_8h_html"><div class="ttname"><a href="../../d4/da7/imaging_8h.html">imaging.h</a></div><div class="ttdoc">Описания функций imaging.h.</div></div>
+<div class="ttc" id="amemory_8c_html_a5f52d7c56b7d67dc2f96b2e93dfdc7be"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a></div><div class="ttdeci">void * kmalloc(size_t size)</div><div class="ttdoc">Выделение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00514">memory.c:514</a></div></div>
+<div class="ttc" id="amemory_8c_html_aed506f8be19e508533954916a0be0b3a"><div class="ttname"><a href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a></div><div class="ttdeci">void kfree(void *vaddr)</div><div class="ttdoc">Освобождение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00534">memory.c:534</a></div></div>
 <div class="ttc" id="astruct_duke_image_meta_html"><div class="ttname"><a href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a></div><div class="ttdoc">Структура изображения Duke.</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/da7/imaging_8h_source.html#l00018">imaging.h:18</a></div></div>
 <div class="ttc" id="atty_8c_html_a68d5b7fc5eb1355c7a4c626d30207c29"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a68d5b7fc5eb1355c7a4c626d30207c29">set_pixel</a></div><div class="ttdeci">void set_pixel(int32_t x, int32_t y, uint32_t color)</div><div class="ttdoc">Вывод одного пикселя на экран</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00321">tty.c:321</a></div></div>
-<div class="ttc" id="aimaging_8c_html_ac43168fd2c97f024521f901f29cd7de2"><div class="ttname"><a href="../../d8/d6d/imaging_8c.html#ac43168fd2c97f024521f901f29cd7de2">duke_draw_from_file</a></div><div class="ttdeci">char duke_draw_from_file(char *filename, int sx, int sy)</div><div class="ttdoc">Функция отрисовки изображения</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d6d/imaging_8c_source.html#l00096">imaging.c:96</a></div></div>
-<div class="ttc" id="amemory_8c_html_aed506f8be19e508533954916a0be0b3a"><div class="ttname"><a href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a></div><div class="ttdeci">void kfree(void *vaddr)</div><div class="ttdoc">Освобождение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00534">memory.c:534</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a6fde56e5f7f7bc546ccd70b91809178b"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a6fde56e5f7f7bc546ccd70b91809178b">vfs_read</a></div><div class="ttdeci">uint32_t vfs_read(int node, int elem, size_t offset, size_t size, void *buf)</div><div class="ttdoc">[VFS] Чтение файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00130">vfs_new.c:130</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_adbc1f71f288ad0ecb432f7d7c04d087a"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#adbc1f71f288ad0ecb432f7d7c04d087a">vfs_exists</a></div><div class="ttdeci">bool vfs_exists(char *filename)</div><div class="ttdoc">[VFS] Проверить существует ли файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00112">vfs_new.c:112</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f684e8e1ebea567db7f673c0b997cee3.html">io</a></li><li class="navelem"><a class="el" href="../../d8/d6d/imaging_8c.html">imaging.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 19 Ноя 2022 20:13:45. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

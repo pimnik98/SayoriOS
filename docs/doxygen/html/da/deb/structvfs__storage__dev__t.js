@@ -5,7 +5,7 @@ var structvfs__storage__dev__t =
     [ "lba_start", "da/deb/structvfs__storage__dev__t.html#a9a128cb13f59c2daa1c56078351b9283", null ],
     [ "name", "da/deb/structvfs__storage__dev__t.html#a5ac083a645d964373f022d03df4849c8", null ],
     [ "partition_id", "da/deb/structvfs__storage__dev__t.html#abbfa6632a4b4509249b294d77a78d691", null ],
-    [ "read", "da/deb/structvfs__storage__dev__t.html#a8043f3b6f58d708ee2026b13178bd252", null ],
+    [ "read", "da/deb/structvfs__storage__dev__t.html#ac3d2fa73779ec5ed60cf6090857c18f5", null ],
     [ "type", "da/deb/structvfs__storage__dev__t.html#a449e574ed6911881dc55507cb5635c2c", null ],
-    [ "write", "da/deb/structvfs__storage__dev__t.html#ac50a48ef715731392c19cecaa31a44c5", null ]
+    [ "write", "da/deb/structvfs__storage__dev__t.html#abd4ca7779f147ca07eace48b44f2817c", null ]
 ];
