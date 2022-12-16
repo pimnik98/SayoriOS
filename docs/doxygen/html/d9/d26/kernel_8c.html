@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Файл kernel/src/kernel.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -34,10 +34,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -109,8 +109,9 @@ $(document).ready(function(){initNavTree('d9/d26/kernel_8c.html','../../'); init
 <tr class="memitem:a03f86edef756d3c7d802352f35eefba5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a03f86edef756d3c7d802352f35eefba5">initrd_sefs</a> (int irdst)</td></tr>
 <tr class="memdesc:a03f86edef756d3c7d802352f35eefba5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Монтирует виртуальный диск с файловой системой Sayori Easy File System.  <a href="../../d9/d26/kernel_8c.html#a03f86edef756d3c7d802352f35eefba5">Подробнее...</a><br /></td></tr>
 <tr class="separator:a03f86edef756d3c7d802352f35eefba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7436e762b78a18ffc2c18e1ed1b60dab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a7436e762b78a18ffc2c18e1ed1b60dab">kModules_Init</a> ()</td></tr>
-<tr class="memdesc:a7436e762b78a18ffc2c18e1ed1b60dab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Инициализирует модули подключенные к ОС  <a href="../../d9/d26/kernel_8c.html#a7436e762b78a18ffc2c18e1ed1b60dab">Подробнее...</a><br /></td></tr>
+<tr class="memitem:a7436e762b78a18ffc2c18e1ed1b60dab"><td class="memItemLeft" align="right" valign="top"><a id="a7436e762b78a18ffc2c18e1ed1b60dab"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a7436e762b78a18ffc2c18e1ed1b60dab">kModules_Init</a> ()</td></tr>
+<tr class="memdesc:a7436e762b78a18ffc2c18e1ed1b60dab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Инициализирует модули подключенные к ОС <br /></td></tr>
 <tr class="separator:a7436e762b78a18ffc2c18e1ed1b60dab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0aa10e95d9117d81d8089103e22d00fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a0aa10e95d9117d81d8089103e22d00fa">kernel</a> (<a class="el" href="../../dc/dfa/structmultiboot__header.html">multiboot_header_t</a> *mboot, uint32_t initial_esp)</td></tr>
 <tr class="memdesc:a0aa10e95d9117d81d8089103e22d00fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Точка входа в ядро  <a href="../../d9/d26/kernel_8c.html#a0aa10e95d9117d81d8089103e22d00fa">Подробнее...</a><br /></td></tr>
@@ -204,36 +205,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>initRD</b> = false</t
 
 </div>
 </div>
-<a id="a7436e762b78a18ffc2c18e1ed1b60dab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7436e762b78a18ffc2c18e1ed1b60dab">&#9670;&nbsp;</a></span>kModules_Init()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void kModules_Init </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Инициализирует модули подключенные к ОС </p>
-
-<p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a> строка <a class="el" href="../../d9/d26/kernel_8c_source.html#l00037">37</a></p>
-
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../d9/d26/kernel_8c.html">kernel.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 19 Ноя 2022 20:13:45. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

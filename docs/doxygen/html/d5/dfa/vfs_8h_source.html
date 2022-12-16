@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Исходный файл kernel/include/drv/vfs.h</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -34,10 +34,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -162,24 +162,22 @@ $(document).ready(function(){initNavTree('d5/dfa/vfs_8h_source.html','../../'); 
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;int32_t vfs_is_dir(<span class="keywordtype">char</span> *filename);</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keywordtype">void</span> vfs_get_file_name_from_path(<span class="keywordtype">char</span> *fpath, <span class="keywordtype">char</span> *buf); </div>
-</div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <div class="ttc" id="astructvfs__filesystem__handles__t_html"><div class="ttname"><a href="../../d1/daa/structvfs__filesystem__handles__t.html">vfs_filesystem_handles_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d5/dfa/vfs_8h_source.html#l00033">vfs.h:33</a></div></div>
-<div class="ttc" id="avfs__new_8c_html_a6fde56e5f7f7bc546ccd70b91809178b"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a6fde56e5f7f7bc546ccd70b91809178b">vfs_read</a></div><div class="ttdeci">uint32_t vfs_read(int node, int elem, size_t offset, size_t size, void *buf)</div><div class="ttdoc">[VFS] Чтение файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00130">vfs_new.c:130</a></div></div>
-<div class="ttc" id="avfs__new_8c_html_adbc1f71f288ad0ecb432f7d7c04d087a"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#adbc1f71f288ad0ecb432f7d7c04d087a">vfs_exists</a></div><div class="ttdeci">bool vfs_exists(char *filename)</div><div class="ttdoc">[VFS] Проверить существует ли файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00112">vfs_new.c:112</a></div></div>
+<div class="ttc" id="astructvfs__filesystem__t_html"><div class="ttname"><a href="../../d0/dad/structvfs__filesystem__t.html">vfs_filesystem_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d5/dfa/vfs_8h_source.html#l00025">vfs.h:25</a></div></div>
 <div class="ttc" id="astructvfs__mount__info__t_html"><div class="ttname"><a href="../../d4/d51/structvfs__mount__info__t.html">vfs_mount_info_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d5/dfa/vfs_8h_source.html#l00051">vfs.h:51</a></div></div>
+<div class="ttc" id="astructvfs__storage__dev__t_html"><div class="ttname"><a href="../../da/deb/structvfs__storage__dev__t.html">vfs_storage_dev_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d5/dfa/vfs_8h_source.html#l00009">vfs.h:9</a></div></div>
 <div class="ttc" id="avfs__new_8c_html_a25a92ff9f8ee128d2c5e5c321ab8dd43"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a25a92ff9f8ee128d2c5e5c321ab8dd43">vfs_write</a></div><div class="ttdeci">int vfs_write(int node, int elem, size_t offset, size_t size, void *buf)</div><div class="ttdoc">[VFS] Запись в файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00077">vfs_new.c:77</a></div></div>
 <div class="ttc" id="avfs__new_8c_html_a40353b0f30a63c6776109c75af8fcc36"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a></div><div class="ttdeci">fs_node_t * vfs_mount[128]</div><div class="ttdoc">Точки монтирования</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00014">vfs_new.c:14</a></div></div>
-<div class="ttc" id="astructvfs__storage__dev__t_html"><div class="ttname"><a href="../../da/deb/structvfs__storage__dev__t.html">vfs_storage_dev_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d5/dfa/vfs_8h_source.html#l00009">vfs.h:9</a></div></div>
-<div class="ttc" id="astructvfs__filesystem__t_html"><div class="ttname"><a href="../../d0/dad/structvfs__filesystem__t.html">vfs_filesystem_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d5/dfa/vfs_8h_source.html#l00025">vfs.h:25</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a6fde56e5f7f7bc546ccd70b91809178b"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a6fde56e5f7f7bc546ccd70b91809178b">vfs_read</a></div><div class="ttdeci">uint32_t vfs_read(int node, int elem, size_t offset, size_t size, void *buf)</div><div class="ttdoc">[VFS] Чтение файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00130">vfs_new.c:130</a></div></div>
 <div class="ttc" id="avfs__new_8c_html_a999d230be3400adbcc1ebcfb66d3dcea"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a999d230be3400adbcc1ebcfb66d3dcea">vfs_list</a></div><div class="ttdeci">void vfs_list()</div><div class="ttdoc">[VFS] Вывод содержимого списка файла и папок</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00325">vfs_new.c:325</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_adbc1f71f288ad0ecb432f7d7c04d087a"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#adbc1f71f288ad0ecb432f7d7c04d087a">vfs_exists</a></div><div class="ttdeci">bool vfs_exists(char *filename)</div><div class="ttdoc">[VFS] Проверить существует ли файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00112">vfs_new.c:112</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_009f605b833ac4622acd6c3c0c26c0f0.html">include</a></li><li class="navelem"><a class="el" href="../../dir_10a9efac6b88e559a53b8b01b99bfe83.html">drv</a></li><li class="navelem"><b>vfs.h</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 19 Ноя 2022 20:13:44. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

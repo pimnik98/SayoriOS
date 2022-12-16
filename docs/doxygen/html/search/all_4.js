@@ -22,6 +22,6 @@ var searchData=
   ['drawrect_78',['drawRect',['../dc/d03/tty_8c.html#a21e184ff24e57a682c23f8c3451df34d',1,'tty.c']]],
   ['drawstringfont_79',['drawStringFont',['../d8/d57/fonts_8c.html#a01c948900ba81ffde9058e1768a3ef35',1,'fonts.c']]],
   ['duke_5fdraw_5ffrom_5ffile_80',['duke_draw_from_file',['../d4/da7/imaging_8h.html#ac43168fd2c97f024521f901f29cd7de2',1,'duke_draw_from_file(char *filename, int sx, int sy):&#160;imaging.c'],['../d8/d6d/imaging_8c.html#ac43168fd2c97f024521f901f29cd7de2',1,'duke_draw_from_file(char *filename, int sx, int sy):&#160;imaging.c']]],
-  ['duke_5fget_5fimage_5fmetadata_81',['duke_get_image_metadata',['../d4/da7/imaging_8h.html#a04189c5b1bd699efb92812c7dbcbe1db',1,'duke_get_image_metadata(char *filename):&#160;imaging.c'],['../d8/d6d/imaging_8c.html#a04189c5b1bd699efb92812c7dbcbe1db',1,'duke_get_image_metadata(char *filename):&#160;imaging.c']]],
+  ['duke_5fget_5fimage_5fmetadata_81',['duke_get_image_metadata',['../d8/d6d/imaging_8c.html#a04189c5b1bd699efb92812c7dbcbe1db',1,'duke_get_image_metadata(char *filename):&#160;imaging.c'],['../d4/da7/imaging_8h.html#a04189c5b1bd699efb92812c7dbcbe1db',1,'duke_get_image_metadata(char *filename):&#160;imaging.c']]],
   ['dukeimagemeta_82',['DukeImageMeta',['../d0/d76/struct_duke_image_meta.html',1,'']]]
 ];

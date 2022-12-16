@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Исходный файл kernel/src/sys/syscalls.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -34,10 +34,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -123,23 +123,21 @@ $(document).ready(function(){initNavTree('d5/d87/syscalls_8c_source.html','../..
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;DEFN_SYSCALL1(<a class="code" href="../../d1/dce/io__disp_8c.html#afc45e9ddf8e7cad03b83e51a98a7b284">in_byte</a>, PORT_INPUT_BYTE, uint16_t)</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;DEFN_SYSCALL2(<a class="code" href="../../d1/dce/io__disp_8c.html#a1b38d0c1f286b740ae6ad17f334934fc">out_byte</a>, PORT_OUTPUT_BYTE, uint16_t, uint8_t)</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;DEFN_SYSCALL0(hello_world_console, HELLO_WORLD_CONSOLE)</div>
+<div class="ttc" id="aio__disp_8c_html_a1b38d0c1f286b740ae6ad17f334934fc"><div class="ttname"><a href="../../d1/dce/io__disp_8c.html#a1b38d0c1f286b740ae6ad17f334934fc">out_byte</a></div><div class="ttdeci">void out_byte(uint16_t port, uint8_t value)</div><div class="ttdoc">Записать данные в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/dce/io__disp_8c_source.html#l00048">io_disp.c:48</a></div></div>
+<div class="ttc" id="aio__disp_8c_html_afc45e9ddf8e7cad03b83e51a98a7b284"><div class="ttname"><a href="../../d1/dce/io__disp_8c.html#afc45e9ddf8e7cad03b83e51a98a7b284">in_byte</a></div><div class="ttdeci">uint8_t in_byte(uint16_t port)</div><div class="ttdoc">Прочитать данные с порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/dce/io__disp_8c_source.html#l00030">io_disp.c:30</a></div></div>
+<div class="ttc" id="aisr_8c_html_ad7e285600239a8df8341de1cc39548f1"><div class="ttname"><a href="../../d8/d78/isr_8c.html#ad7e285600239a8df8341de1cc39548f1">register_interrupt_handler</a></div><div class="ttdeci">void register_interrupt_handler(uint8_t n, isr_t handler)</div><div class="ttdoc">Регистрация собственного обработчика</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/isr_8c_source.html#l00049">isr.c:49</a></div></div>
+<div class="ttc" id="astructregisters_html"><div class="ttname"><a href="../../df/d94/structregisters.html">registers</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d54/common_8h_source.html#l00041">common.h:41</a></div></div>
+<div class="ttc" id="asyscalls_8c_html_a19fc68f19012bb0b78ff4fd5e9562d1d"><div class="ttname"><a href="../../d5/d87/syscalls_8c.html#a19fc68f19012bb0b78ff4fd5e9562d1d">syscall_handler</a></div><div class="ttdeci">void syscall_handler(registers_t regs)</div><div class="ttdoc">Обработчик системных вызовов</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d87/syscalls_8c_source.html#l00035">syscalls.c:35</a></div></div>
+<div class="ttc" id="asyscalls_8c_html_a3d267774b0097a56f15ced77bf1f6293"><div class="ttname"><a href="../../d5/d87/syscalls_8c.html#a3d267774b0097a56f15ced77bf1f6293">calls_table</a></div><div class="ttdeci">void * calls_table[NUM_CALLS]</div><div class="ttdoc">Таблица системных вызовов</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d87/syscalls_8c_source.html#l00021">syscalls.c:21</a></div></div>
+<div class="ttc" id="asyscalls_8c_html_a4daad1ddb1255efc4ce2471000018832"><div class="ttname"><a href="../../d5/d87/syscalls_8c.html#a4daad1ddb1255efc4ce2471000018832">get_digit</a></div><div class="ttdeci">int get_digit(int dig)</div><div class="ttdoc">Получение цифры</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d87/syscalls_8c_source.html#l00062">syscalls.c:62</a></div></div>
+<div class="ttc" id="asyscalls_8c_html_ac797f5f8611ae29c7466cd410b2ef9ec"><div class="ttname"><a href="../../d5/d87/syscalls_8c.html#ac797f5f8611ae29c7466cd410b2ef9ec">init_syscalls</a></div><div class="ttdeci">void init_syscalls(void)</div><div class="ttdoc">Инициализация системных вызовов</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d87/syscalls_8c_source.html#l00049">syscalls.c:49</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="aio__disp_8c_html_a1b38d0c1f286b740ae6ad17f334934fc"><div class="ttname"><a href="../../d1/dce/io__disp_8c.html#a1b38d0c1f286b740ae6ad17f334934fc">out_byte</a></div><div class="ttdeci">void out_byte(uint16_t port, uint8_t value)</div><div class="ttdoc">Записать данные в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/dce/io__disp_8c_source.html#l00048">io_disp.c:48</a></div></div>
-<div class="ttc" id="asyscalls_8c_html_a19fc68f19012bb0b78ff4fd5e9562d1d"><div class="ttname"><a href="../../d5/d87/syscalls_8c.html#a19fc68f19012bb0b78ff4fd5e9562d1d">syscall_handler</a></div><div class="ttdeci">void syscall_handler(registers_t regs)</div><div class="ttdoc">Обработчик системных вызовов</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d87/syscalls_8c_source.html#l00035">syscalls.c:35</a></div></div>
-<div class="ttc" id="astructregisters_html"><div class="ttname"><a href="../../df/d94/structregisters.html">registers</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d54/common_8h_source.html#l00041">common.h:41</a></div></div>
-<div class="ttc" id="asyscalls_8c_html_ac797f5f8611ae29c7466cd410b2ef9ec"><div class="ttname"><a href="../../d5/d87/syscalls_8c.html#ac797f5f8611ae29c7466cd410b2ef9ec">init_syscalls</a></div><div class="ttdeci">void init_syscalls(void)</div><div class="ttdoc">Инициализация системных вызовов</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d87/syscalls_8c_source.html#l00049">syscalls.c:49</a></div></div>
-<div class="ttc" id="aisr_8c_html_ad7e285600239a8df8341de1cc39548f1"><div class="ttname"><a href="../../d8/d78/isr_8c.html#ad7e285600239a8df8341de1cc39548f1">register_interrupt_handler</a></div><div class="ttdeci">void register_interrupt_handler(uint8_t n, isr_t handler)</div><div class="ttdoc">Регистрация собственного обработчика</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/isr_8c_source.html#l00049">isr.c:49</a></div></div>
-<div class="ttc" id="asyscalls_8c_html_a4daad1ddb1255efc4ce2471000018832"><div class="ttname"><a href="../../d5/d87/syscalls_8c.html#a4daad1ddb1255efc4ce2471000018832">get_digit</a></div><div class="ttdeci">int get_digit(int dig)</div><div class="ttdoc">Получение цифры</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d87/syscalls_8c_source.html#l00062">syscalls.c:62</a></div></div>
-<div class="ttc" id="asyscalls_8c_html_a3d267774b0097a56f15ced77bf1f6293"><div class="ttname"><a href="../../d5/d87/syscalls_8c.html#a3d267774b0097a56f15ced77bf1f6293">calls_table</a></div><div class="ttdeci">void * calls_table[NUM_CALLS]</div><div class="ttdoc">Таблица системных вызовов</div><div class="ttdef"><b>Definition:</b> <a href="../../d5/d87/syscalls_8c_source.html#l00021">syscalls.c:21</a></div></div>
-<div class="ttc" id="aio__disp_8c_html_afc45e9ddf8e7cad03b83e51a98a7b284"><div class="ttname"><a href="../../d1/dce/io__disp_8c.html#afc45e9ddf8e7cad03b83e51a98a7b284">in_byte</a></div><div class="ttdeci">uint8_t in_byte(uint16_t port)</div><div class="ttdoc">Прочитать данные с порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/dce/io__disp_8c_source.html#l00030">io_disp.c:30</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../d5/d87/syscalls_8c.html">syscalls.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 19 Ноя 2022 20:13:45. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 09:55:12. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
