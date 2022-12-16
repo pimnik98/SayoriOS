@@ -7,5 +7,6 @@ var imaging_8h =
     [ "duke_get_image_data", "d4/da7/imaging_8h.html#a152368e41326c80549c795874292f399", null ],
     [ "duke_get_image_metadata", "d4/da7/imaging_8h.html#a04189c5b1bd699efb92812c7dbcbe1db", null ],
     [ "duke_rawdraw", "d4/da7/imaging_8h.html#abd74b6ac175d1edbae62bb5dd3387aa9", null ],
-    [ "duke_scale", "d4/da7/imaging_8h.html#adb7c0ec51e3e084542fa585eb82861ea", null ]
+    [ "duke_scale", "d4/da7/imaging_8h.html#adb7c0ec51e3e084542fa585eb82861ea", null ],
+    [ "pixidx", "d4/da7/imaging_8h.html#ad63a4f5885a51dd5b1d104c22e18d91f", null ]
 ];

@@ -20,5 +20,6 @@ var searchData=
   ['create_5fback_5fframebuffer_55',['create_back_framebuffer',['../dc/d03/tty_8c.html#aca7637cf8ec1ea90a95d8fd4a2cce7fe',1,'tty.c']]],
   ['curelem_56',['curElem',['../d2/d2c/bootscreen_8c.html#ac25ce39dfb513df51396ac582adc167a',1,'bootscreen.c']]],
   ['current_5fproc_57',['current_proc',['../dd/d6c/scheduler_8c.html#acf716f260cb3deefba5e243c8aa630a5',1,'scheduler.c']]],
-  ['current_5fthread_58',['current_thread',['../dd/d6c/scheduler_8c.html#abef4e2f9d8e885d261e4b7dd27e4ecb7',1,'scheduler.c']]]
+  ['current_5fthread_58',['current_thread',['../dd/d6c/scheduler_8c.html#abef4e2f9d8e885d261e4b7dd27e4ecb7',1,'scheduler.c']]],
+  ['cursor_59',['cursor',['../db/d9f/mouse_8c.html#a74b04dd2e92bf5738e88de4280cb697f',1,'mouse.c']]]
 ];

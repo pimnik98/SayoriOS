@@ -1,8 +1,6 @@
 var cmos_8c =
 [
     [ "CURRENT_YEAR", "df/d49/cmos_8c.html#a916b9f5d8c141fdb31021b395a238536", null ],
-    [ "cmos_address", "df/d49/cmos_8c.html#abc5c98fcc1211af2b80116dd6e0a035daf025f24716819e73fa17162d1dc56ffd", null ],
-    [ "cmos_data", "df/d49/cmos_8c.html#abc5c98fcc1211af2b80116dd6e0a035da8b6b21b2bbac8354a3c59c1c500ace50", null ],
     [ "get_RTC_register", "df/d49/cmos_8c.html#ad63adf5763a9bd203619a00f9ae4acd4", null ],
     [ "get_time", "df/d49/cmos_8c.html#ae9bc5e70ae7ccccd822d633a1b1561bb", null ],
     [ "get_time_pointer", "df/d49/cmos_8c.html#a934c68669839856787287e012758ff74", null ],

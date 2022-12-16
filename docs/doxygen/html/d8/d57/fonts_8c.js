@@ -26,7 +26,7 @@ var fonts_8c =
     [ "hF", "d8/d57/fonts_8c.html#a0d9b2b05f7023529566fd62094d67121", null ],
     [ "imageFont", "d8/d57/fonts_8c.html#a6cebe988ae27047cc67f25434fc42c8b", null ],
     [ "mA", "d8/d57/fonts_8c.html#a9f2999a7d03fd69d7621713a73ad83f5", null ],
-    [ "Map", "d8/d57/fonts_8c.html#adb5bacf3c094cbb9e18c246f587f725e", null ],
+    [ "Map", "d8/d57/fonts_8c.html#a21c8ced85915ccb074b21e9430777d69", null ],
     [ "mH", "d8/d57/fonts_8c.html#a67a4636f6a322953d3e54940aaae90db", null ],
     [ "mW", "d8/d57/fonts_8c.html#a994a6438804ac4ddd538fc2ee49fa4d6", null ],
     [ "pF", "d8/d57/fonts_8c.html#a44593a65d7e9c4c53c1ccf6cada96363", null ],

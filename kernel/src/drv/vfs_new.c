@@ -22,7 +22,7 @@ size_t countMount = 0;			///< Кол-во смонтированных устр�
  * 
  * @return char* - Реальный путь
  */
-char* vfs_getPath(int node,char* path){
+char* vfs_getPath(int node, char* path){
     char* file = kmalloc(sizeof(char)*strlen(path));
     strcpy(file,path);
     substr(file,path,strlen(vfs_mount[node]->name),strlen(path));
@@ -290,9 +290,9 @@ size_t vfs_getCountElemDir(char* path){
  *
  * @return int - Индекс папки, или отрицательное значение при ошибке
  */
-struct direct* vfs_getListFolder(char* path){
+struct dirent* vfs_getListFolder(char* path){
     int node = vfs_foundMount(path);
-    struct direct* elem;
+    struct dirent* elem;
     if (vfs_mount[node]->getListElem != 0){
         char* c_path = vfs_getPath(node,path);
         elem = vfs_mount[node]->getListElem(c_path);

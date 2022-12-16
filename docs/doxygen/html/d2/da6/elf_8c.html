@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Файл kernel/src/sys/elf.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -103,14 +104,14 @@ $(document).ready(function(){initNavTree('d2/da6/elf_8c.html','../../'); initRes
 <tr class="memitem:aad1060136416c8cc00ec82d6f3cca0ac"><td class="memItemLeft" align="right" valign="top"><a id="aad1060136416c8cc00ec82d6f3cca0ac"></a>
 <a class="el" href="../../df/d16/structelf__sections.html">elf_sections_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>load_elf</b> (char *name)</td></tr>
 <tr class="separator:aad1060136416c8cc00ec82d6f3cca0ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d81518671e5fc4f276cb8be5bfcf4c8"><td class="memItemLeft" align="right" valign="top"><a id="a9d81518671e5fc4f276cb8be5bfcf4c8"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>run_elf_file</b> (const char *name, int32_t argc, char **argv)</td></tr>
-<tr class="separator:a9d81518671e5fc4f276cb8be5bfcf4c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4f2079a081adefbae114ec844d258a4"><td class="memItemLeft" align="right" valign="top"><a id="ac4f2079a081adefbae114ec844d258a4"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>run_elf_file</b> (const char *name, int32_t argc, char *eargv[])</td></tr>
+<tr class="separator:ac4f2079a081adefbae114ec844d258a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
 <div class="textblock"><p>Загрузщик ELF. </p>
 <dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (<a href="#" onclick="location.href='mai'+'lto:'+'nik'+'it'+'a.p'+'im'+'ino'+'ff'+'@ya'+'nd'+'ex.'+'ru'; return false;">nikit<span style="display: none;">.nosp@m.</span>a.pi<span style="display: none;">.nosp@m.</span>minof<span style="display: none;">.nosp@m.</span>f@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>ru</a>) </dd></dl>
-<dl class="section version"><dt>Версия</dt><dd>0.3.0 </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.3.1 </dd></dl>
 <dl class="section date"><dt>Дата</dt><dd>2022-10-20 </dd></dl>
 <dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022 </dd></dl>
 
@@ -121,9 +122,7 @@ int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>run_elf_file</b> (
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../d2/da6/elf_8c.html">elf.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 19 Ноя 2022 20:13:45. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

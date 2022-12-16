@@ -33,7 +33,9 @@ int pixidx(int width, int x, int y) {
 struct DukeImageMeta* duke_get_image_metadata(char *filename) {
     if(vfs_exists(filename)) {
         char* rmeta = kmalloc(sizeof(struct DukeImageMeta));
-        vfs_read(filename, 0, sizeof(struct DukeImageMeta), rmeta);
+        int mount_addr_ = vfs_foundMount(filename);
+        int file_index_ = vfs_findFile(filename);
+        vfs_read(mount_addr_, file_index_, 0, sizeof(struct DukeImageMeta), rmeta);
         return (struct DukeImageMeta*)rmeta;
     }
     return 0;
@@ -41,14 +43,18 @@ struct DukeImageMeta* duke_get_image_metadata(char *filename) {
 
 void duke_get_image_data(char* filename, struct DukeImageMeta meta, char* out) {
     if(vfs_exists(filename)) {
-        vfs_read(filename, 9, meta.data_length, out);
+        int mount_addr_ = vfs_foundMount(filename);
+        int file_index_ = vfs_findFile(filename);
+        vfs_read(mount_addr_, file_index_, 9, meta.data_length, out);
     }
 }
 
 char duke_draw_area_from_file(char *filename, int x, int y, int sx, int sy, int width, int height) {
     char meta[sizeof(struct DukeImageMeta)];
     if(vfs_exists(filename)) {
-        vfs_read(filename, 0, sizeof(struct DukeImageMeta), meta);
+        int mount_addr_ = vfs_foundMount(filename);
+        int file_index_ = vfs_findFile(filename);
+        vfs_read(mount_addr_, file_index_, 0, sizeof(struct DukeImageMeta), meta);
         struct DukeImageMeta* realmeta = (struct DukeImageMeta*)meta;
 
         if(width>realmeta->width) { width = realmeta->width; }
@@ -56,7 +62,7 @@ char duke_draw_area_from_file(char *filename, int x, int y, int sx, int sy, int 
 
         char *imagedata = kmalloc(realmeta->data_length);
 
-        vfs_read(filename, sizeof(struct DukeImageMeta), realmeta->data_length, imagedata);
+        vfs_read(mount_addr_, file_index_, sizeof(struct DukeImageMeta), realmeta->data_length, imagedata);
 
         int wx = sx, wy = sy;
         char mod = realmeta->alpha?4:3;
@@ -96,7 +102,9 @@ char duke_draw_area_from_file(char *filename, int x, int y, int sx, int sy, int 
 char duke_draw_from_file(char *filename, int sx, int sy) {
     char meta[sizeof(struct DukeImageMeta)];
     if(vfs_exists(filename)) {
-        vfs_read(filename, 0, sizeof(struct DukeImageMeta), meta);
+        int mount_addr_ = vfs_foundMount(filename);
+        int file_index_ = vfs_findFile(filename);
+        vfs_read(mount_addr_, file_index_, 0, sizeof(struct DukeImageMeta), meta);
         struct DukeImageMeta* realmeta = (struct DukeImageMeta*)meta;
 
         qemu_log("Width: %d\nHeight: %d\nAlpha: %d\n", realmeta->width, realmeta->height, realmeta->alpha);
@@ -104,7 +112,7 @@ char duke_draw_from_file(char *filename, int sx, int sy) {
         qemu_log("Allocating %d bytes for image", realmeta->data_length); // Это тоже пофиксило падение, но ПОЧЕМУ??? (llvm-10)
         char *imagedata = kmalloc(realmeta->data_length);
 
-        vfs_read(filename, sizeof(struct DukeImageMeta), realmeta->data_length, imagedata);
+        vfs_read(mount_addr_, file_index_, sizeof(struct DukeImageMeta), realmeta->data_length, imagedata);
 
         int x = 0, y = 0;
         char mod = realmeta->alpha?4:3;

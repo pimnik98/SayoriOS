@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Исходный файл kernel/include/lib/stdio.h</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -93,10 +94,10 @@ $(document).ready(function(){initNavTree('d6/dd1/stdio_8h_source.html','../../')
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#define SEEK_CUR 2</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#define SEEK_END 3</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define STDIO_ERR_NO_FOUND      1   // Файл не найден</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#define STDIO_ERR_MODE_ERROR    2   // Режим работы не определён</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define STDIO_ERR_SIZE          3   // Размер файла имеет недопустимый размер</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define STDIO_ERR_NO_OPEN       4   // Файл не был открыт</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define STDIO_ERR_NO_FOUND      1   </span><span class="comment">// Файл не найден</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#define STDIO_ERR_MODE_ERROR    2   </span><span class="comment">// Режим работы не определён</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define STDIO_ERR_SIZE          3   </span><span class="comment">// Размер файла имеет недопустимый размер</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define STDIO_ERR_NO_OPEN       4   </span><span class="comment">// Файл не был открыт</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="../../dd/d90/struct_f_i_l_e.html">   18</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
@@ -135,32 +136,30 @@ $(document).ready(function(){initNavTree('d6/dd1/stdio_8h_source.html','../../')
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">//size_t fread(FILE* stream, char* ptr, size_t size, size_t nmemb);</span></div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d9/df6/stdio_8c.html#a998dde93aaae1ed6cc10a4656eb5cc10">fwrite</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *ptr, <span class="keywordtype">size_t</span> size, <span class="keywordtype">size_t</span> count, <a class="code" href="../../dd/d90/struct_f_i_l_e.html">FILE</a> *stream);</div>
+<div class="ttc" id="abootscreen_8c_html_a6b29e4f37f4482274af785ad5ffe96a7"><div class="ttname"><a href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a></div><div class="ttdeci">uint32_t mode</div><div class="ttdoc">Режим работы (0 - Обычный | 1 - Режим логирования)</div><div class="ttdef"><b>Definition:</b> <a href="../../d2/d2c/bootscreen_8c_source.html#l00022">bootscreen.c:22</a></div></div>
+<div class="ttc" id="afonts_8c_html_a2dd2df43c7a23b9fb91e6e462c592477"><div class="ttname"><a href="../../d8/d57/fonts_8c.html#a2dd2df43c7a23b9fb91e6e462c592477">err</a></div><div class="ttdeci">uint32_t err</div><div class="ttdoc">Код ошибки</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d57/fonts_8c_source.html#l00019">fonts.c:19</a></div></div>
+<div class="ttc" id="astdio_8c_html_a08d4c6e3c08cfc857140d5bd2f048919"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a08d4c6e3c08cfc857140d5bd2f048919">fread</a></div><div class="ttdeci">char * fread(FILE *stream)</div><div class="ttdoc">Получение содержимого файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00206">stdio.c:206</a></div></div>
+<div class="ttc" id="astdio_8c_html_a0b58fd23d1cde15aa7aef603110d82a9"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a0b58fd23d1cde15aa7aef603110d82a9">perror</a></div><div class="ttdeci">void perror(FILE *stream, char *s)</div><div class="ttdoc">Выводит на экран ошибку с пользовательским сообщением</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00112">stdio.c:112</a></div></div>
+<div class="ttc" id="astdio_8c_html_a11689e53b350efc3fcacd20e3e3496db"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a11689e53b350efc3fcacd20e3e3496db">ftell</a></div><div class="ttdeci">int64_t ftell(FILE *stream)</div><div class="ttdoc">Текущая позиция считывания в файле</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00256">stdio.c:256</a></div></div>
+<div class="ttc" id="astdio_8c_html_a339e549606415666d4342bb56cffe976"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a339e549606415666d4342bb56cffe976">fclose</a></div><div class="ttdeci">void fclose(FILE *stream)</div><div class="ttdoc">Закончить работу с файлом</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00176">stdio.c:176</a></div></div>
+<div class="ttc" id="astdio_8c_html_a42aebff979e3336b9294009adfedf4e3"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a42aebff979e3336b9294009adfedf4e3">fsize</a></div><div class="ttdeci">int32_t fsize(FILE *stream)</div><div class="ttdoc">Получение размера файла в байтах</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00190">stdio.c:190</a></div></div>
+<div class="ttc" id="astdio_8c_html_a42e0eec1a6b6d3185b7702ccaafdd16e"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a42e0eec1a6b6d3185b7702ccaafdd16e">fseek</a></div><div class="ttdeci">int64_t fseek(FILE *stream, int64_t offset, uint32_t whence)</div><div class="ttdoc">Установка позиции в потоке данных относительно текущей позиции</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00273">stdio.c:273</a></div></div>
+<div class="ttc" id="astdio_8c_html_a848f6c6ee8a5ab2ac1a7ede465f3b3d5"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a848f6c6ee8a5ab2ac1a7ede465f3b3d5">fread_c</a></div><div class="ttdeci">int fread_c(FILE *stream, size_t count, size_t size, void *buffer)</div><div class="ttdoc">Получение содержимого файла (детальная настройка)</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00231">stdio.c:231</a></div></div>
+<div class="ttc" id="astdio_8c_html_a8ad43b25fe6a38b87cc1766de9699e38"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a8ad43b25fe6a38b87cc1766de9699e38">fgetpos</a></div><div class="ttdeci">int64_t fgetpos(FILE *stream)</div><div class="ttdoc">Получение позиции в потоке данных</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00333">stdio.c:333</a></div></div>
+<div class="ttc" id="astdio_8c_html_a97b40f2756b39511cb85a479b900d59a"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a97b40f2756b39511cb85a479b900d59a">ferror</a></div><div class="ttdeci">uint32_t ferror(FILE *stream)</div><div class="ttdoc">Получение кода ошибки</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00102">stdio.c:102</a></div></div>
+<div class="ttc" id="astdio_8c_html_a998dde93aaae1ed6cc10a4656eb5cc10"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a998dde93aaae1ed6cc10a4656eb5cc10">fwrite</a></div><div class="ttdeci">size_t fwrite(const void *ptr, size_t size, size_t count, FILE *stream)</div><div class="ttdoc">Установка позиции в потоке данных</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00354">stdio.c:354</a></div></div>
+<div class="ttc" id="astdio_8c_html_a9c68c9688de147e51537924bbb2b49f8"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a9c68c9688de147e51537924bbb2b49f8">fsetpos</a></div><div class="ttdeci">void fsetpos(FILE *stream, int64_t pos)</div><div class="ttdoc">Установка позиции в потоке данных</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00304">stdio.c:304</a></div></div>
+<div class="ttc" id="astdio_8c_html_aa0cd401f198d33d9d01a9e8aa4026819"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#aa0cd401f198d33d9d01a9e8aa4026819">rewind</a></div><div class="ttdeci">void rewind(FILE *stream)</div><div class="ttdoc">Установка позиции потока в самое начало</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00319">stdio.c:319</a></div></div>
+<div class="ttc" id="astdio_8c_html_aa7befa36203b0cf49b025766caa1541d"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#aa7befa36203b0cf49b025766caa1541d">fdebuginfo</a></div><div class="ttdeci">void fdebuginfo(FILE *stream)</div><div class="ttdoc">Печатает на экран откладочную информацию</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00345">stdio.c:345</a></div></div>
+<div class="ttc" id="astdio_8c_html_afffa3e442e49895773d564f422e1be1c"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#afffa3e442e49895773d564f422e1be1c">fopen</a></div><div class="ttdeci">FILE * fopen(const char *filename, const char *mode)</div><div class="ttdoc">Открыть файл для работы с ним</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00145">stdio.c:145</a></div></div>
+<div class="ttc" id="astruct_f_i_l_e_html"><div class="ttname"><a href="../../dd/d90/struct_f_i_l_e.html">FILE</a></div><div class="ttdoc">Структура файла. Требуется для работы с VFS.</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/dd1/stdio_8h_source.html#l00018">stdio.h:18</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="afonts_8c_html_a2dd2df43c7a23b9fb91e6e462c592477"><div class="ttname"><a href="../../d8/d57/fonts_8c.html#a2dd2df43c7a23b9fb91e6e462c592477">err</a></div><div class="ttdeci">uint32_t err</div><div class="ttdoc">Код ошибки</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d57/fonts_8c_source.html#l00016">fonts.c:16</a></div></div>
-<div class="ttc" id="astdio_8c_html_a42e0eec1a6b6d3185b7702ccaafdd16e"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a42e0eec1a6b6d3185b7702ccaafdd16e">fseek</a></div><div class="ttdeci">int64_t fseek(FILE *stream, int64_t offset, uint32_t whence)</div><div class="ttdoc">Установка позиции в потоке данных относительно текущей позиции</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00273">stdio.c:273</a></div></div>
-<div class="ttc" id="astdio_8c_html_aa0cd401f198d33d9d01a9e8aa4026819"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#aa0cd401f198d33d9d01a9e8aa4026819">rewind</a></div><div class="ttdeci">void rewind(FILE *stream)</div><div class="ttdoc">Установка позиции потока в самое начало</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00315">stdio.c:315</a></div></div>
-<div class="ttc" id="astdio_8c_html_a08d4c6e3c08cfc857140d5bd2f048919"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a08d4c6e3c08cfc857140d5bd2f048919">fread</a></div><div class="ttdeci">char * fread(FILE *stream)</div><div class="ttdoc">Получение содержимого файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00206">stdio.c:206</a></div></div>
-<div class="ttc" id="astdio_8c_html_afffa3e442e49895773d564f422e1be1c"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#afffa3e442e49895773d564f422e1be1c">fopen</a></div><div class="ttdeci">FILE * fopen(const char *filename, const char *mode)</div><div class="ttdoc">Открыть файл для работы с ним</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00145">stdio.c:145</a></div></div>
-<div class="ttc" id="astdio_8c_html_a11689e53b350efc3fcacd20e3e3496db"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a11689e53b350efc3fcacd20e3e3496db">ftell</a></div><div class="ttdeci">int64_t ftell(FILE *stream)</div><div class="ttdoc">Текущая позиция считывания в файле</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00256">stdio.c:256</a></div></div>
-<div class="ttc" id="astdio_8c_html_a0b58fd23d1cde15aa7aef603110d82a9"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a0b58fd23d1cde15aa7aef603110d82a9">perror</a></div><div class="ttdeci">void perror(FILE *stream, char *s)</div><div class="ttdoc">Выводит на экран ошибку с пользовательским сообщением</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00112">stdio.c:112</a></div></div>
-<div class="ttc" id="abootscreen_8c_html_a6b29e4f37f4482274af785ad5ffe96a7"><div class="ttname"><a href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a></div><div class="ttdeci">uint32_t mode</div><div class="ttdoc">Режим работы (0 - Обычный | 1 - Режим логирования)</div><div class="ttdef"><b>Definition:</b> <a href="../../d2/d2c/bootscreen_8c_source.html#l00022">bootscreen.c:22</a></div></div>
-<div class="ttc" id="astdio_8c_html_a339e549606415666d4342bb56cffe976"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a339e549606415666d4342bb56cffe976">fclose</a></div><div class="ttdeci">void fclose(FILE *stream)</div><div class="ttdoc">Закончить работу с файлом</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00176">stdio.c:176</a></div></div>
-<div class="ttc" id="astruct_f_i_l_e_html"><div class="ttname"><a href="../../dd/d90/struct_f_i_l_e.html">FILE</a></div><div class="ttdoc">Структура файла. Требуется для работы с VFS.</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/dd1/stdio_8h_source.html#l00018">stdio.h:18</a></div></div>
-<div class="ttc" id="astdio_8c_html_a848f6c6ee8a5ab2ac1a7ede465f3b3d5"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a848f6c6ee8a5ab2ac1a7ede465f3b3d5">fread_c</a></div><div class="ttdeci">int fread_c(FILE *stream, size_t count, size_t size, void *buffer)</div><div class="ttdoc">Получение содержимого файла (детальная настройка)</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00231">stdio.c:231</a></div></div>
-<div class="ttc" id="astdio_8c_html_aa7befa36203b0cf49b025766caa1541d"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#aa7befa36203b0cf49b025766caa1541d">fdebuginfo</a></div><div class="ttdeci">void fdebuginfo(FILE *stream)</div><div class="ttdoc">Печатает на экран откладочную информацию</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00341">stdio.c:341</a></div></div>
-<div class="ttc" id="astdio_8c_html_a8ad43b25fe6a38b87cc1766de9699e38"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a8ad43b25fe6a38b87cc1766de9699e38">fgetpos</a></div><div class="ttdeci">int64_t fgetpos(FILE *stream)</div><div class="ttdoc">Получение позиции в потоке данных</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00329">stdio.c:329</a></div></div>
-<div class="ttc" id="astdio_8c_html_a998dde93aaae1ed6cc10a4656eb5cc10"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a998dde93aaae1ed6cc10a4656eb5cc10">fwrite</a></div><div class="ttdeci">size_t fwrite(const void *ptr, size_t size, size_t count, FILE *stream)</div><div class="ttdoc">Установка позиции в потоке данных</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00350">stdio.c:350</a></div></div>
-<div class="ttc" id="astdio_8c_html_a9c68c9688de147e51537924bbb2b49f8"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a9c68c9688de147e51537924bbb2b49f8">fsetpos</a></div><div class="ttdeci">void fsetpos(FILE *stream, int64_t pos)</div><div class="ttdoc">Установка позиции в потоке данных</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00300">stdio.c:300</a></div></div>
-<div class="ttc" id="astdio_8c_html_a42aebff979e3336b9294009adfedf4e3"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a42aebff979e3336b9294009adfedf4e3">fsize</a></div><div class="ttdeci">int32_t fsize(FILE *stream)</div><div class="ttdoc">Получение размера файла в байтах</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00190">stdio.c:190</a></div></div>
-<div class="ttc" id="astdio_8c_html_a97b40f2756b39511cb85a479b900d59a"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a97b40f2756b39511cb85a479b900d59a">ferror</a></div><div class="ttdeci">uint32_t ferror(FILE *stream)</div><div class="ttdoc">Получение кода ошибки</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00102">stdio.c:102</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_009f605b833ac4622acd6c3c0c26c0f0.html">include</a></li><li class="navelem"><a class="el" href="../../dir_6362bd88c9630c539f6dd253bd3ee8b7.html">lib</a></li><li class="navelem"><b>stdio.h</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 19 Ноя 2022 20:13:45. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Файл kernel/src/sys/timer.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -104,18 +105,21 @@ $(document).ready(function(){initNavTree('df/d41/timer_8c.html','../../'); initR
 <tr class="memitem:a36a66ad7528a25782bfded91d76dbe23"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d41/timer_8c.html#a36a66ad7528a25782bfded91d76dbe23">getTicks</a> ()</td></tr>
 <tr class="memdesc:a36a66ad7528a25782bfded91d76dbe23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить количество тиков  <a href="../../df/d41/timer_8c.html#a36a66ad7528a25782bfded91d76dbe23">Подробнее...</a><br /></td></tr>
 <tr class="separator:a36a66ad7528a25782bfded91d76dbe23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fff68e5766ba7d55192867903a21b52"><td class="memItemLeft" align="right" valign="top"><a id="a9fff68e5766ba7d55192867903a21b52"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>getUptime</b> ()</td></tr>
+<tr class="separator:a9fff68e5766ba7d55192867903a21b52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0379130e54ee755db4be8d21a486744e"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d41/timer_8c.html#a0379130e54ee755db4be8d21a486744e">getFrequency</a> ()</td></tr>
 <tr class="memdesc:a0379130e54ee755db4be8d21a486744e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить частоту таймера  <a href="../../df/d41/timer_8c.html#a0379130e54ee755db4be8d21a486744e">Подробнее...</a><br /></td></tr>
 <tr class="separator:a0379130e54ee755db4be8d21a486744e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae14e4f9b44d8ac479cfe651677cd9edd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d41/timer_8c.html#ae14e4f9b44d8ac479cfe651677cd9edd">sleep_ticks</a> (uint32_t delay)</td></tr>
 <tr class="memdesc:ae14e4f9b44d8ac479cfe651677cd9edd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ожидание по тикам  <a href="../../df/d41/timer_8c.html#ae14e4f9b44d8ac479cfe651677cd9edd">Подробнее...</a><br /></td></tr>
 <tr class="separator:ae14e4f9b44d8ac479cfe651677cd9edd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33c3cc6455cd17dd4e655840275e3b7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d41/timer_8c.html#a33c3cc6455cd17dd4e655840275e3b7c">sleep</a> (uint32_t _d)</td></tr>
-<tr class="memdesc:a33c3cc6455cd17dd4e655840275e3b7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ожидание по секундам  <a href="../../df/d41/timer_8c.html#a33c3cc6455cd17dd4e655840275e3b7c">Подробнее...</a><br /></td></tr>
-<tr class="separator:a33c3cc6455cd17dd4e655840275e3b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac27fcc4dbee83e960b0ac08c511b382e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d41/timer_8c.html#ac27fcc4dbee83e960b0ac08c511b382e">sleep_ms</a> (uint32_t milliseconds)</td></tr>
 <tr class="memdesc:ac27fcc4dbee83e960b0ac08c511b382e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ожидание по милисекундам  <a href="../../df/d41/timer_8c.html#ac27fcc4dbee83e960b0ac08c511b382e">Подробнее...</a><br /></td></tr>
 <tr class="separator:ac27fcc4dbee83e960b0ac08c511b382e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33c3cc6455cd17dd4e655840275e3b7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d41/timer_8c.html#a33c3cc6455cd17dd4e655840275e3b7c">sleep</a> (uint32_t _d)</td></tr>
+<tr class="memdesc:a33c3cc6455cd17dd4e655840275e3b7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ожидание по секундам  <a href="../../df/d41/timer_8c.html#a33c3cc6455cd17dd4e655840275e3b7c">Подробнее...</a><br /></td></tr>
+<tr class="separator:a33c3cc6455cd17dd4e655840275e3b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab70d0aaa991d0336e61f783a018d54d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d41/timer_8c.html#aab70d0aaa991d0336e61f783a018d54d">init_timer</a> (uint32_t f)</td></tr>
 <tr class="memdesc:aab70d0aaa991d0336e61f783a018d54d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Инициализация модуля системного таймера  <a href="../../df/d41/timer_8c.html#aab70d0aaa991d0336e61f783a018d54d">Подробнее...</a><br /></td></tr>
 <tr class="separator:aab70d0aaa991d0336e61f783a018d54d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,6 +134,9 @@ uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d41/timer_8c.html#ab632fb0b4d5156ea4df0b1e15410e913">frequency</a> = 0</td></tr>
 <tr class="memdesc:ab632fb0b4d5156ea4df0b1e15410e913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Частота <br /></td></tr>
 <tr class="separator:ab632fb0b4d5156ea4df0b1e15410e913"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28e3c7750508d1b8b11da1e9fd4e484f"><td class="memItemLeft" align="right" valign="top"><a id="a28e3c7750508d1b8b11da1e9fd4e484f"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>uptime</b> = 0</td></tr>
+<tr class="separator:a28e3c7750508d1b8b11da1e9fd4e484f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
 <div class="textblock"><p>Модуль системного таймера </p>
@@ -158,7 +165,7 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <p>Получить частоту таймера </p>
 <dl class="section return"><dt>Возвращает</dt><dd>uint32_t - Частота таймера </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00034">34</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00039">39</a></p>
 
 </div>
 </div>
@@ -180,7 +187,7 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <p>Получить количество тиков </p>
 <dl class="section return"><dt>Возвращает</dt><dd>uint64_t - Количество тиков с момента старта </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00025">25</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00026">26</a></p>
 
 </div>
 </div>
@@ -208,7 +215,7 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00086">86</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00100">100</a></p>
 
 </div>
 </div>
@@ -236,7 +243,7 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00067">67</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00091">91</a></p>
 
 </div>
 </div>
@@ -264,7 +271,7 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00076">76</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00081">81</a></p>
 
 </div>
 </div>
@@ -292,7 +299,7 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00054">54</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../df/d41/timer_8c_source.html">timer.c</a> строка <a class="el" href="../../df/d41/timer_8c_source.html#l00067">67</a></p>
 
 </div>
 </div>
@@ -302,9 +309,7 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../df/d41/timer_8c.html">timer.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 19 Ноя 2022 20:13:45. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

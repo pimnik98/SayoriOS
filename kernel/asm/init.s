@@ -29,6 +29,8 @@
 init:
 		cli 
 
+		finit
+
 		push	%esp
 		push	%ebx
 

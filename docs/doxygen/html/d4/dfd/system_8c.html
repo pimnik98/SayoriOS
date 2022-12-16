@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Файл kernel/src/sys/system.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -124,9 +125,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 <tr class="memitem:a4711630948b3e756016129b705158406"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/dfd/system_8c.html#a4711630948b3e756016129b705158406">setHostname</a> (char *new)</td></tr>
 <tr class="memdesc:a4711630948b3e756016129b705158406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Устанавливает имя устройства  <a href="../../d4/dfd/system_8c.html#a4711630948b3e756016129b705158406">Подробнее...</a><br /></td></tr>
 <tr class="separator:a4711630948b3e756016129b705158406"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a612509b161adc10bd055614a09c49ef5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/dfd/system_8c.html#a612509b161adc10bd055614a09c49ef5">drawASCIILogo</a> (int <a class="el" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a>)</td></tr>
-<tr class="memdesc:a612509b161adc10bd055614a09c49ef5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Рисует ASCII Logo.  <a href="../../d4/dfd/system_8c.html#a612509b161adc10bd055614a09c49ef5">Подробнее...</a><br /></td></tr>
-<tr class="separator:a612509b161adc10bd055614a09c49ef5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Переменные</h2></td></tr>
@@ -152,34 +150,6 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 
 <p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a></p>
 </div><h2 class="groupheader">Функции</h2>
-<a id="a612509b161adc10bd055614a09c49ef5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a612509b161adc10bd055614a09c49ef5">&#9670;&nbsp;</a></span>drawASCIILogo()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void drawASCIILogo </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>mode</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Рисует ASCII Logo. </p>
-<dl class="params"><dt>Аргументы</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">int</td><td>mode - Режим COM OR TTY </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00110">110</a></p>
-
-</div>
-</div>
 <a id="ad901ad50dd972302b50aaa75a93a6495"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad901ad50dd972302b50aaa75a93a6495">&#9670;&nbsp;</a></span>getHostname()</h2>
 
@@ -198,7 +168,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 <p>Возращает имя устройства </p>
 <dl class="section return"><dt>Возвращает</dt><dd>char* - Имя устройства </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00085">85</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00087">87</a></p>
 
 </div>
 </div>
@@ -220,7 +190,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 <p>Получить текущий путь </p>
 <dl class="section return"><dt>Возвращает</dt><dd>char* путь </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00019">19</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00021">21</a></p>
 
 </div>
 </div>
@@ -242,7 +212,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 <p>Возращает имя пользователя </p>
 <dl class="section return"><dt>Возвращает</dt><dd>char* - Имя пользователя </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00064">64</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00066">66</a></p>
 
 </div>
 </div>
@@ -271,7 +241,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>char* - Имя устройства </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00096">96</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00098">98</a></p>
 
 </div>
 </div>
@@ -300,7 +270,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>char* путь </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00030">30</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00032">32</a></p>
 
 </div>
 </div>
@@ -329,7 +299,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>char* - Имя пользователя </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00075">75</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d4/dfd/system_8c_source.html">system.c</a> строка <a class="el" href="../../d4/dfd/system_8c_source.html#l00077">77</a></p>
 
 </div>
 </div>
@@ -339,9 +309,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../d4/dfd/system_8c.html">system.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 19 Ноя 2022 20:13:45. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

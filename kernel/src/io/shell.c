@@ -217,7 +217,7 @@ uint32_t cmd_debug(uint32_t c,char* v[]){
  * @return uint32_t - Результат работы
  */
 uint32_t cmd_font(uint32_t c,char* v[]){
-    drawRect(0,0,800,200);
+    drawRect(0,0,800,200, 0);
     setColorFont(0xFFFFF);
     drawStringFont("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",10,30,0);
     setColorFont(0xCAFE12);
@@ -248,13 +248,16 @@ uint32_t cmd_cd(uint32_t c,char* v[]){
         tty_printf("[CMD] [CD] Необходимо указать путь для смены дириктории.\n");
         return 0;
     }
+    qemu_log("Finding directory...");
     uint32_t inxDir = vfs_findDir(v[1]);
+    qemu_log("Found directory!!!");
     if (inxDir == -1){
         tty_setcolor(COLOR_ERROR);
         tty_printf("[CMD] [CD] Папка `%s` не найдена.\n",v[1]);
         return 0;
     }
     setSysPath(v[1]);
+    qemu_log("Now system path is: %s", v[1]);
     return 1;
 }
 
@@ -270,7 +273,12 @@ uint32_t cmd_cd(uint32_t c,char* v[]){
  */
 uint32_t cmd_ls(uint32_t c,char* v[]){
     char path[256] = {0};
-    strcpy(path,(c == 0?getSysPath():v[1]));
+	if(c==0) {
+    	qemu_log("Listing local folder: %s", getSysPath());
+	}else{
+    	qemu_log("Listing folder: %s", v[1]);		
+	}
+    strcpy(path, (c == 0?getSysPath():v[1]));
     if (strlen(path) <= 0){
         tty_setcolor(COLOR_ERROR);
         tty_printf("[CMD] [LS] Некорректные данные `%s`.\n",path);
@@ -331,7 +339,8 @@ uint32_t cmd_exec(uint32_t c,char* v[]){
         return 2;
     }
     //elf_info(temp);
-    run_elf_file(temp, 0, 0);
+
+    run_elf_file(temp, c, v);
     return 0;
 }
 
@@ -361,7 +370,7 @@ void cmdHandler(char* ncmd){
             return;
         } else if (strcmpn(argv[0],"run")){
             //cmdDisabled(argc,argv);
-            cmd_exec(argc,argv);
+            cmd_exec(argc+1,argv);
             return;
         } else if (strcmpn(argv[0],"view")){
             cmdDisabled(argc,argv);
@@ -416,8 +425,9 @@ void cmdHandler(char* ncmd){
             //tty_printf("[CMD] Команда `%s` не найдена. Введите \"help\" для получения списка команд.\n",argv[0]);
             //return;
             char* run[2] = {0};
+            run[0] = "run";
             run[1] = argv[0];
-            cmd_exec(1,run);
+            cmd_exec(2,run);
             return;
         }
 }
@@ -427,6 +437,7 @@ void cmdHandler(char* ncmd){
  */
 void shell(){
     //changeStageKeyboard(1);
+    tty_set_bgcolor(COLOR_BG);
     tty_setcolor(COLOR_ALERT);
     tty_printf("\nВведите \"help\" для получения списка команд.\n");
     char* ncmd = kmalloc(sizeof(char) * 256);
@@ -440,7 +451,8 @@ void shell(){
         tty_setcolor(COLOR_TEXT);
 
         memset(ncmd, 0, 256);
-        strcpy(ncmd,getStringBufferKeyboard());
+        // strcpy(ncmd,getStringBufferKeyboard());
+        gets(ncmd);
         if (strlen(ncmd) > 256) {
             tty_setcolor(COLOR_ERROR);
             tty_printf("\nERROR: limit 256 char's!");

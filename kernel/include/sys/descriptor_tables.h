@@ -1,10 +1,3 @@
-/*------------------------------------------------------------------------------
-//
-//	Description of descriptor tables structures
-//	(c) mainsvendoo, 06.07.2013
-//
-//----------------------------------------------------------------------------*/
-
 #ifndef		DESCRIPTOR_TABLES_H
 #define		DESCRIPTOR_TABLES_H
 

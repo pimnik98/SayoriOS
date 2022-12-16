@@ -1,9 +1,3 @@
-/*------------------------------------------------------------------------------
-//
-//	PhantomEx, working with text framebuffer
-//	(c) maisvendoo, 04.07.2013
-//
-//----------------------------------------------------------------------------*/
 #ifndef		TEXT_FRAMEBUFFER_H
 #define		TEXT_FRAMEBUFFER_H
 

@@ -7,6 +7,8 @@
  * @copyright Copyright SayoriOS Team (c) 2022
  */
 #include	"sys/scheduler.h"
+#include	"lib/string.h"
+#include	"io/ports.h"
 
 uint32_t next_pid = 0;			///< Следующий ID задачи (PID)
 uint32_t next_thread_id = 0;	///< Следующий ID потока
@@ -58,7 +60,7 @@ void init_task_manager(void){
 	kernel_thread->suspend = false;
 	kernel_thread->esp = esp;
 	kernel_thread->stack_top = init_esp;
-	
+
 	list_add(&thread_list, &kernel_thread->list_item);
 
 	current_proc = kernel_proc;
@@ -141,7 +143,6 @@ thread_t* thread_create(process_t* proc,void* entry_point,size_t stack_size,bool
 	tmp_thread->stack = stack;
 	tmp_thread->esp = (uint32_t) stack + stack_size - 12;
 	tmp_thread->stack_top = (uint32_t) stack + stack_size;
-
 
 	/* Add thread to ring queue */
 	list_add(&thread_list, &tmp_thread->list_item);

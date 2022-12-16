@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Исходный файл kernel/src/drv/cmos.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.3.0</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -89,7 +90,7 @@ $(document).ready(function(){initNavTree('df/d49/cmos_8c_source.html','../../');
 <a href="../../df/d49/cmos_8c.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#define CURRENT_YEAR        2022    // Change this each year!</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#define CURRENT_YEAR        2022    </span><span class="comment">// Change this each year!</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;int32_t century_register = 0x00;     <span class="comment">// Set by ACPI table parsing code if possible</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
@@ -232,23 +233,21 @@ $(document).ready(function(){initNavTree('df/d49/cmos_8c_source.html','../../');
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="comment">    return t;</span></div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment">}</span></div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="comment">*/</span></div>
-</div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
-<div class="ttc" id="aports_8c_html_a8bf7a9af91c08e6f876aaffeccd48ff3"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a8bf7a9af91c08e6f876aaffeccd48ff3">outb</a></div><div class="ttdeci">void outb(uint16_t port, uint8_t val)</div><div class="ttdoc">Запись одного байта в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00019">ports.c:19</a></div></div>
-<div class="ttc" id="astructsayori__time_html"><div class="ttname"><a href="../../d8/dce/structsayori__time.html">sayori_time</a></div><div class="ttdef"><b>Definition:</b> <a href="../../db/daa/cmos_8h_source.html#l00006">cmos.h:6</a></div></div>
-<div class="ttc" id="acmos_8c_html_aebccc42f394adc52cab13340c36a9b08"><div class="ttname"><a href="../../df/d49/cmos_8c.html#aebccc42f394adc52cab13340c36a9b08">get_update_in_progress_flag</a></div><div class="ttdeci">int32_t get_update_in_progress_flag()</div><div class="ttdoc">Проверяет CMOS на обновление</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d49/cmos_8c_source.html#l00041">cmos.c:41</a></div></div>
-<div class="ttc" id="aports_8c_html_a2e1e8e2c5724c1e8fd2dff2eada06479"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a2e1e8e2c5724c1e8fd2dff2eada06479">inb</a></div><div class="ttdeci">uint8_t inb(uint16_t port)</div><div class="ttdoc">Получение одного байта из порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00030">ports.c:30</a></div></div>
+<div class="ttc" id="acmos_8c_html_a19efe316ef878d9aaaa70e28b4b2c670"><div class="ttname"><a href="../../df/d49/cmos_8c.html#a19efe316ef878d9aaaa70e28b4b2c670">isleap</a></div><div class="ttdeci">int isleap(int year)</div><div class="ttdoc">Это високосный год?</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d49/cmos_8c_source.html#l00128">cmos.c:128</a></div></div>
 <div class="ttc" id="acmos_8c_html_aaad79a36175239b5f312059932b105dd"><div class="ttname"><a href="../../df/d49/cmos_8c.html#aaad79a36175239b5f312059932b105dd">read_rtc</a></div><div class="ttdeci">void read_rtc()</div><div class="ttdoc">Считывает время с CMOS.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d49/cmos_8c_source.html#l00058">cmos.c:58</a></div></div>
 <div class="ttc" id="acmos_8c_html_ad63adf5763a9bd203619a00f9ae4acd4"><div class="ttname"><a href="../../df/d49/cmos_8c.html#ad63adf5763a9bd203619a00f9ae4acd4">get_RTC_register</a></div><div class="ttdeci">unsigned char get_RTC_register(int32_t reg)</div><div class="ttdoc">Получает регистр CMOS.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d49/cmos_8c_source.html#l00049">cmos.c:49</a></div></div>
-<div class="ttc" id="acmos_8c_html_a19efe316ef878d9aaaa70e28b4b2c670"><div class="ttname"><a href="../../df/d49/cmos_8c.html#a19efe316ef878d9aaaa70e28b4b2c670">isleap</a></div><div class="ttdeci">int isleap(int year)</div><div class="ttdoc">Это високосный год?</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d49/cmos_8c_source.html#l00128">cmos.c:128</a></div></div>
 <div class="ttc" id="acmos_8c_html_ae9bc5e70ae7ccccd822d633a1b1561bb"><div class="ttname"><a href="../../df/d49/cmos_8c.html#ae9bc5e70ae7ccccd822d633a1b1561bb">get_time</a></div><div class="ttdeci">sayori_time_t get_time()</div><div class="ttdoc">Считывает время и передает в удобной структуре</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d49/cmos_8c_source.html#l00135">cmos.c:135</a></div></div>
+<div class="ttc" id="acmos_8c_html_aebccc42f394adc52cab13340c36a9b08"><div class="ttname"><a href="../../df/d49/cmos_8c.html#aebccc42f394adc52cab13340c36a9b08">get_update_in_progress_flag</a></div><div class="ttdeci">int32_t get_update_in_progress_flag()</div><div class="ttdoc">Проверяет CMOS на обновление</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d49/cmos_8c_source.html#l00041">cmos.c:41</a></div></div>
+<div class="ttc" id="aports_8c_html_a2e1e8e2c5724c1e8fd2dff2eada06479"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a2e1e8e2c5724c1e8fd2dff2eada06479">inb</a></div><div class="ttdeci">uint8_t inb(uint16_t port)</div><div class="ttdoc">Получение одного байта из порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00030">ports.c:30</a></div></div>
+<div class="ttc" id="aports_8c_html_a8bf7a9af91c08e6f876aaffeccd48ff3"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a8bf7a9af91c08e6f876aaffeccd48ff3">outb</a></div><div class="ttdeci">void outb(uint16_t port, uint8_t val)</div><div class="ttdoc">Запись одного байта в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00019">ports.c:19</a></div></div>
+<div class="ttc" id="astructsayori__time_html"><div class="ttname"><a href="../../d8/dce/structsayori__time.html">sayori_time</a></div><div class="ttdef"><b>Definition:</b> <a href="../../db/daa/cmos_8h_source.html#l00006">cmos.h:6</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_294885e234569f555c14a529bc5dac14.html">drv</a></li><li class="navelem"><a class="el" href="../../df/d49/cmos_8c.html">cmos.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 19 Ноя 2022 20:13:45. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 16 Дек 2022 11:22:26. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

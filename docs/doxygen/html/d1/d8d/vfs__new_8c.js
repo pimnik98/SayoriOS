@@ -13,7 +13,7 @@ var vfs__new_8c =
     [ "vfs_getDiskUsed", "d1/d8d/vfs__new_8c.html#aff81e01280e7f09dd0ef2e3e914fa083", null ],
     [ "vfs_getLengthFile", "d1/d8d/vfs__new_8c.html#a03528ea7052d244e5aabf9e06d5372db", null ],
     [ "vfs_getLengthFilePath", "d1/d8d/vfs__new_8c.html#ad711504504d7f8d36ade290f83ccb3e2", null ],
-    [ "vfs_getListFolder", "d1/d8d/vfs__new_8c.html#ab08cf14f9c294d64a4091aaa3d7f7ec8", null ],
+    [ "vfs_getListFolder", "d1/d8d/vfs__new_8c.html#a80ac0b5e2867c7d70befae34272351e3", null ],
     [ "vfs_getMountPoint", "d1/d8d/vfs__new_8c.html#aa01aabefab6407ac4ecc5dd4b2c3a010", null ],
     [ "vfs_getName", "d1/d8d/vfs__new_8c.html#ad6a42ce35cacdc918f0a30ed99428ead", null ],
     [ "vfs_getOffsetFile", "d1/d8d/vfs__new_8c.html#aab8b2e5bd1abdd63ea3cd7580c956a5e", null ],
