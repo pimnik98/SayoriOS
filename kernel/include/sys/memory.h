@@ -31,6 +31,10 @@
 #define		PAGE_DIRTY		(1 << 6)
 #define		PAGE_GLOBAL		(1 << 8)
 
+#define		KERNEL_BASE		0x200000		/* Kernel start address in physical memory */
+#define		KERNEL_SIZE		0x1000000		/* Size of area for kernel */
+#define		KERNEL_PAGE_TABLE	0x500000		/* Kernel page directory address */
+
 /*------------------------------------------------------------------------------
 //		User virtual address space
 //----------------------------------------------------------------------------*/
@@ -89,10 +93,6 @@ typedef struct
 }__attribute__((packed)) heap_t;
 
 #define		LAST_ADDR		0xFFFFFFFF		/* Last virtual address in x86 address space*/
-
-#define		KERNEL_BASE		0x200000		/* Kernel start address in physical memory */
-#define		KERNEL_SIZE		0x1000000		/* Size of area for kernel */
-#define		KERNEL_PAGE_TABLE	0x500000		/* Kernel page directory address */
 
 #define		TEMP_PAGE		(KERNEL_BASE + KERNEL_SIZE - PAGE_SIZE)	/* Temporary page for */
 										/* physical memory access */
