@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['calloc_38',['calloc',['../d1/db0/string_8c.html#a62b7798461bd461da64c5f9d35feddf7',1,'string.c']]],
+  ['calls_5ftable_39',['calls_table',['../d5/d87/syscalls_8c.html#a3d267774b0097a56f15ced77bf1f6293',1,'syscalls.c']]],
+  ['check_5fmemory_5fmap_40',['check_memory_map',['../df/dd5/memory_8c.html#a3feee7ce23627a6a93b3f3f89eac783a',1,'memory.c']]],
+  ['clean_5fscreen_41',['clean_screen',['../dc/d03/tty_8c.html#a0d199b5702695c4d7b78ef83759c32d5',1,'tty.c']]],
+  ['close_42',['close',['../d0/d77/structfs__node.html#aa53bc19f51782a3a27defe2d22e1bd0d',1,'fs_node']]],
+  ['cmos_2ec_43',['cmos.c',['../df/d49/cmos_8c.html',1,'']]],
+  ['colorbg_44',['colorBg',['../d8/d57/fonts_8c.html#a921be3e799a8139493703354909df3d2',1,'fonts.c']]],
+  ['colorfont_45',['colorFont',['../d8/d57/fonts_8c.html#a084fd5721896cebe203d669d02d07202',1,'fonts.c']]],
+  ['com1_5fis_5ftransmit_5fempty_46',['com1_is_transmit_empty',['../d0/d6e/ports_8c.html#ab129328817732429fa6ff116c30ad94a',1,'ports.c']]],
+  ['com1_5fwrite_5fchar_47',['com1_write_char',['../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06',1,'ports.c']]],
+  ['common_2eh_48',['common.h',['../dc/d54/common_8h.html',1,'']]],
+  ['config_49',['config',['../d4/d25/beeper_8c.html#ac0c635110dc503f164fff91b163936d7',1,'beeper.c']]],
+  ['configfont_50',['configFont',['../d8/d57/fonts_8c.html#a2f3b6be4a9a887986c4e0ede2e40b415',1,'fonts.c']]],
+  ['countmount_51',['countMount',['../d1/d8d/vfs__new_8c.html#a715e2526433a20e5e06dd1103157c511',1,'vfs_new.c']]],
+  ['cpu_5fname_52',['CPU_Name',['../da/d48/structenv.html#aab649d81b450d6eb09ef67d2a3950053',1,'env']]],
+  ['cpuinfo_2ec_53',['cpuinfo.c',['../df/d59/cpuinfo_8c.html',1,'']]],
+  ['cpuinfo_5fprintregs_54',['cpuinfo_printregs',['../df/d59/cpuinfo_8c.html#a40c20c52180e54beceaf2a4c1ba1ace0',1,'cpuinfo.c']]],
+  ['create_5fback_5fframebuffer_55',['create_back_framebuffer',['../dc/d03/tty_8c.html#aca7637cf8ec1ea90a95d8fd4a2cce7fe',1,'tty.c']]],
+  ['curelem_56',['curElem',['../d2/d2c/bootscreen_8c.html#ac25ce39dfb513df51396ac582adc167a',1,'bootscreen.c']]],
+  ['current_5fproc_57',['current_proc',['../dd/d6c/scheduler_8c.html#acf716f260cb3deefba5e243c8aa630a5',1,'scheduler.c']]],
+  ['current_5fthread_58',['current_thread',['../dd/d6c/scheduler_8c.html#abef4e2f9d8e885d261e4b7dd27e4ecb7',1,'scheduler.c']]],
+  ['cursor_59',['cursor',['../db/d9f/mouse_8c.html#a74b04dd2e92bf5738e88de4280cb697f',1,'mouse.c']]]
+];
