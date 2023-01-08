@@ -1,9 +1,3 @@
-/*-----------------------------------------------------------------------------
- *
- * 		CPU interrupt handlers
- * 		(c) maisvendoo, 30.07.2013
- *
- *---------------------------------------------------------------------------*/
 #ifndef			CPU_ISR_H
 #define			CPU_ISR_H
 
@@ -62,5 +56,7 @@ void general_protection_error(registers_t regs);
 
 /* INT 0Eh - page fault */
 void page_fault(registers_t regs);
+
+uint32_t extern read_cr2();
 
 #endif

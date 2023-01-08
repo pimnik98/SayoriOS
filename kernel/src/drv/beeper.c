@@ -50,11 +50,13 @@ void beeperConfig(uint32_t val){
 /**
  * @brief [Beeper] Инициализация
  */
+
 void beeperInit(int test){
     qemu_log("[Beeper] Init...");
     beeperPlay(1000);
     sleep(50);
     beeperSilent();
+    // FIXME: Beeper interrupts for a short time.
     if (test == 1){
         Note notes[150] = {
             {A4, 200},

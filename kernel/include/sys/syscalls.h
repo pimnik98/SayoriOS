@@ -1,9 +1,3 @@
-/*-----------------------------------------------------------------------------
- *
- * 		System calls interface
- * 		(c) maisvendoo, 21.08.2013
- *
- *---------------------------------------------------------------------------*/
 #ifndef		SYSCALLS_H
 #define		SYSCALLS_H
 
@@ -12,7 +6,7 @@
 #include	"drv/text_framebuffer.h"
 #include	"sys/io_disp.h"
 
-#define		NUM_CALLS	3
+#define		NUM_CALLS	5
 
 /*-----------------------------------------------------------------------------
  *		Syscall interrupt number
@@ -24,7 +18,9 @@
  *---------------------------------------------------------------------------*/
 #define		PORT_INPUT_BYTE			0x00
 #define		PORT_OUTPUT_BYTE		0x01
-#define		HELLO_WORLD_CONSOLE		0x02
+#define		TTYCTL					0x02
+#define		SH_ENV					0x03
+#define		SH_ENV_DEBUG			0x04
 
 /*-----------------------------------------------------------------------------
  *		Macro for system call declaration
@@ -74,12 +70,14 @@ int syscall_##func(P1 p1, P2 p2, P3 p3)\
 	return ret;\
 }
 
+
+
 /*-----------------------------------------------------------------------------
  *		System calls control
  *---------------------------------------------------------------------------*/
 void init_syscalls(void);
 
-extern uint32_t syscall_entry_call(void* entry_point);
+extern size_t syscall_entry_call(void* entry_point, void* param1, void* param2, void* param3);
 
 void syscall_handler(registers_t regs);
 
@@ -90,6 +88,6 @@ int get_digit(int dig);
  *---------------------------------------------------------------------------*/
 DECL_SYSCALL1(in_byte, uint16_t);
 DECL_SYSCALL2(out_byte, uint16_t, uint8_t);
-DECL_SYSCALL0(hello_world_console);
+DECL_SYSCALL2(tty_ctl, void*, void*);
 
 #endif

@@ -8,6 +8,8 @@
  */
 #include	"sys/descriptor_tables.h"
 #include	"drv/text_framebuffer.h"
+#include	"lib/string.h"
+#include	"io/ports.h"
 
 extern void gdt_flush(uint32_t);
 static void init_gdt(void);

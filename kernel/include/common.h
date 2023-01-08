@@ -21,7 +21,6 @@ typedef enum
 {
 	false = 0,
 	true = 1
-
 } bool;
 /* 64-bit types */
 typedef	unsigned long long	uint64_t;

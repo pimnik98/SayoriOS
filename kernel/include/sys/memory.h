@@ -1,9 +1,3 @@
-/*-----------------------------------------------------------------------------
- *
- * 		Memory manager
- * 		(c) maisvendoo, 30.07.2013
- *
- *---------------------------------------------------------------------------*/
 #ifndef		MEMORY_H
 #define		MEMORY_H
 
@@ -39,6 +33,9 @@
 //		User virtual address space
 //----------------------------------------------------------------------------*/
 #define			USER_MEMORY_START	((void*) 0x80000000)
+// FIXME: If memory starts at 2 GB and ends at 4 GB,
+//        we have only 2 GB of User VAddress Space?
+//        P.S. Or I don't know how memory works?
 #define			USER_MEMORY_END		((void*) 0xFFFFFFFF)
 /*------------------------------------------------------------------------------
 //		Kernel virtual address space
@@ -125,5 +122,9 @@ uint8_t map_pages(physaddr_t page_dir,		/* Page directory*/
 		        uint32_t flags);		/* Page's flags */
 		        
 physaddr_t get_kernel_dir(void);
+
+void* kmalloc(size_t size);
+void kfree(void* vaddr);
+void* kcalloc(size_t count, size_t size);
 
 #endif

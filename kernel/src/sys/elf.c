@@ -2,7 +2,7 @@
  * @file sys/elf.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Загрузщик ELF
- * @version 0.3.0
+ * @version 0.3.1
  * @date 2022-10-20
  * @copyright Copyright SayoriOS Team (c) 2022
 */
@@ -58,7 +58,7 @@ elf_sections_t* load_elf(char* name){
 	return elf;
 }
 
-int32_t run_elf_file(const char *name, int32_t argc, char **argv) {
+int32_t run_elf_file(const char *name, int32_t argc, char* eargv[]) {
     if (!vfs_exists(name)) {
 		//tty_printf("[DBG] File %s was not found!!!\n", name);
         qemu_log("run_elf_file: elf [%s] does not exist", name);
@@ -96,63 +96,93 @@ int32_t run_elf_file(const char *name, int32_t argc, char **argv) {
 	uint32_t vmm_allocated_count = 0;
 
     for (int32_t i = 0; i < elf_file->elf_header->e_phnum; i++) {
-        // tty_printf("Segment [%i/%i]: ", i, elf_file->elf_header->e_phnum);
-		Elf32_Phdr *phdr = ((int)((void*)(elf_file->p_header)) + (elf_file->elf_header->e_phentsize * i));
+        Elf32_Phdr *phdr = elf_file->p_header + i;
+		
 		if (phdr->p_type != PT_LOAD) continue;
 
 		// tty_printf(" - TYPE: %s  OFFSET: %x  VADDR: %x  PADDR:%x  FSIZE: %x  MSIZE: %x\n",
-					// (phdr->p_type==PT_LOAD?"LOAD":"UNKNOWN"),
-					// phdr->p_offset,
-					// phdr->p_vaddr,
-					// phdr->p_paddr,
-					// phdr->p_filesz,
-					// phdr->p_memsz);
+		// 			(phdr->p_type==PT_LOAD?"LOAD":"UNKNOWN"),
+		// 			phdr->p_offset,
+		// 			phdr->p_vaddr,
+		// 			phdr->p_paddr,
+		// 			phdr->p_filesz,
+		// 			phdr->p_memsz);
 
         qemu_log("Loading %x bytes to %x", phdr->p_memsz, phdr->p_vaddr);
 
 		int lastPosition;
 
         // Allocate needed amount of pages
-        for (uint32_t alloc_addr = phdr->p_vaddr;
-            alloc_addr < phdr->p_vaddr + phdr->p_memsz;
-            alloc_addr += PAGE_SIZE) {
+//         for (uint32_t alloc_addr = phdr->p_vaddr;
+//             alloc_addr < phdr->p_vaddr + phdr->p_memsz;
+//             alloc_addr += PAGE_SIZE) {
 
-            vmm_allocated[vmm_allocated_count] = alloc_addr;
-            vmm_allocated_count++;
-            qemu_log("> LOAD %d: %x", vmm_allocated_count, alloc_addr);
+//             vmm_allocated[vmm_allocated_count] = alloc_addr;
+//             vmm_allocated_count++;
+//             qemu_log("> LOAD (memsz is: %x) %d: %x", elf_file->p_header[i].p_memsz, vmm_allocated_count, alloc_addr);
 
-            vmm_alloc_page(alloc_addr); // UNSTABLE
-            lastPosition = PAGE_SIZE+alloc_addr;
-		}
+//             vmm_alloc_page(alloc_addr); // UNSTABLE
+
+// 			// char err = map_pages(
+// 			// 	get_kernel_dir(),
+// 			// 	elf_file->p_header[i].p_vaddr,
+// 			// 	alloc_phys_pages(elf_file->p_header[i].p_memsz / PAGE_SIZE),
+// 			// 	elf_file->p_header[i].p_memsz / PAGE_SIZE,
+// 			// 	(PAGE_PRESENT | PAGE_USER | PAGE_WRITEABLE) // 0x07
+// 			// );
+
+//             lastPosition = PAGE_SIZE+alloc_addr;
+		// }
+
+
+		// ///////////////////////////////////////////////////////////
+		// unsigned int seg_size = 0;
+		// for (i = 0; i < elf_file->elf_header->e_phnum; i++)
+		// 	seg_size += elf_file->p_header[i].p_memsz;
+		// unsigned int page_count = seg_size / PAGE_SIZE + 1;
+		// unsigned int tmp_paddr = alloc_phys_pages(page_count);
+		// auto page_dir = get_kernel_dir();
+		// char err = map_pages(page_dir,
+		// 		(void*) elf_file->p_header[0].p_vaddr,
+		// 		tmp_paddr,
+		// 		page_count,
+		// 		0x07);
+		// //////////////////////////////////////////////////////////////
+
+		physaddr_t addrto = alloc_phys_pages(phdr->p_memsz / PAGE_SIZE);
+
+		char err = map_pages(
+			get_kernel_dir(),
+			phdr->p_vaddr,
+			addrto,
+			phdr->p_memsz / PAGE_SIZE,
+			(PAGE_PRESENT | PAGE_USER | PAGE_WRITEABLE) // 0x07
+		);
+
+		vmm_allocated[vmm_allocated_count] = addrto;
+		vmm_allocated_count++;
 		
-        memset((void*)phdr->p_vaddr, 0, phdr->p_memsz); // Null segment memory
+        memset((void*)phdr->p_vaddr, 0, phdr->p_memsz);
 		qemu_log("Set %x - %x to zero.", (int)((void*)phdr->p_vaddr), (int)((void*)phdr->p_vaddr) + phdr->p_memsz);
 
 		fseek(elf_file->file, phdr->p_offset, SEEK_SET);
-		fread_c(elf_file->file, phdr->p_filesz, 1, (void*)phdr->p_vaddr);
-        
-		//memcpy((void*)phdr->p_vaddr, elf_file + phdr->p_offset, phdr->p_filesz);
+		fread_c(elf_file->file, phdr->p_filesz, 1, (char*)phdr->p_vaddr);
+
+		char* d = (char*)phdr->p_vaddr;
+
         qemu_log("Loaded");
     }
 
 	char* entry_bytes = (char*)elf_file->elf_header->e_entry;
 
-    int(*entry_point)(int argc, char** argv) = (void*)(elf_file->elf_header->e_entry);
+    int(*entry_point)(int argc, char* eargv[]) = (void*)(elf_file->elf_header->e_entry);
     qemu_log("ELF entry point: %x", elf_file->elf_header->e_entry);
-
-	// qemu_log("Bytes: %x %x %x %x %x", 
-	// entry_bytes[0],
-	// entry_bytes[1],
-	// entry_bytes[2],
-	// entry_bytes[3],
-	// entry_bytes[4]
-	// );
 
 	int mymutex = 0;
 
 	mutex_get(&mymutex, true);
     qemu_log("Executing");
-    int _result = entry_point(argc, argv);
+    int _result = entry_point(argc, eargv);
 	
     qemu_log("[PROGRAMM FINISHED WITH CODE <%d>]", _result);
     qemu_log("Cleaning VMM:");
@@ -163,7 +193,7 @@ int32_t run_elf_file(const char *name, int32_t argc, char **argv) {
     }
 
     qemu_log("[CLEANED <%d> PAGES]", vmm_allocated_count);
-    
+
 	mutex_release(&mymutex);
 
 	// FREE ELF DATA

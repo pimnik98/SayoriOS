@@ -1,27 +1,30 @@
 <html><body>
 <h1>SayoriOS - открытое публичное ядро операционной системы</h1>
 <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" alt="C">
+<<<<<<< HEAD
 <img src="https://img.shields.io/github/workflow/status/pimnik98/SayoriOS/%F0%9F%A4%96%20SayoriOS%20Soul%20%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F%20%D1%81%D0%B1%D0%BE%D1%80%D0%BA%D0%B0%20%D0%BF%D1%80%D0%B8%20%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%D1%85%20%D0%B2%20%D1%80%D0%B5%D0%BF%D0%BE%D0%B7%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%B8?style=plastic" alt="build">
+=======
+<img src="https://github.com/pimnik98/SayoriOS/actions/workflows/SayoriOS-AutoBot-Auto.yml/badge.svg" alt="Workflow">
+>>>>>>> origin/patch-1
 <p>Простая x86 операционная система на языке C с хорошо документированным ядром.<br>
     Для работы с ядром, могут потребоваться инструменты <a href="https://github.com/pimnik98/SayoriSDK"><b>SayoriSDK</b></a>
 </p>
 <h1>Скриншоты</h1>
 <center>
-	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.0/v0.3.0_1.jpg" alt="v0.3.0 S1">
-	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.0/v0.3.0_2.jpg" alt="v0.3.0 S2">
-	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.0/v0.3.0_3.jpg" alt="v0.3.0 S3">
+	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.1/1.jpg" alt="v0.3.1 S1">
+	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.1/2.jpg" alt="v0.3.1 S2">
+	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.1/3.jpg" alt="v0.3.1 S3">
 </center><br>
 <h1>Примерный план действий:</h1>
 <p>
 	Прогресс: <br>
 	❤ [Ядро] Выполнено 4 из 7 (57%) [=====-----]<br>
-	💫 [Драйвера] Выполнено 2 из 5 (40%) [====------]<br>
-	📂 [Файлы] Выполнено 2 из 6 (33%) [===-------]<br>
-	📦 [ПО] Выполнено 1 из 3 (33%) [===-------]<br>
+	💫 [Драйвера] Выполнено 3 из 6 (50%) [=====-----]<br>
+	📂 [Файлы] Выполнено 4 из 8 (50%) [=====-----]<br>
 	🌐 [Сеть] Выполнено 0 из 1 (0%) [----------]<br>
 	🔌 [Прочие] Выполнено 2 из 5 (40%) [====------]<br>
 	<img src="http://forum.glark.ru/smiles.lm?id=38" alt="*"> <a href="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/soul.png">Нажав сюда</a>, вы увидите изображение, где отображены примерные планы на ядро.<br>
-	<b>Обновление данного изображения, будет только при следующем релизе.</b>
+	<b>Обновление данного изображения, будет только при следующем релизе.</b> или <a href="https://sayorios.piminoff.ru/page/1-plans.html">нажмите сюда</a>, для просмотра на сайте
 </p>
 <h1>Системные требования:</h1>
 <p>

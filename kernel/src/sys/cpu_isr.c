@@ -8,6 +8,7 @@
  */
 #include	"kernel.h"
 #include	"sys/cpu_isr.h"
+#include	"sys/logo.h"
 #include 	<io/ports.h>
 
 /**

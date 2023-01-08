@@ -14,9 +14,11 @@
 #include <io/tty.h>
 #include <io/ports.h>
 #include <io/colors.h>
+#include <sys/float.h>
+
 uint8_t *framebuffer_addr;				///< Точка монтирования
-uint32_t framebuffer_pitch;				///< ...
-uint32_t framebuffer_bpp;				///< ...
+uint32_t framebuffer_pitch;				///< Частота обновления экрана
+uint32_t framebuffer_bpp;				///< Глубина цвета экрана
 uint32_t framebuffer_width;				///< Длина экрана
 uint32_t framebuffer_height;			///< Высота экрана
 uint32_t framebuffer_size;				///< Кол-во пикселей
@@ -36,6 +38,7 @@ bool lazyDraw = true;					///< Включен ли режим ленивой п�
 thread_t* threadTTY01;					///< Поток с анимацией курсора
 bool showAnimTextCursor = false;		///< Отображать ли анимацию курсора
 
+void animTextCursor();
 /**
  * @brief Обновить информацию на основном экране
  */
@@ -45,30 +48,6 @@ void punch() {
     #endif
 }
 
-/**
- * @brief Анимация курсора (для tty)
- */
-void animTextCursor(){
-    qemu_log("animTextCursor Work...");
-    bool vis = false;
-    int ox=0,oy=0,lx=0,ly=0;
-    while (1){
-        ox = getPosX();
-        oy = getPosY();
-        if (!vis){
-            drawRect(ox,oy,9,9,0x333333);
-            punch();
-            vis = true;
-        } else {
-            drawRect(ox,oy,9,9,0x000000);
-            punch();
-            vis = false;
-        }
-        sleep_ms(500);
-    }
-    qemu_log("animTextCursor complete...");
-    thread_exit(threadTTY01);
-}
 /**
  * @brief Инициализация потоков
  */
@@ -120,6 +99,7 @@ void tty_fontConfigurate(){
     tty_off_pos_p = getConfigFonts(1);
     tty_off_pos_h = getConfigFonts(2);
     tty_oem_mode = false;
+	qemu_log("TTY_OFF_POS_X: %d; TTY_OFF_POS_P: %d; TTY_OFF_POS_H: %d", tty_off_pos_x, tty_off_pos_p, tty_off_pos_h);
 }
 
 /**
@@ -139,11 +119,46 @@ uint16_t vga_entry(uint8_t c, uint8_t tty_color) {
     return (uint16_t) c | (uint16_t) tty_color << 8;
 }
 
+/**
+ * @brief Получение адреса расположения драйвера экрана
+ *
+ * @return uint8_t - Адрес расположения
+ */
+uint8_t getDisplayAddr(){
+    return framebuffer_addr;
+}
+
+/**
+ * @brief Получение частоты обновления экрана
+ *
+ * @return uint32_t - Частота обновления
+ */
+uint32_t getDisplayPitch(){
+    return framebuffer_pitch;
+}
+
+/**
+ * @brief Получение размера буфера экрана
+ *
+ * @return uint32_t - Размер буфера экрана
+ */
+uint32_t getDisplaySize(){
+    return framebuffer_size;
+}
+
+/**
+ * @brief Получение глубины цвета экрана
+ *
+ * @return uint32_t - Глубина цвета
+ */
+uint32_t getDisplayBpp(){
+    return framebuffer_bpp;
+}
 
 /**
  * @brief Получение позиции по x
  *
- * @return int32_t - позиция по x
+ * @return int32_t - Позиция по x
  */
 int32_t getPosX(){
     return tty_pos_x;
@@ -153,7 +168,7 @@ int32_t getPosX(){
 /**
  * @brief Получение позиции по y
  *
- * @return int32_t - позиция по y
+ * @return int32_t - Позиция по y
  */
 int32_t getPosY(){
     return tty_pos_y;
@@ -186,38 +201,6 @@ void tty_set_bgcolor(int32_t color) {
 }
 
 /**
- * @brief Инициализация графики
- *
- * @param mboot - информация полученная от загрузчика
- */
-void init_vbe(multiboot_header_t *mboot) {
-    svga_mode_info_t *svga_mode = (svga_mode_info_t*) mboot->vbe_mode_info;
-    framebuffer_addr = (uint8_t *)svga_mode->physbase;
-    framebuffer_pitch = svga_mode->pitch;
-    framebuffer_bpp = svga_mode->bpp;
-    framebuffer_width = svga_mode->screen_width;
-    framebuffer_height = svga_mode->screen_height;
-    framebuffer_size = framebuffer_height * framebuffer_pitch;
-
-    qemu_log("[VBE] [Install] W:%d H:%d B:%d S:%d M:%x",framebuffer_width,framebuffer_height,framebuffer_bpp,framebuffer_size,framebuffer_addr);
-    physaddr_t frame;
-    virtual_addr_t virt;
-
-    for (frame = (physaddr_t)framebuffer_addr, virt = (virtual_addr_t)framebuffer_addr;
-        frame < (physaddr_t)(framebuffer_addr + framebuffer_size);
-        frame += PAGE_SIZE, virt += PAGE_SIZE) {
-            //qemu_log("frame: %x | virt:%x",frame,virt);
-            map_pages(get_kernel_dir(),frame,virt,PAGE_SIZE,0x07);
-        //vmm_map_page(frame, virt);
-    }
-   qemu_log("VBE create_back_framebuffer");
-
-   create_back_framebuffer(); // PAGE FAULT CAUSES HERE!!!
-   qemu_log("^---- OKAY");
-}
-
-
-/**
  * @brief Создание второго буффера экрана
  *
  */
@@ -238,6 +221,37 @@ void create_back_framebuffer() {
     back_framebuffer_addr = backfb;
 }
 
+/**
+ * @brief Инициализация графики
+ *
+ * @param mboot - информация полученная от загрузчика
+ */
+void init_vbe(multiboot_header_t *mboot) {
+    svga_mode_info_t *svga_mode = (svga_mode_info_t*) mboot->vbe_mode_info;
+    framebuffer_addr = (uint8_t *)svga_mode->physbase;
+    framebuffer_pitch = svga_mode->pitch;
+    framebuffer_bpp = svga_mode->bpp;
+    framebuffer_width = svga_mode->screen_width;
+    framebuffer_height = svga_mode->screen_height;
+    framebuffer_size = framebuffer_height * framebuffer_pitch;
+
+    qemu_log("[VBE] [Install] W:%d H:%d B:%d S:%d M:%x",framebuffer_width,framebuffer_height,framebuffer_bpp,framebuffer_size,framebuffer_addr);
+    physaddr_t frame;
+    virtual_addr_t virt;
+
+    for (frame = (physaddr_t)framebuffer_addr,
+    	 virt = (virtual_addr_t)framebuffer_addr;
+        frame < (physaddr_t)(framebuffer_addr + framebuffer_size);
+        frame += PAGE_SIZE, virt += PAGE_SIZE) {
+            //qemu_log("frame: %x | virt:%x",frame,virt);
+            map_pages(get_kernel_dir(), frame, virt, PAGE_SIZE, 0x07);
+        //vmm_map_page(frame, virt);
+    }
+   qemu_log("VBE create_back_framebuffer");
+
+   create_back_framebuffer(); // PAGE FAULT CAUSES HERE!!!
+   qemu_log("^---- OKAY");
+}
 
 /**
  * @brief Очистка экрана и сброс настроек
@@ -260,7 +274,6 @@ void tty_init(struct multiboot_header *mboot_info) {
     framebuffer_size = framebuffer_height * framebuffer_pitch;
     back_framebuffer_addr = framebuffer_addr;
     tty_fontConfigurate();
-
 }
 
 
@@ -348,6 +361,56 @@ void set_pixel(int32_t x, int32_t y, uint32_t color) {
     back_framebuffer_addr[where + 1] = (color >> 8) & 255;
     back_framebuffer_addr[where + 2] = (color >> 16) & 255;
     #endif
+}
+
+void rgba_blend(uint8_t result[4], uint8_t fg[4], uint8_t bg[4])
+{
+    unsigned int alpha = fg[3] + 1;
+    unsigned int inv_alpha = 256 - fg[3];
+    result[0] = (uint8_t)((alpha * fg[0] + inv_alpha * bg[0]) >> 8);
+    result[1] = (uint8_t)((alpha * fg[1] + inv_alpha * bg[1]) >> 8);
+    result[2] = (uint8_t)((alpha * fg[2] + inv_alpha * bg[2]) >> 8);
+    result[3] = 0xff;
+}
+
+void setPixelAlpha(int x, int y, rgba_color color) {
+    if (x < 0 || y < 0 ||
+        x >= (int) VESA_WIDTH ||
+        y >= (int) VESA_HEIGHT) {
+        return;
+    }
+
+    unsigned where = x * (framebuffer_bpp / 8) + y * framebuffer_pitch;
+
+    if (color.a != 255) {
+        if (color.a != 0) {
+
+            uint8_t bg[4] = {framebuffer_addr[where], framebuffer_addr[where + 1], framebuffer_addr[where + 2], 255};
+            uint8_t fg[4] = {(uint8_t)color.b, (uint8_t)color.g, (uint8_t)color.r, (uint8_t)color.a};
+            uint8_t res[4];
+
+            rgba_blend(res, fg, bg);
+
+            framebuffer_addr[where] = res[0];
+            framebuffer_addr[where + 1] = res[1];
+            framebuffer_addr[where + 2] = res[2];
+
+            back_framebuffer_addr[where] = res[0];
+            back_framebuffer_addr[where + 1] = res[1];
+            back_framebuffer_addr[where + 2] = res[2];
+
+        } else { // if absolutely transparent dont draw anything
+            return;
+        }
+    } else { // if non transparent just draw rgb
+        framebuffer_addr[where] = color.b & 255;
+        framebuffer_addr[where + 1] = color.g & 255;
+        framebuffer_addr[where + 2] = color.r & 255;
+
+        back_framebuffer_addr[where] = color.b & 255;
+        back_framebuffer_addr[where + 1] = color.g & 255;
+        back_framebuffer_addr[where + 2] = color.r & 255;
+    }
 }
 
 
@@ -443,6 +506,21 @@ void drawRect(int x,int y,int w, int h,int color){
     }
 }
 
+/**
+ * @brief Вывод символа на экран с учетом позиции, цвета текста и фона
+ *
+ * @param c - символ
+ * @param x - позиция по x
+ * @param y - позиция по y
+ * @param fg - цвет текста
+ * @param bg - цвет фона
+ * @param bgon - поменять ли местами цвета
+ */
+void draw_vga_character(uint8_t c, int32_t x, int32_t y, int32_t fg, int32_t bg, bool bgon) {
+
+}
+
+
 
 /**
  * @brief Вывод одного символа с учетом цвета фона и текста
@@ -516,22 +594,6 @@ void tty_putchar(char c,char c1) {
     punch();
 }
 
-
-/**
- * @brief Вывод символа на экран с учетом позиции, цвета текста и фона
- *
- * @param c - символ
- * @param x - позиция по x
- * @param y - позиция по y
- * @param fg - цвет текста
- * @param bg - цвет фона
- * @param bgon - поменять ли местами цвета
- */
-void draw_vga_character(uint8_t c, int32_t x, int32_t y, int32_t fg, int32_t bg, bool bgon) {
-
-}
-
-
 /**
  * @brief Удаление последнего символа
  *
@@ -545,9 +607,10 @@ void tty_backspace() {
     } else {
         tty_pos_x -= tty_off_pos_x;
     }
-    draw_vga_character(' ', tty_pos_x, tty_pos_y, tty_text_color, 0x000000, 1);
+    // draw_vga_character(' ', tty_pos_x, tty_pos_y, tty_text_color, 0x000000, 1);
+	drawRect(tty_pos_x, tty_pos_y, tty_off_pos_x, tty_off_pos_h, 0x000000);
     punch();
-    qemu_log("TTY BACKSPACE!!!");
+    // qemu_log("TTY BACKSPACE!!!");
 }
 
 
@@ -688,9 +751,26 @@ void _tty_print(char *format, va_list args) {
                 case 'c':
                     _tty_putchar(va_arg(args, int),0);
                     break;
-                case 'f':
-                    _tty_putchar(va_arg(args, float),0);
+                case 'f':{
+                    double a = va_arg(args, double);
+					if(!fpu_isInitialized()) {
+						_tty_puts("0.0000000");
+						break;
+					}
+
+					if(a < 0) {
+						a = -a;
+						tty_puts("-");
+					}
+
+					float rem = a-(int)a;
+					_tty_putint((int)a);
+					_tty_puts(".");
+					for(int n=0; n<7; n++) {
+				        _tty_putint((int)(rem*ipow(10, n+1))%10);
+				    }
                     break;
+                }
                 case 'd':
                     _tty_putint(va_arg(args, int));
                     break;
@@ -751,4 +831,29 @@ void tty_printf(char *text, ...) {
         tty_print(text, args);
         va_end(args);
     }
+}
+
+/**
+ * @brief Анимация курсора (для tty)
+ */
+void animTextCursor(){
+    qemu_log("animTextCursor Work...");
+    bool vis = false;
+    int ox=0,oy=0,lx=0,ly=0;
+    while (1){
+        ox = getPosX();
+        oy = getPosY();
+        if (!vis){
+            drawRect(ox,oy,9,9,0x333333);
+            punch();
+            vis = true;
+        } else {
+            drawRect(ox,oy,9,9,0x000000);
+            punch();
+            vis = false;
+        }
+        sleep_ms(500);
+    }
+    qemu_log("animTextCursor complete...");
+    thread_exit(threadTTY01);
 }

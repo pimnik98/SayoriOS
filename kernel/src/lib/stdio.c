@@ -222,8 +222,8 @@ char* fread(FILE* stream){
  * @brief Получение содержимого файла (детальная настройка)
  *
  * @param FILE* stream - Поток (файл)
- * @param size_t offset - Отступ
- * @param size_t size - Сколько читаем?
+ * @param size_t count - Количество элементов размера size
+ * @param size_t size - Сколько читаем таких элементов?
  * @param void* buf - Буфер
  *
  * @return int - Размер прочитаных байтов или -1 при ошибке
@@ -235,7 +235,7 @@ int fread_c(FILE* stream, size_t count, size_t size, void* buffer){
 		return -1;
 	}
 
-	//qemu_log("Params: count=%d size=%d, toread=%d, seek=%d", count, size, count*size, stream->pos);
+	qemu_log("Params: count=%d, size=%d, toread=%d, seek=%d", count, size, count*size, stream->pos);
 	
 	uint32_t node = vfs_foundMount(stream->path);
     int elem = vfs_findFile(stream->path);
@@ -281,7 +281,11 @@ int64_t fseek(FILE* stream, int64_t offset, uint32_t whence){
 	} else if (whence == SEEK_END) {
 		lsk = stream->size;
 	} else if (whence == SEEK_SET) {
-		lsk = 0;
+		//lsk = 0;
+		if(offset >= 0 && offset <= stream->size) {
+			stream->pos = offset;
+			return 0;
+		}
 	} else {
 		return -1;
 	}

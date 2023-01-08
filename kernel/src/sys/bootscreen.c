@@ -56,7 +56,7 @@ uint32_t bootScreenTheme(uint32_t type){
     } else if (theme == 1 && type == 1){
         return bgColorLight;
     } else if (theme == 1 && type == 2){
-        return txColorLight;
+        return 0x262626;
     } else {
         return txColorDark;
     }
@@ -101,6 +101,7 @@ void bootScreenInfo(){
         uint32_t centerAbout = (maxStrLine/2)-(strlen(about)/2);
 
         tty_setcolor(bootScreenTheme(2));
+        tty_set_bgcolor(bootScreenTheme(1));
         setPosX(((1+centerAbout)*8));
         setPosY(getHeightScreen()-32);
         tty_printf(about);
@@ -136,6 +137,7 @@ void bootScreenPaint(char* title){
     qemu_log("[BOOT] %s",title);
     if (mode == 1){
         tty_changeState(true);
+        tty_set_bgcolor(bootScreenTheme(1));
         tty_setcolor(bootScreenTheme(0));
         tty_printf("%s\n",title);
         tty_changeState(false);
@@ -144,6 +146,7 @@ void bootScreenPaint(char* title){
     }
     maxStrLine = (getWidthScreen()/8)-2;
     maxHeightLine = getHeightScreen()/16;
+    tty_set_bgcolor(bootScreenTheme(1));
     tty_setcolor(bootScreenTheme(0));
     tty_changeState(true);
     uint32_t centerTitle = (maxStrLine/2)-(mb_strlen(title)/2);

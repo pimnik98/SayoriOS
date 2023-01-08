@@ -518,7 +518,7 @@ void strver(char *str) {
 }
 
 /**
- * @brief Конвектируем число в символы
+ * @brief Конвертируем число в символы
  *
  * @param int32_t n - Число
  * @param char* buffer - символы

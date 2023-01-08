@@ -9,6 +9,7 @@
 #include		"sys/memory.h"
 #include		"drv/text_framebuffer.h"
 #include		"io/ports.h"
+#include		"lib/string.h"
 
 physaddr_t kernel_page_dir = KERNEL_PAGE_TABLE;	///< Адрес каталога страницы ядра
 memory_map_entry_t*	mentry = 0;					///< ...
@@ -90,7 +91,7 @@ void check_memory_map(memory_map_entry_t* mmap_addr, uint32_t length){
 		qemu_log("%s [Address: %x | Length: %x]",((mentry + i)->type == 1?"Available":"Reserved"),(mentry + i)->addr,(mentry + i)->len);
 		phys_memory_size += (mentry + i)->len;
 	}
-	qemu_log("RAM: %d MB | %d KB | %d Byte",(phys_memory_size/1024/1024),(phys_memory_size/1024),phys_memory_size);
+	qemu_log("RAM: %d MB | %d KB | %d Byte",((phys_memory_size/1024)/1024),(phys_memory_size/1024),phys_memory_size);
 }
 
 /**
@@ -332,7 +333,7 @@ physaddr_t alloc_phys_pages(size_t count){
 		}
 	}
 	
-	mutex_release(&phys_memory_mutex);	
+	mutex_release(&phys_memory_mutex);
 
 	return result;
 }
@@ -343,26 +344,34 @@ physaddr_t alloc_phys_pages(size_t count){
  * @param uint32_t stack - Стек
  */
 void init_memory_manager(uint32_t stack){
+	qemu_log("Starting memory manager inittialization");
 	kernel_stack = stack;
 
 	/* Switch CPU to page memory mode*/
 	switch_page_mode();
+	qemu_log("Switched page memory mode");
 
 	/* Check available memory */
-	memory_map_entry_t* entry;
+
+	// FIXME: Not working in UEFI environmemt (hangs forever)
+	memory_map_entry_t* entry = mentry;
 
 	for (entry = mentry; entry->type; entry++){
 		if ( (entry->type == 1) && (entry->addr >= 0x100000) ){
+			qemu_log("Freeing %d pages on: %x", entry->len >> PAGE_OFFSET_BITS, entry->addr);
 			free_phys_pages(entry->addr, entry->len >> PAGE_OFFSET_BITS);
 			memory_size += entry->len;
 		}
 	}
+	
+	qemu_log("Memory size is: %d bytes.", memory_size);
 	/* Map kernel heap memory */
 	map_pages(KERNEL_PAGE_TABLE,
 			  KERNEL_HEAP_BASE,
 			  (physaddr_t) (KERNEL_MEMORY_START + KERNEL_SIZE + KERNEL_HEAP_BLOCK_INFO_SIZE),
 			  KERNEL_HEAP_SIZE >> PAGE_OFFSET_BITS,
 			  0x07);
+	qemu_log("Mapped kernel heap memory");
 
 	/* Map memory blocks info structure */
 	map_pages(KERNEL_PAGE_TABLE,
@@ -370,15 +379,18 @@ void init_memory_manager(uint32_t stack){
 			  (physaddr_t) (KERNEL_MEMORY_START + KERNEL_SIZE),
 			  KERNEL_HEAP_BLOCK_INFO_SIZE >> PAGE_OFFSET_BITS,
 			  0x07);
+	qemu_log("Mapped memory blocks info structure");
 
 	kheap.blocks = (memory_block_t*) (KERNEL_MEMORY_START + KERNEL_SIZE);
 
 	memset(kheap.blocks, 0, KERNEL_HEAP_BLOCK_INFO_SIZE);
+	qemu_log("Zeroed heap blocks");
 
 	kheap.count = 0;
 	kheap.start = KERNEL_HEAP_BASE;
 	kheap.size = KERNEL_HEAP_SIZE;
 	kheap.end = kheap.start + kheap.size;
+	qemu_log("Okay");
 }
 
 bool vmm_alloc_page(virtual_addr_t vaddr) {
@@ -386,7 +398,7 @@ bool vmm_alloc_page(virtual_addr_t vaddr) {
     if (!paddr) return false;
 
 	map_pages(KERNEL_PAGE_TABLE,
-			vaddr,
+			(void*)vaddr,
 			paddr,
 			PAGE_SIZE,
 			PAGE_WRITEABLE | PAGE_PRESENT
@@ -400,8 +412,18 @@ void vmm_free_page(virtual_addr_t vaddr) {
 
 // free_phys_pages( base count )
 
+void vmm_set_flags(physaddr_t page_dir, void* vaddr) {
+	physaddr_t* tmp_page = (physaddr_t*)TEMP_PAGE;
+	uint32_t page_idx = ((uint32_t) vaddr >> PAGE_OFFSET_BITS) & PAGE_TABLE_INDEX_MASK;
+			
+	//temp_map_page(table);
+	// tmp_page[page_idx] = ()
+
+	// TODO: ...
+}
+
 /**
- * @brief ???
+ * @brief Привязывает физический адрес к виртуальному
  * 
  * @param physaddr_t page_dir - Каталог страниц
  * @param void* vaddr - Стартовый виртуальный адрес
@@ -409,7 +431,7 @@ void vmm_free_page(virtual_addr_t vaddr) {
  * @param size_t count - Размер памяти
  * @param uint32_t flags - Флаги страницы
  *
- * @return uint8_t - Адрес
+ * @return uint8_t - Возвращает 1 если нет ошибок, иначе 0
  */
 uint8_t map_pages(physaddr_t page_dir, void* vaddr, physaddr_t paddr, size_t count, uint32_t flags){
 	/* Pointer for access to temporary page */
@@ -473,7 +495,9 @@ void* kmalloc_common(size_t size, bool align){
 	void*	vaddr = kheap.start;
 	int		i = 0;	
 
-	mutex_get(&kheap.heap_mutex, true);
+	mutex_t thismutex = kheap.heap_mutex;
+
+	mutex_get(&thismutex, true);
 
 	/* Check overlapped blocks */
 	for (i = kheap.count - 1; i >= 0 ; i--){
@@ -500,7 +524,9 @@ void* kmalloc_common(size_t size, bool align){
 	kheap.count++;
 	kheap.blocks[0].base = vaddr;
 	kheap.blocks[0].size = size;
-	mutex_release(&kheap.heap_mutex);
+	mutex_release(&thismutex);
+
+	kheap.heap_mutex = thismutex;
 	return vaddr;
 }
 
@@ -535,7 +561,9 @@ void kfree(void* vaddr){
 	int		i = 0;
 	int		block_idx = 0;	
 	
-	mutex_get(&kheap.heap_mutex, true);
+	mutex_t thismutex = kheap.heap_mutex;
+
+	mutex_get(&thismutex, true);
 
 	/* Return in invalid pointer case */
 	if (vaddr == NULL){
@@ -562,7 +590,9 @@ void kfree(void* vaddr){
 	/* Reduce number of allocated blocks */
 	kheap.count--;	
 	
-	mutex_release(&kheap.heap_mutex);
+	mutex_release(&thismutex);
+
+	kheap.heap_mutex = thismutex;
 }
 
 /**
@@ -581,4 +611,13 @@ physaddr_t get_kernel_dir(void){
  */
 uint64_t getInstalledRam(){
 	return phys_memory_size;
+}
+
+/**
+ * @brief Выделение памяти
+ */
+void* kcalloc(size_t count, size_t size) {
+	void* a = kmalloc(count * size);
+	memset(a, 0, count*size);
+	return a;
 }
