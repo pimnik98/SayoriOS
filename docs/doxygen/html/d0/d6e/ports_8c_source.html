@@ -1,0 +1,389 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/io/ports.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d0/d6e/ports_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">ports.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="../../d0/d6e/ports_8c.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;stdarg.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a8bf7a9af91c08e6f876aaffeccd48ff3">   19</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a8bf7a9af91c08e6f876aaffeccd48ff3">outb</a>(uint16_t port, uint8_t val){</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">asm</span> <span class="keyword">volatile</span>(<span class="stringliteral">&quot;outb %1, %0&quot;</span> : : <span class="stringliteral">&quot;dN&quot;</span>(port), <span class="stringliteral">&quot;a&quot;</span>(val));</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;}</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a2e1e8e2c5724c1e8fd2dff2eada06479">   30</a></span>&#160;uint8_t <a class="code" href="../../d0/d6e/ports_8c.html#a2e1e8e2c5724c1e8fd2dff2eada06479">inb</a>(uint16_t port) {</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    uint8_t ret;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">asm</span> <span class="keyword">volatile</span> ( <span class="stringliteral">&quot;inb %1, %0&quot;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                   : <span class="stringliteral">&quot;=a&quot;</span>(ret)</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                   : <span class="stringliteral">&quot;Nd&quot;</span>(port) );</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">   45</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(uint16_t port, uint32_t val) {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">asm</span> <span class="keyword">volatile</span> ( <span class="stringliteral">&quot;outl %0, %1&quot;</span> : : <span class="stringliteral">&quot;a&quot;</span>(val), <span class="stringliteral">&quot;Nd&quot;</span>(port) );</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">   56</a></span>&#160;uint32_t <a class="code" href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">inl</a>(uint16_t port) {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    uint32_t ret;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">asm</span> <span class="keyword">volatile</span> ( <span class="stringliteral">&quot;inl %1, %0&quot;</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                   : <span class="stringliteral">&quot;=a&quot;</span>(ret)</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                   : <span class="stringliteral">&quot;Nd&quot;</span>(port) );</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a1523588ef57e794dedb0e3b33ca52015">   71</a></span>&#160;uint16_t <a class="code" href="../../d0/d6e/ports_8c.html#a1523588ef57e794dedb0e3b33ca52015">ins</a>(uint16_t port) {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    uint16_t rv;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">asm</span> <span class="keyword">volatile</span> (<span class="stringliteral">&quot;inw %1, %0&quot;</span> : <span class="stringliteral">&quot;=a&quot;</span> (rv) : <span class="stringliteral">&quot;dN&quot;</span> (port));</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordflow">return</span> rv;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;}</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#ad3828c4a1261f083ad091087b898057a">   84</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#ad3828c4a1261f083ad091087b898057a">outs</a>(uint16_t port, uint16_t data) {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keyword">asm</span> <span class="keyword">volatile</span> (<span class="stringliteral">&quot;outw %1, %0&quot;</span> : : <span class="stringliteral">&quot;dN&quot;</span> (port), <span class="stringliteral">&quot;a&quot;</span> (data));</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;}</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a62948b77073b9ce03d0ec4e27d28ad56">   96</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a62948b77073b9ce03d0ec4e27d28ad56">insl</a>(uint16_t port, uint32_t *buffer, int32_t times) {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordflow">for</span> (int32_t index = 0; index &lt; times; index++) {</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        buffer[index] = <a class="code" href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">inl</a>(port);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    }</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a4e8f950edfd03bbb83a734632d8bfb54">  110</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a4e8f950edfd03bbb83a734632d8bfb54">outsl</a>(uint16_t port, uint32_t *buffer, int32_t times) {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">for</span> (int32_t index = 0; index &lt; times; index++) {</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(port, buffer[index]);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    }</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;}</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#ab129328817732429fa6ff116c30ad94a">  122</a></span>&#160;int32_t <a class="code" href="../../d0/d6e/ports_8c.html#ab129328817732429fa6ff116c30ad94a">com1_is_transmit_empty</a>() {</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../d0/d6e/ports_8c.html#a2e1e8e2c5724c1e8fd2dff2eada06479">inb</a>(PORT_COM1 + 5) &amp; 0x20;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;}</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">  132</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(<span class="keywordtype">char</span> a) {</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordflow">while</span> (<a class="code" href="../../d0/d6e/ports_8c.html#ab129328817732429fa6ff116c30ad94a">com1_is_transmit_empty</a>() == 0);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a8bf7a9af91c08e6f876aaffeccd48ff3">outb</a>(PORT_COM1, a);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;}</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00143"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a6b7ec8eb484a6472271ddf8a2add51cd">  143</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a6b7ec8eb484a6472271ddf8a2add51cd">qemu_putstring</a>(<span class="keywordtype">char</span> log_data[]) {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; <a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(log_data); i++) {</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(log_data[i]);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    }</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;}</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#aaaf4b3f918fbda500ebf08c8b17dfb46">  154</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#aaaf4b3f918fbda500ebf08c8b17dfb46">io_wait</a>(<span class="keywordtype">void</span>) {</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a8bf7a9af91c08e6f876aaffeccd48ff3">outb</a>(0x80, 0);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;}</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#ad6e8f0e0260d783b7301e63933d4e490">  164</a></span>&#160;uint16_t <a class="code" href="../../d0/d6e/ports_8c.html#ad6e8f0e0260d783b7301e63933d4e490">inw</a>(uint16_t port){</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    uint16_t ret;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keyword">asm</span> <span class="keyword">volatile</span> (<span class="stringliteral">&quot;inw %1, %0&quot;</span>:<span class="stringliteral">&quot;=a&quot;</span>(ret):<span class="stringliteral">&quot;dN&quot;</span>(port));</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;}</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
+<div class="line"><a name="l00175"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#ad5842c290ab8a1a78d940767cac2b6dc">  175</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#ad5842c290ab8a1a78d940767cac2b6dc">qemu_putuint</a>(uint32_t i) {</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    uint32_t n, d = 1000000000;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keywordtype">char</span> str[255];</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    uint32_t dec_index = 0;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keywordflow">while</span> ((i / d == 0) &amp;&amp; (d &gt;= 10)) {</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        d /= 10;</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    }</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    n = i;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keywordflow">while</span> (d &gt;= 10) {</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        str[dec_index++] = ((char) ((<span class="keywordtype">int</span>) <span class="charliteral">&#39;0&#39;</span> + n / d));</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        n = n % d;</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        d /= 10;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    }</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    str[dec_index++] = ((char) ((<span class="keywordtype">int</span>) <span class="charliteral">&#39;0&#39;</span> + n));</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    str[dec_index] = 0;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a6b7ec8eb484a6472271ddf8a2add51cd">qemu_putstring</a>(str);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;}</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
+<div class="line"><a name="l00202"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a84d0170205fce20a62b4cffc86f9a8cc">  202</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a84d0170205fce20a62b4cffc86f9a8cc">qemu_putint</a>(int32_t i) {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="keywordflow">if</span> (i &gt;= 0) {</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        <a class="code" href="../../d0/d6e/ports_8c.html#ad5842c290ab8a1a78d940767cac2b6dc">qemu_putuint</a>(i);</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(<span class="charliteral">&#39;-&#39;</span>);</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        <a class="code" href="../../d0/d6e/ports_8c.html#ad5842c290ab8a1a78d940767cac2b6dc">qemu_putuint</a>(-i);</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    }</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;}</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
+<div class="line"><a name="l00217"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a2216758193db5eabef5e7fa495c8bf2c">  217</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a2216758193db5eabef5e7fa495c8bf2c">qemu_puthex</a>(uint32_t i) {</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> hex[16]  =  { <span class="charliteral">&#39;0&#39;</span>, <span class="charliteral">&#39;1&#39;</span>, <span class="charliteral">&#39;2&#39;</span>, <span class="charliteral">&#39;3&#39;</span>, <span class="charliteral">&#39;4&#39;</span>, <span class="charliteral">&#39;5&#39;</span>, <span class="charliteral">&#39;6&#39;</span>, <span class="charliteral">&#39;7&#39;</span>, <span class="charliteral">&#39;8&#39;</span>, <span class="charliteral">&#39;9&#39;</span>, <span class="charliteral">&#39;A&#39;</span>, <span class="charliteral">&#39;B&#39;</span>, <span class="charliteral">&#39;C&#39;</span>, <span class="charliteral">&#39;D&#39;</span>, <span class="charliteral">&#39;E&#39;</span>, <span class="charliteral">&#39;F&#39;</span> };</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    uint32_t n, d = 0x10000000;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160; </div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a6b7ec8eb484a6472271ddf8a2add51cd">qemu_putstring</a>(<span class="stringliteral">&quot;0x&quot;</span>);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <span class="keywordflow">while</span> ((i / d == 0) &amp;&amp; (d &gt;= 0x10)) {</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        d /= 0x10;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    }</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    n = i;</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160; </div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <span class="keywordflow">while</span> (d &gt;= 0xF) {</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(hex[n / d]);</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        n = n % d;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;        d /= 0x10;</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    }</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(hex[n]);</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;}</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
+<div class="line"><a name="l00242"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a5a5239f2e39f9059e41d3a495a7a2309">  242</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a5a5239f2e39f9059e41d3a495a7a2309">qemu_puthex_v</a>(uint32_t i) {</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> hex[16]  =  { <span class="charliteral">&#39;0&#39;</span>, <span class="charliteral">&#39;1&#39;</span>, <span class="charliteral">&#39;2&#39;</span>, <span class="charliteral">&#39;3&#39;</span>, <span class="charliteral">&#39;4&#39;</span>, <span class="charliteral">&#39;5&#39;</span>, <span class="charliteral">&#39;6&#39;</span>, <span class="charliteral">&#39;7&#39;</span>, <span class="charliteral">&#39;8&#39;</span>, <span class="charliteral">&#39;9&#39;</span>, <span class="charliteral">&#39;A&#39;</span>, <span class="charliteral">&#39;B&#39;</span>, <span class="charliteral">&#39;C&#39;</span>, <span class="charliteral">&#39;D&#39;</span>, <span class="charliteral">&#39;E&#39;</span>, <span class="charliteral">&#39;F&#39;</span> };</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    uint32_t n, d = 0x10000000;</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="keywordflow">while</span> ((i / d == 0) &amp;&amp; (d &gt;= 0x10)) {</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        d /= 0x10;</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    }</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    n = i;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    <span class="keywordflow">while</span> (d &gt;= 0xF) {</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(hex[n / d]);</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        n = n % d;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        d /= 0x10;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    }</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(hex[n]);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;}</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
+<div class="line"><a name="l00267"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#abf84c81bf88d95a6b4d2c9a315fa09cb">  267</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="../../d0/d6e/ports_8c.html#abf84c81bf88d95a6b4d2c9a315fa09cb">isprint</a>(<span class="keywordtype">char</span> c) {</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="keywordflow">return</span> ((c &gt;= <span class="charliteral">&#39; &#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;~&#39;</span>) ? 1 : 0);</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;}</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
+<div class="line"><a name="l00278"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#aa5b31ff1df3faa8b9c64df97fb44b4ee">  278</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="../../d0/d6e/ports_8c.html#aa5b31ff1df3faa8b9c64df97fb44b4ee">is_com_port</a>(<span class="keywordtype">int</span> port) {</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <span class="keywordflow">switch</span> (port) {</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        <span class="keywordflow">case</span> PORT_COM1:</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;            <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;        <span class="keywordflow">case</span> PORT_COM2:</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;            <span class="keywordflow">return</span> 2;</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        <span class="keywordflow">case</span> PORT_COM3:</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            <span class="keywordflow">return</span> 3;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;        <span class="keywordflow">case</span> PORT_COM4:</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;            <span class="keywordflow">return</span> 4;</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;        <span class="keywordflow">case</span> PORT_COM5:</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;            <span class="keywordflow">return</span> 5;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        <span class="keywordflow">case</span> PORT_COM6:</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;            <span class="keywordflow">return</span> 6;</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        <span class="keywordflow">case</span> PORT_COM7:</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;            <span class="keywordflow">return</span> 7;</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        <span class="keywordflow">case</span> PORT_COM8:</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;            <span class="keywordflow">return</span> 8;</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;            <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    }</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;}</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160; </div>
+<div class="line"><a name="l00316"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a304de0721ad1449f8a6d8474052ca25b">  316</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a304de0721ad1449f8a6d8474052ca25b">qemu_print</a>(<span class="keywordtype">char</span> *format, <a class="code" href="../../d5/d6b/structva__list.html">va_list</a> args) {</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    int32_t i = 0;</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    <span class="keywordtype">char</span> *string;</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160; </div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    <span class="keywordflow">while</span> (format[i]) {</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        <span class="keywordflow">if</span> (format[i] == <span class="charliteral">&#39;%&#39;</span>) {</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            i++;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;            <span class="keywordflow">switch</span> (format[i]) {</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;s&#39;</span>:</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                <span class="keywordtype">string</span> = va_arg(args, <span class="keywordtype">char</span>*);</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a6b7ec8eb484a6472271ddf8a2add51cd">qemu_putstring</a>(<span class="keywordtype">string</span>);</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;c&#39;</span>:</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                <span class="comment">// To-Do: fix this! &quot;warning: cast to pointer from integer of different size&quot;</span></div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>((<span class="keywordtype">char</span>)va_arg(args, <span class="keywordtype">int</span>));</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;d&#39;</span>:</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a84d0170205fce20a62b4cffc86f9a8cc">qemu_putint</a>(va_arg(args, <span class="keywordtype">int</span>));</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;f&#39;</span>: {</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                <span class="keywordtype">double</span> a = va_arg(args, <span class="keywordtype">double</span>);</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                <span class="keywordflow">if</span>(!fpu_isInitialized()) {</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                    <a class="code" href="../../d0/d6e/ports_8c.html#a6b7ec8eb484a6472271ddf8a2add51cd">qemu_putstring</a>(<span class="stringliteral">&quot;0.0000000&quot;</span>);</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                }</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160; </div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                <span class="keywordflow">if</span>((<span class="keywordtype">int</span>)a&lt;0) {</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                    a = -a;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                    <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(<span class="charliteral">&#39;-&#39;</span>);</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                }</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                </div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                <span class="keywordtype">float</span> rem = a-(int)a;</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a84d0170205fce20a62b4cffc86f9a8cc">qemu_putint</a>((<span class="keywordtype">int</span>)a);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(<span class="charliteral">&#39;.&#39;</span>);</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> n=0; n&lt;7; n++) {</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                    <a class="code" href="../../d0/d6e/ports_8c.html#ad5842c290ab8a1a78d940767cac2b6dc">qemu_putuint</a>((<span class="keywordtype">int</span>)(rem*ipow(10, n+1))%10);</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                }</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;            }</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;i&#39;</span>:</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a84d0170205fce20a62b4cffc86f9a8cc">qemu_putint</a>(va_arg(args, <span class="keywordtype">int</span>));</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;u&#39;</span>:</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#ad5842c290ab8a1a78d940767cac2b6dc">qemu_putuint</a>(va_arg(args, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>));</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;x&#39;</span>:</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a2216758193db5eabef5e7fa495c8bf2c">qemu_puthex</a>(va_arg(args, uint32_t));</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;            <span class="keywordflow">case</span> <span class="charliteral">&#39;v&#39;</span>:</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#a5a5239f2e39f9059e41d3a495a7a2309">qemu_puthex_v</a>(va_arg(args, uint32_t));</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;            <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(format[i]);</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;            }</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;            <a class="code" href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a>(format[i]);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        }</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        i++;</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    }</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;}</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160; </div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160; </div>
+<div class="line"><a name="l00383"></a><span class="lineno"><a class="line" href="../../d0/d6e/ports_8c.html#a472b28888890793b0a49433fb0770496">  383</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d6e/ports_8c.html#a472b28888890793b0a49433fb0770496">qemu_printf</a>(<span class="keywordtype">char</span> *text, ...) {</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <a class="code" href="../../d5/d6b/structva__list.html">va_list</a> args;</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    <span class="comment">// find the first argument</span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    va_start(args, text);</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    <span class="comment">// pass print32_t the output handle the format text and the first argument</span></div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a304de0721ad1449f8a6d8474052ca25b">qemu_print</a>(text, args);</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    va_end(args);</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;}</div>
+<div class="ttc" id="aports_8c_html_a1523588ef57e794dedb0e3b33ca52015"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a1523588ef57e794dedb0e3b33ca52015">ins</a></div><div class="ttdeci">uint16_t ins(uint16_t port)</div><div class="ttdoc">Чтение word из порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00071">ports.c:71</a></div></div>
+<div class="ttc" id="aports_8c_html_a2216758193db5eabef5e7fa495c8bf2c"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a2216758193db5eabef5e7fa495c8bf2c">qemu_puthex</a></div><div class="ttdeci">void qemu_puthex(uint32_t i)</div><div class="ttdoc">Вывод числа через порт COM1 в формате HEX.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00217">ports.c:217</a></div></div>
+<div class="ttc" id="aports_8c_html_a2e1e8e2c5724c1e8fd2dff2eada06479"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a2e1e8e2c5724c1e8fd2dff2eada06479">inb</a></div><div class="ttdeci">uint8_t inb(uint16_t port)</div><div class="ttdoc">Получение одного байта из порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00030">ports.c:30</a></div></div>
+<div class="ttc" id="aports_8c_html_a304de0721ad1449f8a6d8474052ca25b"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a304de0721ad1449f8a6d8474052ca25b">qemu_print</a></div><div class="ttdeci">void qemu_print(char *format, va_list args)</div><div class="ttdoc">Подфункция-обработчик аргументов для qemu_printf.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00316">ports.c:316</a></div></div>
+<div class="ttc" id="aports_8c_html_a472b28888890793b0a49433fb0770496"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a472b28888890793b0a49433fb0770496">qemu_printf</a></div><div class="ttdeci">void qemu_printf(char *text,...)</div><div class="ttdoc">Вывод через COM1 информации</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00383">ports.c:383</a></div></div>
+<div class="ttc" id="aports_8c_html_a4e8f950edfd03bbb83a734632d8bfb54"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a4e8f950edfd03bbb83a734632d8bfb54">outsl</a></div><div class="ttdeci">void outsl(uint16_t port, uint32_t *buffer, int32_t times)</div><div class="ttdoc">Запись длинного слова через порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00110">ports.c:110</a></div></div>
+<div class="ttc" id="aports_8c_html_a5a5239f2e39f9059e41d3a495a7a2309"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a5a5239f2e39f9059e41d3a495a7a2309">qemu_puthex_v</a></div><div class="ttdeci">void qemu_puthex_v(uint32_t i)</div><div class="ttdoc">Вывод числа через порт COM1 в формате HEX без 0x.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00242">ports.c:242</a></div></div>
+<div class="ttc" id="aports_8c_html_a62948b77073b9ce03d0ec4e27d28ad56"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a62948b77073b9ce03d0ec4e27d28ad56">insl</a></div><div class="ttdeci">void insl(uint16_t port, uint32_t *buffer, int32_t times)</div><div class="ttdoc">Чтение длинного слова через порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00096">ports.c:96</a></div></div>
+<div class="ttc" id="aports_8c_html_a6b7ec8eb484a6472271ddf8a2add51cd"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a6b7ec8eb484a6472271ddf8a2add51cd">qemu_putstring</a></div><div class="ttdeci">void qemu_putstring(char log_data[])</div><div class="ttdoc">Вывод строки через порт COM1.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00143">ports.c:143</a></div></div>
+<div class="ttc" id="aports_8c_html_a84d0170205fce20a62b4cffc86f9a8cc"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a84d0170205fce20a62b4cffc86f9a8cc">qemu_putint</a></div><div class="ttdeci">void qemu_putint(int32_t i)</div><div class="ttdoc">Вывод целого числа через порт COM1.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00202">ports.c:202</a></div></div>
+<div class="ttc" id="aports_8c_html_a8bf7a9af91c08e6f876aaffeccd48ff3"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a8bf7a9af91c08e6f876aaffeccd48ff3">outb</a></div><div class="ttdeci">void outb(uint16_t port, uint8_t val)</div><div class="ttdoc">Запись одного байта в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00019">ports.c:19</a></div></div>
+<div class="ttc" id="aports_8c_html_a952966e2341f9e573b4a002aca5bb21e"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">inl</a></div><div class="ttdeci">uint32_t inl(uint16_t port)</div><div class="ttdoc">Чтение 32х битного числа</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00056">ports.c:56</a></div></div>
+<div class="ttc" id="aports_8c_html_a9bbef83a73fb7194de515986382bbcfc"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a></div><div class="ttdeci">void outl(uint16_t port, uint32_t val)</div><div class="ttdoc">Запись 32х битного числа в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00045">ports.c:45</a></div></div>
+<div class="ttc" id="aports_8c_html_aa5b31ff1df3faa8b9c64df97fb44b4ee"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#aa5b31ff1df3faa8b9c64df97fb44b4ee">is_com_port</a></div><div class="ttdeci">int is_com_port(int port)</div><div class="ttdoc">Проверка на тип порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00278">ports.c:278</a></div></div>
+<div class="ttc" id="aports_8c_html_aaaf4b3f918fbda500ebf08c8b17dfb46"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#aaaf4b3f918fbda500ebf08c8b17dfb46">io_wait</a></div><div class="ttdeci">void io_wait(void)</div><div class="ttdoc">Небольшая задержка используя порт 128(0x80)</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00154">ports.c:154</a></div></div>
+<div class="ttc" id="aports_8c_html_ab129328817732429fa6ff116c30ad94a"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#ab129328817732429fa6ff116c30ad94a">com1_is_transmit_empty</a></div><div class="ttdeci">int32_t com1_is_transmit_empty()</div><div class="ttdoc">Проверка занятости порта COM1.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00122">ports.c:122</a></div></div>
+<div class="ttc" id="aports_8c_html_abf84c81bf88d95a6b4d2c9a315fa09cb"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#abf84c81bf88d95a6b4d2c9a315fa09cb">isprint</a></div><div class="ttdeci">int isprint(char c)</div><div class="ttdoc">Проверка, читаем ли символ</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00267">ports.c:267</a></div></div>
+<div class="ttc" id="aports_8c_html_ad0aeab3fed0aa6c56ef58b8df7a9fd06"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06">com1_write_char</a></div><div class="ttdeci">void com1_write_char(char a)</div><div class="ttdoc">Вывод одного символа через порт COM1.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00132">ports.c:132</a></div></div>
+<div class="ttc" id="aports_8c_html_ad3828c4a1261f083ad091087b898057a"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#ad3828c4a1261f083ad091087b898057a">outs</a></div><div class="ttdeci">void outs(uint16_t port, uint16_t data)</div><div class="ttdoc">Запись word в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00084">ports.c:84</a></div></div>
+<div class="ttc" id="aports_8c_html_ad5842c290ab8a1a78d940767cac2b6dc"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#ad5842c290ab8a1a78d940767cac2b6dc">qemu_putuint</a></div><div class="ttdeci">void qemu_putuint(uint32_t i)</div><div class="ttdoc">Подфункция-обработчик для функции qemu_putint.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00175">ports.c:175</a></div></div>
+<div class="ttc" id="aports_8c_html_ad6e8f0e0260d783b7301e63933d4e490"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#ad6e8f0e0260d783b7301e63933d4e490">inw</a></div><div class="ttdeci">uint16_t inw(uint16_t port)</div><div class="ttdoc">Чтение 16х битного числа</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00164">ports.c:164</a></div></div>
+<div class="ttc" id="astring_8c_html_a008e171a518fe0e0352f31b245e03875"><div class="ttname"><a href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a></div><div class="ttdeci">size_t strlen(const char *str)</div><div class="ttdoc">Возращает длину строки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00076">string.c:76</a></div></div>
+<div class="ttc" id="astructva__list_html"><div class="ttname"><a href="../../d5/d6b/structva__list.html">va_list</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d2d/stdarg_8h_source.html#l00009">stdarg.h:9</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f684e8e1ebea567db7f673c0b997cee3.html">io</a></li><li class="navelem"><a class="el" href="../../d0/d6e/ports_8c.html">ports.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Янв 2023 05:14:34. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
