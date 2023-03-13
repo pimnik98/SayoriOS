@@ -100,8 +100,12 @@
 	<b>Используйте на свой страх и риск.</b>
 </p>
 <p>
-<b><i>Cool guys who star our project</i></b>
-<img src="https://github.com/pimnik98/SayoriOS/stargazers"/>
+<b><i>Cool guys who star this project</i></b>
+<img src="https://reporoster.com/stars/pimnik98/SayoriOS"/>
+</p>
+<p>
+<B><I>Cool guys who CONTRIBUTE TO THIS PROJECT</I></B>
+<img src="https://reporoster.com/forks/pimnik98/SayoriOS"/>
 </p>
 </body></html>
 
