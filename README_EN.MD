@@ -2,7 +2,7 @@
 <h1>SayoriOS - Open-source operating system kernel.</h1>
 <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" alt="C">
 <img src="https://github.com/pimnik98/SayoriOS/actions/workflows/SayoriOS-AutoBot-Auto.yml/badge.svg" alt="Workflow">
-<p>This is very simple operating-system with <s>well-documented</s>kernel<br>
+<p>This is very simple operating-system with <s>well-documented</s> kernel<br>
     To get started with SayoriOS, you need following tools: <a href="https://github.com/pimnik98/SayoriSDK"><b>SayoriSDK</b></a>
 </p>
 <h1>Screenshots</h1>
@@ -85,11 +85,15 @@
 </p>
 <p>
 <b><i>Cool guys who star this project</i></b>
+<p>
 <img src="https://reporoster.com/stars/pimnik98/SayoriOS"/>
+</p>
 </p>
 <p>
 <B><I>Cool guys who CONTRIBUTE TO THIS PROJECT</I></B>
+<p>
 <img src="https://reporoster.com/forks/pimnik98/SayoriOS"/>
+</p>
 </p>
 </body></html>
 
