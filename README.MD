@@ -1,5 +1,5 @@
 <html><body>
-<a href="/tree/main/README_EN.MD">English version</a>
+<a href="README_EN.MD">English version</a>
 <h1>SayoriOS - открытое публичное ядро операционной системы</h1>
 <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" alt="C">
 <img src="https://github.com/pimnik98/SayoriOS/actions/workflows/SayoriOS-AutoBot-Auto.yml/badge.svg" alt="Workflow">

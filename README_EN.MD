@@ -1,5 +1,5 @@
 <html><body>
-<h1>SayoriOS - Open -source operating system kernel.</h1>
+<h1>SayoriOS - Open-source operating system kernel.</h1>
 <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" alt="C">
 <img src="https://github.com/pimnik98/SayoriOS/actions/workflows/SayoriOS-AutoBot-Auto.yml/badge.svg" alt="Workflow">
 <p>This is very simple operating-system with <s>well-documented</s>kernel<br>
