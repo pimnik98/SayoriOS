@@ -1,4 +1,5 @@
 <html><body>
+<a href="/tree/main/README_EN.MD">English version</a>
 <h1>SayoriOS - открытое публичное ядро операционной системы</h1>
 <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" alt="C">
 <img src="https://github.com/pimnik98/SayoriOS/actions/workflows/SayoriOS-AutoBot-Auto.yml/badge.svg" alt="Workflow">
@@ -58,7 +59,7 @@
 <p>
 	Для компиляции вам потребуется операционная система <b>Linux</b>, в которой предустановлено ПО для разработки.<br>
 	Установить можно следующей командой:<br>
-	<b><i>sudo apt-get install python3 clang llvm grub-pc-bin xorriso mtools lld git fasm</b></i><br><br>
+	<b><i>sudo apt-get install python3 clang llvm grub-pc-bin xorriso mtools lld git fasm make</b></i><br><br>
 	А также надо установить софт для тестирования в среде <b>Linux</b><br>
 	<b><i>sudo apt-get install libvirt-daemon libvirt-clients bridge-utils virt-manager qemu-kvm qemu virt-manager</b></i><br><br>
 	<br>
