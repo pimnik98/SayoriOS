@@ -1,10 +1,10 @@
 /**
  * @file lib/string.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), Drew >_ (pikachu_andrey@vk.com)
  * @brief Функции для работы со строками
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023 
  */
 #include <kernel.h>
 /**
@@ -116,6 +116,28 @@ void *memcpy(void *destination, const void *source, size_t n){
     return destination;
 }
 
+void *memcpy2(void *destination, const void *source, size_t n){
+    short *tmp_dest = (short*)destination;
+    const short *tmp_src = (const short*)source;
+
+    while (n--) {
+        *tmp_dest++ = *tmp_src++;
+    }
+
+    return destination;
+}
+
+void *memcpy4(void *destination, const void *source, size_t n){
+    int *tmp_dest = (int*)destination;
+    const int *tmp_src = (const int*)source;
+
+    while (n--) {
+        *tmp_dest++ = *tmp_src++;
+    }
+
+    return destination;
+}
+
 /**
  * @brief Заполнение массива указанными символами
  *
@@ -123,14 +145,25 @@ void *memcpy(void *destination, const void *source, size_t n){
  * @param void* value - Код символа для заполнения
  * @param size_t size - Размер заполняемой части массива в байтах
  */
-void memset(void* ptr, uint8_t value, size_t size)
-{
+/*
+void memset(void* ptr, uint8_t value, size_t size) {
   uint8_t* b_ptr = (uint8_t*) ptr;
   int i = 0;
 
   for (i = 0; i < size; i++)
     b_ptr[i] = value;
+}
+*/
 
+void* memset(void* ptr, uint8_t value, size_t count) {
+  uint8_t* b_ptr = (uint8_t*)ptr;
+
+  while(count--)
+    // *b_ptr++ = value; // +2 Assembly instructions
+    // b_ptr[count] = (uint8_t)value; // +1 Assembly instruction
+    b_ptr[count] = value; // Total 4 assembly instructions
+
+  return ptr;
 }
 /**
  * @brief Копирование массивов (в том числе пересекающихся)
@@ -162,7 +195,7 @@ void* memmove(void *dest, void *src, size_t count)
 			src = (char*)src - 1;
 		}
 	}
-	return(ret);
+	return ret;
 }
 
 /**
@@ -173,10 +206,8 @@ void* memmove(void *dest, void *src, size_t count)
  *
  * @return int - Возращает 0 если строки идентичны или разницу между ними
  */
-int strcmp(const char *s1, const char *s2)
-{
-    while (*s1 && *s1 == *s2)
-    {
+int strcmp(const char *s1, const char *s2) {
+    while (*s1 && *s1 == *s2) {
         ++s1;
         ++s2;
     }
@@ -192,7 +223,7 @@ int strcmp(const char *s1, const char *s2)
  * @return bool - Возращает true если строки идентичны
  */
 bool strcmpn(const char *str1, const char *str2){
-    return (strcmp(str1,str2) == 0 ? true : false);
+    return strcmp(str1, str2) == 0;
 }
 
 /**
@@ -203,7 +234,7 @@ bool strcmpn(const char *str1, const char *str2){
  *
  * @return int - Функция возвращает указатель на строку, в которую скопированы данные.
  */
-int strcpy(char* dest, char* src){
+int strcpy(char* dest, const char* src){
     int i = 0;
 
     while (src[i] != '\0')
@@ -226,7 +257,7 @@ int strcpy(char* dest, char* src){
  *
  * @return int - Возращает 0 если строки идентичны или разницу между ними
  */
-int32_t memcmp(const void *s1, const void *s2, size_t n){
+int32_t memcmp(const char *s1, const char *s2, size_t n){
     unsigned char u1, u2;
 
     for (; n--; s1++, s2++){
@@ -342,7 +373,6 @@ char *strtok(char *s, const char *delim){
     }
 
     s += strspn(s, delim);
-    //qemu_log("NOW S IS: %s", s);
 
     if (*s == '\0'){
         olds = s;
@@ -400,7 +430,7 @@ char *strcat(char *s, const char *t){
  * @param int source - Откуда копируем
  * @param size_t source - Количество копируемых строк
  */
-void substr(char *dest, char *source, int from, int length){
+void substr(char *dest, const char *source, int from, int length){
     strncpy(dest, source + from, length);
     dest[length] = 0;
 }
@@ -458,7 +488,7 @@ void strtoupper(char* as){
  * @return bool - если строка является числом
  */
 bool isNumber(char * c){
-    for(uint32_t i = 0;i<strlen(c);i++){
+    for(uint32_t i = 0, len = strlen(c); i < len; i++){
         if ((uint32_t) c[i] >= 48 && (uint32_t) c[i] <= 57){
             continue;
         } else {
@@ -548,4 +578,35 @@ int32_t itoa(int32_t n, char *buffer) {
     } while(n);
 
     return strlen(buffer);
+}
+
+
+int dcmpstr( const char *s1, const char *s2 )
+{
+    while ( *s1 && *s1 == *s2 ) ++s1, ++s2;
+
+    return ( ( unsigned char )*s1 > ( unsigned char )*s2 ) -
+           ( ( unsigned char )*s1 < ( unsigned char )*s2 );
+}
+
+char digit_count(size_t num) {
+    char _ = 0;
+    while(num > 0) {
+        num /= 10;
+        _++;
+    }
+    return _;
+}
+
+char hex_count(size_t num) {
+    char _ = 0;
+    while(num > 0) {
+        num /= 16;
+        _++;
+    }
+    return _;
+}
+
+bool isdigit(char a) {
+    return (a >= '0' && a <= '9');
 }

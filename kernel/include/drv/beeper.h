@@ -1,4 +1,7 @@
 #pragma once
+
+#include <common.h>
+
 #define A2 110
 #define Ad2 116
 #define B2 123
@@ -56,3 +59,6 @@ typedef struct Note {
     unsigned short freq;
     unsigned short duration;
 } Note;
+
+void beeperPlay(uint32_t nFrequence);
+void beeperSilent();

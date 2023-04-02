@@ -1,9 +1,9 @@
-ENTRY (init)
+ENTRY (__pre_init)
 
 SECTIONS
 {
-
     . = 0x00200000;
+    KERNEL_BASE_pos = .;
 
     .text ALIGN (0x1000) :
     {
@@ -21,5 +21,6 @@ SECTIONS
         *(.bss)
     }
     /* */
-    end = .; _end = .; __end = .;    
+    end = .; _end = .; __end = .; 
+    KERNEL_END_pos = .;
 }

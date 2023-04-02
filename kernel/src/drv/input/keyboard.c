@@ -1,11 +1,13 @@
 /**
  * @file drv/input/keyboard.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru), Андрей Павленко (andrejpavlenko666@gmail.com)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), Drew >_ (pikachu_andrey@vk.com)
  * @brief Драйвер клавиатуры
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
+extern void tty_backspace();
+
 #include <kernel.h>
 #include <io/ports.h>
 
@@ -30,6 +32,7 @@ int     lastKey = 0,            ///< Последний индекс клави�
 char    kbdbuf[256] = {0};      ///< Буфер клавиатуры
 uint8_t kbdstatus = 0;          ///< Статус клавиатуры
 bool    echo = true;            ///< Включен ли вывод?
+bool    key_ctrl = false;
 
 char kmode = 0;
 char* curbuf = 0;
@@ -54,9 +57,9 @@ char* __getCharKeyboard(char* en_s,char* en_b,char* ru_s,char* ru_b){
  *
  * @param int key - Код клавиатуры
  * 
- * @return void* - Или символ или код
+ * @return char* - Или символ или код
  */
-void* getCharKeyboard(int key,bool mode){
+char* getCharKeyboard(int key,bool mode){
 	// TODO: Make a layout manager that supports any custom keyboard layout.
     char* b;// = kmalloc(sizeof(char)*3);
     bool found = false;
@@ -174,8 +177,8 @@ void* getCharKeyboard(int key,bool mode){
 
         default: b = "?"; found = false; break;
     }
-    //qemu_log("[Char] Keyboard: %d => %s", key, b);
-    return (mode?key:(found?b:0));
+
+    return mode?(char*)key:(found?b:0);
 }
 
 unsigned char getPressReleaseKeyboard() {
@@ -192,8 +195,12 @@ int getCharRaw() {
     return lastKey;
 }
 
+bool is_lctrl_key() {
+    return key_ctrl;
+}
+
 int getIntKeyboardWait(){
-    int kmutex = 0;
+    bool kmutex = false;
     mutex_get(&kmutex, true);
 
     while(lastKey==0 || (lastKey & 0x80)) {}
@@ -203,31 +210,19 @@ int getIntKeyboardWait(){
 }
 
 void* getCharKeyboardWait(bool ints) {
-	/*
-    int kmutex = 0;
-    mutex_get(&kmutex, true);
-    void* ret = 0;
-
-    while(lastKey==0 || ((lastKey & 0x80) && ret==0)) {}
-
-    ret = getCharKeyboard(lastKey,ints);
-    lastKey = 0;
-
-    mutex_release(&kmutex);
-    return ret;
-	*/
-	// char* ret = 0;
-
 	kmode = 2;
 	while(kmode==2) {
 		if (lastKey != 0 && !(lastKey & 0x80)) {
 			kmode = 0;
-			// ret = lastKey;
 			lastKey = 0;
 		}
 	}
 
-	return getCharKeyboard(curbuf, false);
+    if(ints) {
+    	return curbuf;
+    } else {
+    	return getCharKeyboard((int)curbuf, ints);
+    }
 }
 
 /**
@@ -254,15 +249,7 @@ char* getStringBufferKeyboard(){
             // Нажат Enter отбрасываем обработку
             break;
         }
-        /*if(ikey == 0x0E || ikey == 0x8E) { // BACKSPACE
-            int kbdl = strlen(kbdbuf);
-        	if(kbdl > 0) {
-        		kbdbuf[kbdl - 1] = 0;
-        		tty_backspace();
-            }
-            qemu_log("BKSP!!!");
-            qemu_log("%s > %d", kbdbuf, strlen(kbdbuf));
-        }*/
+
         if (key != 0 && lastKey < 128){
             strcat(kbdbuf, key);
             //tty_printf("\n[%d/256] Buffer: %s; KEY: %s; LK: %x | %x\n", kblen, kbdbuf, key,ikey,lastKey);
@@ -284,7 +271,7 @@ void kbd_add_char(char *buf, char* key) {
 			if(chartyped > 0) {
 				tty_backspace();
 				chartyped--;
-				qemu_log("Deleted character: %c", buf[chartyped]);
+				// qemu_log("Deleted character: %c", buf[chartyped]);
 				buf[chartyped] = 0;
 			}
         }
@@ -298,9 +285,9 @@ void gets(char *buffer) { // TODO: Backspace
     
 	kmode = 1;
 	curbuf = buffer;
-	    
+
 	while(kmode==1) {
-		if (/*lastKey == 0x9C || lastKey == 0xE0 || */ lastKey == 0x1C){
+		if (/*lastKey == 0xE0 || */lastKey == 0x9C /*|| lastKey == 0x1C*/){
             curbuf = 0;
 			lastKey = 0;
             kmode = 0;
@@ -320,38 +307,46 @@ void keyboardHandler(registers_t regs){
 
     kbdstatus = inb(KBD_STATE_REG);
     if (kbdstatus & 0x01) {
-        // if (timePresed > getTicks()){
-        //     return;
-        // }
 
         lastKey = inb(KBD_DATA_PORT);
-        if (lastKey == 42) {
+        // qemu_log("Key: %d", lastKey);
+
+        if (lastKey == 42) { // SHIFT press
             SHIFT = true;
-            //tty_printf("SHIFTED\n");
             return;
-        } else if (lastKey == 0x3B){
+        } else if (lastKey == 0x3B){ // F1
             RU = !RU;
             //tty_printf("Ru %s\n",(RU?"вкл":"выкл"));
             return;
+        } else if (lastKey == 170) { // Shift release
+            SHIFT = false;
+        } else if (lastKey == 29) {
+            key_ctrl = true;
+        } else if (lastKey == 157) {
+            key_ctrl = false;
         }
 
         char* key = getCharKeyboard(lastKey, false);
         if (key != 0 && lastKey < 128){
-            if(echo) tty_printf("%s", key);
-			// qemu_log("Key is: %d => %s", lastKey, key);
+            if(echo) {
+                if(key_ctrl) {
+                    tty_printf("Ctrl-");
+                }
+                tty_printf("%s", key);
+            }
 			kbd_add_char(curbuf, key);
         }
 
-        /*
+        /*        
         if(lastKey & 0x80) {
-            qemu_log("[KBD] Release on key: %s", key);
+            qemu_log("[KBD] Release on key: %d", lastKey);
         }else{
-            qemu_log("[KBD] Press on key: %s", key);
+            qemu_log("[KBD] Press on key: %d", lastKey);
         }
         */
+        
+
         timePresed = getTicks()+100;
-        SHIFT = false;
-        // lastKey = 0;
         return;
     }
 }

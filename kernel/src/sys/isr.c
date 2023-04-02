@@ -2,13 +2,12 @@
  * @file sys/isr.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Обработчик прерывания высокого уровня
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include	"kernel.h"
 #include	"sys/isr.h"
-#include	"drv/text_framebuffer.h"
 
 isr_t	interrupt_handlers[256];
 
@@ -17,9 +16,9 @@ isr_t	interrupt_handlers[256];
  * 
  * @param registers_t regs - Регистр
  */
-void isr_handler(registers_t regs){	
+void isr_handler(registers_t regs){
 	if (interrupt_handlers[regs.int_num] != 0){
-	isr_t handler = interrupt_handlers[regs.int_num];
+		isr_t handler = interrupt_handlers[regs.int_num];
 		handler(regs);
 	}
 }
@@ -62,4 +61,5 @@ void isr_init(){
 	register_interrupt_handler(INT_12, &stack_error);
 	register_interrupt_handler(INT_13, &general_protection_error);
 	register_interrupt_handler(INT_14, &page_fault);
+	register_interrupt_handler(INT_16, &fpu_fault);
 }

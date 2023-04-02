@@ -1,10 +1,10 @@
 /**
  * @file fs/sefs.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), Drew >_ (pikachu_andrey@vk.com)
  * @brief Файловая система SEFS (Sayori Easy File System)
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include <kernel.h>
 #include <io/ports.h>
@@ -18,23 +18,24 @@ fs_node_t *sefs_dev;				///< ...
 fs_node_t *root_nodes;				///< ...
 int nroot_nodes;                    ///< Количество файлов.
 struct dirent dirent;				///< ...
-int64_t dirName[2048];              ///< Ссылка на названия папок по индексу
-int64_t diskUsed = 0;               ///< Количество используемого пространства
-int64_t diskSize = 0;               ///< Общие кол-во дисков
-int64_t dirCount = 0;               ///< Количество папок
+size_t dirName[2048];              ///< Ссылка на названия папок по индексу
+size_t diskUsed = 0;               ///< Количество используемого пространства
+size_t diskSize = 0;               ///< Общие кол-во дисков
+size_t dirCount = 0;               ///< Количество папок
 
 /**
  * @brief [SEFS] Полное чтение файла
  *
  * @param int node - Индекс файла
  * 
+ * @warning IT's MEMORY LEAKY!!!
  * @return char* - Содержимое файла
  */
 char* sefs_readChar(uint32_t node){
     sefs_file_header_t header = file_headers[node];
     //qemu_log("[SEFS] [readChar] Elem: %d",node);
     char* buf = kmalloc(header.length);
-    memcpy(buf, header.offset, header.length);
+    memcpy(buf, (void*)header.offset, header.length);
     return buf;
 }
 
@@ -51,16 +52,16 @@ char* sefs_readChar(uint32_t node){
 uint32_t sefs_read(uint32_t node, size_t offset, size_t size, void *buffer){
     sefs_file_header_t header = file_headers[node];
     //qemu_log("[SEFS] [Read] Elem: %d | Off: %d | Size: %d", node, offset, size);
-    /*if (offset > size){
-        qemu_log("Offset larger that size!!! (%x > %x)", offset, size);
-        return -2;
-    } else*/
 
     // Did you mean: offset+size > header.length
-    if (header.length < size){
+    if (header.length < size) {
         size = header.length;
     }
-    memcpy(buffer, header.offset+offset, size);
+
+    memcpy(buffer, (char*)(header.offset+offset), size);
+    
+    // qemu_log("SEFS early buffer now: %s", (char*)(header.offset + offset));
+    // qemu_log("SEFS buffer now: %s", buffer);
     return size;
 }
 
@@ -82,7 +83,7 @@ uint32_t sefs_write(uint32_t node, size_t offset, size_t size, void *buffer){
     }
     void* newfile = kmalloc((size + offset > header.length)?(size + offset):header.length);
     int w_tmp1 = 0;     ///< Сколько скопировано с начала
-    int w_tmp2 = 0;     ///< Сколько вставлено с буфера
+    // int w_tmp2 = 0;     ///< Сколько вставлено с буфера
     int w_tmp3 = 0;     ///< Сколько вставлено с остатка
     // Сохраняем первую часть данных
     if (offset > 0){
@@ -107,9 +108,9 @@ uint32_t sefs_write(uint32_t node, size_t offset, size_t size, void *buffer){
  *
  * @param int node - Индекс файла
  * 
- * @return uint64_t - Размер файла или 0
+ * @return size_t - Размер файла или 0
  */
-uint64_t sefs_getLengthFile(int node){
+size_t sefs_getLengthFile(int node){
     //qemu_log("[SEFS] [gLF] Node: %d | Size: %d",node,root_nodes[node].length);
 
     return root_nodes[node].length;
@@ -122,7 +123,7 @@ uint64_t sefs_getLengthFile(int node){
  * 
  * @return int - Позиция файла или отрицательное значение при ошибке
  */
-int sefs_getOffsetFile(int node){
+size_t sefs_getOffsetFile(int node){
     return file_headers[node].offset;
 }
 
@@ -157,13 +158,14 @@ uint32_t sefs_findFile(char* filename){
  *
  * @return int - Индекс папки, или отрицательное значение при ошибке
  */
-uint32_t sefs_findDir(char* path){
+int32_t sefs_findDir(char* path){
     char* file = kmalloc(sizeof(char)*256);
     char* sl = "/";
-    strcpy(file, sl);
-    strcat(file,path);
 
-    qemu_log("[SeFS] `%s` | `%s`",path,file);
+    strcpy(file, sl);
+    strcat(file, path);
+
+    qemu_log("[SeFS] `%s` | `%s`", path, file);
 
     for (size_t i = 0, a = 0; i < sefs_header->nfiles; i++){
         if (root_nodes[i].flags != FS_DIRECTORY) continue;
@@ -181,8 +183,8 @@ uint32_t sefs_findDir(char* path){
  * @brief [SEFS] Считает количество элементов в папке
  */
 size_t sefs_countElemFolder(char* path){
-    uint64_t inxDir = sefs_findDir(path);
-    if (inxDir < 0){
+    ssize_t inxDir = sefs_findDir(path);
+    if (inxDir < 0) {
         return 0;
     }
     size_t count = 0;
@@ -199,13 +201,15 @@ size_t sefs_countElemFolder(char* path){
  * @brief [SEFS] Выводит список файлов
  */
 struct dirent* sefs_list(char* path){
-    struct dirent* testFS;
-    uint64_t inxDir = sefs_findDir(path);
+    size_t inxDir = sefs_findDir(path);
     if (inxDir < 0){
-        return testFS;
+        return 0;
     }
+
+    struct dirent* testFS = kcalloc(sefs_header->nfiles, sizeof(struct dirent));
+    
     qemu_log("[Index Dir] %d",inxDir);
-    uint64_t inxFile = 0;
+    size_t inxFile = 0;
     for (size_t i = 0; i < sefs_header->nfiles; i++){
         if (root_nodes[i].root != inxDir){
             continue;
@@ -216,14 +220,15 @@ struct dirent* sefs_list(char* path){
         testFS[inxFile].length = root_nodes[i].length;
         strcpy(testFS[inxFile].name, root_nodes[i].name);
         inxFile++;
-       qemu_log("[SEFS] [Init] I:%d",i);
-       qemu_log("\t * Name:%s",root_nodes[i].name);
-       qemu_log("\t * mask:%d",root_nodes[i].mask);
-       qemu_log("\t * length:%d",root_nodes[i].length);
-       qemu_log("\t * flags:%x",root_nodes[i].flags);
-       qemu_log("\t * inode:%d",root_nodes[i].inode);
-       qemu_log("\t * offset:%d",file_headers[i].offset);
-       qemu_log("\t * root:%d",root_nodes[i].root);
+
+        qemu_log("[SEFS] [Init] I:%d",i);
+        qemu_log("\t * Name:%s",root_nodes[i].name);
+        qemu_log("\t * mask:%d",root_nodes[i].mask);
+        qemu_log("\t * length:%d",root_nodes[i].length);
+        qemu_log("\t * flags:%x",root_nodes[i].flags);
+        qemu_log("\t * inode:%d",root_nodes[i].inode);
+        qemu_log("\t * offset:%d",file_headers[i].offset);
+        qemu_log("\t * root:%d",root_nodes[i].root);
    }
    testFS[inxFile].next = 0;
    return testFS;
@@ -234,9 +239,9 @@ struct dirent* sefs_list(char* path){
  *
  * @param int node - Нода
  *
- * @return uint64_t - Количество используемого места устройства
+ * @return size_t - Количество используемого места устройства
  */
-uint64_t sefs_diskUsed(int node){
+size_t sefs_diskUsed(int node){
     return diskUsed;
 }
 
@@ -245,9 +250,9 @@ uint64_t sefs_diskUsed(int node){
  *
  * @param int node - Нода
  *
- * @return uint64_t - Количество свободного места устройства
+ * @return size_t - Количество свободного места устройства
  */
-uint64_t sefs_diskSpace(int node){
+size_t sefs_diskSpace(int node){
     return 0;
 }
 
@@ -256,9 +261,9 @@ uint64_t sefs_diskSpace(int node){
  *
  * @param int node - Нода
  *
- * @return uint64_t - Количество всего места устройства
+ * @return size_t - Количество всего места устройства
  */
-uint64_t sefs_diskSize(int node){
+size_t sefs_diskSize(int node){
     return diskSize;
 }
 
@@ -273,6 +278,14 @@ char* sefs_getDevName(int node){
     return sefs_root->devName;
 }
 
+void sefs_dirfree(struct dirent* ptr) {
+    // qemu_log("SEFS freeing dirent pointer: %x", ptr);
+    if(ptr) {
+        kfree(ptr);
+        ptr = 0;
+    }
+}
+
 /**
  * @brief [SEFS] Инициализация Sayori Easy File System
  *
@@ -284,10 +297,12 @@ fs_node_t *sefs_initrd(uint32_t location){
     qemu_log("[SEFS] [Init] loc: %x",location);
     // Инициализирует указатели main и заголовке файлов и заполняет корневой директорий.
     sefs_header = (sefs_header_t *)location;
-    file_headers = (sefs_file_header_t *) (location+sizeof(sefs_header_t));
-    sefs_root = (fs_node_t*)kmalloc(sizeof(fs_node_t));
+    file_headers = (sefs_file_header_t *) (location + sizeof(sefs_header_t));
+    sefs_root = (fs_node_t*)kcalloc(1, sizeof(fs_node_t));
+
     strcpy(sefs_root->name, "/");
     strcpy(sefs_root->devName, "SayoriDisk RDv2");
+
     sefs_root->mask = sefs_root->uid = sefs_root->gid = sefs_root->inode = sefs_root->length = 0;
     sefs_root->flags = FS_DIRECTORY;
     sefs_root->open = 0;
@@ -308,6 +323,7 @@ fs_node_t *sefs_initrd(uint32_t location){
     sefs_root->getDevName = &sefs_getDevName;
     sefs_root->getCountElemFolder = &sefs_countElemFolder;
     sefs_root->getListElem = &sefs_list;
+    sefs_root->unlistElem = &sefs_dirfree;
 
     root_nodes = (fs_node_t*)kmalloc(sizeof(fs_node_t) * sefs_header->nfiles);
     nroot_nodes = sefs_header->nfiles;
@@ -318,27 +334,35 @@ fs_node_t *sefs_initrd(uint32_t location){
         // памяти.
         root_nodes[i].root = file_headers[i].parentDir;
         file_headers[i].offset += location;
+        
         // Создаем нод нового файла.
-        strcpy(root_nodes[i].name, &file_headers[i].name);
+        strcpy(root_nodes[i].name, file_headers[i].name);
         root_nodes[i].mask = root_nodes[i].uid = root_nodes[i].gid = 0;
-        root_nodes[i].length = (uint64_t) file_headers[i].length;
+        root_nodes[i].length = (size_t) file_headers[i].length;
         root_nodes[i].inode = i;
-        root_nodes[i].flags = (file_headers[i].types==0?FS_FILE:FS_DIRECTORY);
+        root_nodes[i].flags = (!file_headers[i].types?FS_FILE:FS_DIRECTORY);
+        
         if (root_nodes[i].flags == FS_FILE){
             diskUsed += root_nodes[i].length;
             diskSize += root_nodes[i].length;
         }
+        
         if (root_nodes[i].flags == FS_DIRECTORY){
             dirCount++;
         }
     }
+
     for (int i = 0; i < sefs_header->nfiles; i++){
-        if (root_nodes[i].flags != FS_FILE) continue;
+        if (root_nodes[i].flags != FS_FILE)
+            continue;
+        
         strcpy(root_nodes[i].path, root_nodes[(sefs_header->nfiles - dirCount) + root_nodes[i].root].name);
         strcat(root_nodes[i].path,root_nodes[i].name);
+        
         int fpath_len = strlen(root_nodes[i].path);
         root_nodes[i].path[fpath_len+1] = '\0';
     }
+
     return sefs_root;
 }
 

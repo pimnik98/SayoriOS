@@ -25,26 +25,22 @@
 #define		PAGE_DIRTY		(1 << 6)
 #define		PAGE_GLOBAL		(1 << 8)
 
-#define		KERNEL_BASE		0x200000		/* Kernel start address in physical memory */
-#define		KERNEL_SIZE		0x1000000		/* Size of area for kernel */
-#define		KERNEL_PAGE_TABLE	0x500000		/* Kernel page directory address */
+// #define		KERNEL_BASE		0x200000		/* Kernel start address in physical memory */ // There was 0x200000 before SB16 driver
+// #define		KERNEL_SIZE		0x1800000		/* Size of area for kernel */
 
 /*------------------------------------------------------------------------------
 //		User virtual address space
 //----------------------------------------------------------------------------*/
+// FIXME: IDK WHY IT's NEEDED
 #define			USER_MEMORY_START	((void*) 0x80000000)
-// FIXME: If memory starts at 2 GB and ends at 4 GB,
-//        we have only 2 GB of User VAddress Space?
-//        P.S. Or I don't know how memory works?
 #define			USER_MEMORY_END		((void*) 0xFFFFFFFF)
 /*------------------------------------------------------------------------------
 //		Kernel virtual address space
 //----------------------------------------------------------------------------*/
-#define			KERNEL_MEMORY_START	((void*) KERNEL_BASE)
 #define			KERNEL_MEMORY_END	((void*) 0x7FFFFFFF)
 
 /* Kernel heap params */
-#define			KERNEL_HEAP_SIZE			0x1000000
+#define			KERNEL_HEAP_SIZE			0x20000000
 #define			KERNEL_HEAP_BASE			((void*) (KERNEL_MEMORY_END - KERNEL_HEAP_SIZE))
 #define 		KERNEL_HEAP_BLOCK_INFO_SIZE	0x400000
 
@@ -92,6 +88,7 @@ typedef struct
 #define		LAST_ADDR		0xFFFFFFFF		/* Last virtual address in x86 address space*/
 
 #define		TEMP_PAGE		(KERNEL_BASE + KERNEL_SIZE - PAGE_SIZE)	/* Temporary page for */
+// #define		TEMP_PAGE		(0xFFA00000)	/* Temporary page for */
 										/* physical memory access */
 
 #define		TEMP_TABLE_IDX		(TEMP_PAGE >> 22)						/* Temporary page table index == PAGE_DIRECTORY_INDEX*/
@@ -108,6 +105,9 @@ typedef struct
 
 #define GET_PDE(v) (page_dir_entry*) (0xFFFFF000 +  (v >> 22) * 4)
 #define GET_PTE(v) (page_table_entry*) (0xFFC00000 + (v >> 12) * 4)
+
+#define GET_PT() (size_t*)(kernel_page_dir + PAGE_SIZE)
+
 /* Switch processor to page mode */
 void switch_page_mode(void);
 /* Check memory map from GRUB2 Multiboot header */
@@ -116,15 +116,21 @@ void check_memory_map(memory_map_entry_t* mmap_addr, uint32_t length);
 void init_memory_manager(uint32_t stack);
 
 uint8_t map_pages(physaddr_t page_dir,		/* Page directory*/
-		        void* vaddr,		/* Start virtual address */
+		        virtual_addr_t vaddr,		/* Start virtual address */
 		        physaddr_t paddr,	/* Start physical address */
 		        size_t count,		/* Size of memory space */
 		        uint32_t flags);		/* Page's flags */
-		        
+
+physaddr_t alloc_phys_pages(size_t count);
+void vmm_free_page(virtual_addr_t vaddr);
 physaddr_t get_kernel_dir(void);
 
 void* kmalloc(size_t size);
 void kfree(void* vaddr);
 void* kcalloc(size_t count, size_t size);
+void* krealloc(void* vaddr, size_t size);
+size_t memory_get_used_kernel();
+size_t virt2phys(physaddr_t page_directory, virtual_addr_t virtual_address);
+uint8_t unmap_pages(physaddr_t page_dir, virtual_addr_t vaddr, size_t count);
 
 #endif

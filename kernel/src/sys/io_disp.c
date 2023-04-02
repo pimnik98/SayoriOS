@@ -2,11 +2,12 @@
  * @file sys/io_disp.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief I/O Dispatcher
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include	"sys/io_disp.h"
+#include	<kernel.h>
 mutex_t*	port_mutex;
 
 /**

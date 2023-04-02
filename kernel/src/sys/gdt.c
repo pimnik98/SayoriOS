@@ -2,12 +2,11 @@
  * @file sys/gdt.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief (GDT) Глобальная таблица дескрипторов
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include	"sys/descriptor_tables.h"
-#include	"drv/text_framebuffer.h"
 #include	"lib/string.h"
 #include	"io/ports.h"
 

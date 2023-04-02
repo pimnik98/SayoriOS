@@ -1,10 +1,10 @@
 /**
  * @file drv/cmos.c
  * @brief Драйвер CMOS
- * @author Андрей Павленко (andrejpavlenko666@gmail.com)
- * @version 0.3.0
+ * @author Drew >_ (pikachu_andrey@vk.com)
+ * @version 0.3.2
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
  
 #include <kernel.h>
@@ -137,19 +137,6 @@ sayori_time_t get_time() {
 	struct sayori_time time = {
 		second, minute, hour, day, month, year, century
 	};
-	return time;
-}
-
-sayori_time_t* get_time_pointer() {
-    read_rtc();
-	struct sayori_time* time = NULL;
-	time->seconds = second;
-    time->minutes = minute;
-    time->hours = hour;
-    time->day = day;
-    time->month = month;
-    time->year = year;
-    time->century = century;
 	return time;
 }
 

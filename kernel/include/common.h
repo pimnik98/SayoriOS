@@ -1,10 +1,10 @@
 /**
  * @file common.h
- * @author Пиминов Никита (nikita.piminoff@yandex,ru)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Основные определения ядра
- * @version 0.3.0
- * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @version 0.3.2
+ * @date 2023-12-07
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #ifndef		COMMON_H
 #define		COMMON_H
@@ -16,6 +16,8 @@
 #define		TRUE			1
 #define		NULL			((void*) 0)
 
+#define ALIGN(value, align) ((value) + ((-value) & ((align) - 1)))
+
 /* Boolean type */
 typedef enum
 {
@@ -24,7 +26,7 @@ typedef enum
 } bool;
 /* 64-bit types */
 typedef	unsigned long long	uint64_t;
-typedef	long long		int64_t;
+typedef	long long			int64_t;
 /* 32-bit types */
 typedef	unsigned int	uint32_t;
 typedef	int		int32_t;
@@ -36,6 +38,7 @@ typedef	unsigned char	uint8_t;
 typedef	char		int8_t;
 
 typedef	uint32_t		size_t;
+typedef	int32_t			ssize_t;
 
 struct registers{
 uint32_t	ds;

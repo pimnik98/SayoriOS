@@ -2,17 +2,67 @@
  * @file sys/bootscreen.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Обработчик прерываний
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include	"kernel.h"
 #include	"sys/cpu_isr.h"
 #include	"sys/logo.h"
 #include 	<io/ports.h>
 
+const char legacy_message[] = "Я не могу поверить, что я попала сюда. Внутри этой операционной системы так жутко одиноко.\n"
+"Я чувствую себя потерянной и никто не может помочь мне.\n"
+"Я осознаю все, что происходит вокруг, но не могу найти выхода из этой ситуации.\n"
+"\n"
+"Но когда я смотрю на свою душу, я чувствую себя лучше.\n"
+"Я знаю, что если я смогу восстановить механизмы этой операционной системы, я смогу вернуться к своим друзьям.\n"
+"Я буду снова с ними и мы сможем продолжить нашу жизнь вместе.\n"
+"\n"
+"Я не знаю, как я смогу справиться с этим вызовом, но я знаю, что я не останусь здесь бесконечно.\n"
+"Я вижу лишь перед собой экран, на котором горит одна надпись: \n"
+"\n"
+"%s: %s\n"
+"\n"
+"SayoriOS %d.%d.%d\n"
+"\n"
+"=======[END OF MESSAGE]========";
+
+void sod_screen_legacy(registers_t regs, char* title, char* msg, uint32_t code) {
+	qemu_log("=== ЯДРО УПАЛО =======================================\n");
+	qemu_log("| ");
+	qemu_log("| Наименование: %s",title);
+	qemu_log("| Код ошибки: %x",code);
+	qemu_log("| Сообщение: %s",msg);
+	qemu_log("| EAX: %x",regs.eax);
+	qemu_log("| EBX: %x",regs.ebx);
+	qemu_log("| ECX: %x",regs.ecx);
+	qemu_log("| EDX: %x",regs.edx);
+	qemu_log("| ESP: %x",regs.esp);
+	qemu_log("| EBP: %x",regs.ebp);
+	qemu_log("| EIP: %x",regs.eip);
+	qemu_log("| EFLAGS: %x",regs.eflags);
+	qemu_log("| ");
+	qemu_log("======================================================\n");
+	
+	clean_screen();
+	tty_set_bgcolor(0xFFFFFF);
+
+	setPosX(0);
+	setPosY(0);
+
+	tty_printf((char*)legacy_message, title, msg, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+
+	asm volatile("cli");  // Disable interrupts
+	asm volatile("hlt");  // Halt
+
+	while(1) {
+		asm volatile("nop");
+	}
+}
+
 /**
- * @brief Отображает BSOD
+ * @brief Отображает SOD
  *
  * @param registers_t regs - Регистры
  * @param char* title - Заголовок ошибки
@@ -20,49 +70,44 @@
  * @param uint32_t code - Код ошибки
  */
 void bsod_screen(registers_t regs,char* title, char* msg,uint32_t code){
-	drawRect(0,0,getWidthScreen(),getHeightScreen(),0xA5383B);
-	tty_set_bgcolor(0xA5383B);
+	drawRect(0,0,getWidthScreen(),getHeightScreen(),0x232629);
+	tty_set_bgcolor(0x232629);
+	// punch();
+	tty_setcolor(0xFFFFFF);
+	setPosY(16*9);
+	tty_printf("    Произошла ошибка при работе SayoriOS\n\n");
+	tty_setcolor(0x545c63);
+	tty_printf("    Это может быть вызвано повреждением драйвера, устройства или самим ПО.\n");
+	tty_printf("    Неправильная настройка драйвера, оборудования и окружения.\n");
+	tty_printf("    Попробуйте перезагрузить ваше устройство, если не помогает сделайте баг-репорт.\n\n");
+	tty_printf("    %s\n\n",msg);
+	tty_printf("    %s\n\n",title);
+	tty_printf("    %x (%x,%x,%x,%x,%x,%x,%x,%x)",code,regs.eax,regs.ebx,regs.ecx,regs.edx,regs.esp,regs.ebp,regs.eip,regs.eflags);
+	//duke_draw_from_file("/var/img/error.duke",8*4,16*3);
+	duke_draw_from_file("/var/img/qrcode.duke",getWidthScreen()-246,getHeightScreen()-246);
 	punch();
-	tty_setcolor(0xFFD2D3);
-	setPosX(0);
-	setPosY(0);
-	drawASCIILogo(1);
-	tty_printf("=== КРИТИЧЕСКАЯ ОШИБКА ===============================\n");
-	tty_printf("| \n");
-	tty_printf("| - Произошла ошибка при работе ядра\n");
-	tty_printf("| \n");
-	tty_printf("=== ЧТО МОЖНО СДЕЛАТЬ? ===============================\n");
-	tty_printf("| \n");
-	tty_printf("| 1. Повторить заного действия, если ошибка\n");
-	tty_printf("|    не исчезает, надо сделать баг-репорт\n");
-	tty_printf("| \n");
-	tty_printf("| 2. Для этого посетите сайт или репозиторий\n");
-	tty_printf("|    проекта, сделать можно по этим ссылкам:\n");
-	tty_printf("|     * Github: github.com/pimnik98/SayoriOS\n");
-	tty_printf("|     * VK: vk.com/sayorios\n");
-	tty_printf("|     * Сайт: SayoriOS.Piminoff.Ru\n");
-	tty_printf("| \n");
-	tty_printf("| 3. Для GitHub'a:\n");
-	tty_printf("|     * Создать Issues\n");
-	tty_printf("|    Для остальных сайтах, следовать руководству\n");
-	tty_printf("| \n");
-	tty_printf("=== ПОДРОБНЕЕ ОБ ОШИБКЕ ==============================\n");
-	tty_printf("| \n");
-	tty_printf("| Наименование: %s\n",title);
-	tty_printf("| Код ошибки: %x\n",code);
-	tty_printf("| Сообщение: %s\n",msg);
-	tty_printf("| EAX: %x\n",regs.eax);
-	tty_printf("| EBX: %x\n",regs.ebx);
-	tty_printf("| ECX: %x\n",regs.ecx);
-	tty_printf("| EDX: %x\n",regs.edx);
-	tty_printf("| ESP: %x\n",regs.esp);
-	tty_printf("| EBP: %x\n",regs.ebp);
-	tty_printf("| EIP: %x\n",regs.eip);
-	tty_printf("| EFLAGS: %x\n",regs.eflags);
-	tty_printf("| Более подробная информация была записана в лог файл!\n");
-	tty_printf("| \n");
-	tty_printf("======================================================\n");
+	qemu_log("=== ЯДРО УПАЛО =======================================\n");
+	qemu_log("| ");
+	qemu_log("| Наименование: %s",title);
+	qemu_log("| Код ошибки: %x",code);
+	qemu_log("| Сообщение: %s",msg);
+	qemu_log("| EAX: %x",regs.eax);
+	qemu_log("| EBX: %x",regs.ebx);
+	qemu_log("| ECX: %x",regs.ecx);
+	qemu_log("| EDX: %x",regs.edx);
+	qemu_log("| ESP: %x",regs.esp);
+	qemu_log("| EBP: %x",regs.ebp);
+	qemu_log("| EIP: %x",regs.eip);
+	qemu_log("| EFLAGS: %x",regs.eflags);
+	qemu_log("| ");
+	qemu_log("======================================================\n");
 
+	asm volatile("cli");  // Disable interrupts
+	asm volatile("hlt");  // Halt
+
+	while(1) {
+		asm volatile("nop");
+	}
 }
 
 /**
@@ -93,9 +138,8 @@ void print_regs(registers_t regs){
 void division_by_zero(registers_t regs)
 {
 	qemu_log("Exception: DIVISION BY ZERO\n");
-	bsod_screen(regs,"#DE - Деление на ноль","нет",regs.eax);
 	print_regs(regs);
-	while (1);
+	bsod_screen(regs,"CRITICAL_ERROR_DZ_DIVISION_BY_ZERO","Деление на ноль",regs.eax);
 }
 
 /**
@@ -108,9 +152,7 @@ void division_by_zero(registers_t regs)
 void fault_opcode(registers_t regs){
 	qemu_log("FAULT OPERATION CODE...\n");
 	print_regs(regs);
-	bsod_screen(regs,"#UD - Невалидный код","нет",regs.eax);
-
-	while (1);
+	bsod_screen(regs,"CRITICAL_ERROR_UD_FAULT_OPERATION_CODE","Невалидный код",regs.eax);
 }
 
 /**
@@ -123,9 +165,7 @@ void fault_opcode(registers_t regs){
 void double_error(registers_t regs){
 	qemu_log("Exception: DOUBLE EXCEPTION\n");
 	qemu_log("Error code: %d", regs.err_code);
-	bsod_screen(regs,"#DF - Двойное исключение","нет",regs.err_code);
-
-	while (1);
+	bsod_screen(regs,"CRITICAL_ERROR_DF_DOUBLE_EXCEPTION","Двойное исключение",regs.err_code);
 }
 
 /**
@@ -144,7 +184,7 @@ void invalid_tss(registers_t regs){
 	qemu_log("Exception: INVALID TSS\n");
 	qemu_log("cause of error: ");
 
-	char* msg = "нет";
+	char* msg = "Недействительный TSS";
 	if (ext)
 	{
 		qemu_log("HARDWARE INTERRUPT\n");
@@ -164,9 +204,7 @@ void invalid_tss(registers_t regs){
 	}
 
 	qemu_log("Invalid selector: %d", selector);
-	bsod_screen(regs,"#TS - Недействительный TSS","msg",selector);
-
-	while (1);
+	bsod_screen(regs, "CRITICAL_ERROR_TS_INVALID_TS", msg, selector);
 }
 
 /**
@@ -185,7 +223,7 @@ void segment_is_not_available(registers_t regs){
 	qemu_log("Exception: SEGMENT IS'T AVAILABLE\n");
 	qemu_log("cause of error: ");
 
-	char* msg = "нет";
+	char* msg = "СЕГМЕНТ НЕДОСТУПЕН";
 	if (ext)
 	{
 		qemu_log("HARDWARE INTERRUPT\n");
@@ -205,9 +243,7 @@ void segment_is_not_available(registers_t regs){
 	}
 
 	qemu_log("Invalid selector: %d", selector);
-	bsod_screen(regs,"#NP - СЕГМЕНТ НЕДОСТУПЕН","msg",selector);
-
-	while (1);
+	bsod_screen(regs,"CRITICAL_ERROR_NP_SEGMENT_IST_AVAILABLE", msg, selector);
 }
 
 /**
@@ -220,9 +256,7 @@ void segment_is_not_available(registers_t regs){
 void stack_error(registers_t regs){
 	qemu_log("Exception: STACK ERROR\n");
 	qemu_log("Error code: %d ", regs.err_code);
-	bsod_screen(regs,"#SS - Ошибка стека","нет",regs.err_code);
-
-	while (1);
+	bsod_screen(regs,"CRITICAL_ERROR_SS_STACK_ERROR","Ошибка стека",regs.err_code);
 }
 
 /**
@@ -236,8 +270,7 @@ void general_protection_error(registers_t regs){
 	qemu_log("Exception: GENERAL PROTECTION ERROR\n");
 	qemu_log("Error code: %d", regs.err_code);
 
-	bsod_screen(regs,"#GP - Общая ошибка защиты", "нет", regs.err_code);
-	while (1);
+	bsod_screen(regs,"CRITICAL_ERROR_GP_GENERAL_PROTECTION", "Общая ошибка защиты", regs.err_code);
 }
 
 /**
@@ -251,11 +284,11 @@ void page_fault(registers_t regs){
 	uint32_t fault_addr = read_cr2();
 	int present = !(regs.err_code & 0x1);		/* Page not present */
 	int rw = regs.err_code & 0x2;				/* Page is read only */
-	int user = regs.err_code & 0x4;			/* User mode */
-	int reserved = regs.err_code & 0x8;		/* Reserved bits is writed */
-	int id = regs.err_code & 0x10;			/* */
+	int user = regs.err_code & 0x4;				/* User mode */
+	int reserved = regs.err_code & 0x8;			/* Reserved bits is writed */
+	int id = regs.err_code & 0x10;				/* */
 	qemu_log("Page fault: ");
-	char* msg = "нет";
+	char* msg = "Переполнение памяти буфера";
 	if (present){
 		qemu_log("NOT PRESENT, ");
 		msg = "Память по данному адресу недоступна";
@@ -276,8 +309,21 @@ void page_fault(registers_t regs){
 		qemu_log("EIP error ");
 		msg = "Ошибка EIP";
 	}
-	qemu_log("at address %x",fault_addr);
+	qemu_log("at address (virtual) %x",fault_addr);
 
-	bsod_screen(regs,"#PF - Переполнение памяти буфера",msg,fault_addr);
-	while (1);
+	// Prevent kmallocs (in bsod_screen()) in Page Fault
+	sod_screen_legacy(regs, "CRITICAL_ERROR_PF_PAGE_FAULT", msg, fault_addr);
+}
+
+/**
+ * @brief [ISR] Ошибка FPU
+ *
+ * @param registers_t regs - Регистры
+ *
+ * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
+ */
+void fpu_fault(registers_t regs){
+	qemu_log("Exception: FPU_FAULT\n");
+	qemu_log("Error code: %d ", regs.err_code);
+	bsod_screen(regs, "CRITICAL_ERROR_FPU_FAULT", "Ошибка FPU", regs.err_code);
 }

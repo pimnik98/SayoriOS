@@ -122,7 +122,7 @@ isr80:
       add   $4, %esp
       pop   %ebx
       pop   %edx
-      pop   %ecx      
+      pop   %ecx
       
       add   $12, %esp
       
@@ -186,3 +186,4 @@ irq_common_stub:
       add   $8, %esp
             
       iret
+      

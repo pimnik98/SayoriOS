@@ -10,17 +10,18 @@
 #define FS_MOUNTPOINT   0x08              ///< Точка монтирования
 
 #define VFS_TYPE_MOUNT_SEFS     0x0000    ///< Sayori Easy File System
+#define VFS_TYPE_MOUNT_NATSUKI  0xCAFE    ///< NatSuki File System
 
 typedef char* (*readChar_type_t)(uint32_t);
 typedef uint32_t (*read_type_t)(uint32_t,size_t,size_t,void *);
-typedef void (*list_type_t)();
+typedef struct dirent* (*list_type_t)();
 typedef uint32_t (*write_type_t)(uint32_t,size_t,size_t,void *);
 typedef uint32_t (*findFile_type_t)(char*);
 typedef char* (*charData_type_t)(char*);
 typedef char* (*charintData_type_t)(int);
-typedef int (*getLengthFile_type_t)(int);
+typedef size_t (*getLengthFile_type_t)(int);
 typedef int (*getOffsetFile_type_t)(int);
-typedef uint64_t (*getDeviceSize_type_t)(int);
+typedef size_t (*getDeviceSize_type_t)(int);
 typedef struct dirent* (*dirlist_type_t)(char*);
 typedef struct fs_node (*getFileInfo_type_t)(struct fs_node*,char*);
 typedef void (*open_type_t)(struct fs_node*);
@@ -28,6 +29,8 @@ typedef void (*close_type_t)(struct fs_node*);
 
 typedef struct dirent * (*readdir_type_t)(struct fs_node*,uint32_t);
 typedef struct fs_node * (*finddir_type_t)(struct fs_node*,char *name);
+
+typedef void (*dirfree_type_t)(struct dirent*);
 
 typedef struct fs_node
 {
@@ -39,7 +42,7 @@ typedef struct fs_node
    uint32_t gid;                          ///< Группа, владеющая файлом.
    uint32_t flags;                        ///< Включает тип нода. Смотрите определение #defines, приведенное выше.
    uint32_t inode;                        ///< Зависит от устройства, позволяет файловой системе идентифицировать файлы.
-   uint64_t length;                       ///< Размер файла в байтах.
+   uint32_t length;                       ///< Размер файла в байтах.
    uint32_t impl;                         ///< Номер, зависящий от реализации.
    readChar_type_t readChar;              ///< Функция FS - Полное чтение файла
    read_type_t read;                      ///< Функция FS - Чтение файла с указанием параметров
@@ -54,6 +57,7 @@ typedef struct fs_node
    getLengthFile_type_t getLengthFile;    ///< Функция FS - Функция для получения размера файла
    getLengthFile_type_t getOffsetFile;    ///< Функция FS - Функция для получения позиции файла (отступ)
    dirlist_type_t getListElem;            ///< Функция FS - Функция для получения списка файлов
+   dirfree_type_t unlistElem;
    charintData_type_t getDevName;            ///< Функция для получения имени устройства
    char devName[512];                     ///< Имя устройства
    getDeviceSize_type_t diskUsed;         ///< Сколько использовано места
@@ -72,7 +76,7 @@ struct dirent
   uint32_t ino;                         ///< Номер inode. Требеся для POSIX.
   uint8_t type;                         ///< Тип файла
   uint8_t next;                         ///< Следующая позиция
-  uint64_t length;                      ///< Размер файла
+  size_t length;                      ///< Размер файла
 };
 
 extern fs_node_t *fs_root; // The root of the filesystem.
@@ -87,21 +91,21 @@ extern fs_node_t *fs_root; // The root of the filesystem.
 // struct dirent *readdir_fs(fs_node_t *node, uint32_t index);
 // fs_node_t *finddir_fs(fs_node_t *node, char *name);
 
-char* vfs_getPath(int node, char* path);
-int vfs_foundMount(char* path);
-void vfs_reg(int location,int type);
-int vfs_write(int node,int elem, size_t offset, size_t size, void *buf);
-int vfs_findFile(char* filename);
-bool vfs_exists(char* filename);
+void vfs_getPath(int node, const char* path, char* buf);
+int vfs_foundMount(const char* path);
+void vfs_reg(size_t location, size_t type);
+int vfs_write(int node, int elem, size_t offset, size_t size, void *buf);
+int vfs_findFile(const char* filename);
+bool vfs_exists(const char* filename);
 uint32_t vfs_read(int node, int elem, size_t offset, size_t size, void *buf);
 char* vfs_readChar(int node,int elem);
-uint32_t vfs_findDir(char* path);
-uint64_t vfs_getLengthFilePath(char* filename);
-uint64_t vfs_getLengthFile(int node,int elem);
+size_t vfs_findDir(char* path);
+size_t vfs_getLengthFilePath(const char* filename);
+size_t vfs_getLengthFile(int node,int elem);
 int vfs_getOffsetFile(int node,int elem);
-uint64_t vfs_getDiskSize(int node);
-uint64_t vfs_getDiskSpace(int node);
-uint64_t vfs_getDiskUsed(int node);
+size_t vfs_getDiskSize(int node);
+size_t vfs_getDiskSpace(int node);
+size_t vfs_getDiskUsed(int node);
 char* vfs_getName(int node);
 size_t vfs_getCountElemDir(char* path);
 struct dirent* vfs_getListFolder(char* path);

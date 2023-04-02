@@ -2,16 +2,15 @@
 /**
  * @brief Структура кол-ва файлов
  */
-typedef struct{
+typedef struct {
    uint32_t nfiles; // Число файлов в ramdisk.
 } sefs_header_t;
 
 /**
  * @brief Структура файлов
  */
-typedef struct
-{
-   uint8_t index;             ///< Индекс
+typedef struct {
+   uint32_t index;             ///< Индекс
    uint32_t magic;            ///< Магическое число для проверки ошибок.
    char name[128];            ///< Имя файла
    uint32_t offset;           ///< Смещение в sefs, указывающее откуда начинается файл.

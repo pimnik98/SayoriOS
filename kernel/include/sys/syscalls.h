@@ -3,10 +3,9 @@
 
 #include	"common.h"
 #include	"sys/isr.h"
-#include	"drv/text_framebuffer.h"
 #include	"sys/io_disp.h"
 
-#define		NUM_CALLS	5
+#define		NUM_CALLS	8
 
 /*-----------------------------------------------------------------------------
  *		Syscall interrupt number
@@ -21,6 +20,9 @@
 #define		TTYCTL					0x02
 #define		SH_ENV					0x03
 #define		SH_ENV_DEBUG			0x04
+#define		SCREENCTL				0x05
+#define		MEMCTL					0x06
+#define		KBDCTL					0x07
 
 /*-----------------------------------------------------------------------------
  *		Macro for system call declaration
@@ -76,11 +78,8 @@ int syscall_##func(P1 p1, P2 p2, P3 p3)\
  *		System calls control
  *---------------------------------------------------------------------------*/
 void init_syscalls(void);
-
 extern size_t syscall_entry_call(void* entry_point, void* param1, void* param2, void* param3);
-
 void syscall_handler(registers_t regs);
-
 int get_digit(int dig);
 
 /*-----------------------------------------------------------------------------
@@ -89,5 +88,7 @@ int get_digit(int dig);
 DECL_SYSCALL1(in_byte, uint16_t);
 DECL_SYSCALL2(out_byte, uint16_t, uint8_t);
 DECL_SYSCALL2(tty_ctl, void*, void*);
+// ...
+DECL_SYSCALL2(screen_ctl, size_t, size_t);
 
 #endif

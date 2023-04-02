@@ -2,9 +2,9 @@
  * @file sys/bootscreen.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief BootScreen - Анимация загрузки ядра
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include <kernel.h>
 #include <io/ports.h>
@@ -20,6 +20,7 @@ bool lazy = false;					///< Ленивая прорисовка
 uint32_t curElem = 0;				///< Текущая позиция элемента
 uint32_t maxElem = 10;				///< Максимальное позиция элемента
 uint32_t mode = 0;  				///< Режим работы (0 - Обычный | 1 - Режим логирования)
+bool bs_logs = true;                ///< Включено ли логгирование этапов BootScreen
 
 /**
  * @brief Включить ленивую загрузку для BootScreen
@@ -28,6 +29,16 @@ uint32_t mode = 0;  				///< Режим работы (0 - Обычный | 1 - �
  */
 void bootScreenLazy(bool l){
     lazy = l;
+}
+
+
+/**
+ * @brief Включить логирование в com1 для BootScreen
+ *
+ * @param bool l - true/false - Вкл/Выкл.
+ */
+void bootScreenLogs(bool l){
+    bs_logs = l;
 }
 
 /**
@@ -134,7 +145,7 @@ void bootScreenProcentPaint(){
  * @param char* title - Вывести данное сообщение
  */
 void bootScreenPaint(char* title){
-    qemu_log("[BOOT] %s",title);
+    if (bs_logs) qemu_log("[BOOT] %s",title);
     if (mode == 1){
         tty_changeState(true);
         tty_set_bgcolor(bootScreenTheme(1));
@@ -149,7 +160,7 @@ void bootScreenPaint(char* title){
     tty_set_bgcolor(bootScreenTheme(1));
     tty_setcolor(bootScreenTheme(0));
     tty_changeState(true);
-    uint32_t centerTitle = (maxStrLine/2)-(mb_strlen(title)/2);
+    uint32_t centerTitle = (maxStrLine/2) - (mb_strlen(title)/2);
     uint32_t padding_h = maxHeightLine/4;
     if (lazy){
         drawRect(0,16*((maxHeightLine-padding_h)),getWidthScreen(),16,bootScreenTheme(1));
@@ -173,8 +184,8 @@ void bootScreenPaint(char* title){
 void bootScreenInit(uint32_t count){
     // Предварительная настройка BootScreen
     maxElem = count;
-    qemu_log("Init...");
-    tty_changeState(false);
+    if (bs_logs) qemu_log("Init...");
+    tty_changeState(false);  // Disabling print functions
     maxStrLine = (getWidthScreen()/8)-2;
     maxHeightLine = getHeightScreen()/16;
     bootScreenPaint("Загрузка...");

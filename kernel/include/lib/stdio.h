@@ -1,9 +1,9 @@
 #pragma once
 
 #define EOF -1
-#define SEEK_SET 1
-#define SEEK_CUR 2
-#define SEEK_END 3
+#define SEEK_SET 0
+#define SEEK_CUR 1
+#define SEEK_END 2
 
 #define STDIO_ERR_NO_FOUND 		1	// Файл не найден
 #define STDIO_ERR_MODE_ERROR	2	// Режим работы не определён
@@ -19,8 +19,6 @@ typedef struct {
 	char* path;
     int32_t size;
     uint32_t fmode;
-	size_t bufSize;
-	char* buf;
 	bool open;
 	size_t pos;
 	uint32_t err;
@@ -37,16 +35,15 @@ enum FileOpenMode {
 
 FILE* fopen(const char* filename, const char* mode);
 void fclose(FILE *stream);
-char* fread(FILE* stream);
 int32_t fread_c(FILE* stream, size_t count, size_t size, void* buf);
-int64_t ftell(FILE* stream);
-int32_t fsize(FILE *stream);
-int64_t fseek(FILE* stream, int64_t offset, uint32_t whence);
+ssize_t ftell(FILE* stream);
+ssize_t fsize(FILE *stream);
+ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence);
 void rewind(FILE *stream);
 void perror(FILE* stream,char* s);
 uint32_t ferror(FILE* stream);
-void fsetpos(FILE* stream, int64_t pos);
-int64_t fgetpos(FILE* stream);
+void fsetpos(FILE* stream, ssize_t pos);
+ssize_t fgetpos(FILE* stream);
 void fdebuginfo(FILE* stream);
 
 //size_t fread(FILE* stream, char* ptr, size_t size, size_t nmemb);

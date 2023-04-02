@@ -1,10 +1,10 @@
 /**
  * @file drv/vfs_new.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), Drew >_ (pikachu_andrey@vk.com)
  * @brief Драйвер виртуальной файловой системы
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include <kernel.h>
 #include <io/ports.h>
@@ -19,15 +19,12 @@ size_t countMount = 0;			///< Кол-во смонтированных устр�
  *
  * @param int node - Адрес монтирования
  * @param char* path - Путь к файлу (виртуальный)
- * 
- * @return char* - Реальный путь
  */
-char* vfs_getPath(int node, char* path){
-    char* file = kmalloc(sizeof(char)*strlen(path));
-    strcpy(file,path);
-    substr(file,path,strlen(vfs_mount[node]->name),strlen(path));
-    //qemu_log("[gP] %s | %s",file,path);
-    return file;
+void vfs_getPath(int node, const char* path, char* buf){
+    // strcpy(buf, path);
+    substr(buf, path, strlen(vfs_mount[node]->name), strlen(path));
+    
+    qemu_log("Before: %s; After: %s; Path in node: %s", path, buf, vfs_mount[node]->name);
 }
 
 /**
@@ -35,16 +32,30 @@ char* vfs_getPath(int node, char* path){
  *
  * @param char* path - Путь к файлу (виртуальный)
  * 
+ * @warning РАБОТАЕТ НЕМНОГО КОСТЫЛЬНО! ПЕРЕДЕЛАТЬ!!!!!
+ *
+ * @todo АХТУНГ
+ *
  * @return int - Индекс, или отрицательное значение если точка монтирования не найдена
  */
-int vfs_foundMount(char* path){
-    for (int i=0;i < countMount;i++){
-        if (strcmp(path,vfs_mount[i]->name) >= 0){
-            //qemu_log("[%d] File (%s) found mount: %s",i,path,vfs_mount[i]->name);
-            return i;
+int vfs_foundMount(const char* path){
+    for (int i=countMount-1; i >= 0; i--){
+        if (strlen(vfs_mount[i]->name) > strlen(path)){
+            /// Нет смысла чекать, ибо длина монтирования, длинее имени пути.
+            continue;
+        }
+        for(size_t a = 0; a < strlen(vfs_mount[i]->name);a++){
+            if ((int) vfs_mount[i]->name[a] != (int) path[a]){
+                break;
+            }
+            if(strlen(vfs_mount[i]->name)-1 == a){
+                /// О, кажись совпало.
+                return i;
+            }
         }
     }
-    return -1;
+    // qemu_log("IM HERE BLYAT");
+    return 0;
 }
 
 /**
@@ -53,14 +64,21 @@ int vfs_foundMount(char* path){
  * @param int location - Адрес монтирования
  * @param int type - Тип файловой системы
  */
-void vfs_reg(int location,int type){
+void vfs_reg(size_t location, size_t type){
     if (type == VFS_TYPE_MOUNT_SEFS){
         //qemu_log("[VFS] [REG] [%d] Sayori Easy File System | Location: %x",countMount,location);
-        vfs_mount[countMount] = (fs_node_t*) kmalloc(sizeof(fs_node_t*));
-        vfs_mount[countMount] = (fs_node_t*) sefs_initrd(location);
-        countMount++;
+        // vfs_mount[countMount] = (fs_node_t*) kmalloc(sizeof(fs_node_t*));
+        vfs_mount[countMount++] = (fs_node_t*) sefs_initrd(location);
+        // countMount++;
+    } else if (type == VFS_TYPE_MOUNT_NATSUKI){
+        qemu_log("[VFS] [REG] NatSuki %x | Location: %x",type,location);
+        // vfs_mount[countMount] = (fs_node_t*) kmalloc(sizeof(fs_node_t*));
+        vfs_mount[countMount] = (fs_node_t*)NatSuki_initrd(location);
+        if (isInitNatSuki()){
+            countMount++;
+        }
     } else {
-        //qemu_log("[VFS] [REG] Unknown | Location: %x",location);
+        qemu_log("[VFS] [REG] Unknown | Location: %x",location);
     }
 }
 
@@ -90,12 +108,15 @@ int vfs_write(int node,int elem, size_t offset, size_t size, void *buf){
  * 
  * @return int - Индекс файла, или отрицательное значение при ошибке
  */
-int vfs_findFile(char* filename){
+int vfs_findFile(const char* filename){
     //qemu_log("[VFS] [FindFile] File: `%s`",filename);
     int node = vfs_foundMount(filename);
-    if (vfs_mount[node]->findFile != 0){
-        char* path = vfs_getPath(node,filename);
+    if (vfs_mount[node]->findFile) {
+        char* path = kmalloc(sizeof(char)*strlen(filename));
+        vfs_getPath(node, filename, path);
         uint32_t elem = vfs_mount[node]->findFile(path);
+
+        kfree(path);
         //qemu_log("\n[VFS] Node: %d | Elem:%d \n",node,elem);
         return elem;
     }
@@ -109,11 +130,14 @@ int vfs_findFile(char* filename){
  * 
  * @return bool - true если файл найден
  */
-bool vfs_exists(char* filename){
+bool vfs_exists(const char* filename){
   if (vfs_findFile(filename) != -1){
     return true;
   }
   return false;
+
+  // NDRAEY says:
+  // return vfs_findFile(filename) != -1;
 }
 
 /**
@@ -131,7 +155,7 @@ uint32_t vfs_read(int node, int elem, size_t offset, size_t size, void *buf){
     //qemu_log("[VFS] [Read] Node:%d | Elem: %d | Off: %d | Size: %d", node, elem, offset, size);
     if (vfs_mount[node]->read != 0){
         uint32_t ret = vfs_mount[node]->read(elem, offset, size, buf);
-		//qemu_log("Buf now: %s", buf);
+		// qemu_log("Buf now: %s", buf);
         return ret;
     }
     //qemu_log("[VFS] [Read] Error!!!");
@@ -164,12 +188,22 @@ char* vfs_readChar(int node,int elem){
  */
 uint32_t vfs_findDir(char* path){
     qemu_log("`%s`",path);
+
     int node = vfs_foundMount(path);
+
     if (vfs_mount[node]->findDir != 0){
-        char* c_path = vfs_getPath(node,path);
+        char* c_path = kmalloc(sizeof(char)*(strlen(path)+1));
+
+        vfs_getPath(node, path, c_path);
+
+		qemu_log("Got path: %s", c_path);
+
         uint32_t elem = vfs_mount[node]->findDir(c_path);
+
+        kfree(c_path);
         return elem;
     }
+
     return -1;
 }
 
@@ -178,14 +212,17 @@ uint32_t vfs_findDir(char* path){
  *
  * @param char* filename - Путь к файлу (виртуальный)
  * 
- * @return uint64_t - Размер файла или отрицательное значение при ошибке
+ * @return size_t - Размер файла или отрицательное значение при ошибке
  */
-uint64_t vfs_getLengthFilePath(char* filename){
+size_t vfs_getLengthFilePath(const char* filename){
   int node = vfs_foundMount(filename);
   if (vfs_mount[node]->findFile != 0 && vfs_mount[node]->getLengthFile != 0){
-        char* path = vfs_getPath(node,filename);
+        char* path = kmalloc(sizeof(char)*strlen(filename));
+        vfs_getPath(node, filename, path);
         uint32_t elem = vfs_mount[node]->findFile(path);
-        uint64_t size = vfs_mount[node]->getLengthFile(elem);
+        size_t size = vfs_mount[node]->getLengthFile(elem);
+
+        kfree(path);
         //qemu_log("\n\n\t * [VFS] [gLFP] Node: %d | Elem: %d | Size: %d",node,elem,size);
         return size;
     }
@@ -198,9 +235,9 @@ uint64_t vfs_getLengthFilePath(char* filename){
  * @param int node - Адрес монтирования
  * @param int elem - Индекс файла
  * 
- * @return uint64_t - Размер файла или отрицательное значение при ошибке
+ * @return size_t - Размер файла или отрицательное значение при ошибке
  */
-uint64_t vfs_getLengthFile(int node,int elem){
+size_t vfs_getLengthFile(int node,int elem){
     if (vfs_mount[node]->getLengthFile != 0){
         return vfs_mount[node]->getLengthFile(elem);
     }
@@ -227,9 +264,9 @@ int vfs_getOffsetFile(int node,int elem){
  *
  * @param int node - Адрес монтирования
  *
- * @return uint64_t - Размер диска
+ * @return size_t - Размер диска
  */
-uint64_t vfs_getDiskSize(int node){
+size_t vfs_getDiskSize(int node){
     return vfs_mount[node]->diskSize(node);
 }
 
@@ -238,9 +275,9 @@ uint64_t vfs_getDiskSize(int node){
  *
  * @param int node - Адрес монтирования
  *
- * @return uint64_t - Размер свободного пространства диска
+ * @return size_t - Размер свободного пространства диска
  */
-uint64_t vfs_getDiskSpace(int node){
+size_t vfs_getDiskSpace(int node){
     return vfs_mount[node]->diskSpace(node);
 
 }
@@ -250,9 +287,9 @@ uint64_t vfs_getDiskSpace(int node){
  *
  * @param int node - Адрес монтирования
  *
- * @return uint64_t - Размер занятого пространства диска
+ * @return size_t - Размер занятого пространства диска
  */
-uint64_t vfs_getDiskUsed(int node){
+size_t vfs_getDiskUsed(int node){
     return vfs_mount[node]->diskUsed(node);
 }
 
@@ -276,9 +313,14 @@ char* vfs_getName(int node){
  */
 size_t vfs_getCountElemDir(char* path){
     int node = vfs_foundMount(path);
-    if (vfs_mount[node]->getCountElemFolder != 0){
-        char* c_path = vfs_getPath(node,path);
-        return vfs_mount[node]->getCountElemFolder(c_path);
+    if (vfs_mount[node]->getCountElemFolder != 0) {
+        char* c_path = kmalloc(sizeof(char)*strlen(path));
+        vfs_getPath(node, path, c_path);
+
+        uint32_t folder_elems = vfs_mount[node]->getCountElemFolder(c_path);
+
+        kfree(c_path);
+        return folder_elems;
     }
     return 0;
 }
@@ -292,10 +334,14 @@ size_t vfs_getCountElemDir(char* path){
  */
 struct dirent* vfs_getListFolder(char* path){
     int node = vfs_foundMount(path);
-    struct dirent* elem;
+    struct dirent* elem = 0;
     if (vfs_mount[node]->getListElem != 0){
-        char* c_path = vfs_getPath(node,path);
+        char* c_path = kmalloc(sizeof(char)*strlen(path));
+        
+        vfs_getPath(node, path, c_path);
         elem = vfs_mount[node]->getListElem(c_path);
+
+        kfree(c_path);
         return elem;
     }
     return elem;
@@ -349,4 +395,15 @@ void vfs_getType(){
  * @warning Еше не реализовано
  */
 void vfs_getMountPoint(){
+}
+
+void vfs_unlistFolder(const char* path, struct dirent* ptr) {
+    int node = vfs_foundMount(path);
+    if (vfs_mount[node]->unlistElem){
+        vfs_mount[node]->unlistElem(ptr);
+    }
+}
+
+size_t vfs_byteToKByte(size_t bytes){
+    return (bytes == 0?0:bytes/1024);
 }
