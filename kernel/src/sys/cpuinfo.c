@@ -2,39 +2,58 @@
  * @file sys/cpuinfo.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Определение процессора
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include <kernel.h>
 #include <sys/cpuinfo.h>
 
-char brandAllName[128] = "";                ///< Название процессора
+char brandAllName[128] = {0};                ///< Название процессора
+
+#define INTEL_MAGIC                     0x756e6547      ///< Ключ процессора Intel
+#define AMD_MAGIC                       0x68747541      ///< Ключ процессора AMD
+#define VMWARE_HYPERVISOR_MAGIC         0x564D5868      ///< Ключ гипервизора VMWare
+#define VMWARE_HYPERVISOR_PORT          0x5658          ///< Порт доступа данных к VMWare
+#define VMWARE_PORT_CMD_GETVERSION      10              ///< Версия управления VWMare
+
+
+#define VMWARE_PORT(cmd, eax, ebx, ecx, edx)                            \
+        __asm__("inl (%%dx)" :                                          \
+                        "=a"(eax), "=c"(ecx), "=d"(edx), "=b"(ebx) :    \
+                        "0"(VMWARE_HYPERVISOR_MAGIC),                   \
+                        "1"(VMWARE_PORT_CMD_##cmd),                     \
+                        "2"(VMWARE_HYPERVISOR_PORT), "3"(UINT_MAX) :    \
+                        "memory");
 
 /**
  * @brief Получение имени процессора (Инициализация)
  *
  * @param bool silent - Тихий режим
  *
- * @return int - Тип процессора (0 - Unknown | 1 - Intel | 2 - AMD)
+ * @return int - Тип процессора (0 - Unknown | 1 - Intel | 2 - AMD | 3 - VMWare)
  *
  * @warning Не для личного использования. Если вы хотите получить название процессора используйте функцию getNameBrand()
  */
 int detect_cpu(bool silent) {
-    brandAllName[127] = 0;
     int type = 0;
-    unsigned long ebx, unused;
+    size_t ebx, unused;
     cpuid(0, unused, ebx, unused, unused);
     switch (ebx) {
-    case 0x756e6547: /* Intel Magic Code */
+    case INTEL_MAGIC: /* Intel Magic Code */
         //strcat(brandAllName,"Intel ");
         do_intel(silent);
         type = 1;
         break;
-    case 0x68747541: /* AMD Magic Code */
+    case AMD_MAGIC: /* AMD Magic Code */
         //strcat(brandAllName,"AMD ");
         do_amd(silent);
         type = 2;
+        break;
+    case VMWARE_HYPERVISOR_MAGIC: /* VMWARE_HW_MAGIC */
+        memset(brandAllName, 0, 128);
+        strcat(brandAllName, "VMWARE_HYPERVISOR_MAGIC");
+        type = 3;
         break;
     default:
         strcat(brandAllName,"Unknown x86");
@@ -130,7 +149,7 @@ char* cpuinfo_printregs(int eax, int ebx, int ecx, int edx) {
     int j;
     char *string = kmalloc(18);
     memset(string, 0, 18);
-    string[16] = '\0';
+    string[17] = 0;
     for (j = 0; j < 4; j++) {
         string[j] = eax >> (8 * j);
         string[j + 4] = ebx >> (8 * j);
@@ -138,7 +157,9 @@ char* cpuinfo_printregs(int eax, int ebx, int ecx, int edx) {
         string[j + 12] = edx >> (8 * j);
     }
     //tty_printf("%s",string);
+    //memset(brandAllName,0,128);
     strcat(brandAllName,string);
+    //qemu_log("%d | %s",strlen(brandAllName),brandAllName);
     return string;
 }
 
@@ -296,6 +317,7 @@ int do_intel(bool silent) {
         if (silent == 0){
             tty_printf("Brand: ");
             tty_printf("%s\n",brandAllName);
+            memset(brandAllName,0,128);
         }
         if (max_eax >= 0x80000002) {
             cpuid(0x80000002, eax, ebx, ecx, edx);
@@ -415,7 +437,9 @@ int do_amd(bool silent) {
         for (j = 0x80000002; j <= 0x80000004; j++) {
             cpuid(j, eax, ebx, ecx, edx);
             if (silent == 0){
+
                 tty_printf(cpuinfo_printregs(eax, ebx, ecx, edx));
+                memset(brandAllName,0,128);
             }
         }
         if (silent == 0){

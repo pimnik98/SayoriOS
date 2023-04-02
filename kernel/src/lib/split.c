@@ -2,14 +2,14 @@
  * @file lib/split.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Функция для деления строк
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include <kernel.h>
 
 /**
- * @brief Функция откладки
+ * @brief Функция отладки
  *
  * @param char* a_str - Строка для деления
  * @param char* del - Делитель (только 1 символ)
@@ -18,7 +18,7 @@
  */
 uint32_t str_cdsp(char* a_str, char* del){
     int x = 0;
-    for(int i=0; i < strlen(a_str); i++){
+    for(size_t i = 0, len = strlen(a_str); i < len; i++){
         if (a_str[i] == del[0]) {
             x++;
         }
@@ -35,7 +35,7 @@ uint32_t str_cdsp(char* a_str, char* del){
  *
  * @return char* - Здесь тоже будет результут работы
  */
-char* str_split(char a_str[], char *out[], char* dec){
+void str_split(char a_str[], char *out[], char* dec){
     int x = str_cdsp(a_str,dec);
 
     int i = 0;
@@ -43,7 +43,6 @@ char* str_split(char a_str[], char *out[], char* dec){
     p = strtok(a_str, dec);
     if (p == NULL){
         out[i] = a_str;
-        return out;
     }
     out[i] = p;
     i++;
@@ -55,5 +54,4 @@ char* str_split(char a_str[], char *out[], char* dec){
             i++;
         }
     }
-    return out;
 }

@@ -2,33 +2,39 @@
  * @file sys/timer.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Модуль системного таймера
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include	"sys/timer.h"
 #include	"sys/isr.h"
-#include	"drv/text_framebuffer.h"
 #include	"sys/scheduler.h"
+#include	"drv/fpu.h"
+#include	"io/ports.h"
 
-uint64_t tick = 0;			///< Количество тиков
-//uint8_t hour = 0;			///< Часы
-//uint8_t min = 0;			///< Минуты
-//uint8_t sec = 0;			///< Секунды
-uint32_t frequency = 0;		///< Частота
-float uptime = 0;
+size_t tick = 0;			///< Количество тиков
+size_t frequency = 0;		///< Частота
+
+void microseconds_delay(size_t microseconds) {
+    for (size_t i = 0; i < microseconds; ++i)
+        inb(0x80);
+}
 
 /**
  * @brief Получить количество тиков
  *
- * @return uint64_t - Количество тиков с момента старта
+ * @return size_t - Количество тиков с момента старта
  */
-uint64_t getTicks(){
+size_t getTicks(){
 	return tick;
 }
 
-float getUptime() {
-	return uptime;
+double getUptime() {
+	if(getFrequency() == 0) {
+		return 0;
+	}else{
+		return (double)getTicks() / (double)getFrequency();
+	}
 }
 
 /**
@@ -36,7 +42,7 @@ float getUptime() {
  *
  * @return uint32_t - Частота таймера
  */
-uint64_t getFrequency(){
+size_t getFrequency(){
 	return frequency;
 }
 
@@ -47,13 +53,6 @@ uint64_t getFrequency(){
  */
 static void timer_callback(registers_t regs){
 	tick++;
-
-	if(fpu_isInitialized()) {
-		// uptime += 1/frequency;
-		float a = 1;
-		a /= frequency;
-		uptime += a;
-	}
 	
 	if (is_multitask())
 		task_switch();
@@ -65,7 +64,7 @@ static void timer_callback(registers_t regs){
  * @param uint32_t delay - Тики
  */
 void sleep_ticks(uint32_t delay){
-	uint64_t current_ticks = getTicks();
+	size_t current_ticks = getTicks();
 	while (1){
 		if (current_ticks + delay < getTicks()){
 			break;
@@ -79,8 +78,10 @@ void sleep_ticks(uint32_t delay){
  * @param uint32_t milliseconds - Милисекунды
  */
 void sleep_ms(uint32_t milliseconds) {
-	uint32_t needticks = milliseconds*frequency;
+	uint32_t needticks = milliseconds * frequency;
 	sleep_ticks(needticks/1000);
+
+	// (milliseconds * frequency + 500) / 1000
 }
 
 /**
@@ -88,8 +89,8 @@ void sleep_ms(uint32_t milliseconds) {
  *
  * @param uint32_t _d - Секунды
  */
-void sleep(uint32_t _d) {
-	sleep_ms(_d);
+void sleep(size_t _d) {
+	sleep_ms(_d * 1000);
 }
 
 /**

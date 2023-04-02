@@ -2,9 +2,9 @@
  * @file sys/sync.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Примитивы синхронизации
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include	"sys/sync.h"
 

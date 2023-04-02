@@ -5,7 +5,13 @@ gdt_flush:
 /* Load GDT */
 	mov	4(%esp), %eax
 	lgdt	(%eax)
-	
+
+	/*
+	mov %cr0, %eax
+	or $1, %al
+	mov %eax, %cr0
+	*/
+
 	mov	$0x10, %ax
 	mov	%ax, %ds
 	mov	%ax, %es

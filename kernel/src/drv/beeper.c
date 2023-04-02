@@ -2,9 +2,9 @@
  * @file drv/beeper.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Драйвер пищалки
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-10
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
 */
 
 #include <kernel.h>
@@ -20,7 +20,8 @@ uint32_t config = 0;            ///< Корректировка
 void beeperPlay(uint32_t nFrequence) {
     uint32_t Div;
     uint8_t tmp;
-    Div = ((getFrequency()*1000)+config) / (nFrequence);
+    Div = (getFrequency()*1000) + config;
+    Div /= nFrequence;
     outb(0x43, 0xb6);
     outb(0x42, (uint8_t) (Div) );
     outb(0x42, (uint8_t) (Div >> 8));
@@ -54,7 +55,7 @@ void beeperConfig(uint32_t val){
 void beeperInit(int test){
     qemu_log("[Beeper] Init...");
     beeperPlay(1000);
-    sleep(50);
+    sleep_ms(50);
     beeperSilent();
     // FIXME: Beeper interrupts for a short time.
     if (test == 1){
@@ -188,13 +189,14 @@ void beeperInit(int test){
             tty_printf("%d ", notes[i].freq);
             if (notes[i].duration == 0){
                 beeperSilent();
-                sleep(100);
+                sleep_ms(100);
                 continue;
             }
-            sleep((notes[i].duration)/3);
+            sleep_ms((notes[i].duration)/3);
             beeperSilent();
-            sleep(100);
+            sleep_ms(100);
         }
         beeperSilent();
     }
+	qemu_log("Ok");
 }

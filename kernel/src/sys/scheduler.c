@@ -2,9 +2,9 @@
  * @file sys/scheduler.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Менеджер задач
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include	"sys/scheduler.h"
 #include	"lib/string.h"
@@ -72,6 +72,26 @@ void init_task_manager(void){
 	asm volatile ("sti");
 }
 
+void create_process(void* entry_point, char* name, bool suspend, bool is_kernel) {
+	asm volatile("cli");
+	
+	process_t* proc = kcalloc(1, sizeof(process_t));
+
+	proc->pid = next_pid++;
+	proc->page_dir = get_kernel_dir();
+	proc->list_item.list = NULL;  // No nested processes hehe :)
+	proc->threads_count = 1;
+	strcpy(proc->name, name);
+	proc->suspend = suspend;
+
+	list_add(&process_list, &proc->list_item);
+
+	thread_create(proc, entry_point, DEFAULT_STACK_SIZE, is_kernel, suspend);
+	list_add(&thread_list, &kernel_thread->list_item);
+
+	asm volatile("sti");
+}
+
 /**
  * @brief Переключение задач
  */
@@ -116,7 +136,8 @@ process_t* get_current_proc(void)
  *
  * @return thread_t* - Поток
  */
-thread_t* thread_create(process_t* proc,void* entry_point,size_t stack_size,bool kernel,bool suspend){
+thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
+						bool kernel, bool suspend){
 	void*	stack = NULL;
 	uint32_t	eflags;
 
@@ -153,7 +174,7 @@ thread_t* thread_create(process_t* proc,void* entry_point,size_t stack_size,bool
 	/* Fill stack */
 
 	/* Create pointer to stack frame */
-	uint32_t* esp = (uint32_t*) (stack + stack_size);
+	uint32_t* esp = (uint32_t*) ((char*)stack + stack_size);
 
 	asm volatile ("pushf; pop %0":"=r"(eflags));
 

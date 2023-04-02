@@ -2,9 +2,9 @@
  * @file lib/stdio.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Функции для работы с файлами
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include <kernel.h>
 #include <lib/stdio.h>
@@ -142,29 +142,27 @@ void perror(FILE* stream,char* s){
  *
  * @return FILE* - структура
  */
-FILE* fopen(const char* filename, const char* mode){
-	// FILE* file = NULL;
+FILE* fopen(const char* filename, const char* _mode){
+	qemu_log("Open file: %s (%x) with mode %s (%x)", filename, _mode);
+
 	FILE* file = kmalloc(sizeof(FILE));
 	// Получаем тип открытого файла
-	int32_t fmode = fmodecheck(mode);
-	if (!vfs_exists(filename) || fmode == 0){
-		// Тип файла не определен или файл не найден
-		file->err = (fmode == 0?2:1);
-		file->path = (char*)filename;
-		file->size = 0;
-		file->open = 0;
-		file->pos = -1;
-		return file;
+	int32_t freal_mode = fmodecheck(_mode);
+	if (!vfs_exists(filename) || freal_mode == 0) {
+		qemu_log("Failed to open file: %s (Exists: %d; FMODE: %d)",
+			filename,
+			vfs_exists(filename),
+			freal_mode);
+		return 0;
 	}
 
 	file->open = 1;										// Файл успешно открыт
-	file->fmode = fmode;								// Режим работы с файлом
-	file->size = vfs_getLengthFilePath(filename);				// Размер файла
+	file->fmode = freal_mode;								// Режим работы с файлом
+	file->size = vfs_getLengthFilePath(filename);		// Размер файла
 	file->path = (char*)filename;						// Полный путь к файлу
-	file->bufSize = sizeof(char) * file->size;			// Размер буфера
-	file->buf = (char*) kmalloc(file->bufSize);	// Сам буфер
 	file->pos = 0;										// Установка указателя в самое начало
 	file->err = 0;										// Ошибок в работе нет
+	
 	return file;
 }
 
@@ -174,10 +172,8 @@ FILE* fopen(const char* filename, const char* mode){
  * @param FILE* stream - Поток (файл)
  */
 void fclose(FILE* stream){
-	if (stream->open){
-		kfree(stream->buf);
-	}
-	kfree(stream);
+	if(stream)
+		kfree(stream);
 }
 
 /**
@@ -187,7 +183,7 @@ void fclose(FILE* stream){
  *
  * @return Размер файла в противном случаи -1
  */
-int32_t fsize(FILE* stream){
+ssize_t fsize(FILE* stream){
 	if (!stream->open || stream->size <= 0 || stream->fmode == 0){
 		fcheckerror(stream);
 		return -1;
@@ -197,34 +193,12 @@ int32_t fsize(FILE* stream){
 }
 
 /**
- * @brief Получение содержимого файла
- *
- * @param FILE* stream - Поток (файл)
- *
- * @return char* - содержимое файла
- */
-char* fread(FILE* stream){
-	if (!stream->open || !vfs_exists(stream->path) || stream->size <= 0 || stream->fmode == 0){
-		// Удалось ли открыть файл, существует ли файл, размер файла больше нуля и указан правильный режим для работы с файлом
-		fcheckerror(stream);
-		return "";
-	}
-
-    uint32_t node = vfs_foundMount(stream->path);
-    int elem = vfs_findFile(stream->path);
-	int32_t res = vfs_read(node,elem, 0, stream->size, stream->buf);
-	(void)res;
-	stream->buf[stream->size] = '\0';
-	return stream->buf;
-}
-
-/**
  * @brief Получение содержимого файла (детальная настройка)
  *
  * @param FILE* stream - Поток (файл)
  * @param size_t count - Количество элементов размера size
  * @param size_t size - Сколько читаем таких элементов?
- * @param void* buf - Буфер
+ * @param void* buffer - Буфер
  *
  * @return int - Размер прочитаных байтов или -1 при ошибке
  */
@@ -237,11 +211,13 @@ int fread_c(FILE* stream, size_t count, size_t size, void* buffer){
 
 	qemu_log("Params: count=%d, size=%d, toread=%d, seek=%d", count, size, count*size, stream->pos);
 	
-	uint32_t node = vfs_foundMount(stream->path);
+	size_t node = vfs_foundMount(stream->path);
     int elem = vfs_findFile(stream->path);
-	int32_t res = vfs_read(node, elem, stream->pos, size*count, buffer);
 
-	if(res > 0) stream->pos += size*count;
+	ssize_t res = vfs_read(node, elem, stream->pos, size*count, buffer);
+
+	if(res > 0)
+		stream->pos += size*count;
 	
 	return res;
 }
@@ -253,7 +229,7 @@ int fread_c(FILE* stream, size_t count, size_t size, void* buffer){
  *
  * @return Возращает позицию или отрицательное значение при ошибке
  */
-int64_t ftell(FILE* stream){
+ssize_t ftell(FILE* stream) {
 	if (!stream->open || stream->size <= 0 || stream->fmode == 0){
 		fcheckerror(stream);
 		return -1;
@@ -265,17 +241,17 @@ int64_t ftell(FILE* stream){
  * @brief Установка позиции в потоке данных относительно текущей позиции
  *
  * @param FILE* stream - Поток (файл)
- * @param int64_t offset - Смещение позиции
+ * @param size_t offset - Смещение позиции
  * @param uint32_t whence - Точка отсчета смещения
  *
  * @return Если возращает 0, значит все в порядке
  */
-int64_t fseek(FILE* stream, int64_t offset, uint32_t whence){
+ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence){
 	if (!stream->open || stream->size <= 0 || stream->fmode == 0){
 		fcheckerror(stream);
 		return -1;
 	}
-	int64_t lsk;
+	size_t lsk = 0;
 	if (whence == SEEK_CUR) {
 		lsk = stream->pos;
 	} else if (whence == SEEK_END) {
@@ -299,9 +275,9 @@ int64_t fseek(FILE* stream, int64_t offset, uint32_t whence){
  * @brief Установка позиции в потоке данных
  *
  * @param FILE* stream - Поток (файл)
- * @param int64_t offset - Смещение позиции
+ * @param size_t offset - Смещение позиции
  */
-void fsetpos(FILE* stream, int64_t pos){
+void fsetpos(FILE* stream, ssize_t pos){
 	if (!stream->open || stream->size <= 0 || stream->fmode == 0){
 		fcheckerror(stream);
 		stream->pos = 0;
@@ -330,7 +306,7 @@ void rewind(FILE* stream){
  *
  * @return Возращает позицию или отрицательное значение при ошибке
  */
-int64_t fgetpos(FILE* stream){
+ssize_t fgetpos(FILE* stream){
 	if (!stream->open || stream->size <= 0 || stream->fmode == 0){
 		fcheckerror(stream);
 		return -1;
@@ -343,7 +319,7 @@ int64_t fgetpos(FILE* stream){
  * @param FILE* stream - Поток (файл)
  */
 void fdebuginfo(FILE* stream){
-	tty_printf("[fDebugInfo] Path: %s\n\tIsOpen: %d\n\tMode: %d\n\tSize: %d\n\tBuffer: %d\n\tPosition: %d\n\tError code: %d\n",stream->path,stream->open,stream->fmode,stream->size,stream->bufSize,stream->pos,stream->err);
+	tty_printf("[fDebugInfo] Path: %s\n\tIsOpen: %d\n\tMode: %d\n\tSize: %d\n\tBuffer: %d\n\tPosition: %d\n\tError code: %d\n",stream->path,stream->open,stream->fmode,stream->size, stream->pos,stream->err);
 }
 
 /**

@@ -5,6 +5,7 @@
 #include	"lib/list.h"
 #include	"sys/memory.h"
 
+#define DEFAULT_STACK_SIZE 0x4000
 
 /*-----------------------------------------------------------------------------
  * 		Process structure
@@ -13,9 +14,9 @@ typedef	struct
 {
 	list_item_t		list_item;		/* List item */
 	physaddr_t		page_dir;		/* Page directory */
-	size_t			threads_count;		/* Count of threads */
+	size_t			threads_count;	/* Count of threads */
 	bool			suspend;		/* Suspend flag */
-	uint32_t			pid;			/* Process ID (PID) */
+	uint32_t			pid;		/* Process ID (PID) */
 	char			name[256];		/* Process name */
 
 }__attribute__((packed)) process_t;

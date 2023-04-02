@@ -48,27 +48,27 @@ struct	multiboot_header
   uint32_t	vbe_interface_len;
 
   uint64_t framebuffer_addr;
-    uint32_t framebuffer_pitch;
-    uint32_t framebuffer_width;
-    uint32_t framebuffer_height;
-    uint8_t framebuffer_bpp;
-    uint8_t framebuffer_type;
+  uint32_t framebuffer_pitch;
+  uint32_t framebuffer_width;
+  uint32_t framebuffer_height;
+  uint8_t framebuffer_bpp;
+  uint8_t framebuffer_type;
 
-    union {
-        struct {
-            uint32_t framebuffer_palette_addr;
-            uint16_t framebuffer_palette_num_colors;
-        };
+  union {
+      struct {
+          uint32_t framebuffer_palette_addr;
+          uint16_t framebuffer_palette_num_colors;
+      };
 
-        struct {
-            uint8_t framebuffer_red_field_position;
-            uint8_t framebuffer_red_mask_size;
-            uint8_t framebuffer_green_field_position;
-            uint8_t framebuffer_green_mask_size;
-            uint8_t framebuffer_blue_field_position;
-            uint8_t framebuffer_blue_mask_size;
-        };
-    };
+      struct {
+          uint8_t framebuffer_red_field_position;
+          uint8_t framebuffer_red_mask_size;
+          uint8_t framebuffer_green_field_position;
+          uint8_t framebuffer_green_mask_size;
+          uint8_t framebuffer_blue_field_position;
+          uint8_t framebuffer_blue_mask_size;
+      };
+  };
   
 }__attribute__((packed));
 
@@ -103,8 +103,10 @@ struct multiboot_apm_info
 struct memory_map_entry
 {
 	uint32_t		size;
-	uint64_t		addr;
-	uint64_t		len;
+	uint32_t		addr_low;
+	uint32_t		addr_high;
+	uint32_t		len_low;
+	uint32_t		len_high;
 	uint32_t		type;
 
 }__attribute__((packed));

@@ -142,4 +142,23 @@ typedef struct elf_sections
 
 } elf_sections_t;
 
-elf_sections_t* load_elf(char* name);
+elf_sections_t* load_elf(const char* name);
+
+static inline bool is_elf_file(FILE* fp) {
+	char* temp = kmalloc(4);
+	size_t orig = ftell(fp);
+
+	fseek(fp, 0, SEEK_SET);
+
+	// 7F 45 4C 46
+
+	fread_c(fp, 4, 1, temp);
+
+	fseek(fp, orig, SEEK_SET);
+
+	bool result = (temp[0] == 0x7F && temp[1] == 0x45 && temp[2] == 0x4C && temp[3] == 0x46);
+
+	kfree(temp);
+
+	return result;
+}

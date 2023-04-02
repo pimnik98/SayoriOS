@@ -11,6 +11,8 @@
 .set INIT_MBOOT_HEADER_FLAGS,           ALIGN | MEMINFO | VBE_MODE
 .set INIT_MBOOT_CHECKSUM,               0x00000000 - (INIT_MBOOT_HEADER_MAGIC + INIT_MBOOT_HEADER_FLAGS)
 
+.set STACK_SIZE, 1024 * 16  # 16 KB
+
 .extern kernel
 
 .section .mboot
@@ -22,14 +24,34 @@
 .long 0                 # 0 - графический режим
 .long 800, 600, 32      # Ширина, длина, глубина
 
+.section .bss
+	.align 16
+	stack_bottom:
+		.skip STACK_SIZE
+	stack_top:
+
 .section	.text
 
-.global		init
+.global		__pre_init
 
-init:
+__pre_init:
 		cli 
 
-		finit
+		# init FPU
+		fninit
+		fldcw (conword)
+
+		# enable SSE
+		mov %cr0, %eax
+		and $~0x04, %al
+		or $0x22, %al
+		mov %eax, %cr0
+		
+		mov %cr4, %eax
+		or $0x600, %ax
+		mov %eax, %cr4
+
+		mov $stack_top, %esp
 
 		push	%esp
 		push	%ebx
@@ -37,6 +59,9 @@ init:
 		call	kernel
 
 		hlt
+
+conword:
+		.word 0x37f
 
 loop:
 		jmp	loop

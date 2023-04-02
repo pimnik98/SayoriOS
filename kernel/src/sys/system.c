@@ -2,9 +2,9 @@
  * @file sys/system.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Дополнительные системные функции
- * @version 0.3.0
+ * @version 0.3.2
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include <kernel.h>
 
@@ -30,8 +30,14 @@ char* getSysPath(){
  * @return char* путь
  */
 void setSysPath(char* path){
-    syspath = path;
-    //return syspath;
+    kfree(syspath);
+    
+    syspath = kmalloc(sizeof(char) * (strlen(path) + 1));
+    
+    memset(syspath,0,strlen(path)+1);
+    memcpy(syspath,path,strlen(path));
+    
+    // syspath[strlen(path)-1] = 0;
 }
 
 /**
@@ -45,6 +51,7 @@ void reboot() {
     while (good & 0x02)
         good = inb(0x64);
     outb(0x64, 0xFE);
+    
     asm volatile("hlt");
 }
 
@@ -54,7 +61,7 @@ void reboot() {
 void shutdown(){
     qemu_log("SHUTDOWN");
     outw(0xB004, 0x2000);
-    outw(0x604, 0x2000);
+    outw(0x604,  0x2000);
     outw(0x4004, 0x3400);
 }
 
@@ -75,7 +82,13 @@ char* getUserName(){
  * @return char* - Имя пользователя
  */
 char* setUserName(char* new){
-    whoami = new;
+    kfree(whoami);
+    
+    whoami = kmalloc(sizeof(char) * (strlen(new) + 1));
+    
+    memset(whoami, 0, strlen(new)+1);
+    memcpy(whoami, new, strlen(new));
+    
     return whoami;
 }
 
@@ -100,6 +113,14 @@ char* setHostname(char* new){
         tty_printf("[ОШИБКА] Имя устройства должно быть больше 2 символов");
         return hostname;
     }
-    hostname = new;
+    
+    kfree(hostname);
+
+    hostname = kmalloc(sizeof(char)*(strlen(new)+1));
+    
+    memset(hostname,0,strlen(new)+1);
+    memcpy(hostname,new,strlen(new));
+    
+    // hostname[strlen(new)-1] = 0;
     return hostname;
 }

@@ -18,3 +18,14 @@
 #define MOUSE_ACK             0xFA
 
 extern int mouse_wheel; // change to 0 after each reading
+
+void mouse_set_show_system_cursor(bool set);
+bool mouse_get_show_system_cursor();
+
+uint32_t mouse_get_x();
+uint32_t mouse_get_y();
+uint8_t  mouse_get_b1();
+uint8_t  mouse_get_b2();
+uint8_t  mouse_get_b3();
+uint8_t  mouse_get_b4();
+uint8_t  mouse_get_b5();

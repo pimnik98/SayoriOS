@@ -2,9 +2,9 @@
  * @file drv/input/mouse.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), Рустем Гимадутдинов (https://github.com/rgimad/EOS)
  * @brief Драйвер мыши
- * @version 0.3.1
+ * @version 0.3.2
  * @date 2022-12-11
- * @copyright Copyright SayoriOS Team (c) 2022
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 
 #include <kernel.h>
@@ -21,6 +21,7 @@ uint8_t mouse_b2 = 0;           ///< Правая кнопка мыши
 uint8_t mouse_b3 = 0;           ///< Средняя кнопка мыши
 uint8_t mouse_b4 = 0;           ///< ???
 uint8_t mouse_b5 = 0;           ///< ???
+bool show_mouse_cursor = false;
 
 int mouse_wheel = 0;            ///< После каждого чтения меняем на 0
 
@@ -100,6 +101,14 @@ bool isMouseInit(){
     return mouse_ready==1?true:false;
 }
 
+void mouse_set_show_system_cursor(bool set) {
+    show_mouse_cursor = set;
+}
+
+bool mouse_get_show_system_cursor() {
+    return show_mouse_cursor;
+}
+
 /**
  * @brief Парсинг пакета мыши
  *
@@ -127,7 +136,6 @@ void mouse_parse_packet(const char *buf, uint8_t has_wheel, uint8_t has_5_button
     if (has_wheel) {
         mouse_wheel += (char) ((!!(buf[3] & 0x8)) * 0xf8 | (buf[3] & 0x7));
         if (has_5_buttons) {
-            mouse_b4 = !!(buf[3] & 0x10);
             mouse_b4 = !!(buf[3] & 0x20);
             // parse buttons 4-5 (byte 3, bits 4-5)
         }
@@ -177,7 +185,7 @@ void mouse_draw() {
  *
  * @warning Не нужно вызывать самостоятельно, только для обработчика ядра!
  */
-void mouse_handler(__attribute__((unused)) struct regs *r) {
+void mouse_handler(__attribute__((unused)) struct registers r) {
     uint8_t status = inb(0x64);
     if ((status & 1) == 0 || (status >> 5 & 1) == 0) {
         return;
@@ -191,7 +199,7 @@ void mouse_handler(__attribute__((unused)) struct regs *r) {
         recbyte = 0;
 
         static uint8_t drawn = 0;
-        if (drawn) {
+        if (drawn && show_mouse_cursor) {
             mouse_erase();
         }
         drawn = 1;
@@ -205,7 +213,7 @@ void mouse_handler(__attribute__((unused)) struct regs *r) {
         if (mouse_y > (int) (getHeightScreen())) mouse_y = getHeightScreen(); //-10;
 
         // Redraw the cursor
-        mouse_draw();
+        if(show_mouse_cursor) mouse_draw();
     }
 }
 
@@ -301,3 +309,11 @@ void mouse_install() {
     mouse_ready = 1;
     qemu_log("[MOUSE] Status: %x | %d",_status,_status);
 }
+
+uint32_t mouse_get_x() {return mouse_x;}
+uint32_t mouse_get_y() {return mouse_y;}
+uint8_t  mouse_get_b1() {return mouse_b1;}
+uint8_t  mouse_get_b2() {return mouse_b2;}
+uint8_t  mouse_get_b3() {return mouse_b3;}
+uint8_t  mouse_get_b4() {return mouse_b4;}
+uint8_t  mouse_get_b5() {return mouse_b5;}
