@@ -9,7 +9,5 @@
 *.sea
 *.vhd
 *.tmp
-test/
-iso_root/*
 .vscode
 .vscode/*
