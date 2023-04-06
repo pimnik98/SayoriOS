@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['b64d_201',['b64d',['../db/d36/base64_8c.html#a9e75ebf27b734b47a7c88031753d4820',1,'base64.c']]],
-  ['b64e_202',['b64e',['../db/d36/base64_8c.html#aed25a17df04c4adc6245fc2121835c66',1,'base64.c']]]
+  ['alloc_5fphys_5fpages_775',['alloc_phys_pages',['../df/dd5/memory_8c.html#aa68e19c97170e149989b72272236928a',1,'memory.c']]],
+  ['animtextcursor_776',['animTextCursor',['../dc/d03/tty_8c.html#ae43b5105b423ac8bdd4b390a8e66ab19',1,'tty.c']]],
+  ['atoi_777',['atoi',['../d1/db0/string_8c.html#a37001e04a8d74fb07661f019e8717c8f',1,'string.c']]]
 ];

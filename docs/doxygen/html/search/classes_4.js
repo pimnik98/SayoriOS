@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['elf_5fhdr_140',['elf_hdr',['../da/dc7/structelf__hdr.html',1,'']]],
-  ['elf_5fprogram_5fheader_141',['elf_program_header',['../db/d1e/structelf__program__header.html',1,'']]],
-  ['elf_5fsection_5fheader_142',['elf_section_header',['../d5/d1d/structelf__section__header.html',1,'']]],
-  ['ethernet_5fframe_143',['ethernet_frame',['../d5/d4e/structethernet__frame.html',1,'']]],
-  ['ext2_5fsuper_5fblock_144',['ext2_super_block',['../d9/ddf/structext2__super__block.html',1,'']]]
+  ['elf32_5fehdr_642',['Elf32_Ehdr',['../d8/d50/struct_elf32___ehdr.html',1,'']]],
+  ['elf32_5fphdr_643',['Elf32_Phdr',['../db/dd8/struct_elf32___phdr.html',1,'']]],
+  ['elf32_5fshdr_644',['Elf32_Shdr',['../da/d34/struct_elf32___shdr.html',1,'']]],
+  ['elf_5fsections_645',['elf_sections',['../df/d16/structelf__sections.html',1,'']]],
+  ['env_646',['env',['../da/d48/structenv.html',1,'']]]
 ];

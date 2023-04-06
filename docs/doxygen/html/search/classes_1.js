@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['arp_5fpacket_130',['arp_packet',['../d5/da4/structarp__packet.html',1,'']]],
-  ['arp_5ftable_5fentry_131',['arp_table_entry',['../d6/d3c/structarp__table__entry.html',1,'']]],
-  ['ata_5fdma_5fpriv_132',['ata_dma_priv',['../db/d6f/structata__dma__priv.html',1,'']]]
+  ['ac97_5fbdl_5ft_633',['AC97_BDL_t',['../d3/d41/struct_a_c97___b_d_l__t.html',1,'']]],
+  ['ac97_5fglobal_5fstatus_5ft_634',['ac97_global_status_t',['../dd/df5/structac97__global__status__t.html',1,'']]],
+  ['ata_5fdrive_5ft_635',['ata_drive_t',['../d8/dcf/structata__drive__t.html',1,'']]]
 ];

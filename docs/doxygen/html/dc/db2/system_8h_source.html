@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Исходный файл kernel/include/sys/system.h</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.2.15</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -88,17 +89,19 @@ $(document).ready(function(){initNavTree('dc/db2/system_8h_source.html','../../'
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keywordtype">void</span> reboot();</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keywordtype">void</span> shutdown();</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d4/dfd/system_8c.html#a7861ee1569802186a619778efc85af13">shutdown</a>();</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d4/dfd/system_8c.html#ac0a43b99fdf8950fb14112fd963881c3">reboot</a>();</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keywordtype">char</span>* <a class="code" href="../../d4/dfd/system_8c.html#ae476db912ed65e9d9d59fcea9064804e">getSysPath</a>();</div>
+<div class="ttc" id="asystem_8c_html_a7861ee1569802186a619778efc85af13"><div class="ttname"><a href="../../d4/dfd/system_8c.html#a7861ee1569802186a619778efc85af13">shutdown</a></div><div class="ttdeci">void shutdown()</div><div class="ttdoc">Выключение устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dfd/system_8c_source.html#l00061">system.c:61</a></div></div>
+<div class="ttc" id="asystem_8c_html_ac0a43b99fdf8950fb14112fd963881c3"><div class="ttname"><a href="../../d4/dfd/system_8c.html#ac0a43b99fdf8950fb14112fd963881c3">reboot</a></div><div class="ttdeci">void reboot()</div><div class="ttdoc">Перезагрузка устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dfd/system_8c_source.html#l00046">system.c:46</a></div></div>
+<div class="ttc" id="asystem_8c_html_ae476db912ed65e9d9d59fcea9064804e"><div class="ttname"><a href="../../d4/dfd/system_8c.html#ae476db912ed65e9d9d59fcea9064804e">getSysPath</a></div><div class="ttdeci">char * getSysPath()</div><div class="ttdoc">Получить текущий путь</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dfd/system_8c_source.html#l00021">system.c:21</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_009f605b833ac4622acd6c3c0c26c0f0.html">include</a></li><li class="navelem"><a class="el" href="../../dir_3783a9e4629973085aab7079e437c286.html">sys</a></li><li class="navelem"><b>system.h</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 30 Сен 2022 10:12:16. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 6 Апр 2023 01:40:33. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

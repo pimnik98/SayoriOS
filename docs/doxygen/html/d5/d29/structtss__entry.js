@@ -19,12 +19,13 @@ var structtss__entry =
     [ "esp2", "d5/d29/structtss__entry.html#a17c64abe1958f7f481d0fbef826ad21f", null ],
     [ "fs", "d5/d29/structtss__entry.html#a2ffb5cf275c124e8f8ff30e1d4449f80", null ],
     [ "gs", "d5/d29/structtss__entry.html#a85904ecbf7b717abe738645b4ff2f4ff", null ],
-    [ "iomap_base", "d5/d29/structtss__entry.html#aa1e0bbc09ee0c9741324f810edee3ba8", null ],
-    [ "ldt", "d5/d29/structtss__entry.html#aa12b05931ab0b08974e1e8bf627c8790", null ],
+    [ "iomap", "d5/d29/structtss__entry.html#a1a5f093d9780a195ce2a258ef26e2283", null ],
+    [ "iomap_offset", "d5/d29/structtss__entry.html#a8c070365189a2ea88a8fc5fdfa422c84", null ],
+    [ "ldtr", "d5/d29/structtss__entry.html#a622f0579c9f5823a75a5d71fe9d524ec", null ],
     [ "prev_tss", "d5/d29/structtss__entry.html#a162f247adf800620ad2b69b1e9ea07f4", null ],
     [ "ss", "d5/d29/structtss__entry.html#a3c59346dd338708c94ca75cf21b78195", null ],
     [ "ss0", "d5/d29/structtss__entry.html#a7874b70fa3a93da1588513500cbdf1a8", null ],
     [ "ss1", "d5/d29/structtss__entry.html#a954b751e620c509ef5538e6cd434ea4e", null ],
     [ "ss2", "d5/d29/structtss__entry.html#ac96ed21da44a3e051bf3cd7d4f186c1e", null ],
-    [ "trap", "d5/d29/structtss__entry.html#a9375f4a9360efc8d2a1805b676967567", null ]
+    [ "task_flags", "d5/d29/structtss__entry.html#a647024cb3f8b71a06f0b70106e52702e", null ]
 ];

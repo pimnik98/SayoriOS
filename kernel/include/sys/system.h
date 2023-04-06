@@ -1,4 +1,5 @@
 #pragma once
 
-void reboot();
 void shutdown();
+void reboot();
+char* getSysPath();

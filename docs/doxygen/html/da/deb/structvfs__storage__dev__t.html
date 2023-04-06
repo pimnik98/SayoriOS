@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Структура vfs_storage_dev_t</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.2.15</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -109,18 +110,18 @@ int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lba_end</b></td></
 <tr class="memitem:a5ac083a645d964373f022d03df4849c8"><td class="memItemLeft" align="right" valign="top"><a id="a5ac083a645d964373f022d03df4849c8"></a>
 char *&#160;</td><td class="memItemRight" valign="bottom"><b>name</b></td></tr>
 <tr class="separator:a5ac083a645d964373f022d03df4849c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8043f3b6f58d708ee2026b13178bd252"><td class="memItemLeft" align="right" valign="top"><a id="a8043f3b6f58d708ee2026b13178bd252"></a>
+<tr class="memitem:ac3d2fa73779ec5ed60cf6090857c18f5"><td class="memItemLeft" align="right" valign="top"><a id="ac3d2fa73779ec5ed60cf6090857c18f5"></a>
 uint32_t(*&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> )(int *, unsigned long long, unsigned long long, uint16_t *)</td></tr>
-<tr class="separator:a8043f3b6f58d708ee2026b13178bd252"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac50a48ef715731392c19cecaa31a44c5"><td class="memItemLeft" align="right" valign="top"><a id="ac50a48ef715731392c19cecaa31a44c5"></a>
+<tr class="separator:ac3d2fa73779ec5ed60cf6090857c18f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd4ca7779f147ca07eace48b44f2817c"><td class="memItemLeft" align="right" valign="top"><a id="abd4ca7779f147ca07eace48b44f2817c"></a>
 uint32_t(*&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> )(int *, unsigned long long, unsigned long long, uint16_t *)</td></tr>
-<tr class="separator:ac50a48ef715731392c19cecaa31a44c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:abd4ca7779f147ca07eace48b44f2817c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
 <div class="textblock">
-<p class="definition">См. определение в файле <a class="el" href="../../d5/dfa/vfs_8h_source.html">vfs.h</a> строка <a class="el" href="../../d5/dfa/vfs_8h_source.html#l00013">13</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d5/dfa/vfs_8h_source.html">vfs.h</a> строка <a class="el" href="../../d5/dfa/vfs_8h_source.html#l00009">9</a></p>
 </div><hr/>Объявления и описания членов структуры находятся в файле:<ul>
-<li>kernel/include/drivers/<a class="el" href="../../d5/dfa/vfs_8h_source.html">vfs.h</a></li>
+<li>kernel/include/drv/<a class="el" href="../../d5/dfa/vfs_8h_source.html">vfs.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -128,9 +129,7 @@ uint32_t(*&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> )(int
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../da/deb/structvfs__storage__dev__t.html">vfs_storage_dev_t</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 30 Сен 2022 10:12:16. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 6 Апр 2023 01:40:33. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

@@ -1,35 +1,79 @@
+/**
+ * @file sys/cpuinfo.c
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru)
+ * @brief Определение процессора
+ * @version 0.3.2
+ * @date 2022-10-01
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
+ */
 #include <kernel.h>
+#include <sys/cpuinfo.h>
 
-char brandAllName[128] = "";
+char brandAllName[128] = {0};                ///< Название процессора
+
+#define INTEL_MAGIC                     0x756e6547      ///< Ключ процессора Intel
+#define AMD_MAGIC                       0x68747541      ///< Ключ процессора AMD
+#define VMWARE_HYPERVISOR_MAGIC         0x564D5868      ///< Ключ гипервизора VMWare
+#define VMWARE_HYPERVISOR_PORT          0x5658          ///< Порт доступа данных к VMWare
+#define VMWARE_PORT_CMD_GETVERSION      10              ///< Версия управления VWMare
+
+
+#define VMWARE_PORT(cmd, eax, ebx, ecx, edx)                            \
+        __asm__("inl (%%dx)" :                                          \
+                        "=a"(eax), "=c"(ecx), "=d"(edx), "=b"(ebx) :    \
+                        "0"(VMWARE_HYPERVISOR_MAGIC),                   \
+                        "1"(VMWARE_PORT_CMD_##cmd),                     \
+                        "2"(VMWARE_HYPERVISOR_PORT), "3"(UINT_MAX) :    \
+                        "memory");
+
+/**
+ * @brief Получение имени процессора (Инициализация)
+ *
+ * @param bool silent - Тихий режим
+ *
+ * @return int - Тип процессора (0 - Unknown | 1 - Intel | 2 - AMD | 3 - VMWare)
+ *
+ * @warning Не для личного использования. Если вы хотите получить название процессора используйте функцию getNameBrand()
+ */
 int detect_cpu(bool silent) {
-    brandAllName[127] = 0;
-    unsigned long ebx, unused;
+    int type = 0;
+    size_t ebx, unused;
     cpuid(0, unused, ebx, unused, unused);
     switch (ebx) {
-    case 0x756e6547: /* Intel Magic Code */
+    case INTEL_MAGIC: /* Intel Magic Code */
         //strcat(brandAllName,"Intel ");
         do_intel(silent);
+        type = 1;
         break;
-    case 0x68747541: /* AMD Magic Code */
+    case AMD_MAGIC: /* AMD Magic Code */
         //strcat(brandAllName,"AMD ");
         do_amd(silent);
+        type = 2;
+        break;
+    case VMWARE_HYPERVISOR_MAGIC: /* VMWARE_HW_MAGIC */
+        memset(brandAllName, 0, 128);
+        strcat(brandAllName, "VMWARE_HYPERVISOR_MAGIC");
+        type = 3;
         break;
     default:
         strcat(brandAllName,"Unknown x86");
+        type = 0;
         //tty_printf("Unknown x86 CPU Detected\n");
         break;
     }
-    if (silent == 1){
-        tty_printf("[CPU] Detect: %s\n",brandAllName);
-    }
-    return 0;
+    qemu_log("[CPU] Detect: %s",brandAllName);
+    return type;
 }
 
+/**
+ * @brief Получение имени процессора
+ *
+ * @return char* - Полное имя процессора
+ */
 char* getNameBrand(){
     return brandAllName;
 }
 
-/* Intel Specific brand list */
 char *Intel[] = {
     "Brand ID Not Supported.",
     "Intel(R) Celeron(R) processor",
@@ -55,9 +99,13 @@ char *Intel[] = {
     "Mobile Geniune Intel(R) processor",
     "Intel(R) Pentium(R) M processor",
     "Mobile Intel(R) Celeron(R) processor"
-};
+}; ///< Лист-спецификаций Intel
 
-/* This table is for those brand strings that have two values depending on the processor signature. It should have the same number of entries as the above table. */
+/**
+ * @brief - Дополнительная таблица спецификаций Intel
+ *
+ * @warning - Эта таблица предназначена для тех строк брендов, которые имеют два значения в зависимости от подписи процессора. В ней должно быть то же количество записей, что и в приведенной выше таблице.
+ */
 char *Intel_Other[] = {
     "Reserved",
     "Reserved",
@@ -85,7 +133,45 @@ char *Intel_Other[] = {
     "Reserved"
 };
 
-/* Intel-specific information */
+/**
+ * @brief [CPUInfo] Печать регистров
+ *
+ * @param int eax - Регистр 1
+ * @param int ebx - Регистр 2
+ * @param int ecx - Регистр 3
+ * @param int edx - Регистр 4
+ *
+ * @return char* - Имя процессора
+ *
+ * @warning Не для личного использования. Если вы хотите получить название процессора используйте функцию getNameBrand()
+ */
+char* cpuinfo_printregs(int eax, int ebx, int ecx, int edx) {
+    int j;
+    char *string = kmalloc(18);
+    memset(string, 0, 18);
+    string[17] = 0;
+    for (j = 0; j < 4; j++) {
+        string[j] = eax >> (8 * j);
+        string[j + 4] = ebx >> (8 * j);
+        string[j + 8] = ecx >> (8 * j);
+        string[j + 12] = edx >> (8 * j);
+    }
+    //tty_printf("%s",string);
+    //memset(brandAllName,0,128);
+    strcat(brandAllName,string);
+    //qemu_log("%d | %s",strlen(brandAllName),brandAllName);
+    return string;
+}
+
+/**
+ * @brief Получение информации о процессоре Intel
+ *
+ * @param bool silent - Тихий режим
+ *
+ * @return int - 0
+ *
+ * @warning Не для личного использования. Если вы хотите получить название процессора используйте функцию getNameBrand()
+ */
 int do_intel(bool silent) {
     if (silent == 0){
         tty_printf("Detected Intel CPU.\nIntel-specific features:\n");
@@ -231,18 +317,19 @@ int do_intel(bool silent) {
         if (silent == 0){
             tty_printf("Brand: ");
             tty_printf("%s\n",brandAllName);
+            memset(brandAllName,0,128);
         }
         if (max_eax >= 0x80000002) {
             cpuid(0x80000002, eax, ebx, ecx, edx);
-            (printregs(eax, ebx, ecx, edx));
+            (cpuinfo_printregs(eax, ebx, ecx, edx));
         }
         if (max_eax >= 0x80000003) {
             cpuid(0x80000003, eax, ebx, ecx, edx);
-            (printregs(eax, ebx, ecx, edx));
+            (cpuinfo_printregs(eax, ebx, ecx, edx));
         }
         if (max_eax >= 0x80000004) {
             cpuid(0x80000004, eax, ebx, ecx, edx);
-            (printregs(eax, ebx, ecx, edx));
+            (cpuinfo_printregs(eax, ebx, ecx, edx));
         }
         if (silent == 0){
             tty_printf("\n");
@@ -265,24 +352,15 @@ int do_intel(bool silent) {
     return 0;
 }
 
-/* Print Registers */
-char* printregs(int eax, int ebx, int ecx, int edx) {
-    int j;
-    char *string = kheap_malloc(18);
-    memset(string, 0, 18);
-    string[16] = '\0';
-    for (j = 0; j < 4; j++) {
-        string[j] = eax >> (8 * j);
-        string[j + 4] = ebx >> (8 * j);
-        string[j + 8] = ecx >> (8 * j);
-        string[j + 12] = edx >> (8 * j);
-    }
-    //tty_printf("%s",string);
-    strcat(brandAllName,string);
-   return string;
-}
-
-/* AMD-specific information */
+/**
+ * @brief Получение информации о процессоре AMD
+ *
+ * @param bool silent - Тихий режим
+ *
+ * @return int - 0
+ *
+ * @warning Не для личного использования. Если вы хотите получить название процессора используйте функцию getNameBrand()
+ */
 int do_amd(bool silent) {
     if (silent == 0){
         tty_printf("Detected AMD CPU. \nAMD-specific features:\n");
@@ -359,7 +437,9 @@ int do_amd(bool silent) {
         for (j = 0x80000002; j <= 0x80000004; j++) {
             cpuid(j, eax, ebx, ecx, edx);
             if (silent == 0){
-                tty_printf(printregs(eax, ebx, ecx, edx));
+
+                tty_printf(cpuinfo_printregs(eax, ebx, ecx, edx));
+                memset(brandAllName,0,128);
             }
         }
         if (silent == 0){

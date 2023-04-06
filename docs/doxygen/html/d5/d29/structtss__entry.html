@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Структура tss_entry</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.2.15</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -163,21 +164,24 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>fs</b></td></tr>
 <tr class="memitem:a85904ecbf7b717abe738645b4ff2f4ff"><td class="memItemLeft" align="right" valign="top"><a id="a85904ecbf7b717abe738645b4ff2f4ff"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>gs</b></td></tr>
 <tr class="separator:a85904ecbf7b717abe738645b4ff2f4ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa12b05931ab0b08974e1e8bf627c8790"><td class="memItemLeft" align="right" valign="top"><a id="aa12b05931ab0b08974e1e8bf627c8790"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>ldt</b></td></tr>
-<tr class="separator:aa12b05931ab0b08974e1e8bf627c8790"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9375f4a9360efc8d2a1805b676967567"><td class="memItemLeft" align="right" valign="top"><a id="a9375f4a9360efc8d2a1805b676967567"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>trap</b></td></tr>
-<tr class="separator:a9375f4a9360efc8d2a1805b676967567"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1e0bbc09ee0c9741324f810edee3ba8"><td class="memItemLeft" align="right" valign="top"><a id="aa1e0bbc09ee0c9741324f810edee3ba8"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>iomap_base</b></td></tr>
-<tr class="separator:aa1e0bbc09ee0c9741324f810edee3ba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a622f0579c9f5823a75a5d71fe9d524ec"><td class="memItemLeft" align="right" valign="top"><a id="a622f0579c9f5823a75a5d71fe9d524ec"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>ldtr</b></td></tr>
+<tr class="separator:a622f0579c9f5823a75a5d71fe9d524ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a647024cb3f8b71a06f0b70106e52702e"><td class="memItemLeft" align="right" valign="top"><a id="a647024cb3f8b71a06f0b70106e52702e"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>task_flags</b></td></tr>
+<tr class="separator:a647024cb3f8b71a06f0b70106e52702e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c070365189a2ea88a8fc5fdfa422c84"><td class="memItemLeft" align="right" valign="top"><a id="a8c070365189a2ea88a8fc5fdfa422c84"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>iomap_offset</b></td></tr>
+<tr class="separator:a8c070365189a2ea88a8fc5fdfa422c84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a5f093d9780a195ce2a258ef26e2283"><td class="memItemLeft" align="right" valign="top"><a id="a1a5f093d9780a195ce2a258ef26e2283"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>iomap</b></td></tr>
+<tr class="separator:a1a5f093d9780a195ce2a258ef26e2283"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
 <div class="textblock">
-<p class="definition">См. определение в файле <a class="el" href="../../de/d9a/tss_8h_source.html">tss.h</a> строка <a class="el" href="../../de/d9a/tss_8h_source.html#l00008">8</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../dd/d38/descriptor__tables_8h_source.html">descriptor_tables.h</a> строка <a class="el" href="../../dd/d38/descriptor__tables_8h_source.html#l00031">31</a></p>
 </div><hr/>Объявления и описания членов структуры находятся в файле:<ul>
-<li>kernel/include/sys/<a class="el" href="../../de/d9a/tss_8h_source.html">tss.h</a></li>
+<li>kernel/include/sys/<a class="el" href="../../dd/d38/descriptor__tables_8h_source.html">descriptor_tables.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -185,9 +189,7 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>iomap_base</b></t
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../d5/d29/structtss__entry.html">tss_entry</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 30 Сен 2022 10:12:16. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 6 Апр 2023 01:40:33. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

@@ -1,11 +1,6 @@
 var searchData=
 [
-  ['saff_5ffmt_167',['SAFF_FMT',['../d4/dc2/struct_s_a_f_f___f_m_t.html',1,'']]],
-  ['saff_5fload_168',['SAFF_LOAD',['../d8/d8a/struct_s_a_f_f___l_o_a_d.html',1,'']]],
-  ['stfs_5fblock_169',['STFS_block',['../d5/d08/struct_s_t_f_s__block.html',1,'']]],
-  ['stfs_5ffile_170',['STFS_file',['../df/d16/struct_s_t_f_s__file.html',1,'']]],
-  ['stfs_5ffolder_171',['STFS_folder',['../d3/d49/struct_s_t_f_s__folder.html',1,'']]],
-  ['svga_5fmode_5finfo_172',['svga_mode_info',['../d2/dfd/structsvga__mode__info.html',1,'']]],
-  ['synapse_5ftime_173',['synapse_time',['../dd/d67/structsynapse__time.html',1,'']]],
-  ['synapsettyinfo_174',['SynapseTTYInfo',['../d0/da1/struct_synapse_t_t_y_info.html',1,'']]]
+  ['pci_5fheader_5ft_672',['pci_header_t',['../d7/d00/structpci__header__t.html',1,'']]],
+  ['pixel_5frgb_673',['pixel_rgb',['../dd/d8e/structstd_1_1pixel__rgb.html',1,'std']]],
+  ['processorlocalapic_5ft_674',['ProcessorLocalAPIC_t',['../d1/de0/struct_processor_local_a_p_i_c__t.html',1,'']]]
 ];

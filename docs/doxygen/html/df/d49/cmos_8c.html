@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SayoriOS: Файл kernel/src/drivers/cmos.c</title>
+<title>SayoriOS: Файл kernel/src/drv/cmos.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.2.15</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -106,10 +107,10 @@ $(document).ready(function(){initNavTree('df/d49/cmos_8c.html','../../'); initRe
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Перечисления</h2></td></tr>
-<tr class="memitem:abed82baf7f470b522273a3e37c24c600"><td class="memItemLeft" align="right" valign="top"><a id="abed82baf7f470b522273a3e37c24c600"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <b>cmos_address</b> = 0x70, 
-<b>cmos_data</b> = 0x71
+<tr class="memitem:abc5c98fcc1211af2b80116dd6e0a035d"><td class="memItemLeft" align="right" valign="top"><a id="abc5c98fcc1211af2b80116dd6e0a035d"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <b>cmos_address</b> = 0x70
+, <b>cmos_data</b> = 0x71
  }</td></tr>
-<tr class="separator:abed82baf7f470b522273a3e37c24c600"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:abc5c98fcc1211af2b80116dd6e0a035d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Функции</h2></td></tr>
@@ -129,13 +130,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d49/cmos_8c.html#a19efe316ef878d9aaaa70e28b4b2c670">isleap</a> (int year)</td></tr>
 <tr class="memdesc:a19efe316ef878d9aaaa70e28b4b2c670"><td class="mdescLeft">&#160;</td><td class="mdescRight">Это високосный год? <br /></td></tr>
 <tr class="separator:a19efe316ef878d9aaaa70e28b4b2c670"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e5f798ee4fd32e25464ff06fda11093"><td class="memItemLeft" align="right" valign="top"><a id="a1e5f798ee4fd32e25464ff06fda11093"></a>
-struct <a class="el" href="../../dd/d67/structsynapse__time.html">synapse_time</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d49/cmos_8c.html#a1e5f798ee4fd32e25464ff06fda11093">get_time</a> ()</td></tr>
-<tr class="memdesc:a1e5f798ee4fd32e25464ff06fda11093"><td class="mdescLeft">&#160;</td><td class="mdescRight">Считывает время и передает в удобной структуре <br /></td></tr>
-<tr class="separator:a1e5f798ee4fd32e25464ff06fda11093"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea55b3847c288586e4a0350d92427369"><td class="memItemLeft" align="right" valign="top"><a id="aea55b3847c288586e4a0350d92427369"></a>
-struct <a class="el" href="../../dd/d67/structsynapse__time.html">synapse_time</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>get_time_pointer</b> ()</td></tr>
-<tr class="separator:aea55b3847c288586e4a0350d92427369"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9bc5e70ae7ccccd822d633a1b1561bb"><td class="memItemLeft" align="right" valign="top"><a id="ae9bc5e70ae7ccccd822d633a1b1561bb"></a>
+<a class="el" href="../../d8/dce/structsayori__time.html">sayori_time_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d49/cmos_8c.html#ae9bc5e70ae7ccccd822d633a1b1561bb">get_time</a> ()</td></tr>
+<tr class="memdesc:ae9bc5e70ae7ccccd822d633a1b1561bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Считывает время и передает в удобной структуре <br /></td></tr>
+<tr class="separator:ae9bc5e70ae7ccccd822d633a1b1561bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Переменные</h2></td></tr>
@@ -190,7 +188,10 @@ unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>registerB</b
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
 <div class="textblock"><p>Драйвер CMOS. </p>
-<dl class="section author"><dt>Автор</dt><dd>Арен Елчинян (<a href="#" onclick="location.href='mai'+'lto:'+'a2.'+'de'+'v@y'+'an'+'dex'+'.c'+'om'; return false;">a2.de<span style="display: none;">.nosp@m.</span>v@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>com</a>), Андрей(Давид) Павленко (<a href="#" onclick="location.href='mai'+'lto:'+'and'+'re'+'jpa'+'vl'+'enk'+'o6'+'66@'+'gm'+'ail'+'.c'+'om'; return false;">andre<span style="display: none;">.nosp@m.</span>jpav<span style="display: none;">.nosp@m.</span>lenko<span style="display: none;">.nosp@m.</span>666@<span style="display: none;">.nosp@m.</span>gmail<span style="display: none;">.nosp@m.</span>.com</a>) </dd></dl>
+<dl class="section author"><dt>Автор</dt><dd>Drew &gt;_ (<a href="#" onclick="location.href='mai'+'lto:'+'pik'+'ac'+'hu_'+'an'+'dre'+'y@'+'vk.'+'co'+'m'; return false;">pikac<span style="display: none;">.nosp@m.</span>hu_a<span style="display: none;">.nosp@m.</span>ndrey<span style="display: none;">.nosp@m.</span>@vk.<span style="display: none;">.nosp@m.</span>com</a>) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.3.2 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2022-11-01 </dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022-2023 </dd></dl>
 
 <p class="definition">См. определение в файле <a class="el" href="../../df/d49/cmos_8c_source.html">cmos.c</a></p>
 </div></div><!-- contents -->
@@ -198,10 +199,8 @@ unsigned char&#160;</td><td class="memItemRight" valign="bottom"><b>registerB</b
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_79cdf04718782f286da113044bf76c98.html">drivers</a></li><li class="navelem"><a class="el" href="../../df/d49/cmos_8c.html">cmos.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 30 Сен 2022 10:12:16. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_294885e234569f555c14a529bc5dac14.html">drv</a></li><li class="navelem"><a class="el" href="../../df/d49/cmos_8c.html">cmos.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 6 Апр 2023 01:40:33. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SayoriOS: Исходный файл kernel/src/drivers/pci.c</title>
+<title>SayoriOS: Исходный файл kernel/src/drv/pci.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.2.15</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -86,266 +87,318 @@ $(document).ready(function(){initNavTree('d1/de8/pci_8c_source.html','../../'); 
 <div class="title">pci.c</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> dev_zero = {0};</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;uint32_t pci_size_map[100];</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keywordtype">bool</span> scanToInit = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keywordtype">void</span> changeScanToInit(<span class="keywordtype">bool</span> m){</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    scanToInit = m;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;}</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;uint16_t pci_read_word(uint16_t bus, uint16_t slot, uint16_t func, uint16_t offset) {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    uint64_t address;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    uint64_t lbus = (uint64_t)bus;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    uint64_t lslot = (uint64_t)slot;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    uint64_t lfunc = (uint64_t)func;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    uint16_t tmp = 0;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    address = (uint64_t)((lbus &lt;&lt; 16) | (lslot &lt;&lt; 11) |</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;              (lfunc &lt;&lt; 8) | (offset &amp; 0xfc) | ((uint32_t)0x80000000));</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(0xCF8, address);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    tmp = (uint16_t)(</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        (<a class="code" href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">inl</a>(0xCFC) &gt;&gt; ((offset &amp; 2) * 8)) <span class="comment">//&amp; 0xffff</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        );</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">return</span> (tmp);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;}</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;uint32_t pci_read_dword(uint16_t bus, uint16_t slot, uint16_t func, uint16_t offset) {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    uint64_t address;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    uint64_t lbus = (uint64_t)bus;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    uint64_t lslot = (uint64_t)slot;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    uint64_t lfunc = (uint64_t)func;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    uint16_t tmp = 0;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    address = (uint64_t)((lbus &lt;&lt; 16) | (lslot &lt;&lt; 11) |</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;              (lfunc &lt;&lt; 8) | (offset &amp; 0xfc) | ((uint32_t)0x80000000));</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(0xCF8, address);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">inl</a>(0xCFC);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keywordtype">void</span> pci_write_dword(uint16_t bus, uint16_t slot, uint16_t func, uint16_t offset, uint32_t value) {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    uint64_t address;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    uint64_t lbus = (uint64_t)bus;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    uint64_t lslot = (uint64_t)slot;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    uint64_t lfunc = (uint64_t)func;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    uint16_t tmp = 0;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    address = (uint64_t)((lbus &lt;&lt; 16) | (lslot &lt;&lt; 11) |</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;              (lfunc &lt;&lt; 8) | (offset &amp; 0xfc) | ((uint32_t)0x80000000));</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(0xCF8, address);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(0xCFC, value);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keywordtype">void</span> pci_mmio_enable_master(uint16_t bus, uint16_t device, uint16_t <span class="keyword">function</span>) {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    uint32_t reg = pci_read_dword(bus, device, <span class="keyword">function</span>, 0x04);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="comment">//reg |= 0x06;</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    reg |= 1 &lt;&lt; 2;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    pci_write_dword(bus, device, <span class="keyword">function</span>, 0x04, reg);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    qemu_log(<span class="stringliteral">&quot;[PCI] Enabled MMIO mastering at: BUS: %x; DEVICE: %d; FUNCTION: %d&quot;</span>, bus, device, <span class="keyword">function</span>);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keywordtype">void</span> pci_io_enable_master(uint16_t bus, uint16_t device, uint16_t <span class="keyword">function</span>) {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    uint32_t reg = pci_read_dword(bus, device, <span class="keyword">function</span>, 0x04);</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    reg |= 1 &lt;&lt; 0;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    pci_write_dword(bus, device, <span class="keyword">function</span>, 0x04, reg);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;uint16_t getVendorID(uint16_t bus, uint16_t device, uint16_t <span class="keyword">function</span>) {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        uint32_t r0 = pci_read_word(bus,device,<span class="keyword">function</span>,0);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordflow">return</span> r0;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;uint16_t getDeviceID(uint16_t bus, uint16_t device, uint16_t <span class="keyword">function</span>) {</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        uint32_t r0 = pci_read_word(bus,device,<span class="keyword">function</span>,2);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">return</span> r0;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;uint32_t pci_read(<a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> dev, uint32_t field) {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="comment">// Only most significant 6 bits of the field</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    dev.field_num = (field &amp; 0xFC) &gt;&gt; 2;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    dev.enable = 1;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(PCI_CONFIG_ADDRESS, dev.bits);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="comment">// What size is this field supposed to be ?</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    uint32_t size = pci_size_map[field];</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordflow">if</span>(size == 1) {</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="comment">// Get the first byte only, since it&#39;s in little endian, it&#39;s actually the 3rd byte</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        uint8_t t = <a class="code" href="../../d0/d6e/ports_8c.html#a2e1e8e2c5724c1e8fd2dff2eada06479">inb</a>(PCI_CONFIG_DATA + (field &amp; 3));</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordflow">return</span> t;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    }</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(size == 2) {</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        uint16_t t = <a class="code" href="../../d0/d6e/ports_8c.html#a1523588ef57e794dedb0e3b33ca52015">ins</a>(PCI_CONFIG_DATA + (field &amp; 2));</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keywordflow">return</span> t;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(size == 4){</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="comment">// Read entire 4 bytes</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        uint32_t t = <a class="code" href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">inl</a>(PCI_CONFIG_DATA);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">return</span> t;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    }</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordflow">return</span> 0xffff;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;uint32_t get_secondary_bus(<a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> dev) {</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordflow">return</span> pci_read(dev, PCI_SECONDARY_BUS);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;uint32_t get_device_type(<a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> dev) {</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    uint32_t t = pci_read(dev, PCI_CLASS) &lt;&lt; 8;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordflow">return</span> t | pci_read(dev, PCI_SUBCLASS);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> pci_scan_function(uint16_t vendor_id, uint16_t device_id, uint32_t bus, uint32_t device, uint32_t <span class="keyword">function</span>, int32_t device_type) {</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> dev = {0};</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    dev.bus_num = bus;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    dev.device_num = device;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    dev.function_num = <span class="keyword">function</span>;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="comment">// If it&#39;s a PCI Bridge device, get the bus it&#39;s connected to and keep searching</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordflow">if</span>(get_device_type(dev) == PCI_TYPE_BRIDGE) {</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        pci_scan_bus(vendor_id, device_id, get_secondary_bus(dev), device_type);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    }</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="comment">// If type matches, we&#39;ve found the device, just return it</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordflow">if</span>(device_type == -1 || device_type == get_device_type(dev)) {</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        uint32_t devid  = pci_read(dev, PCI_DEVICE_ID);</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        uint32_t vendid = pci_read(dev, PCI_VENDOR_ID);</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keywordflow">if</span>(devid == device_id &amp;&amp; vendor_id == vendid)</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;            <span class="keywordflow">return</span> dev;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    }</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordflow">return</span> dev_zero;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;}</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;uint32_t pci_reach_end(<a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> dev) {</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    uint32_t t = pci_read(dev, PCI_HEADER_TYPE);</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordflow">return</span> !t;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;}</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> pci_scan_device(uint16_t vendor_id, uint16_t device_id, uint32_t bus, uint32_t device, int32_t device_type) {</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> dev = {0};</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    dev.bus_num = bus;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    dev.device_num = device;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="keywordflow">if</span>(pci_read(dev,PCI_VENDOR_ID) == PCI_NONE)</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        <span class="keywordflow">return</span> dev_zero;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> t = pci_scan_function(vendor_id, device_id, bus, device, 0, device_type);</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keywordflow">if</span>(t.bits)</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        <span class="keywordflow">return</span> t;</div>
+<a href="../../d1/de8/pci_8c.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;lib/stdio.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;drv/pci.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">   28</a></span>&#160;uint16_t <a class="code" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a>(uint8_t bus, uint8_t slot, uint8_t <span class="keyword">function</span>, uint8_t offset) {</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    uint32_t addr;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    uint32_t bus32 = bus;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    uint32_t slot32 = slot;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    uint32_t func32 = <span class="keyword">function</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    addr = (uint32_t)((bus32 &lt;&lt; 16) | (slot32 &lt;&lt; 11) |</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;           (func32 &lt;&lt; 8) | (offset &amp; 0xfc) | ((uint32_t)0x80000000)); <span class="comment">//yes, this line is copied from osdev</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(PCI_ADDRESS_PORT, addr);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordflow">return</span> (uint16_t)((<a class="code" href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">inl</a>(PCI_DATA_PORT) &gt;&gt; ((offset &amp; 2) * 8)) &amp; 0xffff); <span class="comment">//this too... I&#39;m too lazy to write them</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;uint32_t pci_read32(uint8_t bus, uint8_t slot, uint8_t <span class="keyword">function</span>, uint8_t offset) {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    uint32_t addr;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    uint32_t bus32 = bus;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    uint32_t slot32 = slot;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    uint32_t func32 = <span class="keyword">function</span>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    addr = (uint32_t)((bus32 &lt;&lt; 16) | (slot32 &lt;&lt; 11) |</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;           (func32 &lt;&lt; 8) | (offset &amp; 0xfc) | ((uint32_t)0x80000000)); <span class="comment">//yes, this line is copied from osdev</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(PCI_ADDRESS_PORT, addr);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordflow">return</span> ((<a class="code" href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">inl</a>(PCI_DATA_PORT) &gt;&gt; ((offset &amp; 2) * 8)) &amp; 0xffff); <span class="comment">//this too... I&#39;m too lazy to write them</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">static</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    uint8_t <span class="keyword">class</span>, subclass;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *name;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;} pci_device_type_strings[] = {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    {0x00, 0x00, <span class="stringliteral">&quot;Неизвестное устройство&quot;</span>},</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    {0x00, 0x01, <span class="stringliteral">&quot;VGA-совместимое устройство&quot;</span>},</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    {0x01, 0x00, <span class="stringliteral">&quot;Контроллер шины SCSI&quot;</span>},</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    {0x01, 0x01, <span class="stringliteral">&quot;IDE-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    {0x01, 0x02, <span class="stringliteral">&quot;Контроллер гибких дисков&quot;</span>},</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    {0x01, 0x03, <span class="stringliteral">&quot;Контроллер шины IPI&quot;</span>},</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    {0x01, 0x04, <span class="stringliteral">&quot;RAID-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {0x01, 0x05, <span class="stringliteral">&quot;Контроллер АТА&quot;</span>},</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    {0x01, 0x06, <span class="stringliteral">&quot;SATA-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    {0x01, 0x07, <span class="stringliteral">&quot;Последовательный подключенный контроллер SCSI&quot;</span>},</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    {0x01, 0x80, <span class="stringliteral">&quot;Другой контроллер запоминающих устройств&quot;</span>},</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    {0x02, 0x00, <span class="stringliteral">&quot;Ethernet-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    {0x02, 0x01, <span class="stringliteral">&quot;Контроллер Token Ring&quot;</span>},</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    {0x02, 0x02, <span class="stringliteral">&quot;FDDI-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    {0x02, 0x03, <span class="stringliteral">&quot;Контроллер банкомата&quot;</span>},</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    {0x02, 0x04, <span class="stringliteral">&quot;ISDN-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    {0x02, 0x05, <span class="stringliteral">&quot;Контроллер WorldFip&quot;</span>},</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    {0x02, 0x06, <span class="stringliteral">&quot;PICMG 2.14 Мультивычисления&quot;</span>},</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    {0x02, 0x80, <span class="stringliteral">&quot;Другой сетевой контроллер&quot;</span>},</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    {0x03, 0x00, <span class="stringliteral">&quot;VGA-совместимый контроллер&quot;</span>},</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    {0x03, 0x01, <span class="stringliteral">&quot;XGA-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    {0x03, 0x02, <span class="stringliteral">&quot;3D контроллер&quot;</span>},</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    {0x03, 0x80, <span class="stringliteral">&quot;Другой контроллер дисплея&quot;</span>},</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    {0x04, 0x00, <span class="stringliteral">&quot;Видео-устройство&quot;</span>},</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    {0x04, 0x01, <span class="stringliteral">&quot;Аудио-устройство&quot;</span>},</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    {0x04, 0x02, <span class="stringliteral">&quot;Компьютерное телефонное устройство&quot;</span>},</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    {0x04, 0x80, <span class="stringliteral">&quot;Другое мультимедийное устройство&quot;</span>},</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    {0x05, 0x00, <span class="stringliteral">&quot;Контроллер оперативной памяти&quot;</span>},</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    {0x05, 0x01, <span class="stringliteral">&quot;Флэш-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    {0x05, 0x80, <span class="stringliteral">&quot;Другой контроллер памяти&quot;</span>},</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    {0x06, 0x00, <span class="stringliteral">&quot;Хост-мост&quot;</span>},</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    {0x06, 0x01, <span class="stringliteral">&quot;ISA мост&quot;</span>},</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    {0x06, 0x02, <span class="stringliteral">&quot;EISA мост&quot;</span>},</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    {0x06, 0x03, <span class="stringliteral">&quot;MCA мост&quot;</span>},</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    {0x06, 0x04, <span class="stringliteral">&quot;PCI-to-PCI мост&quot;</span>},</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    {0x06, 0x05, <span class="stringliteral">&quot;PCMCIA мост&quot;</span>},</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    {0x06, 0x06, <span class="stringliteral">&quot;NuBus мост&quot;</span>},</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    {0x06, 0x07, <span class="stringliteral">&quot;CardBus мост&quot;</span>},</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    {0x06, 0x08, <span class="stringliteral">&quot;RACEWay мост&quot;</span>},</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    {0x06, 0x09, <span class="stringliteral">&quot;PCI-to-PCI мост (Полупрозрачный)&quot;</span>},</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    {0x06, 0x0A, <span class="stringliteral">&quot;Хост-мост InfiniBand-PCI&quot;</span>},</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    {0x06, 0x80, <span class="stringliteral">&quot;Другое устройство моста&quot;</span>},</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    {0x07, 0x00, <span class="stringliteral">&quot;Последовательный контроллер&quot;</span>},</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    {0x07, 0x01, <span class="stringliteral">&quot;Параллельный порт&quot;</span>},</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    {0x07, 0x02, <span class="stringliteral">&quot;Многопортовый последовательный контроллер&quot;</span>},</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    {0x07, 0x03, <span class="stringliteral">&quot;Универсальный модем&quot;</span>},</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    {0x07, 0x04, <span class="stringliteral">&quot;IEEE 488.1/2 (GPIB) контроллер&quot;</span>},</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    {0x07, 0x05, <span class="stringliteral">&quot;Интеллектуальная карточка&quot;</span>},</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    {0x07, 0x80, <span class="stringliteral">&quot;Другое устройство связи&quot;</span>},</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    {0x08, 0x00, <span class="stringliteral">&quot;Программируемый контроллер прерываний&quot;</span>},</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    {0x08, 0x01, <span class="stringliteral">&quot;Контроллер прямого доступа к памяти&quot;</span>},</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    {0x08, 0x02, <span class="stringliteral">&quot;Системный таймер&quot;</span>},</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    {0x08, 0x03, <span class="stringliteral">&quot;Часы реального времени&quot;</span>},</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    {0x08, 0x04, <span class="stringliteral">&quot;Универсальный контроллер PCI с возможностью горячей замены&quot;</span>},</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    {0x08, 0x80, <span class="stringliteral">&quot;Другая системная периферия&quot;</span>},</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    {0x09, 0x00, <span class="stringliteral">&quot;Контроллер клавиатуры&quot;</span>},</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    {0x09, 0x01, <span class="stringliteral">&quot;Цифровой преобразователь&quot;</span>},</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    {0x09, 0x02, <span class="stringliteral">&quot;Контроллер мыши&quot;</span>},</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    {0x09, 0x03, <span class="stringliteral">&quot;Контроллер сканера&quot;</span>},</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    {0x09, 0x04, <span class="stringliteral">&quot;Контроллер игрового порта&quot;</span>},</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    {0x09, 0x80, <span class="stringliteral">&quot;Другой контроллер ввода&quot;</span>},</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    {0x0A, 0x00, <span class="stringliteral">&quot;Универсальная док-станция&quot;</span>},</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    {0x0A, 0x80, <span class="stringliteral">&quot;Другая док-станция&quot;</span>},</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    {0x0B, 0x00, <span class="stringliteral">&quot;Процессор i386&quot;</span>},</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    {0x0B, 0x01, <span class="stringliteral">&quot;Процессор i486&quot;</span>},</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    {0x0B, 0x02, <span class="stringliteral">&quot;Процессор Pentium&quot;</span>},</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    {0x0B, 0x10, <span class="stringliteral">&quot;Процессор Alpha&quot;</span>},</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    {0x0B, 0x20, <span class="stringliteral">&quot;Процессор PowerPC&quot;</span>},</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    {0x0B, 0x30, <span class="stringliteral">&quot;Процессор MIPS&quot;</span>},</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    {0x0B, 0x40, <span class="stringliteral">&quot;Со-процессор&quot;</span>},</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    {0x0C, 0x00, <span class="stringliteral">&quot;Контроллер FireWire&quot;</span>},</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    {0x0C, 0x01, <span class="stringliteral">&quot;Контроллер ACCESS.bus&quot;</span>},</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    {0x0C, 0x02, <span class="stringliteral">&quot;SSA Контроллер&quot;</span>},</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    {0x0C, 0x03, <span class="stringliteral">&quot;USB Контроллер&quot;</span>},</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    {0x0C, 0x04, <span class="stringliteral">&quot;Волоконный канал&quot;</span>},</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    {0x0C, 0x05, <span class="stringliteral">&quot;SMBus&quot;</span>},</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    {0x0C, 0x06, <span class="stringliteral">&quot;InfiniBand&quot;</span>},</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    {0x0C, 0x07, <span class="stringliteral">&quot;Интерфейс IPMI SMIC&quot;</span>},</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    {0x0C, 0x08, <span class="stringliteral">&quot;Интерфейс SERCOS&quot;</span>},</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    {0x0C, 0x09, <span class="stringliteral">&quot;Интерфейс CANbus&quot;</span>},</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    {0x0D, 0x00, <span class="stringliteral">&quot;iRDA-совместимый контроллер&quot;</span>},</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    {0x0D, 0x01, <span class="stringliteral">&quot;Потребительский ИК-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    {0x0D, 0x10, <span class="stringliteral">&quot;RF Контроллер&quot;</span>},</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    {0x0D, 0x11, <span class="stringliteral">&quot;Bluetooth Контроллер&quot;</span>},</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    {0x0D, 0x12, <span class="stringliteral">&quot;Broadband Контроллер&quot;</span>},</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    {0x0D, 0x20, <span class="stringliteral">&quot;802.11a (Wi-Fi) Ethernet-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    {0x0D, 0x21, <span class="stringliteral">&quot;802.11b (Wi-Fi) Ethernet-контроллер&quot;</span>},</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    {0x0D, 0x80, <span class="stringliteral">&quot;Другой беспроводной контроллер&quot;</span>},</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    {0x00, 0x00, NULL} <span class="comment">// Конец</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;};</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="keywordflow">if</span>(pci_reach_end(dev))</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keywordflow">return</span> dev_zero;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordflow">for</span>(int32_t <span class="keyword">function</span> = 1; <span class="keyword">function</span> &lt; FUNCTION_PER_DEVICE; <span class="keyword">function</span>++) {</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keywordflow">if</span>(pci_read(dev,PCI_VENDOR_ID) != PCI_NONE) {</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;            t = pci_scan_function(vendor_id, device_id, bus, device, <span class="keyword">function</span>, device_type);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            <span class="keywordflow">if</span>(t.bits)</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                <span class="keywordflow">return</span> t;</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        }</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    }</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keywordflow">return</span> dev_zero;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;}</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> pci_scan_bus(uint16_t vendor_id, uint16_t device_id, uint32_t bus, int32_t device_type) {</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keywordflow">for</span>(int32_t device = 0; device &lt; DEVICE_PER_BUS; device++) {</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> t = pci_scan_device(vendor_id, device_id, bus, device, device_type);</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <span class="keywordflow">if</span>(t.bits)</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            <span class="keywordflow">return</span> t;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    }</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordflow">return</span> dev_zero;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;}</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> pci_get_device(uint16_t vendor_id, uint16_t device_id, int32_t device_type) {</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> t = pci_scan_bus(vendor_id, device_id, 0, device_type);</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordflow">if</span>(t.bits){</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        <span class="keywordflow">return</span> t;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    }</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="comment">// Handle multiple pci host controllers</span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordflow">if</span>(pci_reach_end(dev_zero)) {</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="comment">//qemu_log(&quot;PCI Get device failed&quot;);</span></div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    }</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keywordflow">for</span>(int32_t <span class="keyword">function</span> = 1; <span class="keyword">function</span> &lt; FUNCTION_PER_DEVICE; <span class="keyword">function</span>++) {</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        <a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> dev = {0};</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        dev.function_num = <span class="keyword">function</span>;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        <span class="keywordflow">if</span>(pci_read(dev, PCI_VENDOR_ID) == PCI_NONE)</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        t = pci_scan_bus(vendor_id, device_id, <span class="keyword">function</span>, device_type);</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        <span class="keywordflow">if</span>(t.bits){</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            <span class="keywordflow">return</span> t;</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        }</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    }</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> err_dev = {0};</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    err_dev.bits = -1;</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    <span class="keywordflow">return</span> err_dev;</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;}</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="keywordtype">void</span> pci_write(<a class="code" href="../../d7/dfa/unionpci__dev.html">pci_dev_t</a> dev, uint32_t field, uint32_t value) {</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    dev.field_num = (field &amp; 0xFC) &gt;&gt; 2;</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    dev.enable = 1;</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="comment">// Tell where we want to write</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(PCI_CONFIG_ADDRESS, dev.bits);</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="comment">// Value to write</span></div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(PCI_CONFIG_DATA, value);</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;}</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="keywordtype">void</span> checkAllBuses() {</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <span class="keywordflow">for</span> (uint16_t bus = 0; bus &lt; 256; bus++) {</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        <span class="keywordflow">for</span> (uint8_t device = 0; device &lt; 32; device++) {</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;            <span class="keywordflow">for</span> (uint8_t <span class="keyword">function</span> = 1; <span class="keyword">function</span> &lt; 8; <span class="keyword">function</span>++) {</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;                uint16_t <span class="keywordtype">id</span> = getDeviceID(bus, device, <span class="keyword">function</span>);</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                <span class="keywordflow">if</span> (<span class="keywordtype">id</span> != 0 &amp; <span class="keywordtype">id</span> != 65535 ) {</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                    registerDevice(getVendorID(bus, device, <span class="keyword">function</span>),<span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                }</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;            }</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        }</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    }</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;}</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="keywordtype">void</span> pci_init() {</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <span class="comment">// Init size map</span></div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    pci_size_map[PCI_VENDOR_ID] =   2;</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    pci_size_map[PCI_DEVICE_ID] =   2;</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    pci_size_map[PCI_COMMAND]   =   2;</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    pci_size_map[PCI_STATUS]    =   2;</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    pci_size_map[PCI_SUBCLASS]  =   1;</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    pci_size_map[PCI_CLASS]     =   1;</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    pci_size_map[PCI_CACHE_LINE_SIZE]   = 1;</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    pci_size_map[PCI_LATENCY_TIMER]     = 1;</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    pci_size_map[PCI_HEADER_TYPE] = 1;</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    pci_size_map[PCI_BIST] = 1;</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    pci_size_map[PCI_BAR0] = 4;</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    pci_size_map[PCI_BAR1] = 4;</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    pci_size_map[PCI_BAR2] = 4;</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    pci_size_map[PCI_BAR3] = 4;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    pci_size_map[PCI_BAR4] = 4;</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    pci_size_map[PCI_BAR5] = 4;</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    pci_size_map[PCI_INTERRUPT_LINE]    = 1;</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    pci_size_map[PCI_SECONDARY_BUS]     = 1;</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="keywordflow">if</span> (scanToInit){</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        checkAllBuses();</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    }</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    qemu_log(<span class="stringliteral">&quot;PCI installed&quot;</span>);</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;}</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="keyword">static</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    uint16_t vendor;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *name;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;} pci_vendor_name_strings[] = {</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    {0x8086, <span class="stringliteral">&quot;Intel Corporation&quot;</span>},</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    {0x10DE, <span class="stringliteral">&quot;NVIDIA&quot;</span>},</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    {0x0014, <span class="stringliteral">&quot;Loongson Technology Corporation Limited&quot;</span>},</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    {0x001C, <span class="stringliteral">&quot;PEAK-System Technik GmbH&quot;</span>},</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    {0x00B0, <span class="stringliteral">&quot;Blue Origin, LLC&quot;</span>},</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    {0x00BB, <span class="stringliteral">&quot;Bloombase&quot;</span>},</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    {0x0123, <span class="stringliteral">&quot;General Dynamics Mission Systems, Inc.&quot;</span>},</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    {0x6688, <span class="stringliteral">&quot;GUANGZHOU MAXSUN INFORMATION TECHNOLOGY CO., LTD.&quot;</span>},</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    {0x751A, <span class="stringliteral">&quot;Tesla Inc.&quot;</span>},</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    {0x8080, <span class="stringliteral">&quot;StoreSwift Technology Co., Ltd.&quot;</span>},</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    {0x1013, <span class="stringliteral">&quot;Cirrus Logic, Inc.&quot;</span>},</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    {0x1014, <span class="stringliteral">&quot;IBM&quot;</span>},</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    {0x101E, <span class="stringliteral">&quot;American Megatrends Incorporated&quot;</span>},</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    {0x1028, <span class="stringliteral">&quot;Dell Computer Corporation&quot;</span>},</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    {0x102B, <span class="stringliteral">&quot;Matrox Graphics Inc.&quot;</span>},</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    {0xA23B, <span class="stringliteral">&quot;Silicon Integrated Systems&quot;</span>},</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    {0x103C, <span class="stringliteral">&quot;Hewlett Packard&quot;</span>},</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    {0x1043, <span class="stringliteral">&quot;Asustek Computer Inc.&quot;</span>},</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    {0x104C, <span class="stringliteral">&quot;Texas Instruments&quot;</span>},</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    {0x104D, <span class="stringliteral">&quot;Sony Group Corporation&quot;</span>},</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    {0x1054, <span class="stringliteral">&quot;Hitachi, Ltd.&quot;</span>},</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    {0x1002, <span class="stringliteral">&quot;[AMD] Advanced Micro Devices Inc.&quot;</span>},</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    {0x1022, <span class="stringliteral">&quot;[AMD] Advanced Micro Devices Inc.&quot;</span>},</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    {0x10EC, <span class="stringliteral">&quot;Realtek Semiconductor Corp.&quot;</span>},</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    {0x1039, <span class="stringliteral">&quot;[SiS] Silicon Integrated Systems&quot;</span>},</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    {0x0B05, <span class="stringliteral">&quot;[ASUS] ASUSTek Computer, Inc.&quot;</span>},</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    {0x80EE, <span class="stringliteral">&quot;[VirtualBox] InnoTek Systemberatung GmbH&quot;</span>},</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    {0x1234, <span class="stringliteral">&quot;[QEMU] Technical Corp&quot;</span>},</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    {0x106B, <span class="stringliteral">&quot;Apple Inc.&quot;</span>},</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    {0x1AF4, <span class="stringliteral">&quot;Red Hat, Inc.&quot;</span>},</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    {0, NULL}</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;};</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
+<div class="line"><a name="l00203"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#aa42152d97aae335c95c4bbf897a926f0">  203</a></span>&#160;uint8_t <a class="code" href="../../d1/de8/pci_8c.html#aa42152d97aae335c95c4bbf897a926f0">pci_get_class</a>(uint8_t bus, uint8_t slot, uint8_t <span class="keyword">function</span>) {</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="comment">/* Сдвигаем, чтобы оставить только нужные данные в переменной */</span></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="keywordflow">return</span> (uint8_t) (<a class="code" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a>(bus, slot, <span class="keyword">function</span>, 10) &gt;&gt; 8);</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;}</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#af064641f19af68e5534d51f2a5db2548">  216</a></span>&#160;uint8_t <a class="code" href="../../d1/de8/pci_8c.html#af064641f19af68e5534d51f2a5db2548">pci_get_subclass</a>(uint8_t bus, uint8_t slot, uint8_t <span class="keyword">function</span>) {</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    <span class="comment">/* Сдвигаем, чтобы оставить только нужные данные в переменной */</span></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="keywordflow">return</span> (uint8_t) <a class="code" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a>(bus, slot, <span class="keyword">function</span>, 10);</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;}</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160; </div>
+<div class="line"><a name="l00229"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#a576d1e6f360a55679b8dbfad81e6ce6a">  229</a></span>&#160;uint8_t <a class="code" href="../../d1/de8/pci_8c.html#a576d1e6f360a55679b8dbfad81e6ce6a">pci_get_hdr_type</a>(uint8_t bus, uint8_t slot, uint8_t <span class="keyword">function</span>) {</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    <span class="comment">/* Сдвигаем, чтобы оставить только нужные данные в переменной */</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <span class="keywordflow">return</span> (uint8_t) <a class="code" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a>(bus, slot, <span class="keyword">function</span>, 7);</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;}</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
+<div class="line"><a name="l00242"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#a5c9d7b90a196096b221f0d00ef88554a">  242</a></span>&#160;uint16_t <a class="code" href="../../d1/de8/pci_8c.html#a5c9d7b90a196096b221f0d00ef88554a">pci_get_vendor</a>(uint8_t bus, uint8_t slot, uint8_t <span class="keyword">function</span>) {</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    <span class="comment">/* Сдвигаем, чтобы оставить только нужные данные в переменной */</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a>(bus, slot, <span class="keyword">function</span>, 0);</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;}</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00255"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#ab03b13e7b31c5fab3a845cf2ba4ce6b8">  255</a></span>&#160;uint16_t <a class="code" href="../../d1/de8/pci_8c.html#ab03b13e7b31c5fab3a845cf2ba4ce6b8">pci_get_device</a>(uint8_t bus, uint8_t slot, uint8_t <span class="keyword">function</span>) {</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="comment">/* Сдвигаем, чтобы оставить только нужные данные в переменной */</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a>(bus, slot, <span class="keyword">function</span>, 2);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;}</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
+<div class="line"><a name="l00267"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#a464bee59a37a104d2dd66f632514bf85">  267</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="../../d1/de8/pci_8c.html#a464bee59a37a104d2dd66f632514bf85">pci_get_device_type</a>(uint8_t <span class="keyword">class</span>, uint8_t subclass) {</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0; pci_device_type_strings[i].name != NULL; i++)</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        <span class="keywordflow">if</span> (pci_device_type_strings[i].<span class="keyword">class</span> == <span class="keyword">class</span> &amp;&amp; pci_device_type_strings[i].subclass == subclass)</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;            <span class="keywordflow">return</span> pci_device_type_strings[i].name;</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    <span class="keywordflow">return</span> NULL;</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;}</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160; </div>
+<div class="line"><a name="l00280"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#a76fae8180a8283f649f152862026f8e1">  280</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="../../d1/de8/pci_8c.html#a76fae8180a8283f649f152862026f8e1">pci_get_vendor_name</a>(uint16_t vendor) {</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0; pci_vendor_name_strings[i].name != NULL; i++)</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        <span class="keywordflow">if</span> (pci_vendor_name_strings[i].vendor == vendor)</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            <span class="keywordflow">return</span> pci_vendor_name_strings[i].name;</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    <span class="keywordflow">return</span> <span class="stringliteral">&quot;unknown&quot;</span>;</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;}</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160; </div>
+<div class="line"><a name="l00301"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#a0dcc9a4e6cb41b128ad8532a19097cff">  301</a></span>&#160;uint32_t <a class="code" href="../../d1/de8/pci_8c.html#a0dcc9a4e6cb41b128ad8532a19097cff">pci_get_bar</a>(uint8_t hdrtype, uint8_t bus, uint8_t slot, uint8_t func, uint8_t bar_number, uint8_t *bar_type) {</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    <span class="keywordflow">if</span> ((hdrtype &amp; ~0x80) == 0) {</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        uint8_t off = bar_number * 2;</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        uint16_t bar_low  = <a class="code" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a>(bus, slot, func, 0x10 + off);</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        uint16_t bar_high = <a class="code" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a>(bus, slot, func, 0x10 + off + 1);</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        <span class="keywordflow">if</span> ((bar_low &amp; 1) == 0) {</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;            <span class="keywordflow">if</span> ((bar_low &amp; ~0b110) == 0x00) <span class="comment">// 32 бит. 64 бит нужно добавить!</span></div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;            {</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                uint32_t ret = (uint32_t) bar_low | (uint32_t) (bar_high &lt;&lt; 16);</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;                ret &amp;= ~0b1111;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                *bar_type = 0;</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;            }</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        }</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        <span class="keywordflow">if</span> ((bar_low &amp; 1) == 1) {</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;            uint32_t ret = (uint32_t)bar_low | (uint32_t)(bar_high &lt;&lt; 16);</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;            ret &amp;= ~0b11;</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;            *bar_type = 1;</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;            <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        }</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    }</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;}</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160; </div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;<span class="keywordtype">void</span> pci_write(uint8_t bus, uint8_t slot, uint8_t func, uint32_t offset, uint32_t value) {</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    uint32_t addr = (bus &lt;&lt; 16) | (slot &lt;&lt; 11) | (func &lt;&lt; 8) | (offset &amp; 0xfc) | ((uint32_t)0x80000000);</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    <span class="comment">// uint32_t addr = 0x80000000 | (bus &lt;&lt; 16) | (slot &lt;&lt; 11) | (func &lt;&lt; 8) | offset;</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    <span class="comment">// qemu_log(&quot;PCI Write to: %x; Value: %d (%x)&quot;, addr, value, value);</span></div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    <span class="comment">// Tell where we want to write</span></div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(PCI_ADDRESS_PORT, addr);</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    <span class="comment">// Value to write</span></div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    <a class="code" href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a>(PCI_DATA_PORT, value);</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    <span class="comment">// qemu_log(&quot;Ok.&quot;);</span></div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;}</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
+<div class="line"><a name="l00345"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#a1b69d81b60da8b097808c1ac8bb4eba3">  345</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d1/de8/pci_8c.html#a1b69d81b60da8b097808c1ac8bb4eba3">pci_find_device</a>(uint16_t vendor, uint16_t device, uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret) {</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    <span class="keywordflow">for</span> (uint32_t bus=0; bus&lt;256; bus++)</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        <span class="keywordflow">for</span> (uint32_t slot=0; slot&lt;32; slot++)</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;            <span class="keywordflow">for</span> (uint32_t func=0; func&lt;8; func++)</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                <span class="keywordflow">if</span> (<a class="code" href="../../d1/de8/pci_8c.html#ab03b13e7b31c5fab3a845cf2ba4ce6b8">pci_get_device</a>(bus, slot, func) == device &amp;&amp; <a class="code" href="../../d1/de8/pci_8c.html#a5c9d7b90a196096b221f0d00ef88554a">pci_get_vendor</a>(bus, slot, func) == vendor) {</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                    *bus_ret  = bus;</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                    *slot_ret = slot;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                    *func_ret = func;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                    <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                }</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    *bus_ret = *slot_ret = *func_ret = 0xFF;</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;}</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
+<div class="line"><a name="l00361"></a><span class="lineno"><a class="line" href="../../d1/de8/pci_8c.html#ad6643737bb4e97f6d65161a40cfcd1cc">  361</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d1/de8/pci_8c.html#ad6643737bb4e97f6d65161a40cfcd1cc">pci_print_list</a>() {</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    uint8_t clid;</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    uint8_t sclid;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    uint8_t hdrtype;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    uint16_t vendor;</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    uint16_t device;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;PCI список устройств:\n&quot;</span>);</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    <span class="keywordflow">for</span> (uint32_t bus = 0; bus &lt; 256; bus++) {</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        <span class="keywordflow">for</span> (uint32_t slot = 0; slot &lt; 32; slot++) {</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;            uint32_t func = 0;</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160; </div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;            clid = <a class="code" href="../../d1/de8/pci_8c.html#aa42152d97aae335c95c4bbf897a926f0">pci_get_class</a>(bus, slot, func);</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;            sclid = <a class="code" href="../../d1/de8/pci_8c.html#af064641f19af68e5534d51f2a5db2548">pci_get_subclass</a>(bus, slot, func);</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;            vendor = <a class="code" href="../../d1/de8/pci_8c.html#a5c9d7b90a196096b221f0d00ef88554a">pci_get_vendor</a>(bus, slot, func);</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;            hdrtype = <a class="code" href="../../d1/de8/pci_8c.html#a576d1e6f360a55679b8dbfad81e6ce6a">pci_get_hdr_type</a>(bus, slot, func);</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;            device = <a class="code" href="../../d1/de8/pci_8c.html#ab03b13e7b31c5fab3a845cf2ba4ce6b8">pci_get_device</a>(bus, slot, func);</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;            <span class="keywordflow">if</span> (clid != 0xFF &amp;&amp; vendor != 0xFFFF) {</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                qemu_log(<span class="stringliteral">&quot;%u:%u.%u %s: %s (%x), девайс: %x&quot;</span>, bus, slot, func, <a class="code" href="../../d1/de8/pci_8c.html#a464bee59a37a104d2dd66f632514bf85">pci_get_device_type</a>(clid, sclid), <a class="code" href="../../d1/de8/pci_8c.html#a76fae8180a8283f649f152862026f8e1">pci_get_vendor_name</a>(vendor),vendor, device);</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\t%u:%u.%u %s: %s (%x), девайс: %x\n&quot;</span>, bus, slot, func, <a class="code" href="../../d1/de8/pci_8c.html#a464bee59a37a104d2dd66f632514bf85">pci_get_device_type</a>(clid, sclid), <a class="code" href="../../d1/de8/pci_8c.html#a76fae8180a8283f649f152862026f8e1">pci_get_vendor_name</a>(vendor),vendor, device);</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;            }</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160; </div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;            <span class="keywordflow">if</span> ((hdrtype &amp; 0x80) == 0) {</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;                <span class="keywordflow">for</span> (func = 1; func &lt; 8; func++) {</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;                    clid = <a class="code" href="../../d1/de8/pci_8c.html#aa42152d97aae335c95c4bbf897a926f0">pci_get_class</a>(bus, slot, func);</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;                    sclid = <a class="code" href="../../d1/de8/pci_8c.html#af064641f19af68e5534d51f2a5db2548">pci_get_subclass</a>(bus, slot, func);</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                    vendor = <a class="code" href="../../d1/de8/pci_8c.html#a5c9d7b90a196096b221f0d00ef88554a">pci_get_vendor</a>(bus, slot, func);</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;                    device = <a class="code" href="../../d1/de8/pci_8c.html#ab03b13e7b31c5fab3a845cf2ba4ce6b8">pci_get_device</a>(bus, slot, func);</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160; </div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;                    <span class="keywordflow">if</span> (clid != 0xFF &amp;&amp; vendor != 0xFFFF) {</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;                        qemu_log(<span class="stringliteral">&quot;%u:%u.%u %s: %s (%x), девайс: %x&quot;</span>, bus, slot, func, <a class="code" href="../../d1/de8/pci_8c.html#a464bee59a37a104d2dd66f632514bf85">pci_get_device_type</a>(clid, sclid), <a class="code" href="../../d1/de8/pci_8c.html#a76fae8180a8283f649f152862026f8e1">pci_get_vendor_name</a>(vendor),vendor, device);</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;                        <a class="code" href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a>(<span class="stringliteral">&quot;\t%u:%u.%u %s: %s (%x), девайс: %x\n&quot;</span>, bus, slot, func, <a class="code" href="../../d1/de8/pci_8c.html#a464bee59a37a104d2dd66f632514bf85">pci_get_device_type</a>(clid, sclid), <a class="code" href="../../d1/de8/pci_8c.html#a76fae8180a8283f649f152862026f8e1">pci_get_vendor_name</a>(vendor),vendor, device);</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;                    }</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;                }</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;            }</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        }</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;    }</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;}</div>
+<div class="ttc" id="apci_8c_html_a0dcc9a4e6cb41b128ad8532a19097cff"><div class="ttname"><a href="../../d1/de8/pci_8c.html#a0dcc9a4e6cb41b128ad8532a19097cff">pci_get_bar</a></div><div class="ttdeci">uint32_t pci_get_bar(uint8_t hdrtype, uint8_t bus, uint8_t slot, uint8_t func, uint8_t bar_number, uint8_t *bar_type)</div><div class="ttdoc">[PCI] ???</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00301">pci.c:301</a></div></div>
+<div class="ttc" id="apci_8c_html_a142db44f668cf69c27a771e1cf3659d4"><div class="ttname"><a href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a></div><div class="ttdeci">uint16_t pci_read_confspc_word(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)</div><div class="ttdoc">[PCI] Чтение 16-битных полей из пространства механизма конфигураций 1</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00028">pci.c:28</a></div></div>
+<div class="ttc" id="apci_8c_html_a1b69d81b60da8b097808c1ac8bb4eba3"><div class="ttname"><a href="../../d1/de8/pci_8c.html#a1b69d81b60da8b097808c1ac8bb4eba3">pci_find_device</a></div><div class="ttdeci">void pci_find_device(uint16_t vendor, uint16_t device, uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret)</div><div class="ttdoc">[PCI] Поиск устройства по ID-поставшика и устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00345">pci.c:345</a></div></div>
+<div class="ttc" id="apci_8c_html_a464bee59a37a104d2dd66f632514bf85"><div class="ttname"><a href="../../d1/de8/pci_8c.html#a464bee59a37a104d2dd66f632514bf85">pci_get_device_type</a></div><div class="ttdeci">const char * pci_get_device_type(uint8_t class, uint8_t subclass)</div><div class="ttdoc">[PCI] Получение классификации устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00267">pci.c:267</a></div></div>
+<div class="ttc" id="apci_8c_html_a576d1e6f360a55679b8dbfad81e6ce6a"><div class="ttname"><a href="../../d1/de8/pci_8c.html#a576d1e6f360a55679b8dbfad81e6ce6a">pci_get_hdr_type</a></div><div class="ttdeci">uint8_t pci_get_hdr_type(uint8_t bus, uint8_t slot, uint8_t function)</div><div class="ttdoc">[PCI] Получение HDR-тип устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00229">pci.c:229</a></div></div>
+<div class="ttc" id="apci_8c_html_a5c9d7b90a196096b221f0d00ef88554a"><div class="ttname"><a href="../../d1/de8/pci_8c.html#a5c9d7b90a196096b221f0d00ef88554a">pci_get_vendor</a></div><div class="ttdeci">uint16_t pci_get_vendor(uint8_t bus, uint8_t slot, uint8_t function)</div><div class="ttdoc">[PCI] Получение ID-поставщика</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00242">pci.c:242</a></div></div>
+<div class="ttc" id="apci_8c_html_a76fae8180a8283f649f152862026f8e1"><div class="ttname"><a href="../../d1/de8/pci_8c.html#a76fae8180a8283f649f152862026f8e1">pci_get_vendor_name</a></div><div class="ttdeci">const char * pci_get_vendor_name(uint16_t vendor)</div><div class="ttdoc">[PCI] Получение названия поставщика</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00280">pci.c:280</a></div></div>
+<div class="ttc" id="apci_8c_html_aa42152d97aae335c95c4bbf897a926f0"><div class="ttname"><a href="../../d1/de8/pci_8c.html#aa42152d97aae335c95c4bbf897a926f0">pci_get_class</a></div><div class="ttdeci">uint8_t pci_get_class(uint8_t bus, uint8_t slot, uint8_t function)</div><div class="ttdoc">[PCI] Получение основной категории устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00203">pci.c:203</a></div></div>
+<div class="ttc" id="apci_8c_html_ab03b13e7b31c5fab3a845cf2ba4ce6b8"><div class="ttname"><a href="../../d1/de8/pci_8c.html#ab03b13e7b31c5fab3a845cf2ba4ce6b8">pci_get_device</a></div><div class="ttdeci">uint16_t pci_get_device(uint8_t bus, uint8_t slot, uint8_t function)</div><div class="ttdoc">[PCI] Получение ID-Устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00255">pci.c:255</a></div></div>
+<div class="ttc" id="apci_8c_html_ad6643737bb4e97f6d65161a40cfcd1cc"><div class="ttname"><a href="../../d1/de8/pci_8c.html#ad6643737bb4e97f6d65161a40cfcd1cc">pci_print_list</a></div><div class="ttdeci">void pci_print_list()</div><div class="ttdoc">[PCI] Ищет все устройства и выводит на экран</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00361">pci.c:361</a></div></div>
+<div class="ttc" id="apci_8c_html_af064641f19af68e5534d51f2a5db2548"><div class="ttname"><a href="../../d1/de8/pci_8c.html#af064641f19af68e5534d51f2a5db2548">pci_get_subclass</a></div><div class="ttdeci">uint8_t pci_get_subclass(uint8_t bus, uint8_t slot, uint8_t function)</div><div class="ttdoc">[PCI] Получение под-категории устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00216">pci.c:216</a></div></div>
+<div class="ttc" id="aports_8c_html_a952966e2341f9e573b4a002aca5bb21e"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">inl</a></div><div class="ttdeci">uint32_t inl(uint16_t port)</div><div class="ttdoc">Чтение 32х битного числа</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00030">ports.c:30</a></div></div>
+<div class="ttc" id="aports_8c_html_a9bbef83a73fb7194de515986382bbcfc"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a></div><div class="ttdeci">void outl(uint16_t port, uint32_t val)</div><div class="ttdoc">Запись 32х битного числа в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00019">ports.c:19</a></div></div>
+<div class="ttc" id="atty_8c_html_a3a9ec5bcc1f8f7ca830e80c491e4512f"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f">tty_printf</a></div><div class="ttdeci">void tty_printf(char *text,...)</div><div class="ttdoc">Вывод форматированной строки на экран (аналог printf)</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00623">tty.c:623</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="aunionpci__dev_html"><div class="ttname"><a href="../../d7/dfa/unionpci__dev.html">pci_dev</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d9/d97/pci_8h_source.html#l00047">pci.h:47</a></div></div>
-<div class="ttc" id="aports_8c_html_a9bbef83a73fb7194de515986382bbcfc"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc">outl</a></div><div class="ttdeci">void outl(uint16_t port, uint32_t val)</div><div class="ttdoc">Запись 32х битного числа в порт</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00046">ports.c:46</a></div></div>
-<div class="ttc" id="aports_8c_html_a2e1e8e2c5724c1e8fd2dff2eada06479"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a2e1e8e2c5724c1e8fd2dff2eada06479">inb</a></div><div class="ttdeci">uint8_t inb(uint16_t port)</div><div class="ttdoc">Получение одного байта из порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00031">ports.c:31</a></div></div>
-<div class="ttc" id="aports_8c_html_a952966e2341f9e573b4a002aca5bb21e"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a952966e2341f9e573b4a002aca5bb21e">inl</a></div><div class="ttdeci">uint32_t inl(uint16_t port)</div><div class="ttdoc">Чтение 32х битного числа</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00057">ports.c:57</a></div></div>
-<div class="ttc" id="aports_8c_html_a1523588ef57e794dedb0e3b33ca52015"><div class="ttname"><a href="../../d0/d6e/ports_8c.html#a1523588ef57e794dedb0e3b33ca52015">ins</a></div><div class="ttdeci">uint16_t ins(uint16_t port)</div><div class="ttdoc">Чтение word из порта</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d6e/ports_8c_source.html#l00072">ports.c:72</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_79cdf04718782f286da113044bf76c98.html">drivers</a></li><li class="navelem"><b>pci.c</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 30 Сен 2022 10:12:16. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_294885e234569f555c14a529bc5dac14.html">drv</a></li><li class="navelem"><a class="el" href="../../d1/de8/pci_8c.html">pci.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 6 Апр 2023 01:40:33. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

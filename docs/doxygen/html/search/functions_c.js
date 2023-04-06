@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['tty_5fbackspace_251',['tty_backspace',['../dc/d03/tty_8c.html#a8900ce14898a55f9340b642731f8cf38',1,'tty.c']]],
-  ['tty_5fchangestate_252',['tty_changeState',['../dc/d03/tty_8c.html#a85e66ecea71028f65c4417865599a547',1,'tty.c']]],
-  ['tty_5finit_253',['tty_init',['../dc/d03/tty_8c.html#a4728be463d9da03606ddd49379b14ec1',1,'tty.c']]],
-  ['tty_5fprintf_254',['tty_printf',['../dc/d03/tty_8c.html#a3a9ec5bcc1f8f7ca830e80c491e4512f',1,'tty.c']]],
-  ['tty_5fscroll_255',['tty_scroll',['../dc/d03/tty_8c.html#ac9271ceddd74126f7673e98bbd87309b',1,'tty.c']]],
-  ['tty_5fsetcolor_256',['tty_setcolor',['../dc/d03/tty_8c.html#a9d34baa3dbc9bf7228a036f9b4dad57a',1,'tty.c']]]
+  ['out_5fbyte_912',['out_byte',['../d1/dce/io__disp_8c.html#a1b38d0c1f286b740ae6ad17f334934fc',1,'io_disp.c']]],
+  ['out_5fword_913',['out_word',['../d1/dce/io__disp_8c.html#ac8f6053fb34988fce63c4bf21a186e42',1,'io_disp.c']]],
+  ['outl_914',['outl',['../d0/d6e/ports_8c.html#a9bbef83a73fb7194de515986382bbcfc',1,'ports.c']]],
+  ['outsl_915',['outsl',['../d0/d6e/ports_8c.html#a4e8f950edfd03bbb83a734632d8bfb54',1,'ports.c']]]
 ];

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SayoriOS: Структура DukeImageMeta</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.2.15</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -96,18 +97,21 @@ $(document).ready(function(){initNavTree('d0/d76/struct_duke_image_meta.html','.
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Поля данных</h2></td></tr>
-<tr class="memitem:aa9bfe731544591d785746a355b9915e0"><td class="memItemLeft" align="right" valign="top"><a id="aa9bfe731544591d785746a355b9915e0"></a>
-short&#160;</td><td class="memItemRight" valign="bottom"><b>width</b></td></tr>
-<tr class="separator:aa9bfe731544591d785746a355b9915e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0e2de58538a397302e9d94df22c9b33"><td class="memItemLeft" align="right" valign="top"><a id="ae0e2de58538a397302e9d94df22c9b33"></a>
-short&#160;</td><td class="memItemRight" valign="bottom"><b>height</b></td></tr>
-<tr class="separator:ae0e2de58538a397302e9d94df22c9b33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5020b05054fbb7cd30ba0a4662fa8e4b"><td class="memItemLeft" align="right" valign="top"><a id="a5020b05054fbb7cd30ba0a4662fa8e4b"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>data_length</b></td></tr>
-<tr class="separator:a5020b05054fbb7cd30ba0a4662fa8e4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af943bc321242f65f65a2480547079104"><td class="memItemLeft" align="right" valign="top"><a id="af943bc321242f65f65a2480547079104"></a>
-char&#160;</td><td class="memItemRight" valign="bottom"><b>alpha</b></td></tr>
-<tr class="separator:af943bc321242f65f65a2480547079104"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7cd56f245d5dbca367259b8695c3c6e"><td class="memItemLeft" align="right" valign="top"><a id="ad7cd56f245d5dbca367259b8695c3c6e"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>magic</b> [4]</td></tr>
+<tr class="separator:ad7cd56f245d5dbca367259b8695c3c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0eab1042455a2067c812ab8071d5376"><td class="memItemLeft" align="right" valign="top"><a id="ad0eab1042455a2067c812ab8071d5376"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>width</b></td></tr>
+<tr class="separator:ad0eab1042455a2067c812ab8071d5376"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81c9f8d0b8c3b49d770be14dbe9f0d37"><td class="memItemLeft" align="right" valign="top"><a id="a81c9f8d0b8c3b49d770be14dbe9f0d37"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>height</b></td></tr>
+<tr class="separator:a81c9f8d0b8c3b49d770be14dbe9f0d37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0cc3d1d5957cce931bb8e02130c6550"><td class="memItemLeft" align="right" valign="top"><a id="af0cc3d1d5957cce931bb8e02130c6550"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>data_length</b></td></tr>
+<tr class="separator:af0cc3d1d5957cce931bb8e02130c6550"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf5bb76caa419c0fa231dbd66c881084"><td class="memItemLeft" align="right" valign="top"><a id="acf5bb76caa419c0fa231dbd66c881084"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>alpha</b></td></tr>
+<tr class="separator:acf5bb76caa419c0fa231dbd66c881084"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
 <div class="textblock"><p>Структура изображения Duke. </p>
@@ -121,7 +125,7 @@ char&#160;</td><td class="memItemRight" valign="bottom"><b>alpha</b></td></tr>
   </dd>
 </dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d4/da7/imaging_8h_source.html">imaging.h</a> строка <a class="el" href="../../d4/da7/imaging_8h_source.html#l00018">18</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d4/da7/imaging_8h_source.html">imaging.h</a> строка <a class="el" href="../../d4/da7/imaging_8h_source.html#l00025">25</a></p>
 </div><hr/>Объявления и описания членов структуры находятся в файле:<ul>
 <li>kernel/include/io/<a class="el" href="../../d4/da7/imaging_8h_source.html">imaging.h</a></li>
 </ul>
@@ -131,9 +135,7 @@ char&#160;</td><td class="memItemRight" valign="bottom"><b>alpha</b></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../d0/d76/struct_duke_image_meta.html">DukeImageMeta</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 30 Сен 2022 10:12:16. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 6 Апр 2023 01:40:33. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

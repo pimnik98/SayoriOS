@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SayoriOS: Файл kernel/src/libk/base64.c</title>
+<title>SayoriOS: Файл kernel/src/lib/base64.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.2.15</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -89,7 +90,7 @@ $(document).ready(function(){initNavTree('db/d36/base64_8c.html','../../'); init
 </div><!--header-->
 <div class="contents">
 
-<p>Кодирование/Декодирование Base64.  
+<p>Base64 Encode/Decode.  
 <a href="#details">Подробнее...</a></p>
 <div class="textblock"><code>#include &lt;kernel.h&gt;</code><br />
 </div>
@@ -97,30 +98,30 @@ $(document).ready(function(){initNavTree('db/d36/base64_8c.html','../../'); init
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Функции</h2></td></tr>
-<tr class="memitem:aed25a17df04c4adc6245fc2121835c66"><td class="memItemLeft" align="right" valign="top">unsigned char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d36/base64_8c.html#aed25a17df04c4adc6245fc2121835c66">b64e</a> (const char *string)</td></tr>
-<tr class="memdesc:aed25a17df04c4adc6245fc2121835c66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Кодирует строку в Base64.  <a href="../../db/d36/base64_8c.html#aed25a17df04c4adc6245fc2121835c66">Подробнее...</a><br /></td></tr>
-<tr class="separator:aed25a17df04c4adc6245fc2121835c66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e75ebf27b734b47a7c88031753d4820"><td class="memItemLeft" align="right" valign="top">unsigned char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d36/base64_8c.html#a9e75ebf27b734b47a7c88031753d4820">b64d</a> (const char *data)</td></tr>
-<tr class="memdesc:a9e75ebf27b734b47a7c88031753d4820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Декодирует строку Base64.  <a href="../../db/d36/base64_8c.html#a9e75ebf27b734b47a7c88031753d4820">Подробнее...</a><br /></td></tr>
-<tr class="separator:a9e75ebf27b734b47a7c88031753d4820"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0d0b285812d65c40f99aa1ebbbdcf89"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d36/base64_8c.html#af0d0b285812d65c40f99aa1ebbbdcf89">b64e</a> (const char *string)</td></tr>
+<tr class="memdesc:af0d0b285812d65c40f99aa1ebbbdcf89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Кодирует строку в Base64.  <a href="../../db/d36/base64_8c.html#af0d0b285812d65c40f99aa1ebbbdcf89">Подробнее...</a><br /></td></tr>
+<tr class="separator:af0d0b285812d65c40f99aa1ebbbdcf89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8fe8d0321450493a2edd128dbbe5e78"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d36/base64_8c.html#af8fe8d0321450493a2edd128dbbe5e78">b64d</a> (const char *data)</td></tr>
+<tr class="memdesc:af8fe8d0321450493a2edd128dbbe5e78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Декодирует строку Base64.  <a href="../../db/d36/base64_8c.html#af8fe8d0321450493a2edd128dbbe5e78">Подробнее...</a><br /></td></tr>
+<tr class="separator:af8fe8d0321450493a2edd128dbbe5e78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
-<div class="textblock"><p>Кодирование/Декодирование Base64. </p>
-<dl class="section author"><dt>Авторы</dt><dd>Пиминов Никита (github.com/pimnik98), &lt;&gt; </dd></dl>
-<dl class="section version"><dt>Версия</dt><dd>0.0.2 </dd></dl>
-<dl class="section date"><dt>Дата</dt><dd>2022-08-27</dd></dl>
-<dl class="section copyright"><dt>Авторство</dt><dd>Copyright Piminoff Nikita (c) 2022 </dd></dl>
+<div class="textblock"><p>Base64 Encode/Decode. </p>
+<dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (<a href="#" onclick="location.href='mai'+'lto:'+'nik'+'it'+'a.p'+'im'+'ino'+'ff'+'@ya'+'nd'+'ex.'+'ru'; return false;">nikit<span style="display: none;">.nosp@m.</span>a.pi<span style="display: none;">.nosp@m.</span>minof<span style="display: none;">.nosp@m.</span>f@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>ru</a>) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.3.2 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2022-10-01 </dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022-2023 </dd></dl>
 
 <p class="definition">См. определение в файле <a class="el" href="../../db/d36/base64_8c_source.html">base64.c</a></p>
 </div><h2 class="groupheader">Функции</h2>
-<a id="a9e75ebf27b734b47a7c88031753d4820"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e75ebf27b734b47a7c88031753d4820">&#9670;&nbsp;</a></span>b64d()</h2>
+<a id="af8fe8d0321450493a2edd128dbbe5e78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8fe8d0321450493a2edd128dbbe5e78">&#9670;&nbsp;</a></span>b64d()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned char* b64d </td>
+          <td class="memname">uint8_t* b64d </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>data</em></td><td>)</td>
@@ -132,7 +133,7 @@ $(document).ready(function(){initNavTree('db/d36/base64_8c.html','../../'); init
 <p>Декодирует строку Base64. </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">char*</td><td>string - Строка для декодирования </td></tr>
+    <tr><td class="paramname">char*</td><td>string - Строка для декодирования</td></tr>
   </table>
   </dd>
 </dl>
@@ -142,14 +143,14 @@ $(document).ready(function(){initNavTree('db/d36/base64_8c.html','../../'); init
 
 </div>
 </div>
-<a id="aed25a17df04c4adc6245fc2121835c66"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aed25a17df04c4adc6245fc2121835c66">&#9670;&nbsp;</a></span>b64e()</h2>
+<a id="af0d0b285812d65c40f99aa1ebbbdcf89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0d0b285812d65c40f99aa1ebbbdcf89">&#9670;&nbsp;</a></span>b64e()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned char* b64e </td>
+          <td class="memname">uint8_t* b64e </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>string</em></td><td>)</td>
@@ -161,13 +162,13 @@ $(document).ready(function(){initNavTree('db/d36/base64_8c.html','../../'); init
 <p>Кодирует строку в Base64. </p>
 <dl class="params"><dt>Аргументы</dt><dd>
   <table class="params">
-    <tr><td class="paramname">char*</td><td>string - Строка для кодирования </td></tr>
+    <tr><td class="paramname">char*</td><td>string - Строка для кодирования</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Возвращает</dt><dd>char* - Возращает закодированую строку </dd></dl>
 
-<p class="definition">См. определение в файле <a class="el" href="../../db/d36/base64_8c_source.html">base64.c</a> строка <a class="el" href="../../db/d36/base64_8c_source.html#l00048">48</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../db/d36/base64_8c_source.html">base64.c</a> строка <a class="el" href="../../db/d36/base64_8c_source.html#l00047">47</a></p>
 
 </div>
 </div>
@@ -176,10 +177,8 @@ $(document).ready(function(){initNavTree('db/d36/base64_8c.html','../../'); init
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_1a5b85ea993c03033d57d06b4ba138d9.html">libk</a></li><li class="navelem"><a class="el" href="../../db/d36/base64_8c.html">base64.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 30 Сен 2022 10:12:16. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_30344f54b1e95ac4cceded48601d8b77.html">lib</a></li><li class="navelem"><a class="el" href="../../db/d36/base64_8c.html">base64.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 6 Апр 2023 01:40:33. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

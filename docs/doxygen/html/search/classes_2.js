@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['blockinfo_133',['blockinfo',['../dd/d55/structblockinfo.html',1,'']]],
-  ['buffer_5fdescriptor_5fentry_134',['buffer_descriptor_entry',['../dd/db8/structbuffer__descriptor__entry.html',1,'']]]
+  ['com_5fcontrol_636',['com_control',['../db/dfe/structcom__control.html',1,'']]],
+  ['command_5ft_637',['Command_t',['../d5/d16/struct_command__t.html',1,'']]],
+  ['coordinates_638',['Coordinates',['../d1/d29/struct_coordinates.html',1,'']]]
 ];

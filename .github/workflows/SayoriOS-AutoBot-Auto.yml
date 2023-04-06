@@ -1,4 +1,4 @@
-name: 🤖 SayoriOS Автоматическая сборка при изменениях в репозитории
+name: 🤖 Автоматическая сборка
 
 on:
   push:
@@ -18,28 +18,25 @@ jobs:
           sudo apt install python3 build-essential xorriso grub-pc-bin mtools llvm lld fasm zip doxygen
 
       - name: Step 2 - Compiling the kernel
-        run: python3 build.py kernel
+        run: make
 
-      - name: Step 3 - Compiling programs
-        run: python3 build.py apps
+      - name: Step 3 - ISO assembly
+        run: make geniso
 
-      - name: Step 4 - ISO assembly
-        run: python3 build.py iso
-      
-      - name: Step 5 - Preparing for DoxyGen
+      - name: Step 4 - Preparing for DoxyGen
         run: |
           rm -rf docs/doxygen/
           sudo doxygen Doxyfile
           ls docs/doxygen/
           ls
 
-      - name: Step 6 - File Existence Check
+      - name: Step 5 - File Existence Check
         run: |
           echo "done!"
-          ls isodir/boot/
+          ls iso/boot/
           ls
-        
-      - name: Step 7 - Updating documentation with DoxyGen
+
+      - name: Step 6 - Updating documentation with DoxyGen
         uses: EndBug/add-and-commit@v9
         with:
           author_name: Github
@@ -53,11 +50,11 @@ jobs:
           repo_token: "${{ secrets.SAYORI }}"
           automatic_release_tag: "latest-unstable"
           prerelease: true
-          title: "💽 SayoriOS - [Автосборка] Нестабильный релиз"
+          title: "💽 SayoriOS Soul- [Автосборка] Нестабильный релиз"
           description: "Внимание! Данный релиз собран из последних изменений в ядре! Это не окончательная версия содержит ошибки и не рекомендуется к запуску без проверки на виртуальной машине."
           files: |
             LICENSE
-            SayoriOS.iso
+            kernel.iso
             isodir/boot/initrd.tar
             isodir/boot/kernel.elf
             docs/doxygen/rtf/refman.rtf

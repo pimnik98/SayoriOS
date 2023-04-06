@@ -1,7 +1,19 @@
 var searchData=
 [
-  ['clean_5fscreen_203',['clean_screen',['../dc/d03/tty_8c.html#a0d199b5702695c4d7b78ef83759c32d5',1,'tty.c']]],
-  ['com1_5fis_5ftransmit_5fempty_204',['com1_is_transmit_empty',['../d0/d6e/ports_8c.html#ab129328817732429fa6ff116c30ad94a',1,'ports.c']]],
-  ['com1_5fwrite_5fchar_205',['com1_write_char',['../d0/d6e/ports_8c.html#ad0aeab3fed0aa6c56ef58b8df7a9fd06',1,'ports.c']]],
-  ['create_5fback_5fframebuffer_206',['create_back_framebuffer',['../dc/d03/tty_8c.html#aca7637cf8ec1ea90a95d8fd4a2cce7fe',1,'tty.c']]]
+  ['b64d_778',['b64d',['../db/d36/base64_8c.html#af8fe8d0321450493a2edd128dbbe5e78',1,'base64.c']]],
+  ['b64e_779',['b64e',['../db/d36/base64_8c.html#af0d0b285812d65c40f99aa1ebbbdcf89',1,'base64.c']]],
+  ['beeperconfig_780',['beeperConfig',['../d4/d25/beeper_8c.html#a4fe66109c7722604f06975cb619a48e7',1,'beeper.c']]],
+  ['beeperinit_781',['beeperInit',['../d4/d25/beeper_8c.html#a9e35e34ab1ff6dc096108881609a1a62',1,'beeper.c']]],
+  ['beeperplay_782',['beeperPlay',['../d4/d25/beeper_8c.html#a18c79d6fb18dce81b789df4cc7c194fc',1,'beeper.c']]],
+  ['beepersilent_783',['beeperSilent',['../d4/d25/beeper_8c.html#aa27fcbf1cf9f184b0f8bf0ceca3b4224',1,'beeper.c']]],
+  ['bootscreenchangemode_784',['bootScreenChangeMode',['../d2/d2c/bootscreen_8c.html#abed94193a8766f40afc041373498e29d',1,'bootscreen.c']]],
+  ['bootscreenchangetheme_785',['bootScreenChangeTheme',['../d2/d2c/bootscreen_8c.html#a8245021e07acae4f2a027cd157ce6188',1,'bootscreen.c']]],
+  ['bootscreenclose_786',['bootScreenClose',['../d2/d2c/bootscreen_8c.html#aaed152e29ec1868d6121f29f94c58d67',1,'bootscreen.c']]],
+  ['bootscreeninfo_787',['bootScreenInfo',['../d2/d2c/bootscreen_8c.html#a452631edd80dadd1d5ad250c97908388',1,'bootscreen.c']]],
+  ['bootscreeninit_788',['bootScreenInit',['../d2/d2c/bootscreen_8c.html#a76f53ba2e89a01b3c4569473cb817698',1,'bootscreen.c']]],
+  ['bootscreenlazy_789',['bootScreenLazy',['../d2/d2c/bootscreen_8c.html#ae3f5d44396b4b0bc305c6bdad9b00335',1,'bootscreen.c']]],
+  ['bootscreenlogs_790',['bootScreenLogs',['../d2/d2c/bootscreen_8c.html#a2511df928f4f5ed23901f3683d2d1c4d',1,'bootscreen.c']]],
+  ['bootscreenpaint_791',['bootScreenPaint',['../d2/d2c/bootscreen_8c.html#a4537b1acc91e9e1da9dd39eb5e1a97b8',1,'bootscreen.c']]],
+  ['bootscreenprocentpaint_792',['bootScreenProcentPaint',['../d2/d2c/bootscreen_8c.html#afdbbfee4f5fc36d0e4f1951d6ff078df',1,'bootscreen.c']]],
+  ['bootscreentheme_793',['bootScreenTheme',['../d2/d2c/bootscreen_8c.html#a4c4dc073626fe8b33e19b1a83174a051',1,'bootscreen.c']]]
 ];

@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SayoriOS: Исходный файл kernel/src/libk/split.c</title>
+<title>SayoriOS: Исходный файл kernel/src/lib/split.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.2.15</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -86,12 +87,12 @@ $(document).ready(function(){initNavTree('d7/de7/split_8c_source.html','../../')
 <div class="title">split.c</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<a href="../../d7/de7/split_8c.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;uint32_t str_cdsp(<span class="keywordtype">char</span>* a_str, <span class="keywordtype">char</span>* del){</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    uint32_t x = 0;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=0; i &lt; strlen(a_str); i++){</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="../../d7/de7/split_8c.html#a6e0c044df33ec92cf2a944048b3672f7">   19</a></span>&#160;uint32_t <a class="code" href="../../d7/de7/split_8c.html#a6e0c044df33ec92cf2a944048b3672f7">str_cdsp</a>(<span class="keywordtype">char</span>* a_str, <span class="keywordtype">char</span>* del){</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">int</span> x = 0;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0, len = <a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(a_str); i &lt; len; i++){</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordflow">if</span> (a_str[i] == del[0]) {</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            x++;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        }</div>
@@ -99,40 +100,37 @@ $(document).ready(function(){initNavTree('d7/de7/split_8c_source.html','../../')
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordflow">return</span> x;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;}</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keywordtype">char</span>* str_split(<span class="keywordtype">char</span> a_str[], <span class="keywordtype">char</span> *out[], <span class="keywordtype">char</span>* dec){</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    uint32_t x = str_cdsp(a_str,dec);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="comment">//qemu_log(&quot;[SPLIT] [COUNT] %d&quot;,x);</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">int</span> i = 0;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">char</span> *p;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    p = strtok(a_str, dec);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">if</span> (p == NULL){</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        out[i] = a_str;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    out[i] = p;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="comment">//qemu_log(&quot;[SPLIT] `%s`&quot;,out[i]);</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    i++;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordflow">for</span>(uint32_t a = 0;a &lt; x; a++){</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        p = strtok(out[i], dec);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">if</span> (p != NULL){</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            out[i] = p;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="comment">//qemu_log(&quot;[SPLIT] [%d &lt; %d] `%s`&quot;,i,x,out[i]);</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            i++;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="../../d7/de7/split_8c.html#acb07079ac5f657233424c33dda4d0e2e">   38</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d7/de7/split_8c.html#acb07079ac5f657233424c33dda4d0e2e">str_split</a>(<span class="keywordtype">char</span> a_str[], <span class="keywordtype">char</span> *out[], <span class="keywordtype">char</span>* dec){</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">int</span> x = <a class="code" href="../../d7/de7/split_8c.html#a6e0c044df33ec92cf2a944048b3672f7">str_cdsp</a>(a_str,dec);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">int</span> i = 0;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">char</span> *p;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    p = <a class="code" href="../../d1/db0/string_8c.html#a80f8fb5a529dbd4b3efb2575764d850e">strtok</a>(a_str, dec);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">if</span> (p == NULL){</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        out[i] = a_str;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    }</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    out[i] = p;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    i++;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordflow">for</span>(uint32_t a = 0;a &lt; x; a++){</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        p = <a class="code" href="../../d1/db0/string_8c.html#a80f8fb5a529dbd4b3efb2575764d850e">strtok</a>(out[i], dec);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">if</span> (p != NULL){</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            out[i] = p;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            i++;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
+<div class="ttc" id="asplit_8c_html_a6e0c044df33ec92cf2a944048b3672f7"><div class="ttname"><a href="../../d7/de7/split_8c.html#a6e0c044df33ec92cf2a944048b3672f7">str_cdsp</a></div><div class="ttdeci">uint32_t str_cdsp(char *a_str, char *del)</div><div class="ttdoc">Функция отладки</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/de7/split_8c_source.html#l00019">split.c:19</a></div></div>
+<div class="ttc" id="asplit_8c_html_acb07079ac5f657233424c33dda4d0e2e"><div class="ttname"><a href="../../d7/de7/split_8c.html#acb07079ac5f657233424c33dda4d0e2e">str_split</a></div><div class="ttdeci">void str_split(char a_str[], char *out[], char *dec)</div><div class="ttdoc">Функция для деления строк</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/de7/split_8c_source.html#l00038">split.c:38</a></div></div>
+<div class="ttc" id="astring_8c_html_a008e171a518fe0e0352f31b245e03875"><div class="ttname"><a href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a></div><div class="ttdeci">size_t strlen(const char *str)</div><div class="ttdoc">Возращает длину строки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00076">string.c:76</a></div></div>
+<div class="ttc" id="astring_8c_html_a80f8fb5a529dbd4b3efb2575764d850e"><div class="ttname"><a href="../../d1/db0/string_8c.html#a80f8fb5a529dbd4b3efb2575764d850e">strtok</a></div><div class="ttdeci">char * strtok(char *s, const char *delim)</div><div class="ttdoc">Разбиение строки на части по указанному разделителю</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00367">string.c:367</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_1a5b85ea993c03033d57d06b4ba138d9.html">libk</a></li><li class="navelem"><b>split.c</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 30 Сен 2022 10:12:16. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_30344f54b1e95ac4cceded48601d8b77.html">lib</a></li><li class="navelem"><a class="el" href="../../d7/de7/split_8c.html">split.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 6 Апр 2023 01:40:33. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

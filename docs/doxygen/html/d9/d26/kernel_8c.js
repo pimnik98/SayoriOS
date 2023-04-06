@@ -1,19 +1,15 @@
 var kernel_8c =
 [
-    [ "kCMD_BOOTSCREEN_DARK", "d9/d26/kernel_8c.html#a837549578596c2aca0bad9ec9fc8e606", null ],
-    [ "kCMD_BOOTSCREEN_LIGHT", "d9/d26/kernel_8c.html#a2dc43ef599322d8f85d5e15c17cea409", null ],
-    [ "kCMD_BOOTSCREEN_MINIMAL", "d9/d26/kernel_8c.html#a57cb76ffed8bd409d3bba474b731e213", null ],
-    [ "kCMD_DRIVER_BGA", "d9/d26/kernel_8c.html#ad2a88e7797cbe3727bd6efdc53dca3d6", null ],
-    [ "kCMD_EXEC_TSHELL", "d9/d26/kernel_8c.html#a98c2c27d98861dc29d647415e7679a12", null ],
-    [ "kCMD_NO_DRIVER_AC97", "d9/d26/kernel_8c.html#ad3a8eead203403cb1148c1c957a78c45", null ],
-    [ "kCMD_NO_DRIVER_RTL8139", "d9/d26/kernel_8c.html#a9b447ebd4602df845bb9a6bb6fec25dd", null ],
-    [ "kCMD_NOPCISSAN", "d9/d26/kernel_8c.html#a011cf7959a174dac450c54b9e6fe34fc", null ],
-    [ "kernel", "d9/d26/kernel_8c.html#a93d13a15bbaf16e615e5627802a3b416", null ],
-    [ "kernelCMDHandler", "d9/d26/kernel_8c.html#a95020b742469d3b2e9a438b73068622a", null ],
-    [ "ac97_load", "d9/d26/kernel_8c.html#a554878abe3a52ccf2cf22fe763a71cc4", null ],
-    [ "autotshell", "d9/d26/kernel_8c.html#a426abb88398b99f78b3d2039f4300037", null ],
-    [ "bga_load", "d9/d26/kernel_8c.html#a57a627fd9d7f3318f8ad626e8220a740", null ],
-    [ "errno", "d9/d26/kernel_8c.html#a0c8ec0dcab4e0850d7e3d5f51e6097b0", null ],
-    [ "os_mode", "d9/d26/kernel_8c.html#abad0dbda44c0690c065fa7726a2f5bcb", null ],
-    [ "rtl8139_load", "d9/d26/kernel_8c.html#a4750549393928f2d9eba6fd3a8ae1e55", null ]
+    [ "initrd_sefs", "d9/d26/kernel_8c.html#a12ffe97e1e53ebf9b6f8e6fcd8831fc7", null ],
+    [ "kernel", "d9/d26/kernel_8c.html#a0aa10e95d9117d81d8089103e22d00fa", null ],
+    [ "kHandlerCMD", "d9/d26/kernel_8c.html#a5f600bd4d5828cdbfcd56e333b89b388", null ],
+    [ "kModules_Init", "d9/d26/kernel_8c.html#a7436e762b78a18ffc2c18e1ed1b60dab", null ],
+    [ "autoexec", "d9/d26/kernel_8c.html#aa0126a860c202d761837450c3f523a7c", null ],
+    [ "cmd_autoexec", "d9/d26/kernel_8c.html#a7df307e5085354056f66a3dac1240864", null ],
+    [ "init_esp", "d9/d26/kernel_8c.html#aeeac1ff951ce06f605c292d58eeb69f6", null ],
+    [ "initRD", "d9/d26/kernel_8c.html#aec2927f8a04206a42f92be03277f9f78", null ],
+    [ "multiboot", "d9/d26/kernel_8c.html#a5d0287916c933759348c61497034946e", null ],
+    [ "run_gui_at_startup", "d9/d26/kernel_8c.html#aca98b42b4ab2018dd3043261bb126961", null ],
+    [ "test_ac97", "d9/d26/kernel_8c.html#a35e104a324887a4a9a346587760f53d8", null ],
+    [ "test_pcs", "d9/d26/kernel_8c.html#a8fc67b64f162aea7dbcacd4d5c9db0ce", null ]
 ];

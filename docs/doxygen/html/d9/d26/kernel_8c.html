@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SayoriOS: Файл kernel/kernel.c</title>
+<title>SayoriOS: Файл kernel/src/kernel.c</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
 <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +27,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">SayoriOS
-   &#160;<span id="projectnumber">0.2.15</span>
+   &#160;<span id="projectnumber">0.3.1</span>
    </div>
   </td>
  </tr>
@@ -34,10 +35,10 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск');
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
 /* @license-end */
 </script>
 <script type="text/javascript" src="../../menudata.js"></script>
@@ -83,7 +84,6 @@ $(document).ready(function(){initNavTree('d9/d26/kernel_8c.html','../../'); init
 
 <div class="header">
   <div class="summary">
-<a href="#define-members">Макросы</a> &#124;
 <a href="#func-members">Функции</a> &#124;
 <a href="#var-members">Переменные</a>  </div>
   <div class="headertitle">
@@ -91,112 +91,113 @@ $(document).ready(function(){initNavTree('d9/d26/kernel_8c.html','../../'); init
 </div><!--header-->
 <div class="contents">
 
-<p>Входная точка ядра, инициализация драйверов  
+<p>Основная точка входа в ядро  
 <a href="#details">Подробнее...</a></p>
-<div class="textblock"><code>#include &lt;kernel.h&gt;</code><br />
-<code>#include &quot;include/io/saff.h&quot;</code><br />
-<code>#include &quot;include/mem/kheap.h&quot;</code><br />
+<div class="textblock"><code>#include &quot;kernel.h&quot;</code><br />
+<code>#include &quot;lib/stdio.h&quot;</code><br />
+<code>#include &quot;sys/float.h&quot;</code><br />
+<code>#include &quot;sys/rsdp.h&quot;</code><br />
+<code>#include &lt;io/colors.h&gt;</code><br />
 </div>
 <p><a href="../../d9/d26/kernel_8c_source.html">См. исходные тексты.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Макросы</h2></td></tr>
-<tr class="memitem:a57cb76ffed8bd409d3bba474b731e213"><td class="memItemLeft" align="right" valign="top"><a id="a57cb76ffed8bd409d3bba474b731e213"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>kCMD_BOOTSCREEN_MINIMAL</b>&#160;&#160;&#160;&quot;--bootscreen=minimal&quot;</td></tr>
-<tr class="separator:a57cb76ffed8bd409d3bba474b731e213"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2dc43ef599322d8f85d5e15c17cea409"><td class="memItemLeft" align="right" valign="top"><a id="a2dc43ef599322d8f85d5e15c17cea409"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>kCMD_BOOTSCREEN_LIGHT</b>&#160;&#160;&#160;&quot;--bootscreen=light&quot;</td></tr>
-<tr class="separator:a2dc43ef599322d8f85d5e15c17cea409"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a837549578596c2aca0bad9ec9fc8e606"><td class="memItemLeft" align="right" valign="top"><a id="a837549578596c2aca0bad9ec9fc8e606"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>kCMD_BOOTSCREEN_DARK</b>&#160;&#160;&#160;&quot;--bootscreen=dark&quot;</td></tr>
-<tr class="separator:a837549578596c2aca0bad9ec9fc8e606"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98c2c27d98861dc29d647415e7679a12"><td class="memItemLeft" align="right" valign="top"><a id="a98c2c27d98861dc29d647415e7679a12"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>kCMD_EXEC_TSHELL</b>&#160;&#160;&#160;&quot;--tshell&quot;</td></tr>
-<tr class="separator:a98c2c27d98861dc29d647415e7679a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b447ebd4602df845bb9a6bb6fec25dd"><td class="memItemLeft" align="right" valign="top"><a id="a9b447ebd4602df845bb9a6bb6fec25dd"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>kCMD_NO_DRIVER_RTL8139</b>&#160;&#160;&#160;&quot;--nortl8139&quot;</td></tr>
-<tr class="separator:a9b447ebd4602df845bb9a6bb6fec25dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3a8eead203403cb1148c1c957a78c45"><td class="memItemLeft" align="right" valign="top"><a id="ad3a8eead203403cb1148c1c957a78c45"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>kCMD_NO_DRIVER_AC97</b>&#160;&#160;&#160;&quot;--noac97&quot;</td></tr>
-<tr class="separator:ad3a8eead203403cb1148c1c957a78c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2a88e7797cbe3727bd6efdc53dca3d6"><td class="memItemLeft" align="right" valign="top"><a id="ad2a88e7797cbe3727bd6efdc53dca3d6"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>kCMD_DRIVER_BGA</b>&#160;&#160;&#160;&quot;--bga&quot;</td></tr>
-<tr class="separator:ad2a88e7797cbe3727bd6efdc53dca3d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a011cf7959a174dac450c54b9e6fe34fc"><td class="memItemLeft" align="right" valign="top"><a id="a011cf7959a174dac450c54b9e6fe34fc"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>kCMD_NOPCISSAN</b>&#160;&#160;&#160;&quot;--nopci&quot;</td></tr>
-<tr class="separator:a011cf7959a174dac450c54b9e6fe34fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Функции</h2></td></tr>
-<tr class="memitem:a95020b742469d3b2e9a438b73068622a"><td class="memItemLeft" align="right" valign="top"><a id="a95020b742469d3b2e9a438b73068622a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>kernelCMDHandler</b> (char *cmd)</td></tr>
-<tr class="separator:a95020b742469d3b2e9a438b73068622a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a93d13a15bbaf16e615e5627802a3b416"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a93d13a15bbaf16e615e5627802a3b416">kernel</a> (uint32_t magic_number, struct <a class="el" href="../../df/d9f/structmultiboot__info.html">multiboot_info</a> *mboot_info)</td></tr>
-<tr class="memdesc:a93d13a15bbaf16e615e5627802a3b416"><td class="mdescLeft">&#160;</td><td class="mdescRight">Входная точка ядра SynapseOS.  <a href="../../d9/d26/kernel_8c.html#a93d13a15bbaf16e615e5627802a3b416">Подробнее...</a><br /></td></tr>
-<tr class="separator:a93d13a15bbaf16e615e5627802a3b416"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f600bd4d5828cdbfcd56e333b89b388"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a5f600bd4d5828cdbfcd56e333b89b388">kHandlerCMD</a> (char *cmd)</td></tr>
+<tr class="memdesc:a5f600bd4d5828cdbfcd56e333b89b388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Обработка комманд указаных ядру при загрузке  <a href="../../d9/d26/kernel_8c.html#a5f600bd4d5828cdbfcd56e333b89b388">Подробнее...</a><br /></td></tr>
+<tr class="separator:a5f600bd4d5828cdbfcd56e333b89b388"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12ffe97e1e53ebf9b6f8e6fcd8831fc7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a12ffe97e1e53ebf9b6f8e6fcd8831fc7">initrd_sefs</a> (size_t irdst)</td></tr>
+<tr class="memdesc:a12ffe97e1e53ebf9b6f8e6fcd8831fc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Монтирует виртуальный диск с файловой системой Sayori Easy File System.  <a href="../../d9/d26/kernel_8c.html#a12ffe97e1e53ebf9b6f8e6fcd8831fc7">Подробнее...</a><br /></td></tr>
+<tr class="separator:a12ffe97e1e53ebf9b6f8e6fcd8831fc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7436e762b78a18ffc2c18e1ed1b60dab"><td class="memItemLeft" align="right" valign="top"><a id="a7436e762b78a18ffc2c18e1ed1b60dab"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a7436e762b78a18ffc2c18e1ed1b60dab">kModules_Init</a> ()</td></tr>
+<tr class="memdesc:a7436e762b78a18ffc2c18e1ed1b60dab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Инициализирует модули подключенные к ОС <br /></td></tr>
+<tr class="separator:a7436e762b78a18ffc2c18e1ed1b60dab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0aa10e95d9117d81d8089103e22d00fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d26/kernel_8c.html#a0aa10e95d9117d81d8089103e22d00fa">kernel</a> (<a class="el" href="../../dc/dfa/structmultiboot__header.html">multiboot_header_t</a> *mboot, uint32_t initial_esp)</td></tr>
+<tr class="memdesc:a0aa10e95d9117d81d8089103e22d00fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Точка входа в ядро  <a href="../../d9/d26/kernel_8c.html#a0aa10e95d9117d81d8089103e22d00fa">Подробнее...</a><br /></td></tr>
+<tr class="separator:a0aa10e95d9117d81d8089103e22d00fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Переменные</h2></td></tr>
-<tr class="memitem:a0c8ec0dcab4e0850d7e3d5f51e6097b0"><td class="memItemLeft" align="right" valign="top"><a id="a0c8ec0dcab4e0850d7e3d5f51e6097b0"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>errno</b> = 0</td></tr>
-<tr class="separator:a0c8ec0dcab4e0850d7e3d5f51e6097b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abad0dbda44c0690c065fa7726a2f5bcb"><td class="memItemLeft" align="right" valign="top"><a id="abad0dbda44c0690c065fa7726a2f5bcb"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>os_mode</b> = 1</td></tr>
-<tr class="separator:abad0dbda44c0690c065fa7726a2f5bcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a426abb88398b99f78b3d2039f4300037"><td class="memItemLeft" align="right" valign="top"><a id="a426abb88398b99f78b3d2039f4300037"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>autotshell</b> = false</td></tr>
-<tr class="separator:a426abb88398b99f78b3d2039f4300037"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4750549393928f2d9eba6fd3a8ae1e55"><td class="memItemLeft" align="right" valign="top"><a id="a4750549393928f2d9eba6fd3a8ae1e55"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>rtl8139_load</b> = true</td></tr>
-<tr class="separator:a4750549393928f2d9eba6fd3a8ae1e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57a627fd9d7f3318f8ad626e8220a740"><td class="memItemLeft" align="right" valign="top"><a id="a57a627fd9d7f3318f8ad626e8220a740"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>bga_load</b> = false</td></tr>
-<tr class="separator:a57a627fd9d7f3318f8ad626e8220a740"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a554878abe3a52ccf2cf22fe763a71cc4"><td class="memItemLeft" align="right" valign="top"><a id="a554878abe3a52ccf2cf22fe763a71cc4"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>ac97_load</b> = true</td></tr>
-<tr class="separator:a554878abe3a52ccf2cf22fe763a71cc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d0287916c933759348c61497034946e"><td class="memItemLeft" align="right" valign="top"><a id="a5d0287916c933759348c61497034946e"></a>
+<a class="el" href="../../dc/dfa/structmultiboot__header.html">multiboot_header_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>multiboot</b></td></tr>
+<tr class="separator:a5d0287916c933759348c61497034946e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeeac1ff951ce06f605c292d58eeb69f6"><td class="memItemLeft" align="right" valign="top"><a id="aeeac1ff951ce06f605c292d58eeb69f6"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>init_esp</b> = 0</td></tr>
+<tr class="separator:aeeac1ff951ce06f605c292d58eeb69f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec2927f8a04206a42f92be03277f9f78"><td class="memItemLeft" align="right" valign="top"><a id="aec2927f8a04206a42f92be03277f9f78"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>initRD</b> = false</td></tr>
+<tr class="separator:aec2927f8a04206a42f92be03277f9f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0126a860c202d761837450c3f523a7c"><td class="memItemLeft" align="right" valign="top"><a id="aa0126a860c202d761837450c3f523a7c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>autoexec</b> = false</td></tr>
+<tr class="separator:aa0126a860c202d761837450c3f523a7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca98b42b4ab2018dd3043261bb126961"><td class="memItemLeft" align="right" valign="top"><a id="aca98b42b4ab2018dd3043261bb126961"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>run_gui_at_startup</b> = false</td></tr>
+<tr class="separator:aca98b42b4ab2018dd3043261bb126961"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7df307e5085354056f66a3dac1240864"><td class="memItemLeft" align="right" valign="top"><a id="a7df307e5085354056f66a3dac1240864"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>cmd_autoexec</b> = &quot;&quot;</td></tr>
+<tr class="separator:a7df307e5085354056f66a3dac1240864"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35e104a324887a4a9a346587760f53d8"><td class="memItemLeft" align="right" valign="top"><a id="a35e104a324887a4a9a346587760f53d8"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>test_ac97</b> = true</td></tr>
+<tr class="separator:a35e104a324887a4a9a346587760f53d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fc67b64f162aea7dbcacd4d5c9db0ce"><td class="memItemLeft" align="right" valign="top"><a id="a8fc67b64f162aea7dbcacd4d5c9db0ce"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>test_pcs</b> = true</td></tr>
+<tr class="separator:a8fc67b64f162aea7dbcacd4d5c9db0ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
-<div class="textblock"><p>Входная точка ядра, инициализация драйверов </p>
-<p>BootScreen - Красивая загрузка ядра с сообщениями</p>
-<p>Содержит функции для работы с split.</p>
-<p>Входная точка консоли, Sayori Command Line Interface.</p>
-<dl class="section author"><dt>Автор</dt><dd>Арен Елчинян (<a href="#" onclick="location.href='mai'+'lto:'+'a2.'+'de'+'v@y'+'an'+'dex'+'.c'+'om'; return false;">a2.de<span style="display: none;">.nosp@m.</span>v@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>com</a>) </dd></dl>
-<dl class="section version"><dt>Версия</dt><dd>0.1.13 </dd></dl>
-<dl class="section date"><dt>Дата</dt><dd>2022-08-13 </dd></dl>
-<dl class="section copyright"><dt>Авторство</dt><dd>Copyright Арен Елчинян (c) 2022</dd></dl>
-<dl class="section author"><dt>Автор</dt><dd>Никита Пиминов (github.com/pimnik98) </dd></dl>
-<dl class="section version"><dt>Версия</dt><dd>0.0.5 </dd></dl>
-<dl class="section date"><dt>Дата</dt><dd>2022-09-18 </dd></dl>
-<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS</dd></dl>
-<dl class="section author"><dt>Автор</dt><dd>Никита Пиминов (github.com/pimnik98) </dd></dl>
-<dl class="section version"><dt>Версия</dt><dd>0.0.3 </dd></dl>
-<dl class="section date"><dt>Дата</dt><dd>2022-08-28 </dd></dl>
-<dl class="section copyright"><dt>Авторство</dt><dd>Copyright Piminoff Nikita (c) 2022</dd></dl>
-<dl class="section author"><dt>Автор</dt><dd>Никита Пиминов (github.com/pimnik98) </dd></dl>
-<dl class="section version"><dt>Версия</dt><dd>0.1.0 </dd></dl>
-<dl class="section date"><dt>Дата</dt><dd>2022-08-27 </dd></dl>
-<dl class="section copyright"><dt>Авторство</dt><dd>Copyright Piminoff Nikita (c) 2022 </dd></dl>
+<div class="textblock"><p>Основная точка входа в ядро </p>
+<dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (<a href="#" onclick="location.href='mai'+'lto:'+'nik'+'it'+'a.p'+'im'+'ino'+'ff'+'@ya'+'nd'+'ex.'+'ru'; return false;">nikit<span style="display: none;">.nosp@m.</span>a.pi<span style="display: none;">.nosp@m.</span>minof<span style="display: none;">.nosp@m.</span>f@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>ru</a>), Drew &gt;_ (<a href="#" onclick="location.href='mai'+'lto:'+'pik'+'ac'+'hu_'+'an'+'dre'+'y@'+'vk.'+'co'+'m'; return false;">pikac<span style="display: none;">.nosp@m.</span>hu_a<span style="display: none;">.nosp@m.</span>ndrey<span style="display: none;">.nosp@m.</span>@vk.<span style="display: none;">.nosp@m.</span>com</a>) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.3.2 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2022-11-01 </dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022-2023 </dd></dl>
 
 <p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a></p>
 </div><h2 class="groupheader">Функции</h2>
-<a id="a93d13a15bbaf16e615e5627802a3b416"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a93d13a15bbaf16e615e5627802a3b416">&#9670;&nbsp;</a></span>kernel()</h2>
+<a id="a12ffe97e1e53ebf9b6f8e6fcd8831fc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12ffe97e1e53ebf9b6f8e6fcd8831fc7">&#9670;&nbsp;</a></span>initrd_sefs()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void kernel </td>
+          <td class="memname">void initrd_sefs </td>
           <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>magic_number</em>, </td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>irdst</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Монтирует виртуальный диск с файловой системой Sayori Easy File System. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>irdst - Точка монтирования </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a> строка <a class="el" href="../../d9/d26/kernel_8c_source.html#l00100">100</a></p>
+
+</div>
+</div>
+<a id="a0aa10e95d9117d81d8089103e22d00fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0aa10e95d9117d81d8089103e22d00fa">&#9670;&nbsp;</a></span>kernel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int kernel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../dc/dfa/structmultiboot__header.html">multiboot_header_t</a> *&#160;</td>
+          <td class="paramname"><em>mboot</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">struct <a class="el" href="../../df/d9f/structmultiboot__info.html">multiboot_info</a> *&#160;</td>
-          <td class="paramname"><em>mboot_info</em>&#160;</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>initial_esp</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -206,10 +207,45 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ac97_load</b> = true<
       </table>
 </div><div class="memdoc">
 
-<p>Входная точка ядра SynapseOS. </p>
-<dl class="section warning"><dt>Предупреждения</dt><dd>Отсутствует проверка multiboot! </dd></dl>
+<p>Точка входа в ядро </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">multiboot_header_t</td><td>mboot - Информация MultiBoot </td></tr>
+    <tr><td class="paramname">uint32_t</td><td>initial_esp - Точка входа </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>MAKE COMMON INTERFACE FOR ALL 4 DISKS</p>
 
-<p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a> строка <a class="el" href="../../d9/d26/kernel_8c_source.html#l00079">79</a></p>
+<p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a> строка <a class="el" href="../../d9/d26/kernel_8c_source.html#l00157">157</a></p>
+
+</div>
+</div>
+<a id="a5f600bd4d5828cdbfcd56e333b89b388"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f600bd4d5828cdbfcd56e333b89b388">&#9670;&nbsp;</a></span>kHandlerCMD()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kHandlerCMD </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>cmd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Обработка комманд указаных ядру при загрузке </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">char*</td><td>cmd - Команды </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d9/d26/kernel_8c_source.html">kernel.c</a> строка <a class="el" href="../../d9/d26/kernel_8c_source.html#l00030">30</a></p>
 
 </div>
 </div>
@@ -218,10 +254,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ac97_load</b> = true<
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../d9/d26/kernel_8c.html">kernel.c</a></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Пт 30 Сен 2022 10:12:16. Создано системой
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../d9/d26/kernel_8c.html">kernel.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 6 Апр 2023 01:40:33. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

@@ -2,7 +2,7 @@
 // Binary data from file "a_vga_font.fon"
 
 #pragma once
-#include <stdint.h>
+
 
 extern uint8_t vgafnt[4096];
 extern int32_t vgafnt_size;

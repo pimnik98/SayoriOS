@@ -1,72 +1,41 @@
-#pragma once
-#include <stddef.h>
-#include <stdint.h>
-#include <stdarg.h>
-#include <stdbool.h>
-
-#include <libk/stdio.h>
-#include <libk/string.h>
-#include <libk/stdlib.h>
-#include <libk/list.h>
-#include <libk/fonts.h>
-#include <libk/math.h>
-
-#include <multyboot.h>
-
-#include <mem/mem.h>
-#include <mem/pmm.h>
-#include <mem/vmm.h>
-#include <mem/kheap.h>
-
-#include <drivers/vfs.h>
-#include <drivers/ramdisk.h>
-#include <drivers/keyboard.h>
-#include <drivers/pci.h>
-#include <drivers/ata.h>
-#include <drivers/time.h>
-#include <drivers/net.h>
-#include <drivers/floppy.h>
-#include <drivers/experimental/ac97.h>
-
-#include <io/tui.h>
-#include <io/tty.h>
-#include <io/vgafnt.h>
-#include <io/ports.h>
-#include <io/imaging.h>
-
-#include <sys/cpuinfo.h>
-#include <sys/system.h>
-#include <sys/gdt.h>
-#include <sys/idt.h>
-#include <sys/tss.h>
-#include <sys/syscalls.h>
-#include <sys/elf.h>
+#pragma		once
 
 #define VERSION_MAJOR   0       // Версия ядра
-#define VERSION_MINOR   2       // Пре-релиз 
-#define VERSION_PATCH   15       // Патч
-#define ARCH_TYPE       "i386"   // Архитектура
+#define VERSION_MINOR   3       // Пре-релиз
+#define VERSION_PATCH   2       // Патч
+#define ARCH_TYPE       "i386"  // Архитектура
+#define VERNAME "Soul"         // Имя версии
 
-#define COLOR_TEXT      VESA_LIGHT_GREY
-#define COLOR_SYS_TEXT  VESA_LIGHT_CYAN
-#define COLOR_SYS_PATH  VESA_LIGHT_GREEN
-#define COLOR_ERROR     VESA_LIGHT_RED
-#define COLOR_ALERT     VESA_LIGHT_YELLOW
+#include "common.h"
 
-#define isDistr         0   // 0 - не дистрибутив, 1 - дистрибутив
-#define DistrName       ""  // Имя дистрибутива
-#define dVERSION_MAJOR  0   // Версия дистрибутива
-#define dVERSION_MINOR  0   // Пре-релиз дистрибутива
-#define dVERSION_PATCH  0   // Патч дистрибутива
+#include "lib/string.h"
+#include "lib/stdio.h"
+#include "lib/split.h"
 
-#define MULTIBOOT_BOOTLOADER_MAGIC              0x2BADB002
+#include "sys/timer.h"
+#include "sys/memory.h"
+#include "sys/scheduler.h"
+#include "sys/cpu_isr.h"
+#include "sys/bootscreen.h"
+#include "sys/logo.h"
+#include "sys/system.h"
 
-extern uint32_t os_mode;
-extern bool multi_task;
+#include <io/imaging.h>
+#include <io/ports.h>
+#include <io/screen.h>
+#include <io/tty.h>
 
-void shell();
-void sysinfo();
-void sbf(char *src);
-void cat(char *fname);
-void cd(char *dname);
-pid_t add_task();
+#include <drv/vfs_new.h>
+#include <drv/input/keyboard.h>
+#include <drv/input/mouse.h>
+#include <drv/cmos.h>
+#include <drv/sb16.h>
+#include <drv/pci.h>
+#include <drv/psf.h>
+#include <drv/ata.h>
+
+#include <fs/sefs.h>
+#include <fs/milla.h>
+#include <fs/lucario/fs.h>
+
+#include "elf/elf.h"
