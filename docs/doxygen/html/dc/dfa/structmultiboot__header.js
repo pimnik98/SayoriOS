@@ -1,6 +1,6 @@
 var structmultiboot__header =
 [
-    [ "__attribute__", "dc/dfa/structmultiboot__header.html#afee6866b97247c5406c4d6e2a4ab9222", null ],
+    [ "__attribute__", "dc/dfa/structmultiboot__header.html#a0f3a6610023aefef401678df0635024b", null ],
     [ "addr", "dc/dfa/structmultiboot__header.html#ab439e3a90339e2e8ca8f82d4557a34e5", null ],
     [ "apm_table", "dc/dfa/structmultiboot__header.html#a54159585754aae2ec70f7c8bc32a4574", null ],
     [ "boot_device", "dc/dfa/structmultiboot__header.html#a2aa050a4a5f45f2300cbbbee56cc8410", null ],
