@@ -23,7 +23,7 @@
 <h1>System reqirements:</h1>
 <p>
 	* Processor: 1 core х 1 GHz<br>
-	* RAM: 16 МБ<br>
+	* RAM: 32 МB<br>
 	* Serial ports: 2<br>
 	* Video: 4 MB<br>
 </p>
