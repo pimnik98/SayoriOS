@@ -1,13 +1,17 @@
 FROM debian:11
 
 RUN apt-get update
-RUN apt-get install git make clang-13 -y
+RUN apt-get install git -y
+RUN apt-get install make -y
+RUN apt-get install clang-13 -y
+RUN apt-get install g++ -y
+RUN apt-get install grub-pc-bin -y
+RUN apt-get install xorriso -y
 RUN git clone https://github.com/NDRAEY/SayoriOS.git /SayoriOS --depth 1
-RUN ln -s /usr/bin/clang-13 /usr/bin/cc
 
 WORKDIR /SayoriOS
 
-RUN make -j8
+RUN make -j4 && make geniso
 
 CMD ["cp", "kernel.iso", "/output/"]
 
