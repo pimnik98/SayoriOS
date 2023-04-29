@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['vfs_5fcreatedir_999',['vfs_createDir',['../d1/d8d/vfs__new_8c.html#a86e1b5ad5e9ce9b840f51eb186c2826b',1,'vfs_new.c']]],
+  ['vfs_5fcreatefile_1000',['vfs_createFile',['../d1/d8d/vfs__new_8c.html#a915248a54dc7e3c46930714cbe659abd',1,'vfs_new.c']]],
+  ['vfs_5fdeletefile_1001',['vfs_deleteFile',['../d1/d8d/vfs__new_8c.html#af35f8e84ed140f938650927ae3f511d0',1,'vfs_new.c']]],
+  ['vfs_5fexists_1002',['vfs_exists',['../d1/d8d/vfs__new_8c.html#a6d56a0474d38fd79cc5ce4d7b549a0e9',1,'vfs_new.c']]],
+  ['vfs_5ffinddir_1003',['vfs_findDir',['../d1/d8d/vfs__new_8c.html#a84939ec064dde8aa28882d6fd5bfda46',1,'vfs_new.c']]],
+  ['vfs_5ffindfile_1004',['vfs_findFile',['../d1/d8d/vfs__new_8c.html#a39c1e3db00e2b95181b787c69e7cc39a',1,'vfs_new.c']]],
+  ['vfs_5ffoundmount_1005',['vfs_foundMount',['../d1/d8d/vfs__new_8c.html#a2f0d84808706c7d888f5624c7d09dd5f',1,'vfs_new.c']]],
+  ['vfs_5fgetcountelemdir_1006',['vfs_getCountElemDir',['../d1/d8d/vfs__new_8c.html#a5eb8e650941b902b977f596544bbe98d',1,'vfs_new.c']]],
+  ['vfs_5fgetdisksize_1007',['vfs_getDiskSize',['../d1/d8d/vfs__new_8c.html#aaa2dffdda1f374906111da652e47f5e9',1,'vfs_new.c']]],
+  ['vfs_5fgetdiskspace_1008',['vfs_getDiskSpace',['../d1/d8d/vfs__new_8c.html#ac4237335c9bd541b4ef80b3664b6c632',1,'vfs_new.c']]],
+  ['vfs_5fgetdiskused_1009',['vfs_getDiskUsed',['../d1/d8d/vfs__new_8c.html#a7403eb2e0698454a21f0c67d48a29250',1,'vfs_new.c']]],
+  ['vfs_5fgetlengthfile_1010',['vfs_getLengthFile',['../d1/d8d/vfs__new_8c.html#a86a73edd6b27f440c9f8aae0b487c600',1,'vfs_new.c']]],
+  ['vfs_5fgetlengthfilepath_1011',['vfs_getLengthFilePath',['../d1/d8d/vfs__new_8c.html#ae3e68f5004b9ecf2455ea48e523dedda',1,'vfs_new.c']]],
+  ['vfs_5fgetlistfolder_1012',['vfs_getListFolder',['../d1/d8d/vfs__new_8c.html#a80ac0b5e2867c7d70befae34272351e3',1,'vfs_new.c']]],
+  ['vfs_5fgetmountpoint_1013',['vfs_getMountPoint',['../d1/d8d/vfs__new_8c.html#aa01aabefab6407ac4ecc5dd4b2c3a010',1,'vfs_new.c']]],
+  ['vfs_5fgetname_1014',['vfs_getName',['../d1/d8d/vfs__new_8c.html#ad6a42ce35cacdc918f0a30ed99428ead',1,'vfs_new.c']]],
+  ['vfs_5fgetoffsetfile_1015',['vfs_getOffsetFile',['../d1/d8d/vfs__new_8c.html#aab8b2e5bd1abdd63ea3cd7580c956a5e',1,'vfs_new.c']]],
+  ['vfs_5fgetpath_1016',['vfs_getPath',['../d1/d8d/vfs__new_8c.html#a57f736a4436a13d7fb40f366233c3116',1,'vfs_new.c']]],
+  ['vfs_5fgettype_1017',['vfs_getType',['../d1/d8d/vfs__new_8c.html#ae697223591644a766ebc9f0c3d4aaba7',1,'vfs_new.c']]],
+  ['vfs_5flist_1018',['vfs_list',['../d1/d8d/vfs__new_8c.html#a999d230be3400adbcc1ebcfb66d3dcea',1,'vfs_new.c']]],
+  ['vfs_5fread_1019',['vfs_read',['../d1/d8d/vfs__new_8c.html#a6fde56e5f7f7bc546ccd70b91809178b',1,'vfs_new.c']]],
+  ['vfs_5freadchar_1020',['vfs_readChar',['../d1/d8d/vfs__new_8c.html#a34c3412d89e9feff815e71de10b04541',1,'vfs_new.c']]],
+  ['vfs_5freg_1021',['vfs_reg',['../d1/d8d/vfs__new_8c.html#a2633690687cdf4dff8447c1e6dacbf50',1,'vfs_new.c']]],
+  ['vfs_5fwrite_1022',['vfs_write',['../d1/d8d/vfs__new_8c.html#a25a92ff9f8ee128d2c5e5c321ab8dd43',1,'vfs_new.c']]]
+];

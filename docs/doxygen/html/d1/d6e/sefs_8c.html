@@ -1,0 +1,620 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Файл kernel/src/fs/sefs.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d1/d6e/sefs_8c.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Функции</a> &#124;
+<a href="#var-members">Переменные</a>  </div>
+  <div class="headertitle">
+<div class="title">Файл sefs.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Файловая система SEFS (Sayori Easy File System)  
+<a href="#details">Подробнее...</a></p>
+<div class="textblock"><code>#include &lt;kernel.h&gt;</code><br />
+<code>#include &lt;io/ports.h&gt;</code><br />
+<code>#include &lt;drv/vfs_new.h&gt;</code><br />
+<code>#include &lt;fs/sefs.h&gt;</code><br />
+</div>
+<p><a href="../../d1/d6e/sefs_8c_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Функции</h2></td></tr>
+<tr class="memitem:a4fcb285ca10a127ebb3e714d4c6616ba"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a4fcb285ca10a127ebb3e714d4c6616ba">sefs_readChar</a> (uint32_t node)</td></tr>
+<tr class="memdesc:a4fcb285ca10a127ebb3e714d4c6616ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Полное чтение файла  <a href="../../d1/d6e/sefs_8c.html#a4fcb285ca10a127ebb3e714d4c6616ba">Подробнее...</a><br /></td></tr>
+<tr class="separator:a4fcb285ca10a127ebb3e714d4c6616ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab89f5f84ced95d256f6c8bfef366c234"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#ab89f5f84ced95d256f6c8bfef366c234">sefs_read</a> (uint32_t node, size_t offset, size_t size, void *buffer)</td></tr>
+<tr class="memdesc:ab89f5f84ced95d256f6c8bfef366c234"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Чтение файла  <a href="../../d1/d6e/sefs_8c.html#ab89f5f84ced95d256f6c8bfef366c234">Подробнее...</a><br /></td></tr>
+<tr class="separator:ab89f5f84ced95d256f6c8bfef366c234"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0f8e32bce9455eaa5cc73cde06093c0"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#aa0f8e32bce9455eaa5cc73cde06093c0">sefs_write</a> (uint32_t node, size_t offset, size_t size, void *buffer)</td></tr>
+<tr class="memdesc:aa0f8e32bce9455eaa5cc73cde06093c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] запись в файл  <a href="../../d1/d6e/sefs_8c.html#aa0f8e32bce9455eaa5cc73cde06093c0">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa0f8e32bce9455eaa5cc73cde06093c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86eb7dd68421517225df05abc4f99d3f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a86eb7dd68421517225df05abc4f99d3f">sefs_getLengthFile</a> (int node)</td></tr>
+<tr class="memdesc:a86eb7dd68421517225df05abc4f99d3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Получить размер файла (поиск по индексу)  <a href="../../d1/d6e/sefs_8c.html#a86eb7dd68421517225df05abc4f99d3f">Подробнее...</a><br /></td></tr>
+<tr class="separator:a86eb7dd68421517225df05abc4f99d3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3cbf79f59ffbadbb55909d435907340"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#ae3cbf79f59ffbadbb55909d435907340">sefs_getOffsetFile</a> (int node)</td></tr>
+<tr class="memdesc:ae3cbf79f59ffbadbb55909d435907340"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Получить отступ в файловой системе у файла  <a href="../../d1/d6e/sefs_8c.html#ae3cbf79f59ffbadbb55909d435907340">Подробнее...</a><br /></td></tr>
+<tr class="separator:ae3cbf79f59ffbadbb55909d435907340"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a513b6c570ed78759eb3da171bfa8c905"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a513b6c570ed78759eb3da171bfa8c905">sefs_findFile</a> (char *filename)</td></tr>
+<tr class="memdesc:a513b6c570ed78759eb3da171bfa8c905"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Поиск файла на устройстве  <a href="../../d1/d6e/sefs_8c.html#a513b6c570ed78759eb3da171bfa8c905">Подробнее...</a><br /></td></tr>
+<tr class="separator:a513b6c570ed78759eb3da171bfa8c905"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6c49669789d95244ecd9c71343809be"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#af6c49669789d95244ecd9c71343809be">sefs_findDir</a> (char *path)</td></tr>
+<tr class="memdesc:af6c49669789d95244ecd9c71343809be"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Поиск папки на устройстве  <a href="../../d1/d6e/sefs_8c.html#af6c49669789d95244ecd9c71343809be">Подробнее...</a><br /></td></tr>
+<tr class="separator:af6c49669789d95244ecd9c71343809be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f47dada270bc356f11d318e0e9e7799"><td class="memItemLeft" align="right" valign="top"><a id="a3f47dada270bc356f11d318e0e9e7799"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a3f47dada270bc356f11d318e0e9e7799">sefs_countElemFolder</a> (char *path)</td></tr>
+<tr class="memdesc:a3f47dada270bc356f11d318e0e9e7799"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Считает количество элементов в папке <br /></td></tr>
+<tr class="separator:a3f47dada270bc356f11d318e0e9e7799"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afea21460c8fa828684f58b706f7d28e1"><td class="memItemLeft" align="right" valign="top"><a id="afea21460c8fa828684f58b706f7d28e1"></a>
+struct <a class="el" href="../../d5/de2/structdirent.html">dirent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#afea21460c8fa828684f58b706f7d28e1">sefs_list</a> (char *path)</td></tr>
+<tr class="memdesc:afea21460c8fa828684f58b706f7d28e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Выводит список файлов <br /></td></tr>
+<tr class="separator:afea21460c8fa828684f58b706f7d28e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfd664380233f9fd0bac9059afd6ef99"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#acfd664380233f9fd0bac9059afd6ef99">sefs_diskUsed</a> (int node)</td></tr>
+<tr class="memdesc:acfd664380233f9fd0bac9059afd6ef99"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Количество используемого места устройства  <a href="../../d1/d6e/sefs_8c.html#acfd664380233f9fd0bac9059afd6ef99">Подробнее...</a><br /></td></tr>
+<tr class="separator:acfd664380233f9fd0bac9059afd6ef99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d65a211c6a2d4d87ac2e3ea647766da"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a4d65a211c6a2d4d87ac2e3ea647766da">sefs_diskSpace</a> (int node)</td></tr>
+<tr class="memdesc:a4d65a211c6a2d4d87ac2e3ea647766da"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Количество свободного места устройства  <a href="../../d1/d6e/sefs_8c.html#a4d65a211c6a2d4d87ac2e3ea647766da">Подробнее...</a><br /></td></tr>
+<tr class="separator:a4d65a211c6a2d4d87ac2e3ea647766da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a622d3a398375bdd5fabfe760d7ccb73b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a622d3a398375bdd5fabfe760d7ccb73b">sefs_diskSize</a> (int node)</td></tr>
+<tr class="memdesc:a622d3a398375bdd5fabfe760d7ccb73b"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Количество всего места устройства  <a href="../../d1/d6e/sefs_8c.html#a622d3a398375bdd5fabfe760d7ccb73b">Подробнее...</a><br /></td></tr>
+<tr class="separator:a622d3a398375bdd5fabfe760d7ccb73b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46ecd523e05e588220af026c67c38290"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a46ecd523e05e588220af026c67c38290">sefs_getDevName</a> (int node)</td></tr>
+<tr class="memdesc:a46ecd523e05e588220af026c67c38290"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Получение имени устройства  <a href="../../d1/d6e/sefs_8c.html#a46ecd523e05e588220af026c67c38290">Подробнее...</a><br /></td></tr>
+<tr class="separator:a46ecd523e05e588220af026c67c38290"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acff4599f4f46a1d2a2751f4de8925f13"><td class="memItemLeft" align="right" valign="top"><a id="acff4599f4f46a1d2a2751f4de8925f13"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>sefs_dirfree</b> (struct <a class="el" href="../../d5/de2/structdirent.html">dirent</a> *ptr)</td></tr>
+<tr class="separator:acff4599f4f46a1d2a2751f4de8925f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6612ef1a0a8a35222fe7bae735586d5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d0/d77/structfs__node.html">fs_node_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#ad6612ef1a0a8a35222fe7bae735586d5">sefs_initrd</a> (uint32_t location)</td></tr>
+<tr class="memdesc:ad6612ef1a0a8a35222fe7bae735586d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SEFS] Инициализация Sayori Easy File System  <a href="../../d1/d6e/sefs_8c.html#ad6612ef1a0a8a35222fe7bae735586d5">Подробнее...</a><br /></td></tr>
+<tr class="separator:ad6612ef1a0a8a35222fe7bae735586d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Переменные</h2></td></tr>
+<tr class="memitem:a2862bc902533aa8f8682e2ca54982b29"><td class="memItemLeft" align="right" valign="top"><a id="a2862bc902533aa8f8682e2ca54982b29"></a>
+<a class="el" href="../../de/dd8/structsefs__header__t.html">sefs_header_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a2862bc902533aa8f8682e2ca54982b29">sefs_header</a></td></tr>
+<tr class="memdesc:a2862bc902533aa8f8682e2ca54982b29"><td class="mdescLeft">&#160;</td><td class="mdescRight">... <br /></td></tr>
+<tr class="separator:a2862bc902533aa8f8682e2ca54982b29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcceec21ff43ffe4a61e9e8f9b987aad"><td class="memItemLeft" align="right" valign="top"><a id="adcceec21ff43ffe4a61e9e8f9b987aad"></a>
+<a class="el" href="../../dc/d23/structsefs__file__header__t.html">sefs_file_header_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#adcceec21ff43ffe4a61e9e8f9b987aad">file_headers</a></td></tr>
+<tr class="memdesc:adcceec21ff43ffe4a61e9e8f9b987aad"><td class="mdescLeft">&#160;</td><td class="mdescRight">... <br /></td></tr>
+<tr class="separator:adcceec21ff43ffe4a61e9e8f9b987aad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a121921ae828669ceb8633de85e71d51c"><td class="memItemLeft" align="right" valign="top"><a id="a121921ae828669ceb8633de85e71d51c"></a>
+<a class="el" href="../../d0/d77/structfs__node.html">fs_node_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a121921ae828669ceb8633de85e71d51c">sefs_root</a></td></tr>
+<tr class="memdesc:a121921ae828669ceb8633de85e71d51c"><td class="mdescLeft">&#160;</td><td class="mdescRight">... <br /></td></tr>
+<tr class="separator:a121921ae828669ceb8633de85e71d51c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace94a8f8b78565d399485c720053b263"><td class="memItemLeft" align="right" valign="top"><a id="ace94a8f8b78565d399485c720053b263"></a>
+<a class="el" href="../../d0/d77/structfs__node.html">fs_node_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#ace94a8f8b78565d399485c720053b263">sefs_dev</a></td></tr>
+<tr class="memdesc:ace94a8f8b78565d399485c720053b263"><td class="mdescLeft">&#160;</td><td class="mdescRight">... <br /></td></tr>
+<tr class="separator:ace94a8f8b78565d399485c720053b263"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a200d7633f318e20f7a0e9988dc9323d5"><td class="memItemLeft" align="right" valign="top"><a id="a200d7633f318e20f7a0e9988dc9323d5"></a>
+<a class="el" href="../../d0/d77/structfs__node.html">fs_node_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a200d7633f318e20f7a0e9988dc9323d5">root_nodes</a></td></tr>
+<tr class="memdesc:a200d7633f318e20f7a0e9988dc9323d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">... <br /></td></tr>
+<tr class="separator:a200d7633f318e20f7a0e9988dc9323d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5802b6d8bba6cc4f156a5cf3426872d6"><td class="memItemLeft" align="right" valign="top"><a id="a5802b6d8bba6cc4f156a5cf3426872d6"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a5802b6d8bba6cc4f156a5cf3426872d6">nroot_nodes</a></td></tr>
+<tr class="memdesc:a5802b6d8bba6cc4f156a5cf3426872d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Количество файлов. <br /></td></tr>
+<tr class="separator:a5802b6d8bba6cc4f156a5cf3426872d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85a0945a3cb128517bfcd352d3c43c97"><td class="memItemLeft" align="right" valign="top"><a id="a85a0945a3cb128517bfcd352d3c43c97"></a>
+struct <a class="el" href="../../d5/de2/structdirent.html">dirent</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a85a0945a3cb128517bfcd352d3c43c97">dirent</a></td></tr>
+<tr class="memdesc:a85a0945a3cb128517bfcd352d3c43c97"><td class="mdescLeft">&#160;</td><td class="mdescRight">... <br /></td></tr>
+<tr class="separator:a85a0945a3cb128517bfcd352d3c43c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e8311b93b4ae7efd4a020623dd3911e"><td class="memItemLeft" align="right" valign="top"><a id="a0e8311b93b4ae7efd4a020623dd3911e"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a0e8311b93b4ae7efd4a020623dd3911e">dirName</a> [2048]</td></tr>
+<tr class="memdesc:a0e8311b93b4ae7efd4a020623dd3911e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ссылка на названия папок по индексу <br /></td></tr>
+<tr class="separator:a0e8311b93b4ae7efd4a020623dd3911e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc5555ab9fb60a2c649d721e94935c50"><td class="memItemLeft" align="right" valign="top"><a id="acc5555ab9fb60a2c649d721e94935c50"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#acc5555ab9fb60a2c649d721e94935c50">diskUsed</a> = 0</td></tr>
+<tr class="memdesc:acc5555ab9fb60a2c649d721e94935c50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Количество используемого пространства <br /></td></tr>
+<tr class="separator:acc5555ab9fb60a2c649d721e94935c50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43b75316e5b4fec462b3b6c2b0f5132e"><td class="memItemLeft" align="right" valign="top"><a id="a43b75316e5b4fec462b3b6c2b0f5132e"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a43b75316e5b4fec462b3b6c2b0f5132e">diskSize</a> = 0</td></tr>
+<tr class="memdesc:a43b75316e5b4fec462b3b6c2b0f5132e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Общие кол-во дисков <br /></td></tr>
+<tr class="separator:a43b75316e5b4fec462b3b6c2b0f5132e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5032b3931b524437d3aeae31d26e6012"><td class="memItemLeft" align="right" valign="top"><a id="a5032b3931b524437d3aeae31d26e6012"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d6e/sefs_8c.html#a5032b3931b524437d3aeae31d26e6012">dirCount</a> = 0</td></tr>
+<tr class="memdesc:a5032b3931b524437d3aeae31d26e6012"><td class="mdescLeft">&#160;</td><td class="mdescRight">Количество папок <br /></td></tr>
+<tr class="separator:a5032b3931b524437d3aeae31d26e6012"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Файловая система SEFS (Sayori Easy File System) </p>
+<dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (<a href="#" onclick="location.href='mai'+'lto:'+'nik'+'it'+'a.p'+'im'+'ino'+'ff'+'@ya'+'nd'+'ex.'+'ru'; return false;">nikit<span style="display: none;">.nosp@m.</span>a.pi<span style="display: none;">.nosp@m.</span>minof<span style="display: none;">.nosp@m.</span>f@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>ru</a>), Drew &gt;_ (<a href="#" onclick="location.href='mai'+'lto:'+'pik'+'ac'+'hu_'+'an'+'dre'+'y@'+'vk.'+'co'+'m'; return false;">pikac<span style="display: none;">.nosp@m.</span>hu_a<span style="display: none;">.nosp@m.</span>ndrey<span style="display: none;">.nosp@m.</span>@vk.<span style="display: none;">.nosp@m.</span>com</a>) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.3.2 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2022-11-01 </dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022-2023 </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a></p>
+</div><h2 class="groupheader">Функции</h2>
+<a id="a622d3a398375bdd5fabfe760d7ccb73b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a622d3a398375bdd5fabfe760d7ccb73b">&#9670;&nbsp;</a></span>sefs_diskSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t sefs_diskSize </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Количество всего места устройства </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>node - Нода</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>size_t - Количество всего места устройства </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00266">266</a></p>
+
+</div>
+</div>
+<a id="a4d65a211c6a2d4d87ac2e3ea647766da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d65a211c6a2d4d87ac2e3ea647766da">&#9670;&nbsp;</a></span>sefs_diskSpace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t sefs_diskSpace </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Количество свободного места устройства </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>node - Нода</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>size_t - Количество свободного места устройства </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00255">255</a></p>
+
+</div>
+</div>
+<a id="acfd664380233f9fd0bac9059afd6ef99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfd664380233f9fd0bac9059afd6ef99">&#9670;&nbsp;</a></span>sefs_diskUsed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t sefs_diskUsed </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Количество используемого места устройства </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>node - Нода</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>size_t - Количество используемого места устройства </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00244">244</a></p>
+
+</div>
+</div>
+<a id="af6c49669789d95244ecd9c71343809be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6c49669789d95244ecd9c71343809be">&#9670;&nbsp;</a></span>sefs_findDir()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t sefs_findDir </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Поиск папки на устройстве </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">char*</td><td>filename - Путь к папке (виртуальный)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>int - Индекс папки, или отрицательное значение при ошибке </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00161">161</a></p>
+
+</div>
+</div>
+<a id="a513b6c570ed78759eb3da171bfa8c905"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a513b6c570ed78759eb3da171bfa8c905">&#9670;&nbsp;</a></span>sefs_findFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t sefs_findFile </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Поиск файла на устройстве </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">char*</td><td>filename - Путь к файлу (виртуальный)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>int - Индекс файла, или отрицательное значение при ошибке </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00137">137</a></p>
+
+</div>
+</div>
+<a id="a46ecd523e05e588220af026c67c38290"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46ecd523e05e588220af026c67c38290">&#9670;&nbsp;</a></span>sefs_getDevName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* sefs_getDevName </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Получение имени устройства </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>node - Нода</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>char* - Имя устройства </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00277">277</a></p>
+
+</div>
+</div>
+<a id="a86eb7dd68421517225df05abc4f99d3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86eb7dd68421517225df05abc4f99d3f">&#9670;&nbsp;</a></span>sefs_getLengthFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t sefs_getLengthFile </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Получить размер файла (поиск по индексу) </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>node - Индекс файла</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>size_t - Размер файла или 0 </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00113">113</a></p>
+
+</div>
+</div>
+<a id="ae3cbf79f59ffbadbb55909d435907340"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3cbf79f59ffbadbb55909d435907340">&#9670;&nbsp;</a></span>sefs_getOffsetFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t sefs_getOffsetFile </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Получить отступ в файловой системе у файла </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>node - Индекс файла</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>int - Позиция файла или отрицательное значение при ошибке </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00126">126</a></p>
+
+</div>
+</div>
+<a id="ad6612ef1a0a8a35222fe7bae735586d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6612ef1a0a8a35222fe7bae735586d5">&#9670;&nbsp;</a></span>sefs_initrd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d0/d77/structfs__node.html">fs_node_t</a>* sefs_initrd </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>location</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Инициализация Sayori Easy File System </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uint32_t</td><td>location - Точка монтирования</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>fs_node_t - Структура с файлами </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00296">296</a></p>
+
+</div>
+</div>
+<a id="ab89f5f84ced95d256f6c8bfef366c234"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab89f5f84ced95d256f6c8bfef366c234">&#9670;&nbsp;</a></span>sefs_read()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t sefs_read </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>buffer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Чтение файла </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>node - Индекс файла </td></tr>
+    <tr><td class="paramname">int</td><td>offset - С какой позиции читать файл </td></tr>
+    <tr><td class="paramname">int</td><td>size - Длина читаемого файла </td></tr>
+    <tr><td class="paramname">void*</td><td>buf - Буфер</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>uint32_t - Размер файла или отрицательное значение при ошибке </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00052">52</a></p>
+
+</div>
+</div>
+<a id="a4fcb285ca10a127ebb3e714d4c6616ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fcb285ca10a127ebb3e714d4c6616ba">&#9670;&nbsp;</a></span>sefs_readChar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* sefs_readChar </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] Полное чтение файла </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>node - Индекс файла</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section warning"><dt>Предупреждения</dt><dd>IT's MEMORY LEAKY!!! </dd></dl>
+<dl class="section return"><dt>Возвращает</dt><dd>char* - Содержимое файла </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00034">34</a></p>
+
+</div>
+</div>
+<a id="aa0f8e32bce9455eaa5cc73cde06093c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0f8e32bce9455eaa5cc73cde06093c0">&#9670;&nbsp;</a></span>sefs_write()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t sefs_write </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>buffer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>[SEFS] запись в файл </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>node - Индекс файла </td></tr>
+    <tr><td class="paramname">int</td><td>offset - С какой позиции писать файл </td></tr>
+    <tr><td class="paramname">int</td><td>size - Сколько пишем </td></tr>
+    <tr><td class="paramname">void*</td><td>buf - Буфер</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>uint32_t - Размер записаных байтов или отрицательное значение при ошибке </dd></dl>
+<p>&lt; Сколько скопировано с начала</p>
+<p>&lt; Сколько вставлено с остатка</p>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d6e/sefs_8c_source.html">sefs.c</a> строка <a class="el" href="../../d1/d6e/sefs_8c_source.html#l00078">78</a></p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_498935ec878ac05008e5d1178f2d281c.html">fs</a></li><li class="navelem"><a class="el" href="../../d1/d6e/sefs_8c.html">sefs.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 29 Апр 2023 07:12:45. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
