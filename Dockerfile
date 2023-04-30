@@ -11,8 +11,6 @@ RUN git clone https://github.com/NDRAEY/SayoriOS.git /SayoriOS --depth 1
 
 WORKDIR /SayoriOS
 
-RUN make -j4 && make geniso
-
-CMD ["cp", "kernel.iso", "/output/"]
+CMD ["sh", "-c", "git pull && make -j4 && make geniso && cp kernel.iso /output/"]
 
 VOLUME /output
