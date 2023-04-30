@@ -8,10 +8,10 @@
 </p>
 <h1>Скриншоты</h1>
 <center>
-	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.2/1.jpg" alt="v0.3.2 S1">
-	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.2/2.jpg" alt="v0.3.2 S2">
-	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.2/3.jpg" alt="v0.3.2 S3">
-	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.2/4.jpg" alt="v0.3.2 S4">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/1.png" alt="v0.3.2 S1">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/2.png" alt="v0.3.2 S2">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/3.png" alt="v0.3.2 S3">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/4.png" alt="v0.3.2 S4">
 </center><br>
 <h1>Примерный план действий:</h1>
 <p>
