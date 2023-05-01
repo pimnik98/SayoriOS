@@ -1,0 +1,24 @@
+name: 🤖 Автоматическая сборка при получении Пулл-реквестов
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Just lists all version of clang
+        run: sudo apt list "clang-*"
+
+      - name: Step 1 - Software installation
+        run: |
+          sudo apt install python3 build-essential xorriso grub-pc-bin mtools llvm lld fasm zip doxygen
+
+      - name: Step 2 - Compiling the kernel
+        run: make
+
+      - name: Step 3 - ISO assembly
+        run: make geniso

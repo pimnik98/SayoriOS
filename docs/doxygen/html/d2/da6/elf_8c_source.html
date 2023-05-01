@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/sys/elf.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d2/da6/elf_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">elf.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="../../d2/da6/elf_8c.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;lib/stdio.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;lib/math.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;elf/elf.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;uint32_t vmm_allocated[4096];</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;uint32_t vmm_mapped[4096];</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;uint32_t vmm_sizes[4096];</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<a class="code" href="../../df/d16/structelf__sections.html">elf_sections_t</a>* load_elf(<span class="keyword">const</span> <span class="keywordtype">char</span>* name){</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="comment">/* Open ELF file */</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="../../dd/d90/struct_f_i_l_e.html">FILE</a> *file_elf = <a class="code" href="../../d9/df6/stdio_8c.html#abd87d091823267c19289be5176c44d39">fopen</a>(name, <span class="stringliteral">&quot;r&quot;</span>);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">if</span> (file_elf-&gt;err) {</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        qemu_log(<span class="stringliteral">&quot;Failed to open ELF file: %s / %d&quot;</span>, name, file_elf-&gt;err);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordflow">return</span> NULL;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    }</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">size_t</span> sz = 0;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="comment">/* Allocate ELF file structure */</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="../../df/d16/structelf__sections.html">elf_sections_t</a>* elf = (<a class="code" href="../../df/d16/structelf__sections.html">elf_sections_t</a>*) <a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(<span class="keyword">sizeof</span>(<a class="code" href="../../df/d16/structelf__sections.html">elf_sections_t</a>));</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="../../d1/db0/string_8c.html#a51d47c70aaa419b8bb39549af224739f">memset</a>(elf, 0, <span class="keyword">sizeof</span>(<a class="code" href="../../df/d16/structelf__sections.html">elf_sections_t</a>));</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="comment">/* Read ELF header */</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a> = (<a class="code" href="../../d8/d50/struct_elf32___ehdr.html">Elf32_Ehdr</a>*) <a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(<span class="keyword">sizeof</span>(<a class="code" href="../../d8/d50/struct_elf32___ehdr.html">Elf32_Ehdr</a>));</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="../../d1/db0/string_8c.html#a51d47c70aaa419b8bb39549af224739f">memset</a>(elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>, 0, <span class="keyword">sizeof</span>(<a class="code" href="../../d8/d50/struct_elf32___ehdr.html">Elf32_Ehdr</a>));</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    sz = <a class="code" href="../../d9/df6/stdio_8c.html#a848f6c6ee8a5ab2ac1a7ede465f3b3d5">fread_c</a>(file_elf, 1, <span class="keyword">sizeof</span>(<a class="code" href="../../d8/d50/struct_elf32___ehdr.html">Elf32_Ehdr</a>), elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="comment">/* Read program header */</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    Elf32_Half proc_entries = elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>-&gt;<a class="code" href="../../d8/d50/struct_elf32___ehdr.html#a51ddda24560032b209311eb32528a249">e_phnum</a>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    uint32_t proc_size = elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>-&gt;<a class="code" href="../../d8/d50/struct_elf32___ehdr.html#ad0b31b8c5e1c550d79195f8190650caa">e_phentsize</a>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#aad8d0a3ec44aec9e5b58e5f7159398aa">p_header</a> = (<a class="code" href="../../db/dd8/struct_elf32___phdr.html">Elf32_Phdr</a>*)<a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(proc_size*proc_entries);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="../../d1/db0/string_8c.html#a51d47c70aaa419b8bb39549af224739f">memset</a>(elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#aad8d0a3ec44aec9e5b58e5f7159398aa">p_header</a>, 0, proc_size*proc_entries);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <a class="code" href="../../d9/df6/stdio_8c.html#a1a96ba88c0f883adfb35b4f97f54fa06">fseek</a>(file_elf, elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>-&gt;<a class="code" href="../../d8/d50/struct_elf32___ehdr.html#ada87533ed3557b687daa8d999461c79b">e_phoff</a>, SEEK_SET);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    sz = <a class="code" href="../../d9/df6/stdio_8c.html#a848f6c6ee8a5ab2ac1a7ede465f3b3d5">fread_c</a>(file_elf, proc_entries, proc_size, elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#aad8d0a3ec44aec9e5b58e5f7159398aa">p_header</a>);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="comment">/* Read ELF sections */</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    Elf32_Half sec_entries = elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>-&gt;<a class="code" href="../../d8/d50/struct_elf32___ehdr.html#a42978053163eaa3a3a6b828ca72a7268">e_shnum</a>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#ac0c280262ef5ffaa599e0b35e7637b84">section</a> = (<a class="code" href="../../da/d34/struct_elf32___shdr.html">Elf32_Shdr</a>*) <a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(<span class="keyword">sizeof</span>(<a class="code" href="../../da/d34/struct_elf32___shdr.html">Elf32_Shdr</a>)*sec_entries);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <a class="code" href="../../d1/db0/string_8c.html#a51d47c70aaa419b8bb39549af224739f">memset</a>(elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#ac0c280262ef5ffaa599e0b35e7637b84">section</a>, 0, <span class="keyword">sizeof</span>(<a class="code" href="../../da/d34/struct_elf32___shdr.html">Elf32_Shdr</a>)*sec_entries);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="../../d9/df6/stdio_8c.html#a1a96ba88c0f883adfb35b4f97f54fa06">fseek</a>(file_elf, elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>-&gt;<a class="code" href="../../d8/d50/struct_elf32___ehdr.html#ad1cb2a7b39b5465b19922fcd2a449ee1">e_shoff</a>, SEEK_SET);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    sz = <a class="code" href="../../d9/df6/stdio_8c.html#a848f6c6ee8a5ab2ac1a7ede465f3b3d5">fread_c</a>(file_elf, sec_entries, <span class="keyword">sizeof</span>(<a class="code" href="../../da/d34/struct_elf32___shdr.html">Elf32_Shdr</a>), elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#ac0c280262ef5ffaa599e0b35e7637b84">section</a>);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    elf-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a702945180aa732857b380a007a7e2a21">file</a> = file_elf;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    (void)sz;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">return</span> elf;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;int32_t run_elf_file(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, int32_t argc, <span class="keywordtype">char</span>* eargv[]) {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="../../d1/d8d/vfs__new_8c.html#a6d56a0474d38fd79cc5ce4d7b549a0e9">vfs_exists</a>(name)) {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        qemu_log(<span class="stringliteral">&quot;run_elf_file: elf [%s] does not exist&quot;</span>, name);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <a class="code" href="../../df/d16/structelf__sections.html">elf_sections_t</a>* elf_file = load_elf(name);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">if</span> (elf_file == NULL) {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        qemu_log(<span class="stringliteral">&quot;[DBG] Error opening file %s\n&quot;</span>, name);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    }</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="comment">// char* data = kmalloc(elf_file-&gt;file-&gt;size);</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="comment">// fseek(elf_file-&gt;file, 0, SEEK_SET);</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="comment">// fread_c(elf_file-&gt;file, elf_file-&gt;file-&gt;size, 1, data);</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="comment">// tty_printf(&quot;Ident: %s\n&quot;, elf_file-&gt;elf_header-&gt;e_ident);</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="comment">// tty_printf(&quot;Type: %x\n&quot;, elf_file-&gt;elf_header-&gt;e_type);</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="comment">// tty_printf(&quot;Machine: %x\n&quot;, elf_file-&gt;elf_header-&gt;e_mashine);</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="comment">// tty_printf(&quot;Version: %x\n&quot;, elf_file-&gt;elf_header-&gt;e_version);</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="comment">// tty_printf(&quot;Entry point: %x\n&quot;, elf_file-&gt;elf_header-&gt;e_entry);</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="comment">// tty_printf(&quot;Program Header Offset: %x\n&quot;, elf_file-&gt;elf_header-&gt;e_phoff);</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="comment">// tty_printf(&quot;Section Header Offset: %x\n&quot;, elf_file-&gt;elf_header-&gt;e_shoff);</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="comment">// tty_printf(&quot;Flags: %x\n&quot;, elf_file-&gt;elf_header-&gt;e_flags);</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="comment">// tty_printf(&quot;Program Header Size: %d\n&quot;, elf_file-&gt;elf_header-&gt;e_phentsize);</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="comment">// tty_printf(&quot;Program Header Entries: %d\n&quot;, elf_file-&gt;elf_header-&gt;e_phnum);</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="comment">// tty_printf(&quot;Section Header Size: %d\n&quot;, elf_file-&gt;elf_header-&gt;e_shentsize);</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="comment">// tty_printf(&quot;Section Header Entries: %d\n&quot;, elf_file-&gt;elf_header-&gt;e_shnum);</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    uint32_t vmm_allocated_count = 0;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordflow">for</span> (int32_t i = 0; i &lt; elf_file-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>-&gt;<a class="code" href="../../d8/d50/struct_elf32___ehdr.html#a51ddda24560032b209311eb32528a249">e_phnum</a>; i++) {</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <a class="code" href="../../db/dd8/struct_elf32___phdr.html">Elf32_Phdr</a> *phdr = elf_file-&gt;<a class="code" href="../../df/d16/structelf__sections.html#aad8d0a3ec44aec9e5b58e5f7159398aa">p_header</a> + i;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keywordflow">if</span> (phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#a1b4ed5de6b34c773a4bd176b0b1a486b">p_type</a> != PT_LOAD) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="comment">// tty_printf(&quot; - TYPE: %s  OFFSET: %x  VADDR: %x  PADDR:%x  FSIZE: %x  MSIZE: %x\n&quot;,</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="comment">//          (phdr-&gt;p_type==PT_LOAD?&quot;LOAD&quot;:&quot;UNKNOWN&quot;),</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="comment">//          phdr-&gt;p_offset,</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="comment">//          phdr-&gt;p_vaddr,</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="comment">//          phdr-&gt;p_paddr,</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="comment">//          phdr-&gt;p_filesz,</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        <span class="comment">//          phdr-&gt;p_memsz);</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        qemu_log(<span class="stringliteral">&quot;Loading %x bytes to %x&quot;</span>, phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#a927f5fb1182d6e414c7ac3573aed393f">p_memsz</a>, phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#acabdf03daaa792ce4051b6883b0df40d">p_vaddr</a>);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="keywordtype">size_t</span> pagecount = MAX((phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#a927f5fb1182d6e414c7ac3573aed393f">p_memsz</a> / PAGE_SIZE), 1);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        physaddr_t addrto = <a class="code" href="../../df/dd5/memory_8c.html#aa68e19c97170e149989b72272236928a">alloc_phys_pages</a>(pagecount);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        qemu_log(<span class="stringliteral">&quot;Page count allocated now: %d (memsz: %d; PAGE SIZE: %d)&quot;</span>,</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                 pagecount, phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#a927f5fb1182d6e414c7ac3573aed393f">p_memsz</a>, PAGE_SIZE);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <a class="code" href="../../df/dd5/memory_8c.html#ad231c12670ac1d3aa1e8130b58467e00">map_pages</a>(</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            <a class="code" href="../../df/dd5/memory_8c.html#a5bf3165f89335118ba3ff70e5cf71c93">get_kernel_dir</a>(),</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#acabdf03daaa792ce4051b6883b0df40d">p_vaddr</a>,</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;            addrto,</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            pagecount,</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;            (PAGE_PRESENT | PAGE_USER | PAGE_WRITEABLE) <span class="comment">// 0x07</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        );</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="comment">// Can be collapsed into: vmm_allocated[vmm_allocated_count++] = addrto;</span></div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        vmm_allocated[vmm_allocated_count] = addrto;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        vmm_sizes[vmm_allocated_count] = pagecount;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        vmm_mapped[vmm_allocated_count] = phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#acabdf03daaa792ce4051b6883b0df40d">p_vaddr</a>;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        vmm_allocated_count++;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <a class="code" href="../../d1/db0/string_8c.html#a51d47c70aaa419b8bb39549af224739f">memset</a>((<span class="keywordtype">void</span>*)phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#acabdf03daaa792ce4051b6883b0df40d">p_vaddr</a>, 0, phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#a927f5fb1182d6e414c7ac3573aed393f">p_memsz</a>);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        qemu_log(<span class="stringliteral">&quot;Set %x - %x to zero.&quot;</span>, (<span class="keywordtype">int</span>)((<span class="keywordtype">void</span>*)phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#acabdf03daaa792ce4051b6883b0df40d">p_vaddr</a>), (<span class="keywordtype">int</span>)((<span class="keywordtype">void</span>*)phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#acabdf03daaa792ce4051b6883b0df40d">p_vaddr</a>) + phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#a927f5fb1182d6e414c7ac3573aed393f">p_memsz</a>);</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <a class="code" href="../../d9/df6/stdio_8c.html#a1a96ba88c0f883adfb35b4f97f54fa06">fseek</a>(elf_file-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a702945180aa732857b380a007a7e2a21">file</a>, phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#a8506a191f6eb19d977badcc7b79304da">p_offset</a>, SEEK_SET);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <a class="code" href="../../d9/df6/stdio_8c.html#a848f6c6ee8a5ab2ac1a7ede465f3b3d5">fread_c</a>(elf_file-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a702945180aa732857b380a007a7e2a21">file</a>, phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#a3b607fe05ae8ac5dbe7b328eb25b9c11">p_filesz</a>, 1, (<span class="keywordtype">char</span>*)phdr-&gt;<a class="code" href="../../db/dd8/struct_elf32___phdr.html#acabdf03daaa792ce4051b6883b0df40d">p_vaddr</a>);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        qemu_log(<span class="stringliteral">&quot;Loaded&quot;</span>);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    }</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    int(*entry_point)(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* eargv[]) = (<span class="keywordtype">int</span>(*)(int, <span class="keywordtype">char</span>**))elf_file-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>-&gt;<a class="code" href="../../d8/d50/struct_elf32___ehdr.html#a146e750d8c5ddfa36d84e83fd43a9828">e_entry</a>;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    qemu_log(<span class="stringliteral">&quot;ELF entry point: %x&quot;</span>, elf_file-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>-&gt;<a class="code" href="../../d8/d50/struct_elf32___ehdr.html#a146e750d8c5ddfa36d84e83fd43a9828">e_entry</a>);</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    qemu_log(<span class="stringliteral">&quot;Executing&quot;</span>);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="comment">// int _result = ((int (*)())elf_file-&gt;elf_header-&gt;e_entry)();</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keywordtype">int</span> _result = entry_point(argc, eargv);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    </div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    qemu_log(<span class="stringliteral">&quot;[PROGRAMM FINISHED WITH CODE &lt;%d&gt;]&quot;</span>, _result);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    qemu_log(<span class="stringliteral">&quot;Cleaning VMM:&quot;</span>);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordflow">for</span> (int32_t i = 0; i &lt; vmm_allocated_count; i++){</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        qemu_log(<span class="stringliteral">&quot;\tCleaning %d: %x&quot;</span>, i, vmm_allocated[i]);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        unmap_pages(<a class="code" href="../../df/dd5/memory_8c.html#a5bf3165f89335118ba3ff70e5cf71c93">get_kernel_dir</a>(), vmm_mapped[i], vmm_sizes[i]);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        vmm_free_page(vmm_allocated[i]);</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    }</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    qemu_log(<span class="stringliteral">&quot;[CLEANED &lt;%d&gt; PAGES]&quot;</span>, vmm_allocated_count);</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="comment">// FREE ELF DATA</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <a class="code" href="../../d9/df6/stdio_8c.html#a339e549606415666d4342bb56cffe976">fclose</a>(elf_file-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a702945180aa732857b380a007a7e2a21">file</a>);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <a class="code" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a>(elf_file-&gt;<a class="code" href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_header</a>);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <a class="code" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a>(elf_file-&gt;<a class="code" href="../../df/d16/structelf__sections.html#ac0c280262ef5ffaa599e0b35e7637b84">section</a>);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <a class="code" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a>(elf_file-&gt;<a class="code" href="../../df/d16/structelf__sections.html#aad8d0a3ec44aec9e5b58e5f7159398aa">p_header</a>);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;}</div>
+<div class="ttc" id="amemory_8c_html_a5bf3165f89335118ba3ff70e5cf71c93"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a5bf3165f89335118ba3ff70e5cf71c93">get_kernel_dir</a></div><div class="ttdeci">physaddr_t get_kernel_dir(void)</div><div class="ttdoc">Получение точки входа ядра</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00772">memory.c:772</a></div></div>
+<div class="ttc" id="amemory_8c_html_a5f52d7c56b7d67dc2f96b2e93dfdc7be"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a></div><div class="ttdeci">void * kmalloc(size_t size)</div><div class="ttdoc">Выделение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00661">memory.c:661</a></div></div>
+<div class="ttc" id="amemory_8c_html_aa68e19c97170e149989b72272236928a"><div class="ttname"><a href="../../df/dd5/memory_8c.html#aa68e19c97170e149989b72272236928a">alloc_phys_pages</a></div><div class="ttdeci">physaddr_t alloc_phys_pages(size_t count)</div><div class="ttdoc">Выделить страницу в физической памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00303">memory.c:303</a></div></div>
+<div class="ttc" id="amemory_8c_html_ad231c12670ac1d3aa1e8130b58467e00"><div class="ttname"><a href="../../df/dd5/memory_8c.html#ad231c12670ac1d3aa1e8130b58467e00">map_pages</a></div><div class="ttdeci">uint8_t map_pages(physaddr_t page_dir, virtual_addr_t vaddr, physaddr_t paddr, size_t count, uint32_t flags)</div><div class="ttdoc">Привязывает физический адрес к виртуальному</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00532">memory.c:532</a></div></div>
+<div class="ttc" id="amemory_8c_html_aed506f8be19e508533954916a0be0b3a"><div class="ttname"><a href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a></div><div class="ttdeci">void kfree(void *vaddr)</div><div class="ttdoc">Освобождение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00681">memory.c:681</a></div></div>
+<div class="ttc" id="astdio_8c_html_a1a96ba88c0f883adfb35b4f97f54fa06"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a1a96ba88c0f883adfb35b4f97f54fa06">fseek</a></div><div class="ttdeci">ssize_t fseek(FILE *stream, ssize_t offset, uint8_t whence)</div><div class="ttdoc">Установка позиции в потоке данных относительно текущей позиции</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00249">stdio.c:249</a></div></div>
+<div class="ttc" id="astdio_8c_html_a339e549606415666d4342bb56cffe976"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a339e549606415666d4342bb56cffe976">fclose</a></div><div class="ttdeci">void fclose(FILE *stream)</div><div class="ttdoc">Закончить работу с файлом</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00174">stdio.c:174</a></div></div>
+<div class="ttc" id="astdio_8c_html_a848f6c6ee8a5ab2ac1a7ede465f3b3d5"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a848f6c6ee8a5ab2ac1a7ede465f3b3d5">fread_c</a></div><div class="ttdeci">int fread_c(FILE *stream, size_t count, size_t size, void *buffer)</div><div class="ttdoc">Получение содержимого файла (детальная настройка)</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00205">stdio.c:205</a></div></div>
+<div class="ttc" id="astdio_8c_html_abd87d091823267c19289be5176c44d39"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#abd87d091823267c19289be5176c44d39">fopen</a></div><div class="ttdeci">FILE * fopen(const char *filename, const char *_mode)</div><div class="ttdoc">Открыть файл для работы с ним</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00145">stdio.c:145</a></div></div>
+<div class="ttc" id="astring_8c_html_a51d47c70aaa419b8bb39549af224739f"><div class="ttname"><a href="../../d1/db0/string_8c.html#a51d47c70aaa419b8bb39549af224739f">memset</a></div><div class="ttdeci">void * memset(void *ptr, uint8_t value, size_t count)</div><div class="ttdoc">Заполнение массива указанными символами</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00158">string.c:158</a></div></div>
+<div class="ttc" id="astruct_elf32___ehdr_html"><div class="ttname"><a href="../../d8/d50/struct_elf32___ehdr.html">Elf32_Ehdr</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00082">elf.h:83</a></div></div>
+<div class="ttc" id="astruct_elf32___ehdr_html_a146e750d8c5ddfa36d84e83fd43a9828"><div class="ttname"><a href="../../d8/d50/struct_elf32___ehdr.html#a146e750d8c5ddfa36d84e83fd43a9828">Elf32_Ehdr::e_entry</a></div><div class="ttdeci">Elf32_Addr e_entry</div><div class="ttdoc">Точка входа в процесс</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00088">elf.h:88</a></div></div>
+<div class="ttc" id="astruct_elf32___ehdr_html_a42978053163eaa3a3a6b828ca72a7268"><div class="ttname"><a href="../../d8/d50/struct_elf32___ehdr.html#a42978053163eaa3a3a6b828ca72a7268">Elf32_Ehdr::e_shnum</a></div><div class="ttdeci">Elf32_Half e_shnum</div><div class="ttdoc">Количество записей в заголовке раздела</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00096">elf.h:96</a></div></div>
+<div class="ttc" id="astruct_elf32___ehdr_html_a51ddda24560032b209311eb32528a249"><div class="ttname"><a href="../../d8/d50/struct_elf32___ehdr.html#a51ddda24560032b209311eb32528a249">Elf32_Ehdr::e_phnum</a></div><div class="ttdeci">Elf32_Half e_phnum</div><div class="ttdoc">Количество записей заголовка программы</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00094">elf.h:94</a></div></div>
+<div class="ttc" id="astruct_elf32___ehdr_html_ad0b31b8c5e1c550d79195f8190650caa"><div class="ttname"><a href="../../d8/d50/struct_elf32___ehdr.html#ad0b31b8c5e1c550d79195f8190650caa">Elf32_Ehdr::e_phentsize</a></div><div class="ttdeci">Elf32_Half e_phentsize</div><div class="ttdoc">Размер записи заголовка программы</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00093">elf.h:93</a></div></div>
+<div class="ttc" id="astruct_elf32___ehdr_html_ad1cb2a7b39b5465b19922fcd2a449ee1"><div class="ttname"><a href="../../d8/d50/struct_elf32___ehdr.html#ad1cb2a7b39b5465b19922fcd2a449ee1">Elf32_Ehdr::e_shoff</a></div><div class="ttdeci">Elf32_Off e_shoff</div><div class="ttdoc">Смещение заголовка таблицы разделов</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00090">elf.h:90</a></div></div>
+<div class="ttc" id="astruct_elf32___ehdr_html_ada87533ed3557b687daa8d999461c79b"><div class="ttname"><a href="../../d8/d50/struct_elf32___ehdr.html#ada87533ed3557b687daa8d999461c79b">Elf32_Ehdr::e_phoff</a></div><div class="ttdeci">Elf32_Off e_phoff</div><div class="ttdoc">Смещение заголовка программы</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00089">elf.h:89</a></div></div>
+<div class="ttc" id="astruct_elf32___phdr_html"><div class="ttname"><a href="../../db/dd8/struct_elf32___phdr.html">Elf32_Phdr</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00122">elf.h:123</a></div></div>
+<div class="ttc" id="astruct_elf32___phdr_html_a1b4ed5de6b34c773a4bd176b0b1a486b"><div class="ttname"><a href="../../db/dd8/struct_elf32___phdr.html#a1b4ed5de6b34c773a4bd176b0b1a486b">Elf32_Phdr::p_type</a></div><div class="ttdeci">Elf32_Word p_type</div><div class="ttdoc">Тип заголовка программы</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00124">elf.h:124</a></div></div>
+<div class="ttc" id="astruct_elf32___phdr_html_a3b607fe05ae8ac5dbe7b328eb25b9c11"><div class="ttname"><a href="../../db/dd8/struct_elf32___phdr.html#a3b607fe05ae8ac5dbe7b328eb25b9c11">Elf32_Phdr::p_filesz</a></div><div class="ttdeci">Elf32_Word p_filesz</div><div class="ttdoc">Число байтов в сегменте файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00128">elf.h:128</a></div></div>
+<div class="ttc" id="astruct_elf32___phdr_html_a8506a191f6eb19d977badcc7b79304da"><div class="ttname"><a href="../../db/dd8/struct_elf32___phdr.html#a8506a191f6eb19d977badcc7b79304da">Elf32_Phdr::p_offset</a></div><div class="ttdeci">Elf32_Off p_offset</div><div class="ttdoc">Смещение заголовка программы</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00125">elf.h:125</a></div></div>
+<div class="ttc" id="astruct_elf32___phdr_html_a927f5fb1182d6e414c7ac3573aed393f"><div class="ttname"><a href="../../db/dd8/struct_elf32___phdr.html#a927f5fb1182d6e414c7ac3573aed393f">Elf32_Phdr::p_memsz</a></div><div class="ttdeci">Elf32_Word p_memsz</div><div class="ttdoc">...</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00129">elf.h:129</a></div></div>
+<div class="ttc" id="astruct_elf32___phdr_html_acabdf03daaa792ce4051b6883b0df40d"><div class="ttname"><a href="../../db/dd8/struct_elf32___phdr.html#acabdf03daaa792ce4051b6883b0df40d">Elf32_Phdr::p_vaddr</a></div><div class="ttdeci">Elf32_Addr p_vaddr</div><div class="ttdoc">Виртуальный адрес заголовка программы</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00126">elf.h:126</a></div></div>
+<div class="ttc" id="astruct_elf32___shdr_html"><div class="ttname"><a href="../../da/d34/struct_elf32___shdr.html">Elf32_Shdr</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00104">elf.h:105</a></div></div>
+<div class="ttc" id="astruct_f_i_l_e_html"><div class="ttname"><a href="../../dd/d90/struct_f_i_l_e.html">FILE</a></div><div class="ttdoc">Структура файла. Требуется для работы с VFS.</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/dd1/stdio_8h_source.html#l00018">stdio.h:18</a></div></div>
+<div class="ttc" id="astructelf__sections_html"><div class="ttname"><a href="../../df/d16/structelf__sections.html">elf_sections</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00135">elf.h:136</a></div></div>
+<div class="ttc" id="astructelf__sections_html_a492c2955e0429f46b1f754866630687a"><div class="ttname"><a href="../../df/d16/structelf__sections.html#a492c2955e0429f46b1f754866630687a">elf_sections::elf_header</a></div><div class="ttdeci">Elf32_Ehdr * elf_header</div><div class="ttdoc">ELF заголовок</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00137">elf.h:137</a></div></div>
+<div class="ttc" id="astructelf__sections_html_a702945180aa732857b380a007a7e2a21"><div class="ttname"><a href="../../df/d16/structelf__sections.html#a702945180aa732857b380a007a7e2a21">elf_sections::file</a></div><div class="ttdeci">FILE * file</div><div class="ttdoc">Ссылка на файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00141">elf.h:141</a></div></div>
+<div class="ttc" id="astructelf__sections_html_aad8d0a3ec44aec9e5b58e5f7159398aa"><div class="ttname"><a href="../../df/d16/structelf__sections.html#aad8d0a3ec44aec9e5b58e5f7159398aa">elf_sections::p_header</a></div><div class="ttdeci">Elf32_Phdr * p_header</div><div class="ttdoc">Программный заголовок</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00139">elf.h:139</a></div></div>
+<div class="ttc" id="astructelf__sections_html_ac0c280262ef5ffaa599e0b35e7637b84"><div class="ttname"><a href="../../df/d16/structelf__sections.html#ac0c280262ef5ffaa599e0b35e7637b84">elf_sections::section</a></div><div class="ttdeci">Elf32_Shdr * section</div><div class="ttdoc">Секции</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d9e/elf_8h_source.html#l00138">elf.h:138</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a6d56a0474d38fd79cc5ce4d7b549a0e9"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a6d56a0474d38fd79cc5ce4d7b549a0e9">vfs_exists</a></div><div class="ttdeci">bool vfs_exists(const char *filename)</div><div class="ttdoc">[VFS] Проверить существует ли файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00133">vfs_new.c:133</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../d2/da6/elf_8c.html">elf.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 29 Апр 2023 07:12:45. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
