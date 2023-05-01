@@ -116,8 +116,6 @@ void kbdctl(size_t func, int* data) {
 	if(func == KBDCTL_KEY) {
 		*data = getCharKeyboardWait(true);
 	}
-
-	return 0;
 }
 
 /**
