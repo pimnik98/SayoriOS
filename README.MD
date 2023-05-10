@@ -8,9 +8,10 @@
 </p>
 <h1>Скриншоты</h1>
 <center>
-	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.1/1.jpg" alt="v0.3.1 S1">
-	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.1/2.jpg" alt="v0.3.1 S2">
-	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.1/3.jpg" alt="v0.3.1 S3">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/1.png" alt="v0.3.2 S1">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/2.png" alt="v0.3.2 S2">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/3.png" alt="v0.3.2 S3">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/4.png" alt="v0.3.2 S4">
 </center><br>
 <h1>Примерный план действий:</h1>
 <p>
@@ -27,7 +28,7 @@
 <p>
 	Ядро не требует много ресурсов, но выделить и больше.<br>
 	* Процессор: 1 ядро х 1 ГГц c поддержкой x86<br>
-	* ОЗУ: 16 МБ<br>
+	* ОЗУ: 32 МБ<br>
 	* Жесткий диск: необязательно<br>
 	* COM-порты: 2 шт. (для отладки)<br>
 	* Видеоадаптер: 4 MB+<br>
