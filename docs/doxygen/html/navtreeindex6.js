@@ -1,5 +1,7 @@
 var NAVTREEINDEX6 =
 {
+"df/d97/struct_window.html#a48e3833544337765d8395b724cba36ea":[2,0,65,7],
+"df/d97/struct_window.html#a7a70c9b2cf02775fa1e589dbf58f3750":[2,0,65,1],
 "df/d97/struct_window.html#a912f41c06defd941dbbe59b108872373":[2,0,65,12],
 "df/d97/struct_window.html#aac36632954e2ec9af1cc2000082c23df":[2,0,65,4],
 "df/d97/struct_window.html#ab67b7cde76f60677416b9644d6f80416":[2,0,65,0],
@@ -100,8 +102,8 @@ var NAVTREEINDEX6 =
 "files.html":[3,0],
 "functions.html":[2,2,0],
 "functions_vars.html":[2,2,1],
-"globals.html":[3,1,0],
 "globals.html":[3,1,0,0],
+"globals.html":[3,1,0],
 "globals_a.html":[3,1,0,1],
 "globals_b.html":[3,1,0,2],
 "globals_c.html":[3,1,0,3],
@@ -109,8 +111,8 @@ var NAVTREEINDEX6 =
 "globals_defs.html":[3,1,3],
 "globals_e.html":[3,1,0,5],
 "globals_f.html":[3,1,0,6],
-"globals_func.html":[3,1,1,0],
 "globals_func.html":[3,1,1],
+"globals_func.html":[3,1,1,0],
 "globals_func_a.html":[3,1,1,1],
 "globals_func_b.html":[3,1,1,2],
 "globals_func_c.html":[3,1,1,3],
