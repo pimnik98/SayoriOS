@@ -49,6 +49,7 @@ SOURCES=kernel/src/sys/bootscreen.o \
 	kernel/src/sys/logo.o \
 	kernel/src/io/port_io.o \
 	kernel/src/gui/pointutils.o \
+	kernel/src/gui/circle.o \
 	kernel/src/gui/eki.o \
 	kernel/src/drv/audio/ac97.o \
 	kernel/src/toys/piano.o \
