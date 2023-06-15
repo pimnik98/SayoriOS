@@ -69,7 +69,7 @@ var NAVTREEINDEX0 =
 "d0/dad/structvfs__filesystem__t.html#a15f4aeb556b84cd959616f2d3c5681d5":[2,0,58,2],
 "d0/dad/structvfs__filesystem__t.html#a841d9b1a9a1521308b0309f16a620270":[2,0,58,0],
 "d1/d17/unique__ptr_8hpp_source.html":[3,0,0,0,0,13],
-"d1/d28/widget_8c_source.html":[3,0,0,2,2,6],
+"d1/d28/widget_8c_source.html":[3,0,0,2,2,7],
 "d1/d29/struct_coordinates.html":[2,0,12],
 "d1/d29/struct_coordinates.html#a912f41c06defd941dbbe59b108872373":[2,0,12,1],
 "d1/d29/struct_coordinates.html#ac40fb48c853f1d348f49dcd200965bd5":[2,0,12,0],

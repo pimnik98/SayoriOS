@@ -36,7 +36,7 @@ uint16_t pci_read_confspc_word(uint8_t bus, uint8_t slot, uint8_t function, uint
 
     outl(PCI_ADDRESS_PORT, addr);
 
-    return (uint16_t)((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffff); //this too... I'm too lazy to write them
+    return ((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffff); //this too... I'm too lazy to write them
 }
 
 uint32_t pci_read32(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset) {
