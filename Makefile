@@ -102,7 +102,7 @@ ASFLAGS=--32
 QEMU = qemu-system-i386
 # QEMU = ../qemu-5.2.0/build/qemu-system-x86_64
 
-QEMU_FLAGS = -cdrom kernel.iso -accel kvm -m 128M \
+QEMU_FLAGS = -cdrom kernel.iso -m 128M \
 			 -name "SayoriOS Soul" -d guest_errors \
 			 -rtc base=localtime -soundhw pcspk \
 			 -device AC97 -hda disk.img
@@ -134,6 +134,9 @@ build: $(SOURCES)
 
 # Запуск
 run:
+	$(QEMU) -serial file:Qemu.log -accel kvm $(QEMU_FLAGS)
+# Запуск
+lite:
 	$(QEMU) -serial file:Qemu.log $(QEMU_FLAGS)
 
 run_milla:

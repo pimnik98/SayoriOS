@@ -60,7 +60,7 @@
 <p>
 	Для компиляции вам потребуется операционная система <b>Linux</b>, в которой предустановлено ПО для разработки.<br>
 	Установить можно следующей командой:<br>
-	<b><i>sudo apt-get install python3 clang llvm grub-pc-bin xorriso mtools lld git fasm make</b></i><br><br>
+	<b><i>sudo apt-get install python3 clang llvm grub-pc-bin xorriso mtools lld git fasm make g++</b></i><br><br>
 	А также надо установить софт для тестирования в среде <b>Linux</b><br>
 	<b><i>sudo apt-get install libvirt-daemon libvirt-clients bridge-utils virt-manager qemu-kvm qemu virt-manager</b></i><br><br>
 	<br>
