@@ -1,5 +1,7 @@
 var NAVTREEINDEX6 =
 {
+"df/d97/struct_window.html#a090232cfceb0fddf5e31ea5d8de5175a":[2,0,65,8],
+"df/d97/struct_window.html#a3670f4bed50c88882ceba330ffeb095c":[2,0,65,3],
 "df/d97/struct_window.html#a48e3833544337765d8395b724cba36ea":[2,0,65,7],
 "df/d97/struct_window.html#a7a70c9b2cf02775fa1e589dbf58f3750":[2,0,65,1],
 "df/d97/struct_window.html#a912f41c06defd941dbbe59b108872373":[2,0,65,12],

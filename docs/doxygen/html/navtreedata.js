@@ -52,10 +52,10 @@ var NAVTREEINDEX =
 "annotated.html",
 "d1/de0/struct_processor_local_a_p_i_c__t.html#a58b8cf73b7b952741307ba7a22e8decb",
 "d4/da7/imaging_8h.html#a61f20ca1009cfaa019cb1cc1a85e4d96",
-"d8/d57/fonts_8c.html",
-"db/d9f/mouse_8c.html#a7bd53d569b5d96cd7ddaeb97b1d5ba0e",
-"dd/d3f/struct____attribute____.html#abaabdc509cdaba7df9f56c6c76f3ae19",
-"df/d97/struct_window.html#a48e3833544337765d8395b724cba36ea"
+"d8/d50/struct_elf32___ehdr.html#af3c8fac8345400aef61da74b2de320c8",
+"db/d9f/mouse_8c.html#a69a429708c0078a6df6983f6797ea537",
+"dd/d3f/struct____attribute____.html#ab7df1955caa7fe1b414ed0efb277bef0",
+"df/d97/struct_window.html#a090232cfceb0fddf5e31ea5d8de5175a"
 ];
 
 var SYNCONMSG = 'нажмите на выключить для синхронизации панелей';

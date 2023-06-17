@@ -1,5 +1,7 @@
 var NAVTREEINDEX5 =
 {
+"dd/d3f/struct____attribute____.html#ab7df1955caa7fe1b414ed0efb277bef0":[2,0,5,6],
+"dd/d3f/struct____attribute____.html#aba338e28bfcf5d65ce5f6b3396a376ca":[2,0,5,28],
 "dd/d3f/struct____attribute____.html#abaabdc509cdaba7df9f56c6c76f3ae19":[2,0,5,22],
 "dd/d3f/struct____attribute____.html#abafb24dd7b8812fabb8f5dcf21f685cb":[2,0,5,53],
 "dd/d3f/struct____attribute____.html#ac0a285f80355817b71293751c4bf85d5":[2,0,5,21],
@@ -247,7 +249,5 @@ var NAVTREEINDEX5 =
 "df/d94/structregisters.html#af2b16bef95c844028dd145264d1d3875":[2,0,42,5],
 "df/d97/struct_window.html":[2,0,65],
 "df/d97/struct_window.html#a02afeaaf8574e7a78d6b466ff2695052":[2,0,65,2],
-"df/d97/struct_window.html#a02bed8590a9ddf520e58a060059518ec":[2,0,65,9],
-"df/d97/struct_window.html#a090232cfceb0fddf5e31ea5d8de5175a":[2,0,65,8],
-"df/d97/struct_window.html#a3670f4bed50c88882ceba330ffeb095c":[2,0,65,3]
+"df/d97/struct_window.html#a02bed8590a9ddf520e58a060059518ec":[2,0,65,9]
 };

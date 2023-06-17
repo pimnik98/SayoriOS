@@ -27,6 +27,7 @@ SOURCES=kernel/src/sys/bootscreen.o \
 	kernel/src/lib/list.o \
 	kernel/src/lib/stdio.o \
 	kernel/src/lib/string.o \
+	kernel/src/lib/rand.o \
 	kernel/src/lib/math.o \
 	kernel/src/lib/split.o \
 	kernel/src/io/tty.o \

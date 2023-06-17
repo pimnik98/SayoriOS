@@ -1,5 +1,7 @@
 var NAVTREEINDEX4 =
 {
+"db/d9f/mouse_8c.html#a69a429708c0078a6df6983f6797ea537":[3,0,0,2,0,1,1,7],
+"db/d9f/mouse_8c.html#a74b04dd2e92bf5738e88de4280cb697f":[3,0,0,2,0,1,1,21],
 "db/d9f/mouse_8c.html#a7bd53d569b5d96cd7ddaeb97b1d5ba0e":[3,0,0,2,0,1,1,39],
 "db/d9f/mouse_8c.html#a8c06074ae14d811ec999965fe044c2af":[3,0,0,2,0,1,1,27],
 "db/d9f/mouse_8c.html#a924469770960f5c22b577b5ff2c4cbbc":[3,0,0,2,0,1,1,3],
@@ -147,7 +149,7 @@ var NAVTREEINDEX4 =
 "dc/d54/common_8h.html#af6a258d8f3ee5206d682d799316314b1ae9de385ef6fe9bf3360d1038396b884c":[3,0,0,1,9,18,0],
 "dc/d54/common_8h.html#afbe98bd1f8d3c7a65d8a8048fdd8cd99":[3,0,0,1,9,19],
 "dc/d54/common_8h_source.html":[3,0,0,1,9],
-"dc/d9c/stdlib_8h_source.html":[3,0,0,1,6,5],
+"dc/d9c/stdlib_8h_source.html":[3,0,0,1,6,6],
 "dc/db2/system_8h_source.html":[3,0,0,1,7,14],
 "dc/dcc/basics_8h_source.html":[3,0,0,1,4,0],
 "dc/dcf/render_8c_source.html":[3,0,0,2,2,5],
@@ -247,7 +249,5 @@ var NAVTREEINDEX4 =
 "dd/d3f/struct____attribute____.html#aa388ef94585a5b1906d7b6967d20b93d":[2,0,5,45],
 "dd/d3f/struct____attribute____.html#aab9766d73bb8c3f486b081e191302ba8":[2,0,5,24],
 "dd/d3f/struct____attribute____.html#ab22abc2906422da61885ac6c8e6a1a59":[2,0,5,51],
-"dd/d3f/struct____attribute____.html#ab43a5b10c2bc104ddd909a4cf11d6d6a":[2,0,5,0],
-"dd/d3f/struct____attribute____.html#ab7df1955caa7fe1b414ed0efb277bef0":[2,0,5,6],
-"dd/d3f/struct____attribute____.html#aba338e28bfcf5d65ce5f6b3396a376ca":[2,0,5,28]
+"dd/d3f/struct____attribute____.html#ab43a5b10c2bc104ddd909a4cf11d6d6a":[2,0,5,0]
 };
