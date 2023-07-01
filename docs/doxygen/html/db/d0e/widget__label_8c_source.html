@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/gui/widget_label.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('db/d0e/widget__label_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">widget_label.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;gui/widget.h&quot;</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;gui/widget_label.h&quot;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;gui/basics.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;io/port_io.h&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keywordtype">void</span> destroy_widget_label(<a class="code" href="../../df/da9/struct_widget.html">Widget_t</a>* widget);</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keywordtype">void</span> widget_label_renderer(<span class="keyword">struct</span> <a class="code" href="../../df/da9/struct_widget.html">Widget</a>* <span class="keyword">this</span>, <span class="keyword">struct</span> <a class="code" href="../../df/d97/struct_window.html">Window</a>* container) {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <a class="code" href="../../d6/d90/struct_widget___label.html">Widget_Label_t</a>* this_object = (<a class="code" href="../../d6/d90/struct_widget___label.html">Widget_Label_t</a>*)(this-&gt;custom_widget_data);</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="comment">// uint32_t color = getColorFont();</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="comment">// setColorFont(this_object-&gt;color);</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    draw_vga_str(this_object-&gt;label, <a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(this_object-&gt;label), this-&gt;x, this-&gt;y, this_object-&gt;color);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="comment">// setColorFont(color);</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;}</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<a class="code" href="../../df/da9/struct_widget.html">Widget_t</a>* new_widget_label(<span class="keywordtype">char</span>* label, ssize_t x, ssize_t y, uint32_t color) {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="../../df/da9/struct_widget.html">Widget_t</a>* wgt = new_bare_widget(</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        &amp;widget_label_renderer,</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        &amp;destroy_widget_label,</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        x, y,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        1, 1</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    );</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    qemu_log(<span class="stringliteral">&quot;DESTROY WIDGET Label AT: %x&quot;</span>, wgt-&gt;destroyer);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    wgt-&gt;custom_widget_data = <a class="code" href="../../df/dd5/memory_8c.html#a143321ed844f982bb8bdb6403df4b7ef">kcalloc</a>(<span class="keyword">sizeof</span>(<a class="code" href="../../d6/d90/struct_widget___label.html">Widget_Label_t</a>), 1);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    qemu_log(<span class="stringliteral">&quot;Allocated %d bytes for custom data for Widget Label (%x)&quot;</span>, <span class="keyword">sizeof</span>(<a class="code" href="../../d6/d90/struct_widget___label.html">Widget_Label_t</a>), wgt-&gt;custom_widget_data);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="../../d6/d90/struct_widget___label.html">Widget_Label_t</a>* wgt_data = (<a class="code" href="../../d6/d90/struct_widget___label.html">Widget_Label_t</a>*)wgt-&gt;custom_widget_data;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    wgt_data-&gt;label = label;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    wgt_data-&gt;color = color;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    qemu_log(<span class="stringliteral">&quot;Okay?&quot;</span>);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordflow">return</span> wgt;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keywordtype">void</span> destroy_widget_label(<a class="code" href="../../df/da9/struct_widget.html">Widget_t</a>* widget) {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    qemu_log(<span class="stringliteral">&quot;Widget Label destroy its data at: %x&quot;</span>, widget-&gt;custom_widget_data);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a>(widget-&gt;custom_widget_data);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
+<div class="ttc" id="amemory_8c_html_a143321ed844f982bb8bdb6403df4b7ef"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a143321ed844f982bb8bdb6403df4b7ef">kcalloc</a></div><div class="ttdeci">void * kcalloc(size_t count, size_t size)</div><div class="ttdoc">Выделение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00788">memory.c:788</a></div></div>
+<div class="ttc" id="amemory_8c_html_aed506f8be19e508533954916a0be0b3a"><div class="ttname"><a href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a></div><div class="ttdeci">void kfree(void *vaddr)</div><div class="ttdoc">Освобождение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00681">memory.c:681</a></div></div>
+<div class="ttc" id="astring_8c_html_a008e171a518fe0e0352f31b245e03875"><div class="ttname"><a href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a></div><div class="ttdeci">size_t strlen(const char *str)</div><div class="ttdoc">Возращает длину строки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00076">string.c:76</a></div></div>
+<div class="ttc" id="astruct_widget___label_html"><div class="ttname"><a href="../../d6/d90/struct_widget___label.html">Widget_Label</a></div><div class="ttdef"><b>Definition:</b> <a href="../../db/d99/widget__label_8h_source.html#l00008">widget_label.h:8</a></div></div>
+<div class="ttc" id="astruct_widget_html"><div class="ttname"><a href="../../df/da9/struct_widget.html">Widget</a></div><div class="ttdef"><b>Definition:</b> <a href="../../df/d65/widget_8h_source.html#l00012">widget.h:12</a></div></div>
+<div class="ttc" id="astruct_window_html"><div class="ttname"><a href="../../df/d97/struct_window.html">Window</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d3/df1/window_8h_source.html#l00019">window.h:19</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f59209afd8c87727383fdbb18daa126b.html">gui</a></li><li class="navelem"><b>widget_label.c</b></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 1 Июл 2023 13:23:01. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
