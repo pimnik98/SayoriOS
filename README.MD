@@ -78,7 +78,7 @@
 	<b><i>make</b></i> - Классическая сборка<br>
 	<b><i>make run</b></i> - Обычный запуск в QEMU с выводом отладки в Qemu.log <br>
 	<b><i>make runlive</b></i> - Обычный запуск в QEMU с выводом отладки в консоль <br>
-	<b><i>make uefi</b></i> - Сборка образа в UEFI <br>
+	<b><i>make uefi</b></i> - Запуск эмулятора в UEFI режиме<br>
 	<b><i>make geniso</b></i> - Классическая сборка ISO <br>
 	<b><i>make genuefi</b></i> - Сборка ядра с UEFI <br>
 	<b><i>make clean</b></i> - Удаляет ISO в папке <br>
