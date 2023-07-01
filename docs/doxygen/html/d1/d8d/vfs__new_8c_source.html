@@ -1,0 +1,382 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/drv/vfs_new.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d1/d8d/vfs__new_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">vfs_new.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="../../d1/d8d/vfs__new_8c.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;drv/vfs_new.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a56ebbc091295fe3442a0c77d05cae98e">   13</a></span>&#160;<a class="code" href="../../d0/d77/structfs__node.html">fs_node_t</a> *<a class="code" href="../../d1/d8d/vfs__new_8c.html#a56ebbc091295fe3442a0c77d05cae98e">fs_root</a>;             </div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">   14</a></span>&#160;<a class="code" href="../../d0/d77/structfs__node.html">fs_node_t</a> *<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[128];      </div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a715e2526433a20e5e06dd1103157c511">   15</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a715e2526433a20e5e06dd1103157c511">countMount</a> = 0;          </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a57f736a4436a13d7fb40f366233c3116">   23</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a57f736a4436a13d7fb40f366233c3116">vfs_getPath</a>(<span class="keywordtype">int</span> node, <span class="keyword">const</span> <span class="keywordtype">char</span>* path, <span class="keywordtype">char</span>* buf){</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="comment">// strcpy(buf, path);</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="../../d1/db0/string_8c.html#a58a6b47d95aa3c9f97cd831f09798560">substr</a>(buf, path, <a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;name), <a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(path));</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    qemu_log(<span class="stringliteral">&quot;Before: %s; After: %s; Path in node: %s&quot;</span>, path, buf, <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;name);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;}</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a2f0d84808706c7d888f5624c7d09dd5f">   41</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a2f0d84808706c7d888f5624c7d09dd5f">vfs_foundMount</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* path){</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=<a class="code" href="../../d1/d8d/vfs__new_8c.html#a715e2526433a20e5e06dd1103157c511">countMount</a>-1; i &gt;= 0; i--){</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[i]-&gt;name) &gt; <a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(path)){</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        }</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> a = 0; a &lt; <a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[i]-&gt;name);a++){</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            <span class="keywordflow">if</span> ((<span class="keywordtype">int</span>) <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[i]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a93a4209b66c75fd711969ba8dcd926f5">name</a>[a] != (int) path[a]){</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <span class="keywordflow">if</span>(<a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[i]-&gt;name)-1 == a){</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                <span class="keywordflow">return</span> i;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            }</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="comment">// qemu_log(&quot;IM HERE BLYAT&quot;);</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a2633690687cdf4dff8447c1e6dacbf50">   67</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a2633690687cdf4dff8447c1e6dacbf50">vfs_reg</a>(<span class="keywordtype">size_t</span> location, <span class="keywordtype">size_t</span> type){</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordflow">if</span> (type == VFS_TYPE_MOUNT_SEFS){</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="comment">//qemu_log(&quot;[VFS] [REG] [%d] Sayori Easy File System | Location: %x&quot;,countMount,location);</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="comment">// vfs_mount[countMount] = (fs_node_t*) kmalloc(sizeof(fs_node_t*));</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[<a class="code" href="../../d1/d8d/vfs__new_8c.html#a715e2526433a20e5e06dd1103157c511">countMount</a>++] = (<a class="code" href="../../d0/d77/structfs__node.html">fs_node_t</a>*) <a class="code" href="../../d1/d6e/sefs_8c.html#ad6612ef1a0a8a35222fe7bae735586d5">sefs_initrd</a>(location);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="comment">// countMount++;</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (type == VFS_TYPE_MOUNT_NATSUKI){</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        qemu_log(<span class="stringliteral">&quot;[VFS] [REG] NatSuki %x | Location: %x&quot;</span>,type,location);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="comment">// vfs_mount[countMount] = (fs_node_t*) kmalloc(sizeof(fs_node_t*));</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[<a class="code" href="../../d1/d8d/vfs__new_8c.html#a715e2526433a20e5e06dd1103157c511">countMount</a>] = (<a class="code" href="../../d0/d77/structfs__node.html">fs_node_t</a>*)<a class="code" href="../../d2/d97/_nat_suki_8c.html#a82f2d989c1872f33a83356d56a1fc13a">NatSuki_initrd</a>(location);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordflow">if</span> (isInitNatSuki()){</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <a class="code" href="../../d1/d8d/vfs__new_8c.html#a715e2526433a20e5e06dd1103157c511">countMount</a>++;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        }</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        qemu_log(<span class="stringliteral">&quot;[VFS] [REG] Unknown | Location: %x&quot;</span>,location);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    }</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a25a92ff9f8ee128d2c5e5c321ab8dd43">   95</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a25a92ff9f8ee128d2c5e5c321ab8dd43">vfs_write</a>(<span class="keywordtype">int</span> node,<span class="keywordtype">int</span> elem, <span class="keywordtype">size_t</span> offset, <span class="keywordtype">size_t</span> size, <span class="keywordtype">void</span> *buf){</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;write != 0){</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        uint32_t ret = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a2441fff861fbd77a313d39d7d53b92e4">write</a>(elem,offset,size,buf);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    }</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a39c1e3db00e2b95181b787c69e7cc39a">  111</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a39c1e3db00e2b95181b787c69e7cc39a">vfs_findFile</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* filename){</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="comment">//qemu_log(&quot;[VFS] [FindFile] File: `%s`&quot;,filename);</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordtype">int</span> node = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a2f0d84808706c7d888f5624c7d09dd5f">vfs_foundMount</a>(filename);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;findFile) {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="keywordtype">char</span>* path = <a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)*<a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(filename));</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <a class="code" href="../../d1/d8d/vfs__new_8c.html#a57f736a4436a13d7fb40f366233c3116">vfs_getPath</a>(node, filename, path);</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        uint32_t elem = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#ab6254159890502c2abeb997100440366">findFile</a>(path);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <a class="code" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a>(path);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="comment">//qemu_log(&quot;\n[VFS] Node: %d | Elem:%d \n&quot;,node,elem);</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keywordflow">return</span> elem;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    }</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;}</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00133"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a6d56a0474d38fd79cc5ce4d7b549a0e9">  133</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a6d56a0474d38fd79cc5ce4d7b549a0e9">vfs_exists</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* filename){</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a39c1e3db00e2b95181b787c69e7cc39a">vfs_findFile</a>(filename) != -1){</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  }</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <span class="comment">// NDRAEY says:</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  <span class="comment">// return vfs_findFile(filename) != -1;</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;}</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a6fde56e5f7f7bc546ccd70b91809178b">  154</a></span>&#160;uint32_t <a class="code" href="../../d1/d8d/vfs__new_8c.html#a6fde56e5f7f7bc546ccd70b91809178b">vfs_read</a>(<span class="keywordtype">int</span> node, <span class="keywordtype">int</span> elem, <span class="keywordtype">size_t</span> offset, <span class="keywordtype">size_t</span> size, <span class="keywordtype">void</span> *buf){</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="comment">//qemu_log(&quot;[VFS] [Read] Node:%d | Elem: %d | Off: %d | Size: %d&quot;, node, elem, offset, size);</span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;read != 0){</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        uint32_t ret = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a05ab3f286863dee95791cdf95562b35e">read</a>(elem, offset, size, buf);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <span class="comment">// qemu_log(&quot;Buf now: %s&quot;, buf);</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    }</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="comment">//qemu_log(&quot;[VFS] [Read] Error!!!&quot;);</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;}</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a34c3412d89e9feff815e71de10b04541">  173</a></span>&#160;<span class="keywordtype">char</span>* <a class="code" href="../../d1/d8d/vfs__new_8c.html#a34c3412d89e9feff815e71de10b04541">vfs_readChar</a>(<span class="keywordtype">int</span> node,<span class="keywordtype">int</span> elem){</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="comment">//qemu_log(&quot;[VFS] [readChar] Node:%d | Elem: %d&quot;,node,elem);</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;readChar != 0){</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="keywordtype">char</span>* buffer = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a2b026aa81c95eff4169e55cd17b66236">readChar</a>(elem);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keywordflow">return</span> buffer;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    }</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;}</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00189"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a84939ec064dde8aa28882d6fd5bfda46">  189</a></span>&#160;uint32_t <a class="code" href="../../d1/d8d/vfs__new_8c.html#a84939ec064dde8aa28882d6fd5bfda46">vfs_findDir</a>(<span class="keywordtype">char</span>* path){</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    qemu_log(<span class="stringliteral">&quot;`%s`&quot;</span>,path);</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordtype">int</span> node = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a2f0d84808706c7d888f5624c7d09dd5f">vfs_foundMount</a>(path);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;findDir != 0){</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        <span class="keywordtype">char</span>* c_path = <a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)*(<a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(path)+1));</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        <a class="code" href="../../d1/d8d/vfs__new_8c.html#a57f736a4436a13d7fb40f366233c3116">vfs_getPath</a>(node, path, c_path);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        qemu_log(<span class="stringliteral">&quot;Got path: %s&quot;</span>, c_path);</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        uint32_t elem = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a89d367f4c253c3c21041a31793bc0700">findDir</a>(c_path);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <a class="code" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a>(c_path);</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        <span class="keywordflow">return</span> elem;</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    }</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;}</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160; </div>
+<div class="line"><a name="l00217"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#ae3e68f5004b9ecf2455ea48e523dedda">  217</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#ae3e68f5004b9ecf2455ea48e523dedda">vfs_getLengthFilePath</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* filename){</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;  <span class="keywordtype">int</span> node = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a2f0d84808706c7d888f5624c7d09dd5f">vfs_foundMount</a>(filename);</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;  <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;findFile != 0 &amp;&amp; <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;getLengthFile != 0){</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        <span class="keywordtype">char</span>* path = <a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)*<a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(filename));</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        <a class="code" href="../../d1/d8d/vfs__new_8c.html#a57f736a4436a13d7fb40f366233c3116">vfs_getPath</a>(node, filename, path);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        uint32_t elem = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#ab6254159890502c2abeb997100440366">findFile</a>(path);</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        <span class="keywordtype">size_t</span> size = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a53cd85a2aed1978f7e2286d775e640be">getLengthFile</a>(elem);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        <a class="code" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a>(path);</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        <span class="comment">//qemu_log(&quot;\n\n\t * [VFS] [gLFP] Node: %d | Elem: %d | Size: %d&quot;,node,elem,size);</span></div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        <span class="keywordflow">return</span> size;</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    }</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="keywordflow">return</span> -2;</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;}</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
+<div class="line"><a name="l00240"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a86a73edd6b27f440c9f8aae0b487c600">  240</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a86a73edd6b27f440c9f8aae0b487c600">vfs_getLengthFile</a>(<span class="keywordtype">int</span> node,<span class="keywordtype">int</span> elem){</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;getLengthFile != 0){</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a53cd85a2aed1978f7e2286d775e640be">getLengthFile</a>(elem);</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    }</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;}</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00255"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#aab8b2e5bd1abdd63ea3cd7580c956a5e">  255</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#aab8b2e5bd1abdd63ea3cd7580c956a5e">vfs_getOffsetFile</a>(<span class="keywordtype">int</span> node,<span class="keywordtype">int</span> elem){</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;getOffsetFile != 0){</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a0f12f1c3b85a8a7273705cc2a7d8c43c">getOffsetFile</a>(elem);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    }</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;}</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#aaa2dffdda1f374906111da652e47f5e9">  269</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#aaa2dffdda1f374906111da652e47f5e9">vfs_getDiskSize</a>(<span class="keywordtype">int</span> node){</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#ada9d8920ea52fa1b57aece431f5c7d1c">diskSize</a>(node);</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;}</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160; </div>
+<div class="line"><a name="l00280"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#ac4237335c9bd541b4ef80b3664b6c632">  280</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#ac4237335c9bd541b4ef80b3664b6c632">vfs_getDiskSpace</a>(<span class="keywordtype">int</span> node){</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a0558f3f0603265311805c77a9f906932">diskSpace</a>(node);</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160; </div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;}</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160; </div>
+<div class="line"><a name="l00292"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a7403eb2e0698454a21f0c67d48a29250">  292</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a7403eb2e0698454a21f0c67d48a29250">vfs_getDiskUsed</a>(<span class="keywordtype">int</span> node){</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a5f65bdaca2573eac2e94de8f909469c2">diskUsed</a>(node);</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;}</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
+<div class="line"><a name="l00303"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#ad6a42ce35cacdc918f0a30ed99428ead">  303</a></span>&#160;<span class="keywordtype">char</span>* <a class="code" href="../../d1/d8d/vfs__new_8c.html#ad6a42ce35cacdc918f0a30ed99428ead">vfs_getName</a>(<span class="keywordtype">int</span> node){</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a20d297a1874c26a10246508e25ddc26b">getDevName</a>(node);</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;}</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160; </div>
+<div class="line"><a name="l00314"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a5eb8e650941b902b977f596544bbe98d">  314</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a5eb8e650941b902b977f596544bbe98d">vfs_getCountElemDir</a>(<span class="keywordtype">char</span>* path){</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keywordtype">int</span> node = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a2f0d84808706c7d888f5624c7d09dd5f">vfs_foundMount</a>(path);</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;getCountElemFolder != 0) {</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <span class="keywordtype">char</span>* c_path = <a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)*<a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(path));</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <a class="code" href="../../d1/d8d/vfs__new_8c.html#a57f736a4436a13d7fb40f366233c3116">vfs_getPath</a>(node, path, c_path);</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160; </div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        uint32_t folder_elems = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#abbb5441d66cf92be029d307488f1483f">getCountElemFolder</a>(c_path);</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160; </div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        <a class="code" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a>(c_path);</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        <span class="keywordflow">return</span> folder_elems;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    }</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;}</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160; </div>
+<div class="line"><a name="l00335"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a80ac0b5e2867c7d70befae34272351e3">  335</a></span>&#160;<span class="keyword">struct </span><a class="code" href="../../d5/de2/structdirent.html">dirent</a>* <a class="code" href="../../d1/d8d/vfs__new_8c.html#a80ac0b5e2867c7d70befae34272351e3">vfs_getListFolder</a>(<span class="keywordtype">char</span>* path){</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    <span class="keywordtype">int</span> node = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a2f0d84808706c7d888f5624c7d09dd5f">vfs_foundMount</a>(path);</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="keyword">struct </span><a class="code" href="../../d5/de2/structdirent.html">dirent</a>* elem = 0;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;getListElem != 0){</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;        <span class="keywordtype">char</span>* c_path = <a class="code" href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a>(<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)*<a class="code" href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(path));</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;        </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        <a class="code" href="../../d1/d8d/vfs__new_8c.html#a57f736a4436a13d7fb40f366233c3116">vfs_getPath</a>(node, path, c_path);</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        elem = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a1b2c25a94fb7bb31ae9b8aedbdaf9afd">getListElem</a>(c_path);</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160; </div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        <a class="code" href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a>(c_path);</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        <span class="keywordflow">return</span> elem;</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    }</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    <span class="keywordflow">return</span> elem;</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;}</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160; </div>
+<div class="line"><a name="l00355"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a915248a54dc7e3c46930714cbe659abd">  355</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a915248a54dc7e3c46930714cbe659abd">vfs_createFile</a>(){</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;}</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
+<div class="line"><a name="l00363"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a86e1b5ad5e9ce9b840f51eb186c2826b">  363</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a86e1b5ad5e9ce9b840f51eb186c2826b">vfs_createDir</a>(){</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;}</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160; </div>
+<div class="line"><a name="l00371"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#a999d230be3400adbcc1ebcfb66d3dcea">  371</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#a999d230be3400adbcc1ebcfb66d3dcea">vfs_list</a>(){</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[0]-&gt;<a class="code" href="../../d0/d77/structfs__node.html#a9a77da5de1f1f2315c59a888e4005c95">list</a>();</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;}</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160; </div>
+<div class="line"><a name="l00380"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#af35f8e84ed140f938650927ae3f511d0">  380</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#af35f8e84ed140f938650927ae3f511d0">vfs_deleteFile</a>(){</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;}</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160; </div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160; </div>
+<div class="line"><a name="l00389"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#ae697223591644a766ebc9f0c3d4aaba7">  389</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#ae697223591644a766ebc9f0c3d4aaba7">vfs_getType</a>(){</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;}</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160; </div>
+<div class="line"><a name="l00397"></a><span class="lineno"><a class="line" href="../../d1/d8d/vfs__new_8c.html#aa01aabefab6407ac4ecc5dd4b2c3a010">  397</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d1/d8d/vfs__new_8c.html#aa01aabefab6407ac4ecc5dd4b2c3a010">vfs_getMountPoint</a>(){</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;}</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160; </div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;<span class="keywordtype">void</span> vfs_unlistFolder(<span class="keyword">const</span> <span class="keywordtype">char</span>* path, <span class="keyword">struct</span> <a class="code" href="../../d5/de2/structdirent.html">dirent</a>* ptr) {</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;    <span class="keywordtype">int</span> node = <a class="code" href="../../d1/d8d/vfs__new_8c.html#a2f0d84808706c7d888f5624c7d09dd5f">vfs_foundMount</a>(path);</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;unlistElem){</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;        <a class="code" href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a>[node]-&gt;unlistElem(ptr);</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    }</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;}</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160; </div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="keywordtype">size_t</span> vfs_byteToKByte(<span class="keywordtype">size_t</span> bytes){</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    <span class="keywordflow">return</span> (bytes == 0?0:bytes/1024);</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;}</div>
+<div class="ttc" id="a_nat_suki_8c_html_a82f2d989c1872f33a83356d56a1fc13a"><div class="ttname"><a href="../../d2/d97/_nat_suki_8c.html#a82f2d989c1872f33a83356d56a1fc13a">NatSuki_initrd</a></div><div class="ttdeci">fs_node_t * NatSuki_initrd(uint32_t location)</div><div class="ttdoc">[SEFS] Инициализация Sayori Easy File System</div><div class="ttdef"><b>Definition:</b> <a href="../../d2/d97/_nat_suki_8c_source.html#l00577">NatSuki.c:577</a></div></div>
+<div class="ttc" id="amemory_8c_html_a5f52d7c56b7d67dc2f96b2e93dfdc7be"><div class="ttname"><a href="../../df/dd5/memory_8c.html#a5f52d7c56b7d67dc2f96b2e93dfdc7be">kmalloc</a></div><div class="ttdeci">void * kmalloc(size_t size)</div><div class="ttdoc">Выделение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00661">memory.c:661</a></div></div>
+<div class="ttc" id="amemory_8c_html_aed506f8be19e508533954916a0be0b3a"><div class="ttname"><a href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a></div><div class="ttdeci">void kfree(void *vaddr)</div><div class="ttdoc">Освобождение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00681">memory.c:681</a></div></div>
+<div class="ttc" id="asefs_8c_html_ad6612ef1a0a8a35222fe7bae735586d5"><div class="ttname"><a href="../../d1/d6e/sefs_8c.html#ad6612ef1a0a8a35222fe7bae735586d5">sefs_initrd</a></div><div class="ttdeci">fs_node_t * sefs_initrd(uint32_t location)</div><div class="ttdoc">[SEFS] Инициализация Sayori Easy File System</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d6e/sefs_8c_source.html#l00296">sefs.c:296</a></div></div>
+<div class="ttc" id="astring_8c_html_a008e171a518fe0e0352f31b245e03875"><div class="ttname"><a href="../../d1/db0/string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a></div><div class="ttdeci">size_t strlen(const char *str)</div><div class="ttdoc">Возращает длину строки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00076">string.c:76</a></div></div>
+<div class="ttc" id="astring_8c_html_a58a6b47d95aa3c9f97cd831f09798560"><div class="ttname"><a href="../../d1/db0/string_8c.html#a58a6b47d95aa3c9f97cd831f09798560">substr</a></div><div class="ttdeci">void substr(char *dest, const char *source, int from, int length)</div><div class="ttdoc">Вырезает и возвращает подстроку из строки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00433">string.c:433</a></div></div>
+<div class="ttc" id="astructdirent_html"><div class="ttname"><a href="../../d5/de2/structdirent.html">dirent</a></div><div class="ttdoc">Согласно POSIX, один из них возвращается вызовом readdir.</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00073">vfs_new.h:74</a></div></div>
+<div class="ttc" id="astructfs__node_html"><div class="ttname"><a href="../../d0/d77/structfs__node.html">fs_node</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00035">vfs_new.h:36</a></div></div>
+<div class="ttc" id="astructfs__node_html_a0558f3f0603265311805c77a9f906932"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a0558f3f0603265311805c77a9f906932">fs_node::diskSpace</a></div><div class="ttdeci">getDeviceSize_type_t diskSpace</div><div class="ttdoc">Сколько свободно места</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00064">vfs_new.h:64</a></div></div>
+<div class="ttc" id="astructfs__node_html_a05ab3f286863dee95791cdf95562b35e"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a05ab3f286863dee95791cdf95562b35e">fs_node::read</a></div><div class="ttdeci">read_type_t read</div><div class="ttdoc">Функция FS - Чтение файла с указанием параметров</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00048">vfs_new.h:48</a></div></div>
+<div class="ttc" id="astructfs__node_html_a0f12f1c3b85a8a7273705cc2a7d8c43c"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a0f12f1c3b85a8a7273705cc2a7d8c43c">fs_node::getOffsetFile</a></div><div class="ttdeci">getLengthFile_type_t getOffsetFile</div><div class="ttdoc">Функция FS - Функция для получения позиции файла (отступ)</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00058">vfs_new.h:58</a></div></div>
+<div class="ttc" id="astructfs__node_html_a1b2c25a94fb7bb31ae9b8aedbdaf9afd"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a1b2c25a94fb7bb31ae9b8aedbdaf9afd">fs_node::getListElem</a></div><div class="ttdeci">dirlist_type_t getListElem</div><div class="ttdoc">Функция FS - Функция для получения списка файлов</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00059">vfs_new.h:59</a></div></div>
+<div class="ttc" id="astructfs__node_html_a20d297a1874c26a10246508e25ddc26b"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a20d297a1874c26a10246508e25ddc26b">fs_node::getDevName</a></div><div class="ttdeci">charintData_type_t getDevName</div><div class="ttdoc">Функция для получения имени устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00061">vfs_new.h:61</a></div></div>
+<div class="ttc" id="astructfs__node_html_a2441fff861fbd77a313d39d7d53b92e4"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a2441fff861fbd77a313d39d7d53b92e4">fs_node::write</a></div><div class="ttdeci">write_type_t write</div><div class="ttdoc">Функция FS - Запись в файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00049">vfs_new.h:49</a></div></div>
+<div class="ttc" id="astructfs__node_html_a2b026aa81c95eff4169e55cd17b66236"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a2b026aa81c95eff4169e55cd17b66236">fs_node::readChar</a></div><div class="ttdeci">readChar_type_t readChar</div><div class="ttdoc">Функция FS - Полное чтение файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00047">vfs_new.h:47</a></div></div>
+<div class="ttc" id="astructfs__node_html_a53cd85a2aed1978f7e2286d775e640be"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a53cd85a2aed1978f7e2286d775e640be">fs_node::getLengthFile</a></div><div class="ttdeci">getLengthFile_type_t getLengthFile</div><div class="ttdoc">Функция FS - Функция для получения размера файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00057">vfs_new.h:57</a></div></div>
+<div class="ttc" id="astructfs__node_html_a5f65bdaca2573eac2e94de8f909469c2"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a5f65bdaca2573eac2e94de8f909469c2">fs_node::diskUsed</a></div><div class="ttdeci">getDeviceSize_type_t diskUsed</div><div class="ttdoc">Сколько использовано места</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00063">vfs_new.h:63</a></div></div>
+<div class="ttc" id="astructfs__node_html_a89d367f4c253c3c21041a31793bc0700"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a89d367f4c253c3c21041a31793bc0700">fs_node::findDir</a></div><div class="ttdeci">findFile_type_t findDir</div><div class="ttdoc">Функция FS - Функция для поиска файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00055">vfs_new.h:55</a></div></div>
+<div class="ttc" id="astructfs__node_html_a93a4209b66c75fd711969ba8dcd926f5"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a93a4209b66c75fd711969ba8dcd926f5">fs_node::name</a></div><div class="ttdeci">char name[128]</div><div class="ttdoc">Имя файла.</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00037">vfs_new.h:37</a></div></div>
+<div class="ttc" id="astructfs__node_html_a9a77da5de1f1f2315c59a888e4005c95"><div class="ttname"><a href="../../d0/d77/structfs__node.html#a9a77da5de1f1f2315c59a888e4005c95">fs_node::list</a></div><div class="ttdeci">list_type_t list</div><div class="ttdoc">Список</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00066">vfs_new.h:66</a></div></div>
+<div class="ttc" id="astructfs__node_html_ab6254159890502c2abeb997100440366"><div class="ttname"><a href="../../d0/d77/structfs__node.html#ab6254159890502c2abeb997100440366">fs_node::findFile</a></div><div class="ttdeci">findFile_type_t findFile</div><div class="ttdoc">Функция FS - Функция для поиска файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00054">vfs_new.h:54</a></div></div>
+<div class="ttc" id="astructfs__node_html_abbb5441d66cf92be029d307488f1483f"><div class="ttname"><a href="../../d0/d77/structfs__node.html#abbb5441d66cf92be029d307488f1483f">fs_node::getCountElemFolder</a></div><div class="ttdeci">findFile_type_t getCountElemFolder</div><div class="ttdoc">Функция FS - Функция для получения количества файлов в папке</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00053">vfs_new.h:53</a></div></div>
+<div class="ttc" id="astructfs__node_html_ada9d8920ea52fa1b57aece431f5c7d1c"><div class="ttname"><a href="../../d0/d77/structfs__node.html#ada9d8920ea52fa1b57aece431f5c7d1c">fs_node::diskSize</a></div><div class="ttdeci">getDeviceSize_type_t diskSize</div><div class="ttdoc">Размер диска</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/dac/vfs__new_8h_source.html#l00065">vfs_new.h:65</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a25a92ff9f8ee128d2c5e5c321ab8dd43"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a25a92ff9f8ee128d2c5e5c321ab8dd43">vfs_write</a></div><div class="ttdeci">int vfs_write(int node, int elem, size_t offset, size_t size, void *buf)</div><div class="ttdoc">[VFS] Запись в файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00095">vfs_new.c:95</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a2633690687cdf4dff8447c1e6dacbf50"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a2633690687cdf4dff8447c1e6dacbf50">vfs_reg</a></div><div class="ttdeci">void vfs_reg(size_t location, size_t type)</div><div class="ttdoc">[VFS] Монтирование устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00067">vfs_new.c:67</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a2f0d84808706c7d888f5624c7d09dd5f"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a2f0d84808706c7d888f5624c7d09dd5f">vfs_foundMount</a></div><div class="ttdeci">int vfs_foundMount(const char *path)</div><div class="ttdoc">[VFS] Получить адрес монтирования у файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00041">vfs_new.c:41</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a34c3412d89e9feff815e71de10b04541"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a34c3412d89e9feff815e71de10b04541">vfs_readChar</a></div><div class="ttdeci">char * vfs_readChar(int node, int elem)</div><div class="ttdoc">[VFS] Полное чтение файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00173">vfs_new.c:173</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a39c1e3db00e2b95181b787c69e7cc39a"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a39c1e3db00e2b95181b787c69e7cc39a">vfs_findFile</a></div><div class="ttdeci">int vfs_findFile(const char *filename)</div><div class="ttdoc">[VFS] Получить индекс файла, который находиться на устройстве</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00111">vfs_new.c:111</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a40353b0f30a63c6776109c75af8fcc36"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a40353b0f30a63c6776109c75af8fcc36">vfs_mount</a></div><div class="ttdeci">fs_node_t * vfs_mount[128]</div><div class="ttdoc">Точки монтирования</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00014">vfs_new.c:14</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a56ebbc091295fe3442a0c77d05cae98e"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a56ebbc091295fe3442a0c77d05cae98e">fs_root</a></div><div class="ttdeci">fs_node_t * fs_root</div><div class="ttdoc">Точка монтирования виртуального корня</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00013">vfs_new.c:13</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a57f736a4436a13d7fb40f366233c3116"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a57f736a4436a13d7fb40f366233c3116">vfs_getPath</a></div><div class="ttdeci">void vfs_getPath(int node, const char *path, char *buf)</div><div class="ttdoc">[VFS] Получить реальный путь на устройстве</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00023">vfs_new.c:23</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a5eb8e650941b902b977f596544bbe98d"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a5eb8e650941b902b977f596544bbe98d">vfs_getCountElemDir</a></div><div class="ttdeci">size_t vfs_getCountElemDir(char *path)</div><div class="ttdoc">[VFS] Получить количество файлов в папке</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00314">vfs_new.c:314</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a6d56a0474d38fd79cc5ce4d7b549a0e9"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a6d56a0474d38fd79cc5ce4d7b549a0e9">vfs_exists</a></div><div class="ttdeci">bool vfs_exists(const char *filename)</div><div class="ttdoc">[VFS] Проверить существует ли файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00133">vfs_new.c:133</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a6fde56e5f7f7bc546ccd70b91809178b"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a6fde56e5f7f7bc546ccd70b91809178b">vfs_read</a></div><div class="ttdeci">uint32_t vfs_read(int node, int elem, size_t offset, size_t size, void *buf)</div><div class="ttdoc">[VFS] Чтение файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00154">vfs_new.c:154</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a715e2526433a20e5e06dd1103157c511"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a715e2526433a20e5e06dd1103157c511">countMount</a></div><div class="ttdeci">size_t countMount</div><div class="ttdoc">Кол-во смонтированных устройств</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00015">vfs_new.c:15</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a7403eb2e0698454a21f0c67d48a29250"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a7403eb2e0698454a21f0c67d48a29250">vfs_getDiskUsed</a></div><div class="ttdeci">size_t vfs_getDiskUsed(int node)</div><div class="ttdoc">[VFS] Получить занятое место устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00292">vfs_new.c:292</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a80ac0b5e2867c7d70befae34272351e3"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a80ac0b5e2867c7d70befae34272351e3">vfs_getListFolder</a></div><div class="ttdeci">struct dirent * vfs_getListFolder(char *path)</div><div class="ttdoc">[VFS] Поиск папки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00335">vfs_new.c:335</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a84939ec064dde8aa28882d6fd5bfda46"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a84939ec064dde8aa28882d6fd5bfda46">vfs_findDir</a></div><div class="ttdeci">uint32_t vfs_findDir(char *path)</div><div class="ttdoc">[VFS] Поиск папки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00189">vfs_new.c:189</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a86a73edd6b27f440c9f8aae0b487c600"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a86a73edd6b27f440c9f8aae0b487c600">vfs_getLengthFile</a></div><div class="ttdeci">size_t vfs_getLengthFile(int node, int elem)</div><div class="ttdoc">[VFS] Получить размер файла (поиск по индексу)</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00240">vfs_new.c:240</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a86e1b5ad5e9ce9b840f51eb186c2826b"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a86e1b5ad5e9ce9b840f51eb186c2826b">vfs_createDir</a></div><div class="ttdeci">void vfs_createDir()</div><div class="ttdoc">[VFS] Создание папки</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00363">vfs_new.c:363</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a915248a54dc7e3c46930714cbe659abd"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a915248a54dc7e3c46930714cbe659abd">vfs_createFile</a></div><div class="ttdeci">void vfs_createFile()</div><div class="ttdoc">[VFS] Создание файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00355">vfs_new.c:355</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_a999d230be3400adbcc1ebcfb66d3dcea"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#a999d230be3400adbcc1ebcfb66d3dcea">vfs_list</a></div><div class="ttdeci">void vfs_list()</div><div class="ttdoc">[VFS] Вывод содержимого списка файла и папок</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00371">vfs_new.c:371</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_aa01aabefab6407ac4ecc5dd4b2c3a010"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#aa01aabefab6407ac4ecc5dd4b2c3a010">vfs_getMountPoint</a></div><div class="ttdeci">void vfs_getMountPoint()</div><div class="ttdoc">[VFS] Получить точку монтирования устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00397">vfs_new.c:397</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_aaa2dffdda1f374906111da652e47f5e9"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#aaa2dffdda1f374906111da652e47f5e9">vfs_getDiskSize</a></div><div class="ttdeci">size_t vfs_getDiskSize(int node)</div><div class="ttdoc">[VFS] Получить размер устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00269">vfs_new.c:269</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_aab8b2e5bd1abdd63ea3cd7580c956a5e"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#aab8b2e5bd1abdd63ea3cd7580c956a5e">vfs_getOffsetFile</a></div><div class="ttdeci">int vfs_getOffsetFile(int node, int elem)</div><div class="ttdoc">[VFS] Получить отступ в файловой системе у файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00255">vfs_new.c:255</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_ac4237335c9bd541b4ef80b3664b6c632"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#ac4237335c9bd541b4ef80b3664b6c632">vfs_getDiskSpace</a></div><div class="ttdeci">size_t vfs_getDiskSpace(int node)</div><div class="ttdoc">[VFS] Получить свободное место устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00280">vfs_new.c:280</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_ad6a42ce35cacdc918f0a30ed99428ead"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#ad6a42ce35cacdc918f0a30ed99428ead">vfs_getName</a></div><div class="ttdeci">char * vfs_getName(int node)</div><div class="ttdoc">[VFS] Получить название устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00303">vfs_new.c:303</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_ae3e68f5004b9ecf2455ea48e523dedda"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#ae3e68f5004b9ecf2455ea48e523dedda">vfs_getLengthFilePath</a></div><div class="ttdeci">size_t vfs_getLengthFilePath(const char *filename)</div><div class="ttdoc">[VFS] Получить длину файла (поиск по виртуальному пути)</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00217">vfs_new.c:217</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_ae697223591644a766ebc9f0c3d4aaba7"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#ae697223591644a766ebc9f0c3d4aaba7">vfs_getType</a></div><div class="ttdeci">void vfs_getType()</div><div class="ttdoc">[VFS] Получить тип устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00389">vfs_new.c:389</a></div></div>
+<div class="ttc" id="avfs__new_8c_html_af35f8e84ed140f938650927ae3f511d0"><div class="ttname"><a href="../../d1/d8d/vfs__new_8c.html#af35f8e84ed140f938650927ae3f511d0">vfs_deleteFile</a></div><div class="ttdeci">void vfs_deleteFile()</div><div class="ttdoc">[VFS] Удаление файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d8d/vfs__new_8c_source.html#l00380">vfs_new.c:380</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_294885e234569f555c14a529bc5dac14.html">drv</a></li><li class="navelem"><a class="el" href="../../d1/d8d/vfs__new_8c.html">vfs_new.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 1 Июл 2023 13:09:41. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
