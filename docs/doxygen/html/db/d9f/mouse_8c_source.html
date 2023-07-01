@@ -1,0 +1,384 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/drv/input/mouse.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.1</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('db/d9f/mouse_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">mouse.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="../../db/d9f/mouse_8c.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;drv/input/mouse.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a5a2827fe58aa52e5a75a08d7eb1ca785">   14</a></span>&#160;uint8_t <a class="code" href="../../db/d9f/mouse_8c.html#a5a2827fe58aa52e5a75a08d7eb1ca785">mouse_ready</a> = 0;        </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">   16</a></span>&#160;int32_t <a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a>  = 0;           </div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">   17</a></span>&#160;int32_t <a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a>  = 0;           </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a39cab369524af86a9b21eaeb45174bb0">   19</a></span>&#160;uint8_t <a class="code" href="../../db/d9f/mouse_8c.html#a39cab369524af86a9b21eaeb45174bb0">mouse_b1</a> = 0;           </div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#afc2f87dcb61fe7a69476dc4398da4358">   20</a></span>&#160;uint8_t <a class="code" href="../../db/d9f/mouse_8c.html#afc2f87dcb61fe7a69476dc4398da4358">mouse_b2</a> = 0;           </div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#aefeb33d0bdeddf0fa4f2843ef7290a4e">   21</a></span>&#160;uint8_t <a class="code" href="../../db/d9f/mouse_8c.html#aefeb33d0bdeddf0fa4f2843ef7290a4e">mouse_b3</a> = 0;           </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a8c06074ae14d811ec999965fe044c2af">   22</a></span>&#160;uint8_t <a class="code" href="../../db/d9f/mouse_8c.html#a8c06074ae14d811ec999965fe044c2af">mouse_b4</a> = 0;           </div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#ae7e4900c82936ed38dfa817d79caa59a">   23</a></span>&#160;uint8_t <a class="code" href="../../db/d9f/mouse_8c.html#ae7e4900c82936ed38dfa817d79caa59a">mouse_b5</a> = 0;           </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keywordtype">bool</span> show_mouse_cursor = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a2303a9513fad5990cad398aae14569a6">   26</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="../../db/d9f/mouse_8c.html#a2303a9513fad5990cad398aae14569a6">mouse_wheel</a> = 0;            </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">// cursor image in format 0xAARRGGBB</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a74b04dd2e92bf5738e88de4280cb697f">   29</a></span>&#160;uint32_t <a class="code" href="../../db/d9f/mouse_8c.html#a74b04dd2e92bf5738e88de4280cb697f">cursor</a>[32][32] = {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X84000000,0X06000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XBC000000,0X0C000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0XCA000000,0X14000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0XFF000000,0XD7000000,0X1D000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0XB8000000,0XFF000000,0XE2000000,0X28000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X0C000000,0XA0000000,0XFF000000,0XEB000000,0X35000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0X01000000,0X8D000000,0XFF000000,0XF3000000,0X43000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0X79000000,0XFF000000,0XF9000000,0X54000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X65000000,0XFD000000,0XFD000000,0X66000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X53000000,0XF8000000,0XFF000000,0X79000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X43000000,0XF3000000,0XFF000000,0X8E000000,0X01000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X34000000,0XEB000000,0XFF000000,0XA1000000,0X04000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X27000000,0XE2000000,0XFF000000,0XB2000000,0X08000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X1C000000,0XD6000000,0XFF000000,0XC2000000,0X0F000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X13000000,0XCA000000,0XFF000000,0XCF000000,0X17000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X0C000000,0XBB000000,0XFF000000,0XDC000000,0X21000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X06000000,0XAA000000,0XFF000000,0XE6000000,0X2D000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X02000000,0X98000000,0XFF000000,0XEE000000,0X3A000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X30000000,0X40000000,0X51000000,0X61000000,0X71000000,0X81000000,0X92000000,0XF1000000,0XFF000000,0XF5000000,0X49000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0XBE000000,0XFF000000,0XFF000000,0XFF000000,0XFF000000,0XFF000000,0XFF000000,0XFF000000,0XFF000000,0XFF000000,0XFA000000,0X58000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0XFFFFFFFF,0X3C000000,0X8D000000,0XFFFFFFFF,0XFFFFFFFF,0X4D000000,0XFF000000,0XED000000,0X7C000000,0X6C000000,0X5C000000,0X4C000000,0X3C000000,0X2C000000,0X1D000000,0X0D000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0XFFFFFFFF,0X43000000,0XF4000000,0XF7000000,0X14000000,0XFFFFFFFF,0X02000000,0XDB000000,0XFF000000,0X2D000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0XFFFFFFFF,0X4B000000,0XF7000000,0XFF000000,0XFF000000,0X7B000000,0XFFFFFFFF,0XFFFFFFFF,0X6C000000,0XFF000000,0X9D000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X08000000,0X54000000,0XFA000000,0XFD000000,0X86000000,0XFE000000,0XE6000000,0X05000000,0XFFFFFFFF,0X0C000000,0XF0000000,0XF8000000,0X16000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0X65000000,0XFC000000,0XFC000000,0X5C000000,0X00FFFFFF,0XB4000000,0XFF000000,0X5B000000,0XFFFFFFFF,0XFFFFFFFF,0X8B000000,0XFF000000,0X7E000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0XFE000000,0XFA000000,0X53000000,0X00FFFFFF,0X00FFFFFF,0X43000000,0XFF000000,0XCC000000,0XFFFFFFFF,0XFFFFFFFF,0X1F000000,0XFC000000,0XE8000000,0X06000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XFF000000,0XF7000000,0X4A000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD2000000,0XFF000000,0X3C000000,0XFFFFFFFF,0XFFFFFFFF,0XAA000000,0XFF000000,0X5F000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XD8000000,0XF4000000,0X42000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X62000000,0XFF000000,0XAC000000,0XFFFFFFFF,0XFFFFFFFF,0X3A000000,0XFF000000,0XD0000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0XC8000000,0X3A000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X07000000,0XEA000000,0XFC000000,0X1F000000,0X03000000,0X55000000,0XF7000000,0XFF000000,0X41000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X1D000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X81000000,0XFF000000,0XBF000000,0XDF000000,0XFF000000,0XFF000000,0XD5000000,0X46000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X17000000,0XF9000000,0XFF000000,0XFE000000,0XB8000000,0X47000000,0X01000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF},</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;{0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X96000000,0X99000000,0X2A000000,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF,0X00FFFFFF}</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a590e23a6a414a703e204a73990a6e3fe">   64</a></span>&#160;uint32_t <a class="code" href="../../db/d9f/mouse_8c.html#a45ff79721974b2750ec4a8336f4d3f7d">under_cursor</a>[32][32];  </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="../../da/d43/structmouse__flags__byte.html">   69</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="../../da/d43/structmouse__flags__byte.html">mouse_flags_byte</a> {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> left_button   : 1;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> right_button  : 1;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> middle_button : 1;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> always1 : 1;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x_sign : 1;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y_sign : 1;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x_overflow : 1;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y_overflow : 1;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;} <a class="code" href="../../db/d9f/mouse_8c.html#a590e23a6a414a703e204a73990a6e3fe">__attribute__</a>((packed)) <a class="code" href="../../da/d43/structmouse__flags__byte.html">mouse_flags_byte</a>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword">struct </span>dev_ps2m_mouse_packet {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    int16_t movement_x;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    int16_t movement_y;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    uint8_t button_l;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    uint8_t button_m;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    uint8_t button_r;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;} ps2m_buffer;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#ac6a47c156ac81629ddf13d6779d14841">  100</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="../../db/d9f/mouse_8c.html#ac6a47c156ac81629ddf13d6779d14841">isMouseInit</a>(){</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="../../db/d9f/mouse_8c.html#a5a2827fe58aa52e5a75a08d7eb1ca785">mouse_ready</a>==1?<span class="keyword">true</span>:<span class="keyword">false</span>;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="keywordtype">void</span> mouse_set_show_system_cursor(<span class="keywordtype">bool</span> set) {</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    show_mouse_cursor = set;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;}</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="keywordtype">bool</span> mouse_get_show_system_cursor() {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">return</span> show_mouse_cursor;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;}</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#aa160e408e0351de9742843bd4d0ed359">  117</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../db/d9f/mouse_8c.html#aa160e408e0351de9742843bd4d0ed359">mouse_parse_packet</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf, uint8_t has_wheel, uint8_t has_5_buttons) {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <a class="code" href="../../da/d43/structmouse__flags__byte.html">mouse_flags_byte</a> *mfb = (<a class="code" href="../../da/d43/structmouse__flags__byte.html">mouse_flags_byte</a>*) (buf);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordflow">if</span> (mfb-&gt;x_overflow || mfb-&gt;y_overflow || !mfb-&gt;always1) {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    }</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordtype">int</span> offx = (int16_t) (0xff00 * mfb-&gt;x_sign) | buf[1];</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordtype">int</span> offy = (int16_t) (0xff00 * mfb-&gt;y_sign) | buf[2];</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a> += offx;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a> -= offy;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a39cab369524af86a9b21eaeb45174bb0">mouse_b1</a> = mfb-&gt;left_button;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#afc2f87dcb61fe7a69476dc4398da4358">mouse_b2</a> = mfb-&gt;right_button;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#aefeb33d0bdeddf0fa4f2843ef7290a4e">mouse_b3</a> = mfb-&gt;middle_button;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    ps2m_buffer.movement_x = offx;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    ps2m_buffer.movement_y = offy;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    ps2m_buffer.button_l = <a class="code" href="../../db/d9f/mouse_8c.html#a39cab369524af86a9b21eaeb45174bb0">mouse_b1</a>;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    ps2m_buffer.button_r = <a class="code" href="../../db/d9f/mouse_8c.html#afc2f87dcb61fe7a69476dc4398da4358">mouse_b2</a>;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    ps2m_buffer.button_m = <a class="code" href="../../db/d9f/mouse_8c.html#aefeb33d0bdeddf0fa4f2843ef7290a4e">mouse_b3</a>;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keywordflow">if</span> (has_wheel) {</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <a class="code" href="../../db/d9f/mouse_8c.html#a2303a9513fad5990cad398aae14569a6">mouse_wheel</a> += (char) ((!!(buf[3] &amp; 0x8)) * 0xf8 | (buf[3] &amp; 0x7));</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keywordflow">if</span> (has_5_buttons) {</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;            <a class="code" href="../../db/d9f/mouse_8c.html#a8c06074ae14d811ec999965fe044c2af">mouse_b4</a> = !!(buf[3] &amp; 0x20);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            <span class="comment">// parse buttons 4-5 (byte 3, bits 4-5)</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        }</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    }</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;}</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
+<div class="line"><a name="l00150"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#aafcfda7168f2a7326597adf7e16b99bd">  150</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../db/d9f/mouse_8c.html#aafcfda7168f2a7326597adf7e16b99bd">mouse_erase</a>() {</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 32; ++i) {</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; 32; ++j) {</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;            set_pixel(<a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a> + j - 1, <a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a> + i - 1, <a class="code" href="../../db/d9f/mouse_8c.html#a45ff79721974b2750ec4a8336f4d3f7d">under_cursor</a>[i][j]);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        }</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    }</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;}</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a924469770960f5c22b577b5ff2c4cbbc">  163</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../db/d9f/mouse_8c.html#a924469770960f5c22b577b5ff2c4cbbc">mouse_draw</a>() {</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 32; i++) {</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; 32; j++) {</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            <a class="code" href="../../db/d9f/mouse_8c.html#a45ff79721974b2750ec4a8336f4d3f7d">under_cursor</a>[i][j] = getPixel(<a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a> + j - 1, <a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a> + i - 1);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        }</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    }</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <a class="code" href="../../db/d9d/structrgba__struct.html">rgba_color</a> rc;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 32; ++i) {</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; 32; ++j) {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            rc.b = <a class="code" href="../../db/d9f/mouse_8c.html#a74b04dd2e92bf5738e88de4280cb697f">cursor</a>[i][j] &amp; 0xFF;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            rc.g = (<a class="code" href="../../db/d9f/mouse_8c.html#a74b04dd2e92bf5738e88de4280cb697f">cursor</a>[i][j] &gt;&gt; 8) &amp; 0xFF;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            rc.r = (<a class="code" href="../../db/d9f/mouse_8c.html#a74b04dd2e92bf5738e88de4280cb697f">cursor</a>[i][j] &gt;&gt; 16) &amp; 0xFF;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            rc.a = (<a class="code" href="../../db/d9f/mouse_8c.html#a74b04dd2e92bf5738e88de4280cb697f">cursor</a>[i][j] &gt;&gt; 24) &amp; 0xFF;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            <span class="comment">// set_pixel(mouse_x + j - 1, mouse_y + i - 1, cursor[i][j]);</span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            setPixelAlpha(<a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a> + j - 1, <a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a> + i - 1, rc);</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        }</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    }</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;}</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00188"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#af1c78cb21140d666edbaccf616c64b41">  188</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../db/d9f/mouse_8c.html#af1c78cb21140d666edbaccf616c64b41">mouse_handler</a>(<a class="code" href="../../db/d9f/mouse_8c.html#a590e23a6a414a703e204a73990a6e3fe">__attribute__</a>((unused)) <span class="keyword">struct</span> <a class="code" href="../../df/d94/structregisters.html">registers</a> r) {</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    uint8_t status = inb(0x64);</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keywordflow">if</span> ((status &amp; 1) == 0 || (status &gt;&gt; 5 &amp; 1) == 0) {</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    }</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> recbyte = 0;</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">char</span> mousebuf[5];</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    mousebuf[recbyte++] = inb(0x60);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="keywordflow">if</span> (recbyte == 3 <span class="comment">/* + has_wheel */</span>) {</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        recbyte = 0;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        <span class="keyword">static</span> uint8_t drawn = 0;</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <span class="keywordflow">if</span> (drawn &amp;&amp; show_mouse_cursor) {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            <a class="code" href="../../db/d9f/mouse_8c.html#aafcfda7168f2a7326597adf7e16b99bd">mouse_erase</a>();</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        }</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        drawn = 1;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        <a class="code" href="../../db/d9f/mouse_8c.html#aa160e408e0351de9742843bd4d0ed359">mouse_parse_packet</a>(mousebuf, 0, 0);</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        <span class="comment">// Bounds</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a> &lt; 0) <a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a> = 0;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a> &lt; 0) <a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a> = 0;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a> &gt; (<span class="keywordtype">int</span>) (getWidthScreen())) <a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a> = getWidthScreen();</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a> &gt; (<span class="keywordtype">int</span>) (getHeightScreen())) <a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a> = getHeightScreen(); <span class="comment">//-10;</span></div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160; </div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        <span class="comment">// Redraw the cursor</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        <span class="keywordflow">if</span>(show_mouse_cursor) <a class="code" href="../../db/d9f/mouse_8c.html#a924469770960f5c22b577b5ff2c4cbbc">mouse_draw</a>();</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    }</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;}</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160; </div>
+<div class="line"><a name="l00227"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">  227</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">mouse_wait</a>(uint8_t a_type) {</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    uint32_t _time_out = 100;</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="keywordflow">if</span> (a_type == 0) {</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        <span class="keywordflow">while</span> (_time_out--) { <span class="comment">//Data</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;            <span class="keywordflow">if</span> ((inb(0x64) &amp; 1) == 1) {</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;                <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;            }</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        }</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        <span class="keywordflow">while</span> (_time_out--) { <span class="comment">//Signal</span></div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;            <span class="keywordflow">if</span> ((inb(0x64) &amp; 2) == 0) {</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;            }</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        }</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    }</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;}</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
+<div class="line"><a name="l00251"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a608ff5ccb61bc1734243ca29dedb4e21">  251</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../db/d9f/mouse_8c.html#a608ff5ccb61bc1734243ca29dedb4e21">mouse_write</a>(uint8_t a_write) { <span class="comment">//unsigned char</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    <span class="comment">// Ожидаем возможности, пока можно будет отправить команду</span></div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">mouse_wait</a>(1);</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    <span class="comment">// Говорим мышке, что мы отправляем команду</span></div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    outb(0x64, 0xD4);</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="comment">// Ожидаем ответа</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">mouse_wait</a>(1);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    <span class="comment">// Отправляем данные</span></div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    outb(0x60, a_write);</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;}</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
+<div class="line"><a name="l00267"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#acdfc2315ffcc521f59fe0849087cbff9">  267</a></span>&#160;uint8_t <a class="code" href="../../db/d9f/mouse_8c.html#acdfc2315ffcc521f59fe0849087cbff9">mouse_read</a>() {</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="comment">// Получаем ответ от мыши</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">mouse_wait</a>(0);</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    <span class="keywordflow">return</span> inb(0x60);</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;}</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160; </div>
+<div class="line"><a name="l00278"></a><span class="lineno"><a class="line" href="../../db/d9f/mouse_8c.html#a2a1d0de0d09f7fe4ff7dbe181f287445">  278</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../db/d9f/mouse_8c.html#a2a1d0de0d09f7fe4ff7dbe181f287445">mouse_install</a>() {</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <a class="code" href="../../d1/db0/string_8c.html#a51d47c70aaa419b8bb39549af224739f">memset</a>(<a class="code" href="../../db/d9f/mouse_8c.html#a45ff79721974b2750ec4a8336f4d3f7d">under_cursor</a>, 0, 32 * 32 * <span class="keyword">sizeof</span>(uint32_t));</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    uint8_t _status;  <span class="comment">//unsigned char</span></div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160; </div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    <span class="comment">// Включить вспомогательное устройство мыши</span></div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">mouse_wait</a>(1);</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    outb(0x64, 0xA8);</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160; </div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    <span class="comment">// Включить прерывания</span></div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">mouse_wait</a>(1);</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    outb(0x64, 0x20);</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">mouse_wait</a>(0);</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    _status = (inb(0x60) | 2);</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">mouse_wait</a>(1);</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    outb(0x64, 0x60);</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">mouse_wait</a>(1);</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    outb(0x60, _status);</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    <span class="comment">// Скажите мыши использовать настройки по умолчанию</span></div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a608ff5ccb61bc1734243ca29dedb4e21">mouse_write</a>(0xF6);</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#acdfc2315ffcc521f59fe0849087cbff9">mouse_read</a>(); <span class="comment">// Acknowledge</span></div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160; </div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <span class="comment">// Включить мышь</span></div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a608ff5ccb61bc1734243ca29dedb4e21">mouse_write</a>(0xF4);</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#acdfc2315ffcc521f59fe0849087cbff9">mouse_read</a>(); <span class="comment">// Acknowledge</span></div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; </div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <span class="comment">// Установить координаты курсора в середине экрана</span></div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a> = getWidthScreen() / 2;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a> = getHeightScreen() / 2;</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <a class="code" href="../../d8/d78/isr_8c.html#ad7e285600239a8df8341de1cc39548f1">register_interrupt_handler</a>(IRQ12, &amp;<a class="code" href="../../db/d9f/mouse_8c.html#af1c78cb21140d666edbaccf616c64b41">mouse_handler</a>);</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    <a class="code" href="../../db/d9f/mouse_8c.html#a5a2827fe58aa52e5a75a08d7eb1ca785">mouse_ready</a> = 1;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    qemu_log(<span class="stringliteral">&quot;[MOUSE] Status: %x | %d&quot;</span>,_status,_status);</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;}</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160; </div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;uint32_t mouse_get_x() {<span class="keywordflow">return</span> <a class="code" href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a>;}</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;uint32_t mouse_get_y() {<span class="keywordflow">return</span> <a class="code" href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a>;}</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;uint8_t  mouse_get_b1() {<span class="keywordflow">return</span> <a class="code" href="../../db/d9f/mouse_8c.html#a39cab369524af86a9b21eaeb45174bb0">mouse_b1</a>;}</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;uint8_t  mouse_get_b2() {<span class="keywordflow">return</span> <a class="code" href="../../db/d9f/mouse_8c.html#afc2f87dcb61fe7a69476dc4398da4358">mouse_b2</a>;}</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;uint8_t  mouse_get_b3() {<span class="keywordflow">return</span> <a class="code" href="../../db/d9f/mouse_8c.html#aefeb33d0bdeddf0fa4f2843ef7290a4e">mouse_b3</a>;}</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;uint8_t  mouse_get_b4() {<span class="keywordflow">return</span> <a class="code" href="../../db/d9f/mouse_8c.html#a8c06074ae14d811ec999965fe044c2af">mouse_b4</a>;}</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;uint8_t  mouse_get_b5() {<span class="keywordflow">return</span> <a class="code" href="../../db/d9f/mouse_8c.html#ae7e4900c82936ed38dfa817d79caa59a">mouse_b5</a>;}</div>
+<div class="ttc" id="aisr_8c_html_ad7e285600239a8df8341de1cc39548f1"><div class="ttname"><a href="../../d8/d78/isr_8c.html#ad7e285600239a8df8341de1cc39548f1">register_interrupt_handler</a></div><div class="ttdeci">void register_interrupt_handler(uint8_t n, isr_t handler)</div><div class="ttdoc">Регистрация собственного обработчика</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/isr_8c_source.html#l00048">isr.c:48</a></div></div>
+<div class="ttc" id="amouse_8c_html_a1649482b4cd0afe5d8ea4ef86a911b16"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a1649482b4cd0afe5d8ea4ef86a911b16">mouse_x</a></div><div class="ttdeci">int32_t mouse_x</div><div class="ttdoc">Позиция мыши по X.</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00016">mouse.c:16</a></div></div>
+<div class="ttc" id="amouse_8c_html_a1f0ef1f96eaf874ce0ba1d697b6ec0b2"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a1f0ef1f96eaf874ce0ba1d697b6ec0b2">mouse_wait</a></div><div class="ttdeci">void mouse_wait(uint8_t a_type)</div><div class="ttdoc">Ожидание ответа мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00227">mouse.c:227</a></div></div>
+<div class="ttc" id="amouse_8c_html_a2303a9513fad5990cad398aae14569a6"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a2303a9513fad5990cad398aae14569a6">mouse_wheel</a></div><div class="ttdeci">int mouse_wheel</div><div class="ttdoc">После каждого чтения меняем на 0.</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00026">mouse.c:26</a></div></div>
+<div class="ttc" id="amouse_8c_html_a2a1d0de0d09f7fe4ff7dbe181f287445"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a2a1d0de0d09f7fe4ff7dbe181f287445">mouse_install</a></div><div class="ttdeci">void mouse_install()</div><div class="ttdoc">Установщик драйвера мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00278">mouse.c:278</a></div></div>
+<div class="ttc" id="amouse_8c_html_a2da2845d051f38cc5f9850bd65c5aebf"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a2da2845d051f38cc5f9850bd65c5aebf">mouse_y</a></div><div class="ttdeci">int32_t mouse_y</div><div class="ttdoc">Позиция мыши по Y.</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00017">mouse.c:17</a></div></div>
+<div class="ttc" id="amouse_8c_html_a39cab369524af86a9b21eaeb45174bb0"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a39cab369524af86a9b21eaeb45174bb0">mouse_b1</a></div><div class="ttdeci">uint8_t mouse_b1</div><div class="ttdoc">Левая кнопка мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00019">mouse.c:19</a></div></div>
+<div class="ttc" id="amouse_8c_html_a45ff79721974b2750ec4a8336f4d3f7d"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a45ff79721974b2750ec4a8336f4d3f7d">under_cursor</a></div><div class="ttdeci">uint32_t under_cursor[32][32]</div><div class="ttdoc">Старый буфер мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00064">mouse.c:64</a></div></div>
+<div class="ttc" id="amouse_8c_html_a590e23a6a414a703e204a73990a6e3fe"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a590e23a6a414a703e204a73990a6e3fe">__attribute__</a></div><div class="ttdeci">struct mouse_flags_byte __attribute__((packed))</div><div class="ttdoc">Структура данных пакета от мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00064">mouse.c:81</a></div></div>
+<div class="ttc" id="amouse_8c_html_a5a2827fe58aa52e5a75a08d7eb1ca785"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a5a2827fe58aa52e5a75a08d7eb1ca785">mouse_ready</a></div><div class="ttdeci">uint8_t mouse_ready</div><div class="ttdoc">Готова ли мышь к работе</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00014">mouse.c:14</a></div></div>
+<div class="ttc" id="amouse_8c_html_a608ff5ccb61bc1734243ca29dedb4e21"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a608ff5ccb61bc1734243ca29dedb4e21">mouse_write</a></div><div class="ttdeci">void mouse_write(uint8_t a_write)</div><div class="ttdoc">Отправка данных для мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00251">mouse.c:251</a></div></div>
+<div class="ttc" id="amouse_8c_html_a74b04dd2e92bf5738e88de4280cb697f"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a74b04dd2e92bf5738e88de4280cb697f">cursor</a></div><div class="ttdeci">uint32_t cursor[32][32]</div><div class="ttdoc">Рисунок мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00029">mouse.c:29</a></div></div>
+<div class="ttc" id="amouse_8c_html_a8c06074ae14d811ec999965fe044c2af"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a8c06074ae14d811ec999965fe044c2af">mouse_b4</a></div><div class="ttdeci">uint8_t mouse_b4</div><div class="ttdoc">???</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00022">mouse.c:22</a></div></div>
+<div class="ttc" id="amouse_8c_html_a924469770960f5c22b577b5ff2c4cbbc"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#a924469770960f5c22b577b5ff2c4cbbc">mouse_draw</a></div><div class="ttdeci">void mouse_draw()</div><div class="ttdoc">Рисует мышь</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00163">mouse.c:163</a></div></div>
+<div class="ttc" id="amouse_8c_html_aa160e408e0351de9742843bd4d0ed359"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#aa160e408e0351de9742843bd4d0ed359">mouse_parse_packet</a></div><div class="ttdeci">void mouse_parse_packet(const char *buf, uint8_t has_wheel, uint8_t has_5_buttons)</div><div class="ttdoc">Парсинг пакета мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00117">mouse.c:117</a></div></div>
+<div class="ttc" id="amouse_8c_html_aafcfda7168f2a7326597adf7e16b99bd"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#aafcfda7168f2a7326597adf7e16b99bd">mouse_erase</a></div><div class="ttdeci">void mouse_erase()</div><div class="ttdoc">Затирает прошлое место положение мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00150">mouse.c:150</a></div></div>
+<div class="ttc" id="amouse_8c_html_ac6a47c156ac81629ddf13d6779d14841"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#ac6a47c156ac81629ddf13d6779d14841">isMouseInit</a></div><div class="ttdeci">bool isMouseInit()</div><div class="ttdoc">Инициализирована ли мышь?</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00100">mouse.c:100</a></div></div>
+<div class="ttc" id="amouse_8c_html_acdfc2315ffcc521f59fe0849087cbff9"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#acdfc2315ffcc521f59fe0849087cbff9">mouse_read</a></div><div class="ttdeci">uint8_t mouse_read()</div><div class="ttdoc">Считывание данных с мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00267">mouse.c:267</a></div></div>
+<div class="ttc" id="amouse_8c_html_ae7e4900c82936ed38dfa817d79caa59a"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#ae7e4900c82936ed38dfa817d79caa59a">mouse_b5</a></div><div class="ttdeci">uint8_t mouse_b5</div><div class="ttdoc">???</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00023">mouse.c:23</a></div></div>
+<div class="ttc" id="amouse_8c_html_aefeb33d0bdeddf0fa4f2843ef7290a4e"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#aefeb33d0bdeddf0fa4f2843ef7290a4e">mouse_b3</a></div><div class="ttdeci">uint8_t mouse_b3</div><div class="ttdoc">Средняя кнопка мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00021">mouse.c:21</a></div></div>
+<div class="ttc" id="amouse_8c_html_af1c78cb21140d666edbaccf616c64b41"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#af1c78cb21140d666edbaccf616c64b41">mouse_handler</a></div><div class="ttdeci">void mouse_handler(__attribute__((unused)) struct registers r)</div><div class="ttdoc">Обработчик мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00188">mouse.c:188</a></div></div>
+<div class="ttc" id="amouse_8c_html_afc2f87dcb61fe7a69476dc4398da4358"><div class="ttname"><a href="../../db/d9f/mouse_8c.html#afc2f87dcb61fe7a69476dc4398da4358">mouse_b2</a></div><div class="ttdeci">uint8_t mouse_b2</div><div class="ttdoc">Правая кнопка мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00020">mouse.c:20</a></div></div>
+<div class="ttc" id="astring_8c_html_a51d47c70aaa419b8bb39549af224739f"><div class="ttname"><a href="../../d1/db0/string_8c.html#a51d47c70aaa419b8bb39549af224739f">memset</a></div><div class="ttdeci">void * memset(void *ptr, uint8_t value, size_t count)</div><div class="ttdoc">Заполнение массива указанными символами</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db0/string_8c_source.html#l00158">string.c:158</a></div></div>
+<div class="ttc" id="astructmouse__flags__byte_html"><div class="ttname"><a href="../../da/d43/structmouse__flags__byte.html">mouse_flags_byte</a></div><div class="ttdoc">Структура данных пакета от мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../db/d9f/mouse_8c_source.html#l00069">mouse.c:69</a></div></div>
+<div class="ttc" id="astructregisters_html"><div class="ttname"><a href="../../df/d94/structregisters.html">registers</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d54/common_8h_source.html#l00043">common.h:43</a></div></div>
+<div class="ttc" id="astructrgba__struct_html"><div class="ttname"><a href="../../db/d9d/structrgba__struct.html">rgba_struct</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d71/tty_8h_source.html#l00010">tty.h:10</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_294885e234569f555c14a529bc5dac14.html">drv</a></li><li class="navelem"><a class="el" href="../../dir_bf1ddc5a5b8aa5c92d494143c6d7edd1.html">input</a></li><li class="navelem"><a class="el" href="../../db/d9f/mouse_8c.html">mouse.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Сб 1 Июл 2023 13:09:41. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
