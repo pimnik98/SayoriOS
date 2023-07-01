@@ -3,7 +3,7 @@
 <h1>SayoriOS - открытое публичное ядро операционной системы</h1>
 <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" alt="C">
 <img src="https://github.com/pimnik98/SayoriOS/actions/workflows/SayoriOS-AutoBot-Auto.yml/badge.svg" alt="Workflow">
-<p>Простая x86 операционная система на языке C с хорошо документированным ядром.<br>
+<p>Простая операционная система для компьютеров на архитектуре x86. Написана на языках Ассемблер, C и C++<br>
     Для работы с ядром, могут потребоваться инструменты <a href="https://github.com/pimnik98/SayoriSDK"><b>SayoriSDK</b></a>
 </p>
 <h1>Скриншоты</h1>
