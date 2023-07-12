@@ -90,7 +90,8 @@
 <p>
 	* <a href="https://github.com/pimnik98">Nikita Piminoff</a><br> (Создатель SayoriOS)
 	* <a href="https://github.com/NDRAEY">Drew Pavlenko</a><br><br>
-	* <a href="https://vk.com/sayorios">SayoriOS в VK</a><br>
+	* <a href="https://github.com/qensyq">Дима Радаев</a><br><br>
+	* <a href="https://vk.com/sayorios">Коммьюнити SayoriOS в VK</a><br>
 </p>
 <h1>Отказ от ответственности:</h1>
 <p>

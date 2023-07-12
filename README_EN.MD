@@ -79,6 +79,7 @@
 <p>
 	* <a href="https://github.com/pimnik98">Nikita Piminoff</a><br>
 	* <a href="https://github.com/NDRAEY">Drew Pavlenko</a><br><br>
+	* <a href="https://github.com/qensyq">Dima Radaev</a><br><br>
 </p>
 <p>
 	Check out our <a href="https://vk.com/sayorios">VK group</a><br>
