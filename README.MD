@@ -3,7 +3,7 @@
 <h1>SayoriOS - открытое публичное ядро операционной системы</h1>
 <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" alt="C">
 <img src="https://github.com/pimnik98/SayoriOS/actions/workflows/SayoriOS-AutoBot-Auto.yml/badge.svg" alt="Workflow">
-<p>Простая x86 операционная система на языке C с хорошо документированным ядром.<br>
+<p>Простая операционная система для компьютеров на архитектуре x86. Написана на языках Ассемблер, C и C++<br>
     Для работы с ядром, могут потребоваться инструменты <a href="https://github.com/pimnik98/SayoriSDK"><b>SayoriSDK</b></a>
 </p>
 <h1>Скриншоты</h1>
@@ -78,7 +78,7 @@
 	<b><i>make</b></i> - Классическая сборка<br>
 	<b><i>make run</b></i> - Обычный запуск в QEMU с выводом отладки в Qemu.log <br>
 	<b><i>make runlive</b></i> - Обычный запуск в QEMU с выводом отладки в консоль <br>
-	<b><i>make uefi</b></i> - Сборка образа в UEFI <br>
+	<b><i>make uefi</b></i> - Запуск эмулятора в UEFI режиме<br>
 	<b><i>make geniso</b></i> - Классическая сборка ISO <br>
 	<b><i>make genuefi</b></i> - Сборка ядра с UEFI <br>
 	<b><i>make clean</b></i> - Удаляет ISO в папке <br>
@@ -88,13 +88,14 @@
 </p>
 <h1>Список людей, которые поддерживают ядро:</h1>
 <p>
-	* <a href="https://github.com/pimnik98">Nikita Piminoff</a><br>
+	* <a href="https://github.com/pimnik98">Nikita Piminoff</a><br> (Создатель SayoriOS)
 	* <a href="https://github.com/NDRAEY">Drew Pavlenko</a><br><br>
-	* <a href="https://vk.com/sayorios">SayoriOS в VK</a><br>
+	* <a href="https://github.com/qensyq">Дима Радаев</a><br><br>
+	* <a href="https://vk.com/sayorios">Коммьюнити SayoriOS в VK</a><br>
 </p>
 <h1>Отказ от ответственности:</h1>
 <p>
-	SayoriOS это не дистрибутив linux, это новый проект который не имеет за собой компании или организации которая могла бы дать гарантий. <br>
+	SayoriOS это не дистрибутив Linux, это совершенно-новый проект который не имеет за собой компании или организации которая могла бы дать гарантий. <br>
 	Ядро SayoriOS имеет открытый исходный код, вы можете сами удостовериться в отсутствии вредоносного ПО изучая файлы этого репозитория. <br>
 	При использовании материалов вы обязуетесь соблюдать авторские права.<br>
 	<b>Ни Я, ни НАША КОМАНДА</b> не несут ответственности за причиненный ущерб.<br>
