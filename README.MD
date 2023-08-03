@@ -6,6 +6,8 @@
 <p>Простая операционная система для компьютеров на архитектуре x86. Написана на языках Ассемблер, C и C++<br>
     Для работы с ядром, могут потребоваться инструменты <a href="https://github.com/pimnik98/SayoriSDK"><b>SayoriSDK</b></a>
 </p>
+<h1>Внимание</h1>
+Коммиты идут пачками (по одному коммиту на каждый релиз) 
 <h1>Скриншоты</h1>
 <center>
 	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/1.png" alt="v0.3.2 S1">
