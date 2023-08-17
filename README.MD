@@ -90,7 +90,7 @@
 </p>
 <h1>Список людей, которые поддерживают ядро:</h1>
 <p>
-	* <a href="https://github.com/pimnik98">Nikita Piminoff</a><br> (Создатель SayoriOS)
+	* <a href="https://github.com/pimnik98">Nikita Piminoff</a> (Создатель SayoriOS)<br>
 	* <a href="https://github.com/NDRAEY">Drew Pavlenko</a><br><br>
 	* <a href="https://vk.com/sayorios">Коммьюнити SayoriOS в VK</a><br>
 </p>
