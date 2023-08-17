@@ -92,7 +92,6 @@
 <p>
 	* <a href="https://github.com/pimnik98">Nikita Piminoff</a><br> (Создатель SayoriOS)
 	* <a href="https://github.com/NDRAEY">Drew Pavlenko</a><br><br>
-	* <a href="https://github.com/qensyq">Дима Радаев</a><br><br>
 	* <a href="https://vk.com/sayorios">Коммьюнити SayoriOS в VK</a><br>
 </p>
 <h1>Отказ от ответственности:</h1>
@@ -102,6 +101,7 @@
 	При использовании материалов вы обязуетесь соблюдать авторские права.<br>
 	<b>Ни Я, ни НАША КОМАНДА</b> не несут ответственности за причиненный ущерб.<br>
 	Запуск ядра возможен на реальном оборудовании, были тесты и на некоторых устройствах оно реально запустилось, хоть и с ограничениями.<br>
+Список простестированных устройств и результаты тестироыания вы можете посмотреть в нашей группе ВКонтакте (ссылка выше) или во вкладке Issues.<br>
 	<b>Используйте на свой страх и риск.</b>
 </p>
 <p>
@@ -110,7 +110,7 @@
 </p>
 <p>
 <B><I>Cool guys who CONTRIBUTE TO THIS PROJECT</I></B>
-<img src="https://reporoster.com/forks/pimnik98/SayoriOS"/>
+<img src="https://contrib.rocks/image?repo=pimnik98/SayoriOS"/>
 </p>
 </body></html>
 
