@@ -28,7 +28,19 @@ SOURCES=kernel/src/sys/bootscreen.o \
 	kernel/src/lib/stdio.o \
 	kernel/src/lib/string.o \
 	kernel/src/lib/rand.o \
-	kernel/src/lib/math.o \
+	kernel/src/lib/math/exp.o \
+	kernel/src/lib/math/log.o \
+	kernel/src/lib/math/pow.o \
+	kernel/src/lib/math/acos.o \
+	kernel/src/lib/math/asin.o \
+	kernel/src/lib/math/atan.o \
+	kernel/src/lib/math/integral.o \
+	kernel/src/lib/math/sin.o \
+	kernel/src/lib/math/cos.o \
+	kernel/src/lib/math/tan.o \
+	kernel/src/lib/math/sqrt.o \
+	kernel/src/lib/math/cbrt.o \
+	kernel/src/lib/math/math.o \
 	kernel/src/lib/split.o \
 	kernel/src/io/tty.o \
 	kernel/src/io/screen.o \
@@ -105,7 +117,9 @@ QEMU = qemu-system-i386
 
 QEMU_FLAGS = -cdrom kernel.iso -m 128M \
 			 -name "SayoriOS Soul" -d guest_errors \
-			 -rtc base=localtime -soundhw pcspk \
+			 -rtc base=localtime  \
+			 -audiodev pa,id=pa0 \
+			 -M pcspk-audiodev=pa0 \
 			 -device AC97 -hda disk.img
 
 # Правило сборки

@@ -45,6 +45,8 @@ var annotated_dup =
     [ "gdt_ptr_struct", "d2/d07/structgdt__ptr__struct.html", "d2/d07/structgdt__ptr__struct" ],
     [ "idt_entry_struct", "dd/d1a/structidt__entry__struct.html", "dd/d1a/structidt__entry__struct" ],
     [ "idt_ptr_struct", "d7/d46/structidt__ptr__struct.html", "d7/d46/structidt__ptr__struct" ],
+    [ "intfloat32", "de/dda/unionintfloat32.html", "de/dda/unionintfloat32" ],
+    [ "intfloat64", "d1/d93/unionintfloat64.html", "d1/d93/unionintfloat64" ],
     [ "IOAPIC_t", "d6/d61/struct_i_o_a_p_i_c__t.html", "d6/d61/struct_i_o_a_p_i_c__t" ],
     [ "IOAPICInterruptSource_t", "d6/de6/struct_i_o_a_p_i_c_interrupt_source__t.html", "d6/de6/struct_i_o_a_p_i_c_interrupt_source__t" ],
     [ "KeyboardNote_t", "dc/d28/struct_keyboard_note__t.html", "dc/d28/struct_keyboard_note__t" ],

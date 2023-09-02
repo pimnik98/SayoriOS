@@ -50,12 +50,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d1/de0/struct_processor_local_a_p_i_c__t.html#a58b8cf73b7b952741307ba7a22e8decb",
-"d4/da7/imaging_8h.html#a61f20ca1009cfaa019cb1cc1a85e4d96",
-"d8/d50/struct_elf32___ehdr.html#af3c8fac8345400aef61da74b2de320c8",
-"db/d9f/mouse_8c.html#a69a429708c0078a6df6983f6797ea537",
-"dd/d3f/struct____attribute____.html#ab7df1955caa7fe1b414ed0efb277bef0",
-"df/d97/struct_window.html#a090232cfceb0fddf5e31ea5d8de5175a"
+"d1/dce/io__disp_8c.html#afa3e67f2413d76742c4355de4ed5ee0a",
+"d4/d93/classinternals_1_1_t_t_y.html#af601b3f66197e9cf9bd9bf6740004c1b",
+"d8/d50/struct_elf32___ehdr.html#a42978053163eaa3a3a6b828ca72a7268",
+"db/d9f/mouse_8c.html#a25cb29767f0037c9aa9df01000a48263",
+"dd/d3f/struct____attribute____.html#a854352f53b148adc24983a58a1866d66",
+"df/d94/structregisters.html#a20d3d7867d5207a846cf598532ca353f"
 ];
 
 var SYNCONMSG = 'нажмите на выключить для синхронизации панелей';
