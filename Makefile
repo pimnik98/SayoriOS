@@ -105,7 +105,9 @@ QEMU = qemu-system-i386
 
 QEMU_FLAGS = -cdrom kernel.iso -m 128M \
 			 -name "SayoriOS Soul" -d guest_errors \
-			 -rtc base=localtime -soundhw pcspk \
+			 -rtc base=localtime  \
+			 -audiodev pa,id=pa0 \
+			 -M pcspk-audiodev=pa0 \
 			 -device AC97 -hda disk.img
 
 # Правило сборки
