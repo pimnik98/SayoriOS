@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['kbdbuf_342',['kbdbuf',['../de/dbd/keyboard_8c.html#afbeb9bc717c75dad635e1b606f9e8cbf',1,'keyboard.c']]],
+  ['kbdstatus_343',['kbdstatus',['../de/dbd/keyboard_8c.html#a2c32fd02739e3c1e5cb0e74674365609',1,'keyboard.c']]],
+  ['kcalloc_344',['kcalloc',['../df/dd5/memory_8c.html#a143321ed844f982bb8bdb6403df4b7ef',1,'memory.c']]],
+  ['kernel_2ec_345',['kernel.c',['../d9/d26/kernel_8c.html',1,'']]],
+  ['kernel_5fpage_5fdir_346',['kernel_page_dir',['../df/dd5/memory_8c.html#aeda7d5b785cbbded0be429b41b7a0497',1,'memory.c']]],
+  ['kernel_5fproc_347',['kernel_proc',['../dd/d6c/scheduler_8c.html#a707073d202c7bd81b3c287ab2f7add08',1,'scheduler.c']]],
+  ['kernel_5fstack_348',['kernel_stack',['../df/dd5/memory_8c.html#a2832551d1020699d893eafaa0150702f',1,'memory.c']]],
+  ['kernel_5fthread_349',['kernel_thread',['../dd/d6c/scheduler_8c.html#a632f869ec36c4ead23a7365bcb69d446',1,'scheduler.c']]],
+  ['keyboard_2ec_350',['keyboard.c',['../de/dbd/keyboard_8c.html',1,'']]],
+  ['keyboardhandler_351',['keyboardHandler',['../de/dbd/keyboard_8c.html#a0021c14f3590c3c90fe4fb7c34a59180',1,'keyboard.c']]],
+  ['keyboardinit_352',['keyboardInit',['../de/dbd/keyboard_8c.html#a4086efde111a48b75f2a1f29cb4b1a5d',1,'keyboard.c']]],
+  ['keyboardnote_5ft_353',['KeyboardNote_t',['../dc/d28/struct_keyboard_note__t.html',1,'']]],
+  ['keymap_354',['keymap',['../de/ddd/structkeymap.html',1,'']]],
+  ['kfree_355',['kfree',['../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a',1,'memory.c']]],
+  ['khandlercmd_356',['kHandlerCMD',['../d9/d26/kernel_8c.html#a5f600bd4d5828cdbfcd56e333b89b388',1,'kernel.c']]],
+  ['kheap_357',['kheap',['../df/dd5/memory_8c.html#ab18276b758b671778bcef772dee38c85',1,'memory.c']]],
+  ['kmalloc_5fa_358',['kmalloc_a',['../df/dd5/memory_8c.html#a318550772b51044488252d1dad14469f',1,'memory.c']]],
+  ['kmalloc_5fcommon_359',['kmalloc_common',['../df/dd5/memory_8c.html#aa2d465bbba160eacb1da00b1f307f059',1,'memory.c']]],
+  ['kmodules_5finit_360',['kModules_Init',['../d9/d26/kernel_8c.html#a7436e762b78a18ffc2c18e1ed1b60dab',1,'kernel.c']]]
+];

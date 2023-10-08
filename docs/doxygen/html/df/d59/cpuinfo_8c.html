@@ -1,0 +1,443 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Файл kernel/src/sys/cpuinfo.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('df/d59/cpuinfo_8c.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#define-members">Макросы</a> &#124;
+<a href="#func-members">Функции</a> &#124;
+<a href="#var-members">Переменные</a>  </div>
+  <div class="headertitle">
+<div class="title">Файл cpuinfo.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Определение процессора  
+<a href="#details">Подробнее...</a></p>
+<div class="textblock"><code>#include &lt;kernel.h&gt;</code><br />
+<code>#include &lt;sys/cpuinfo.h&gt;</code><br />
+</div>
+<p><a href="../../df/d59/cpuinfo_8c_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Макросы</h2></td></tr>
+<tr class="memitem:a6134af974a82b80c2de8f9f3173d4beb"><td class="memItemLeft" align="right" valign="top"><a id="a6134af974a82b80c2de8f9f3173d4beb"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#a6134af974a82b80c2de8f9f3173d4beb">INTEL_MAGIC</a>&#160;&#160;&#160;0x756e6547</td></tr>
+<tr class="memdesc:a6134af974a82b80c2de8f9f3173d4beb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ключ процессора Intel. <br /></td></tr>
+<tr class="separator:a6134af974a82b80c2de8f9f3173d4beb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45695d0b5255fb29587cef9148529c69"><td class="memItemLeft" align="right" valign="top"><a id="a45695d0b5255fb29587cef9148529c69"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#a45695d0b5255fb29587cef9148529c69">AMD_MAGIC</a>&#160;&#160;&#160;0x68747541</td></tr>
+<tr class="memdesc:a45695d0b5255fb29587cef9148529c69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ключ процессора AMD. <br /></td></tr>
+<tr class="separator:a45695d0b5255fb29587cef9148529c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f76f1bb6e46e94fe0484b2cb3effdbb"><td class="memItemLeft" align="right" valign="top"><a id="a9f76f1bb6e46e94fe0484b2cb3effdbb"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#a9f76f1bb6e46e94fe0484b2cb3effdbb">VMWARE_HYPERVISOR_MAGIC</a>&#160;&#160;&#160;0x564D5868</td></tr>
+<tr class="memdesc:a9f76f1bb6e46e94fe0484b2cb3effdbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ключ гипервизора VMWare. <br /></td></tr>
+<tr class="separator:a9f76f1bb6e46e94fe0484b2cb3effdbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61e06caa7c60a3f084f496a64fa21ec8"><td class="memItemLeft" align="right" valign="top"><a id="a61e06caa7c60a3f084f496a64fa21ec8"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#a61e06caa7c60a3f084f496a64fa21ec8">VMWARE_HYPERVISOR_PORT</a>&#160;&#160;&#160;0x5658</td></tr>
+<tr class="memdesc:a61e06caa7c60a3f084f496a64fa21ec8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Порт доступа данных к VMWare. <br /></td></tr>
+<tr class="separator:a61e06caa7c60a3f084f496a64fa21ec8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83bd25a94b4aa352f7d1afd01886170f"><td class="memItemLeft" align="right" valign="top"><a id="a83bd25a94b4aa352f7d1afd01886170f"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#a83bd25a94b4aa352f7d1afd01886170f">VMWARE_PORT_CMD_GETVERSION</a>&#160;&#160;&#160;10</td></tr>
+<tr class="memdesc:a83bd25a94b4aa352f7d1afd01886170f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Версия управления VWMare. <br /></td></tr>
+<tr class="separator:a83bd25a94b4aa352f7d1afd01886170f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbd9a0de0819ae13fb9489d7dc7b220a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>VMWARE_PORT</b>(<a class="el" href="../../d6/d4f/shell_8c.html#a7353cae57e2530c316ddacb27ef14932">cmd</a>,  eax,  ebx,  ecx,  edx)</td></tr>
+<tr class="separator:afbd9a0de0819ae13fb9489d7dc7b220a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Функции</h2></td></tr>
+<tr class="memitem:ad52cb00c670846fb921959bf188da233"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#ad52cb00c670846fb921959bf188da233">detect_cpu</a> (bool silent)</td></tr>
+<tr class="memdesc:ad52cb00c670846fb921959bf188da233"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получение имени процессора (Инициализация)  <a href="../../df/d59/cpuinfo_8c.html#ad52cb00c670846fb921959bf188da233">Подробнее...</a><br /></td></tr>
+<tr class="separator:ad52cb00c670846fb921959bf188da233"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a450008ad8700321b0144cb3e890784e0"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#a450008ad8700321b0144cb3e890784e0">getNameBrand</a> ()</td></tr>
+<tr class="memdesc:a450008ad8700321b0144cb3e890784e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получение имени процессора  <a href="../../df/d59/cpuinfo_8c.html#a450008ad8700321b0144cb3e890784e0">Подробнее...</a><br /></td></tr>
+<tr class="separator:a450008ad8700321b0144cb3e890784e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7de68adc9f0c97981027e0da8928eed2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#a7de68adc9f0c97981027e0da8928eed2">do_intel</a> (bool silent)</td></tr>
+<tr class="memdesc:a7de68adc9f0c97981027e0da8928eed2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получение информации о процессоре Intel.  <a href="../../df/d59/cpuinfo_8c.html#a7de68adc9f0c97981027e0da8928eed2">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7de68adc9f0c97981027e0da8928eed2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf74acd6d1a64caa9aa652c61b4c9e84"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#adf74acd6d1a64caa9aa652c61b4c9e84">do_amd</a> (bool silent)</td></tr>
+<tr class="memdesc:adf74acd6d1a64caa9aa652c61b4c9e84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получение информации о процессоре AMD.  <a href="../../df/d59/cpuinfo_8c.html#adf74acd6d1a64caa9aa652c61b4c9e84">Подробнее...</a><br /></td></tr>
+<tr class="separator:adf74acd6d1a64caa9aa652c61b4c9e84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a212468582fa110dfa3883b996f6f5e2b"><td class="memItemLeft" align="right" valign="top"><a id="a212468582fa110dfa3883b996f6f5e2b"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_max_cpuid_count</b> ()</td></tr>
+<tr class="separator:a212468582fa110dfa3883b996f6f5e2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Переменные</h2></td></tr>
+<tr class="memitem:aa884c76448733ffe7424ea222e34718e"><td class="memItemLeft" align="right" valign="top"><a id="aa884c76448733ffe7424ea222e34718e"></a>
+char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#aa884c76448733ffe7424ea222e34718e">brandAllName</a> [128] = {0}</td></tr>
+<tr class="memdesc:aa884c76448733ffe7424ea222e34718e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Название процессора <br /></td></tr>
+<tr class="separator:aa884c76448733ffe7424ea222e34718e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6396700429b9772a350f14c2d2a044b2"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#a6396700429b9772a350f14c2d2a044b2">Intel</a> []</td></tr>
+<tr class="memdesc:a6396700429b9772a350f14c2d2a044b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Лист-спецификаций Intel.  <a href="../../df/d59/cpuinfo_8c.html#a6396700429b9772a350f14c2d2a044b2">Подробнее...</a><br /></td></tr>
+<tr class="separator:a6396700429b9772a350f14c2d2a044b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cdd21f98ddf8502eb3a616d67f85d35"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d59/cpuinfo_8c.html#a4cdd21f98ddf8502eb3a616d67f85d35">Intel_Other</a> []</td></tr>
+<tr class="memdesc:a4cdd21f98ddf8502eb3a616d67f85d35"><td class="mdescLeft">&#160;</td><td class="mdescRight"><ul>
+<li>Дополнительная таблица спецификаций Intel </li>
+</ul>
+ <a href="../../df/d59/cpuinfo_8c.html#a4cdd21f98ddf8502eb3a616d67f85d35">Подробнее...</a><br /></td></tr>
+<tr class="separator:a4cdd21f98ddf8502eb3a616d67f85d35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Определение процессора </p>
+<dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (<a href="#" onclick="location.href='mai'+'lto:'+'nik'+'it'+'a.p'+'im'+'ino'+'ff'+'@ya'+'nd'+'ex.'+'ru'; return false;">nikit<span style="display: none;">.nosp@m.</span>a.pi<span style="display: none;">.nosp@m.</span>minof<span style="display: none;">.nosp@m.</span>f@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>ru</a>) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.3.3 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2022-10-01 </dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022-2023 </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d59/cpuinfo_8c_source.html">cpuinfo.c</a></p>
+</div><h2 class="groupheader">Макросы</h2>
+<a id="afbd9a0de0819ae13fb9489d7dc7b220a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbd9a0de0819ae13fb9489d7dc7b220a">&#9670;&nbsp;</a></span>VMWARE_PORT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define VMWARE_PORT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><a class="el" href="../../d6/d4f/shell_8c.html#a7353cae57e2530c316ddacb27ef14932">cmd</a>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">eax, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ebx, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ecx, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">edx&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Макроопределение:</b><div class="fragment"><div class="line">        __asm__(<span class="stringliteral">&quot;inl (%%dx)&quot;</span> :                                          \</div>
+<div class="line">                        <span class="stringliteral">&quot;=a&quot;</span>(eax), <span class="stringliteral">&quot;=c&quot;</span>(ecx), <span class="stringliteral">&quot;=d&quot;</span>(edx), <span class="stringliteral">&quot;=b&quot;</span>(ebx) :    \</div>
+<div class="line">                        <span class="stringliteral">&quot;0&quot;</span>(<a class="code" href="../../df/d59/cpuinfo_8c.html#a9f76f1bb6e46e94fe0484b2cb3effdbb">VMWARE_HYPERVISOR_MAGIC</a>),                   \</div>
+<div class="line">                        <span class="stringliteral">&quot;1&quot;</span>(VMWARE_PORT_CMD_##<a class="code" href="../../d6/d4f/shell_8c.html#a7353cae57e2530c316ddacb27ef14932">cmd</a>),                     \</div>
+<div class="line">                        <span class="stringliteral">&quot;2&quot;</span>(<a class="code" href="../../df/d59/cpuinfo_8c.html#a61e06caa7c60a3f084f496a64fa21ec8">VMWARE_HYPERVISOR_PORT</a>), <span class="stringliteral">&quot;3&quot;</span>(UINT_MAX) :    \</div>
+<div class="line">                        <span class="stringliteral">&quot;memory&quot;</span>);</div>
+<div class="ttc" id="acpuinfo_8c_html_a61e06caa7c60a3f084f496a64fa21ec8"><div class="ttname"><a href="../../df/d59/cpuinfo_8c.html#a61e06caa7c60a3f084f496a64fa21ec8">VMWARE_HYPERVISOR_PORT</a></div><div class="ttdeci">#define VMWARE_HYPERVISOR_PORT</div><div class="ttdoc">Порт доступа данных к VMWare.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d59/cpuinfo_8c_source.html#l00017">cpuinfo.c:17</a></div></div>
+<div class="ttc" id="acpuinfo_8c_html_a9f76f1bb6e46e94fe0484b2cb3effdbb"><div class="ttname"><a href="../../df/d59/cpuinfo_8c.html#a9f76f1bb6e46e94fe0484b2cb3effdbb">VMWARE_HYPERVISOR_MAGIC</a></div><div class="ttdeci">#define VMWARE_HYPERVISOR_MAGIC</div><div class="ttdoc">Ключ гипервизора VMWare.</div><div class="ttdef"><b>Definition:</b> <a href="../../df/d59/cpuinfo_8c_source.html#l00016">cpuinfo.c:16</a></div></div>
+<div class="ttc" id="ashell_8c_html_a7353cae57e2530c316ddacb27ef14932"><div class="ttname"><a href="../../d6/d4f/shell_8c.html#a7353cae57e2530c316ddacb27ef14932">cmd</a></div><div class="ttdeci">char * cmd</div><div class="ttdoc">Текущая команда</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/d4f/shell_8c_source.html#l00033">shell.c:33</a></div></div>
+</div><!-- fragment -->
+<p class="definition">См. определение в файле <a class="el" href="../../df/d59/cpuinfo_8c_source.html">cpuinfo.c</a> строка <a class="el" href="../../df/d59/cpuinfo_8c_source.html#l00021">21</a></p>
+
+</div>
+</div>
+<h2 class="groupheader">Функции</h2>
+<a id="ad52cb00c670846fb921959bf188da233"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad52cb00c670846fb921959bf188da233">&#9670;&nbsp;</a></span>detect_cpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int detect_cpu </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>silent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получение имени процессора (Инициализация) </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bool</td><td>silent - Тихий режим</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>int - Тип процессора (0 - Unknown | 1 - Intel | 2 - AMD | 3 - VMWare)</dd></dl>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Не для личного использования. Если вы хотите получить название процессора используйте функцию <a class="el" href="../../df/d59/cpuinfo_8c.html#a450008ad8700321b0144cb3e890784e0" title="Получение имени процессора">getNameBrand()</a> </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d59/cpuinfo_8c_source.html">cpuinfo.c</a> строка <a class="el" href="../../df/d59/cpuinfo_8c_source.html#l00038">38</a></p>
+
+</div>
+</div>
+<a id="adf74acd6d1a64caa9aa652c61b4c9e84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf74acd6d1a64caa9aa652c61b4c9e84">&#9670;&nbsp;</a></span>do_amd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int do_amd </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>silent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получение информации о процессоре AMD. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bool</td><td>silent - Тихий режим</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>int - 0</dd></dl>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Не для личного использования. Если вы хотите получить название процессора используйте функцию <a class="el" href="../../df/d59/cpuinfo_8c.html#a450008ad8700321b0144cb3e890784e0" title="Получение имени процессора">getNameBrand()</a> </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d59/cpuinfo_8c_source.html">cpuinfo.c</a> строка <a class="el" href="../../df/d59/cpuinfo_8c_source.html#l00345">345</a></p>
+
+</div>
+</div>
+<a id="a7de68adc9f0c97981027e0da8928eed2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7de68adc9f0c97981027e0da8928eed2">&#9670;&nbsp;</a></span>do_intel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int do_intel </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>silent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получение информации о процессоре Intel. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bool</td><td>silent - Тихий режим</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>int - 0</dd></dl>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Не для личного использования. Если вы хотите получить название процессора используйте функцию <a class="el" href="../../df/d59/cpuinfo_8c.html#a450008ad8700321b0144cb3e890784e0" title="Получение имени процессора">getNameBrand()</a> </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d59/cpuinfo_8c_source.html">cpuinfo.c</a> строка <a class="el" href="../../df/d59/cpuinfo_8c_source.html#l00145">145</a></p>
+
+</div>
+</div>
+<a id="a450008ad8700321b0144cb3e890784e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a450008ad8700321b0144cb3e890784e0">&#9670;&nbsp;</a></span>getNameBrand()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* getNameBrand </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получение имени процессора </p>
+<dl class="section return"><dt>Возвращает</dt><dd>char* - Полное имя процессора </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d59/cpuinfo_8c_source.html">cpuinfo.c</a> строка <a class="el" href="../../df/d59/cpuinfo_8c_source.html#l00073">73</a></p>
+
+</div>
+</div>
+<h2 class="groupheader">Переменные</h2>
+<a id="a6396700429b9772a350f14c2d2a044b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6396700429b9772a350f14c2d2a044b2">&#9670;&nbsp;</a></span>Intel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* Intel[]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Инициализатор</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    <span class="stringliteral">&quot;Brand ID Not Supported.&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Celeron(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Pentium(R) III processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Pentium(R) III Xeon(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Pentium(R) III processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Mobile Intel(R) Pentium(R) III processor-M&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Mobile Intel(R) Celeron(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Pentium(R) 4 processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Pentium(R) 4 processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Celeron(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Xeon(R) Processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Xeon(R) processor MP&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Mobile Intel(R) Pentium(R) 4 processor-M&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Mobile Intel(R) Pentium(R) Celeron(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Mobile Genuine Intel(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Celeron(R) M processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Mobile Intel(R) Celeron(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Celeron(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Mobile Geniune Intel(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Pentium(R) M processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Mobile Intel(R) Celeron(R) processor&quot;</span></div>
+<div class="line">}</div>
+</div><!-- fragment -->
+<p>Лист-спецификаций Intel. </p>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d59/cpuinfo_8c_source.html">cpuinfo.c</a> строка <a class="el" href="../../df/d59/cpuinfo_8c_source.html#l00077">77</a></p>
+
+</div>
+</div>
+<a id="a4cdd21f98ddf8502eb3a616d67f85d35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cdd21f98ddf8502eb3a616d67f85d35">&#9670;&nbsp;</a></span>Intel_Other</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* Intel_Other[]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Инициализатор</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Celeron(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Xeon(R) processor MP&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Intel(R) Xeon(R) processor&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;Reserved&quot;</span></div>
+<div class="line">}</div>
+</div><!-- fragment -->
+<p><ul>
+<li>Дополнительная таблица спецификаций Intel </li>
+</ul>
+</p>
+<dl class="section warning"><dt>Предупреждения</dt><dd>- Эта таблица предназначена для тех строк брендов, которые имеют два значения в зависимости от подписи процессора. В ней должно быть то же количество записей, что и в приведенной выше таблице. </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../df/d59/cpuinfo_8c_source.html">cpuinfo.c</a> строка <a class="el" href="../../df/d59/cpuinfo_8c_source.html#l00109">109</a></p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../df/d59/cpuinfo_8c.html">cpuinfo.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Окт 2023 17:30:54. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
