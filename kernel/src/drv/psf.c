@@ -1,8 +1,8 @@
 /**
  * @file drv/psf.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), Арен Елчинян (SynapseOS)
- * @brief Драйвер виртуальной файловой системы
- * @version 0.3.2
+ * @brief Поддержка шрифтов PSF
+ * @version 0.3.3
  * @date 2023-01-13
  * @copyright Copyright SayoriOS Team (c) 2023
  */
@@ -13,7 +13,7 @@
 
 uint32_t psf_font_version = 0;
 
-static psf_t *_font_ptr = NULL;
+static psf_t *_font_ptr = nullptr;
 static bool _init = false;
 static uint8_t _w = 8;
 static uint8_t _h = 0;
@@ -21,7 +21,17 @@ uint8_t* first_glyph = 0;
 
 uint16_t *unicode;
 
+/**
+ * @brief Инициализация шрифта PSF
+ * @param psf - (const char*) имя файла
+ * @return true - всё ок; false - ошибка
+ */
 bool text_init(char* psf){
+	ON_NULLPTR(psf, {
+		qemu_log("Filename is nullptr!");
+		return false;
+	});
+
     FILE* psf_file = fopen(psf, "r");
     if (!psf_file) {
         qemu_log("[Core] [PSF] Не удалось найти файл `%s`. \n",psf);
@@ -33,7 +43,7 @@ bool text_init(char* psf){
     fseek(psf_file, 0, SEEK_SET);
 
     char* buffer = kmalloc(rfsize);
-    fread_c(psf_file, rfsize, 1, buffer);
+	fread(psf_file, rfsize, 1, buffer);
     fclose(psf_file);
 
     psf_t *header = (psf_t*)buffer;
@@ -105,7 +115,7 @@ uint8_t *psf1_get_glyph(uint16_t ch){
     return ((uint8_t*)_font_ptr+sizeof(psf_t)+(ch*_h));
 }
 
-void draw_vga_ch(uint16_t c, uint16_t c2, int pos_x, int pos_y, int color) {
+void draw_vga_ch(uint16_t c, uint16_t c2, size_t pos_x, size_t pos_y, size_t color) {
     char mask[8] = {128,64,32,16,8,4,2,1};
     if (isUTF(c) && false) {  // Ideal method to disable code block LOL
         __com_formatString(PORT_COM1,"||||||||||||||\n");
@@ -140,17 +150,23 @@ void draw_vga_ch(uint16_t c, uint16_t c2, int pos_x, int pos_y, int color) {
     // __com_formatString(PORT_COM1,"||||||||||||||\n");
 }
 
-void draw_vga_str(const char* text, size_t len, int x, int y, int color){
-    size_t scrwidth = getWidthScreen();
+void draw_vga_str(const char* text, size_t len, int x, int y, uint32_t color){
+	ON_NULLPTR(text, {
+		return;
+	});
+
+    size_t scrwidth = getScreenWidth();
     for(int i = 0; i < len; i++){
-        if (x+8 <= scrwidth){
+        if (x + 8 <= scrwidth){
             if (isUTF(text[i])){
                 draw_vga_ch(text[i], text[i+1], x, y, color);
                 i++;
             } else {
+                if(!text[i])
+                    return;
                 draw_vga_ch(text[i], 0, x, y, color);
             }
-            x+= 8;
+            x += 8;
         } else {
             break;
         }

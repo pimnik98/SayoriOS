@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common.h"
+
 #define FS_FILE         0x00              ///< Файл
 #define FS_DIRECTORY    0x01              ///< Папка
 #define FS_INVALID      0x02              ///< Невалидный файл
@@ -14,20 +16,21 @@
 
 typedef char* (*readChar_type_t)(uint32_t);
 typedef uint32_t (*read_type_t)(uint32_t,size_t,size_t,void *);
-typedef struct dirent* (*list_type_t)();
-typedef uint32_t (*write_type_t)(uint32_t,size_t,size_t,void *);
-typedef uint32_t (*findFile_type_t)(char*);
+typedef struct dirent* (*list_type_t)(const char* path);
+typedef uint32_t (*write_type_t)(uint32_t,size_t,size_t,const void *);
+typedef int32_t (*findFile_type_t)(const char*);
+typedef uint32_t (*countElemFolder_type_t)(char*);
 typedef char* (*charData_type_t)(char*);
 typedef char* (*charintData_type_t)(int);
 typedef size_t (*getLengthFile_type_t)(int);
 typedef int (*getOffsetFile_type_t)(int);
 typedef size_t (*getDeviceSize_type_t)(int);
-typedef struct dirent* (*dirlist_type_t)(char*);
+typedef struct dirent* (*dirlist_type_t)(const char*);
 typedef struct fs_node (*getFileInfo_type_t)(struct fs_node*,char*);
 typedef void (*open_type_t)(struct fs_node*);
 typedef void (*close_type_t)(struct fs_node*);
 
-typedef struct dirent * (*readdir_type_t)(struct fs_node*,uint32_t);
+typedef struct dirent * (*readdir_type_t)(struct fs_node*, uint32_t);
 typedef struct fs_node * (*finddir_type_t)(struct fs_node*,char *name);
 
 typedef void (*dirfree_type_t)(struct dirent*);
@@ -50,7 +53,7 @@ typedef struct fs_node
    open_type_t open;                      ///< Функция FS - Функция для открытия файла (не исп)
    close_type_t close;                    ///< Функция FS - Функция для закрытия файла (не исп)
    readdir_type_t readDir;                ///< Функция FS - Функция для чтение папки (не исп)
-   findFile_type_t getCountElemFolder;    ///< Функция FS - Функция для получения количества файлов в папке
+   countElemFolder_type_t getCountElemFolder;    ///< Функция FS - Функция для получения количества файлов в папке
    findFile_type_t findFile;              ///< Функция FS - Функция для поиска файла
    findFile_type_t findDir;               ///< Функция FS - Функция для поиска файла
    getFileInfo_type_t getFileInfo;        ///< Функция FS - Функция для получения информации о файле (не исп) (старое)
@@ -93,14 +96,14 @@ extern fs_node_t *fs_root; // The root of the filesystem.
 
 void vfs_getPath(int node, const char* path, char* buf);
 int vfs_foundMount(const char* path);
-void vfs_reg(size_t location, size_t type);
-int vfs_write(int node, int elem, size_t offset, size_t size, void *buf);
+void vfs_reg(size_t location, size_t end, size_t type);
+int vfs_write(int node, int elem, size_t offset, size_t size, const void *buf);
 int vfs_findFile(const char* filename);
 bool vfs_exists(const char* filename);
-uint32_t vfs_read(int node, int elem, size_t offset, size_t size, void *buf);
+int vfs_read(int node, int elem, size_t offset, size_t size, void *buf);
 char* vfs_readChar(int node,int elem);
 size_t vfs_findDir(char* path);
-size_t vfs_getLengthFilePath(const char* filename);
+ssize_t vfs_getLengthFilePath(const char* filename);
 size_t vfs_getLengthFile(int node,int elem);
 int vfs_getOffsetFile(int node,int elem);
 size_t vfs_getDiskSize(int node);

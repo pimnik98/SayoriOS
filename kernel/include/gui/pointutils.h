@@ -1,6 +1,6 @@
 #pragma once
 
-#include <common.h>
+#include "common.h"
 
 typedef struct Coordinates {
     ssize_t x, y;

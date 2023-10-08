@@ -1,8 +1,8 @@
 /**
  * @file fs/NatSuki.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru), Drew >_ (pikachu_andrey@vk.com)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief [VFS] [Драйвер] NatSuki - Виртуальная файловая система
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2023-01-27
  * @copyright Copyright SayoriOS Team (c) 2022-2023
 */
@@ -11,7 +11,7 @@
 #include <io/ports.h>
 fs_node_t *nat_root;                        ///< Ссылка на виртуальную фс
 bool    __milla_b_init = false;             ///< Milla готова к работе?
-char*   __milla_null = "NULL";              ///< Ответ, если Milla не готовa
+char*   __milla_null = "null";              ///< Ответ, если Milla не готовa
 char*   __milla_buffer = 0;                 ///< Буфер
 char    __milla_login[256] = "SayoriOS";    ///< Логин для авторизации
 char    __milla_passwd[256] = "NatSuki";    ///< Пароль для авторизации
@@ -171,7 +171,7 @@ char* __milla_getFile(char* path) {
     __milla_sendcmd("READ GET");
     char tmp = 'S';
     size_t inx = 0;
-    char* buf = kmalloc(sizeof(char*) * answer);
+    char* buf = (char*)kmalloc(sizeof(char*) * answer);
     memset(buf,0,answer);
     for(;;) {
         if (inx >= answer)break;
@@ -210,18 +210,16 @@ int __milla_delete(char* path){
     if (!__milla_b_init){return -9999;}
     __com_formatString(PORT_COM2,"DEL %s |$MC#|",path);
     int answer = atoi(__milla_getcmd());
-    if (answer != 1){
-        return answer;
-    }
+    
+    return answer;
 }
 
 int __milla_mkdir(char* path){
     if (!__milla_b_init){return -9999;}
     __com_formatString(PORT_COM2,"MKDIR %s |$MC#|",path);
     int answer = atoi(__milla_getcmd());
-    if (answer != 1){
-        return answer;
-    }
+    
+    return answer;
 }
 
 size_t __milla_findID(char* path,char* type){
@@ -254,9 +252,8 @@ int __milla_touch(char* path){
     if (!__milla_b_init){return -9999;}
     __com_formatString(PORT_COM2,"TOUCH %s |$MC#|",path);
     int answer = atoi(__milla_getcmd());
-    if (answer != 1){
-        return answer;
-    }
+
+    return answer;
 }
 
 
@@ -282,7 +279,7 @@ char* __milla_getList(char* path){
     //__milla_sendcmd("LIST GET");
     char tmp = 'S';
     size_t inx = 0;
-    char* buf = kmalloc(sizeof(char*) * answer);
+    char* buf = (char*)kmalloc(sizeof(char*) * answer);
     memset(buf,0,answer);
     for(;;) {
         if (inx >= answer)break;
@@ -314,7 +311,7 @@ int __milla_init(){
         }
         qemu_log("[Milla] Step 1 PASSED");
         // Подгрузим буфер и отчистим его, если там есть что-то
-        __milla_buffer =  kmalloc(sizeof(char*) * 256);
+        __milla_buffer =  (char*)kmalloc(sizeof(char*) * 256);
         memset(__milla_buffer,0,256);
         __milla_b_init = true;
         __com_formatString(PORT_COM2,"LOGIN %s %s|$MC#|",__milla_login,__milla_passwd);
@@ -378,9 +375,12 @@ char* nat_readChar(uint32_t node){
  */
 uint32_t nat_read(uint32_t node, size_t offset, size_t size, void *buffer){
     if (!__milla_b_init) return 0;
-    memcpy(buffer, (void*)__milla_getFile(__milla_getRootID(node)), size);
-    qemu_log("[NatSuki] [nat_read] ");
-    return 0;
+
+	substr(buffer,(void*)__milla_getFile(__milla_getRootID(node)),offset,size);
+
+    //memcpy(buffer, __milla_getFile(__milla_getRootID(node)), size);
+    qemu_log("[NatSuki] [nat_read] [Offset:%d] [Size:%d] Node: %d | Data: %d",offset,size,strlen(buffer));
+    return strlen(buffer);
 }
 
 /**
@@ -408,7 +408,7 @@ uint32_t nat_write(uint32_t node, size_t offset, size_t size, void *buffer){
  */
 size_t nat_getLengthFile(int node){
     if (!__milla_b_init) return 0;
-    qemu_log("[NatSuki] [nat_getLengthFile] %d",node);
+    //qemu_log("[NatSuki] [nat_getLengthFile] Node: %d",node);
 
     return __milla_getSizeFile(__milla_getRootID(node));
 }
@@ -432,9 +432,9 @@ size_t nat_getOffsetFile(int node){
  *
  * @return int - Индекс файла, или отрицательное значение при ошибке
  */
-uint32_t nat_findFile(char* filename){
+int32_t nat_findFile(char* filename){
     if (!__milla_b_init) return -1;
-    qemu_log("[NatSuki] [nat_findFile] %s",filename);
+    //qemu_log("[NatSuki] [nat_findFile] %s",filename);
     return __milla_findID(filename,"FILE");
 }
 
@@ -445,9 +445,9 @@ uint32_t nat_findFile(char* filename){
  *
  * @return int - Индекс папки, или отрицательное значение при ошибке
  */
-uint32_t nat_findDir(char* path){
+int32_t nat_findDir(char* path){
     if (!__milla_b_init) return -1;
-    qemu_log("[NatSuki] [nat_findDir] %s",path);
+    //qemu_log("[NatSuki] [nat_findDir] %s",path);
 
     return __milla_findID(path,"DIR");
 }
@@ -457,7 +457,7 @@ uint32_t nat_findDir(char* path){
  */
 size_t nat_countElemFolder(char* path){
     if (!__milla_b_init) return 0;
-    qemu_log("[NatSuki] [nat_countElemFolder] %s",path);
+    //qemu_log("[NatSuki] [nat_countElemFolder] %s",path);
     return __milla_getCountFiles(path);
 }
 
@@ -517,7 +517,7 @@ struct dirent* nat_list(char* path){
  *
  * @return uint64_t - Количество используемого места устройства
  */
-uint64_t nat_diskUsed(int node){
+size_t nat_diskUsed(int node){
     qemu_log("[NatSuki] [nat_diskUsed] ");
     return 2;
 }
@@ -529,7 +529,7 @@ uint64_t nat_diskUsed(int node){
  *
  * @return uint64_t - Количество свободного места устройства
  */
-uint64_t nat_diskSpace(int node){
+size_t nat_diskSpace(int node){
     qemu_log("[NatSuki] [nat_diskSpace] ");
     return 0;
 }
@@ -541,7 +541,7 @@ uint64_t nat_diskSpace(int node){
  *
  * @return uint64_t - Количество всего места устройства
  */
-uint64_t nat_diskSize(int node){
+size_t nat_diskSize(int node){
     qemu_log("[NatSuki] [nat_diskSize] ");
     return 1;
 }

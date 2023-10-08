@@ -1,11 +1,12 @@
 #pragma once
-#define cpuid(in, a, b, c, d) __asm__("cpuid": "=a" (a), \
-                                               "=b" (b), \
-                                               "=c" (c), \
-                                               "=d" (d) : \
-                                               "a" (in));
+
+#include "sys/cpuid.h"
+
 int do_intel(bool silent);
 int do_amd(bool silent);
 char* printregs(int eax, int ebx, int ecx, int edx);
 int detect_cpu(bool silent);
 char* getNameBrand();
+size_t get_max_cpuid_count();
+bool is_temperature_module_present();
+size_t get_cpu_temperature();

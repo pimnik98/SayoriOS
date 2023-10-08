@@ -2,12 +2,6 @@
 #include "gui/basics.h"
 #include "gui/render.h"
 #include "gui/pointutils.h"
-#include "io/tty.h"
-#include "io/ports.h"
-#include "io/imaging.h"
-#include "drv/input/mouse.h"
-#include "sys/memory.h"
-#include "lib/string.h"
 
 // getConfigFonts(2) - is height of current font
 
@@ -17,6 +11,9 @@ Window_t** current_windows = 0;
 bool dragging_mode = false;
 bool click = false;
 Window_t* drag_window = 0;
+
+uint32_t dragx = 0;
+uint32_t dragy = 0;
 
 void* cursor_data = 0;
 size_t cursor_width = 0, cursor_height = 0;
@@ -131,8 +128,8 @@ void gui_render_window(Window_t* window) {
         draw_filled_rectangle(window->x + window->width - WINDOW_TITLEBAR_HEIGHT - 4, window->y - WINDOW_TITLEBAR_HEIGHT + 2, WINDOW_TITLEBAR_HEIGHT + 2, WINDOW_TITLEBAR_HEIGHT - 4, 0xdd0000);
 
         draw_vga_str("X", 1,
-            window->x + window->width - WINDOW_TITLEBAR_HEIGHT + 2,
-            window->y - WINDOW_TITLEBAR_HEIGHT + 5,
+            window->x + window->width - WINDOW_TITLEBAR_HEIGHT + 5,
+            window->y - WINDOW_TITLEBAR_HEIGHT + 4,
             0
         );
     }
@@ -142,12 +139,14 @@ void gui_render_window(Window_t* window) {
 
 Window_t* is_point_on_any_window_titlebar(ssize_t x, ssize_t y) {
     for (size_t i = 0; i < get_window_count(); i++) {
-        if(current_windows[i]->with_title_bar && point_in_rect(
+        struct Window* window = current_windows[i];
+
+		if(window->with_title_bar && point_in_rect(
             x,
             y,
-            current_windows[i]->x,
-            current_windows[i]->y - WINDOW_TITLEBAR_HEIGHT,
-            current_windows[i]->width,
+            window->x,
+            window->y - WINDOW_TITLEBAR_HEIGHT,
+            window->width,
             WINDOW_TITLEBAR_HEIGHT
             )) {
                 return current_windows[i];
@@ -212,9 +211,12 @@ void gui_handle_mouse() {
             ) && !dragging_mode) {
                 window_destroy(tmp);
                 return;
-            }else{
+            }else if(!dragging_mode){
                 drag_window = tmp;
                 dragging_mode = true;
+
+                dragx = drag_window->x - mouse_x;
+                dragy = drag_window->y - mouse_y;
 
                 size_t sw = get_window_index(tmp);
                 size_t mw = get_window_index(focused);
@@ -241,8 +243,8 @@ void gui_handle_mouse() {
 
     if(dragging_mode) {
         // FIXME: Need correct formula to correct window dragging
-        drag_window->x = mouse_x - (drag_window->width/2);
-        drag_window->y = mouse_y + (WINDOW_TITLEBAR_HEIGHT/2);
+        drag_window->x = mouse_x + dragx;
+        drag_window->y = mouse_y + dragy;
     }
 
     if(dragging_mode && (!left_mouse)) {
@@ -273,8 +275,8 @@ void gui_render() {
     current_windows = get_window_list();
 
     if(current_windows == 0) {
-        draw_filled_rectangle(0, 0, getWidthScreen(), getHeightScreen(), 0x666666);
-        draw_vga_str("No windows in the system.", 25, (getWidthScreen() - 25 * 8) / 2, (getHeightScreen()- 8) / 2, 0);
+        draw_filled_rectangle(0, 0, getScreenWidth(), getScreenHeight(), 0x666666);
+        draw_vga_str("No windows in the system.", 25, (getScreenWidth() - 25 * 8) / 2, (getScreenHeight() - 8) / 2, 0);
         punch();
         return;
     }

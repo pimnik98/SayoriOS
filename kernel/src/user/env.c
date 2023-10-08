@@ -2,7 +2,7 @@
  * @file drv/env.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Пользовательское окружение ОС
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-11-07
  * @copyright Copyright SayoriOS Team (c) 2022-2023
 */
@@ -28,8 +28,8 @@ void confidEnv(){
     e.OS_VERSION_PATCH = VERSION_PATCH;                  ///< Патч
     e.Link_Display = getFrameBufferAddr();                     ///< Ссылка на виртуальный экран
     e.Link_Time = 2;                        ///< Ссылка на время
-    e.Display_W = getWidthScreen();                        ///< Длина экрана
-    e.Display_H = getHeightScreen();                        ///< Высота экрана
+    e.Display_W = getScreenWidth();                        ///< Длина экрана
+    e.Display_H = getScreenHeight();                        ///< Высота экрана
     e.Display_B = getDisplayBpp();                        ///< Смещение экрана
     e.Display_P = getDisplayPitch();                        ///< Глубина экрана
     e.Display_S = getDisplaySize();                        ///< Размер буфера

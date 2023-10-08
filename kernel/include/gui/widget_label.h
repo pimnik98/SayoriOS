@@ -10,6 +10,6 @@ typedef struct Widget_Label {
     uint32_t color;
 } Widget_Label_t;
 
-void widget_label_renderer(struct Widget* this, struct Window* container);
+void widget_label_renderer(struct Widget* this, __attribute__((unused)) struct Window* container);
 Widget_t* new_widget_label(char* label, ssize_t x, ssize_t y, uint32_t color);
 void destroy_widget_label(Widget_t* widget);

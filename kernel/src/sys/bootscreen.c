@@ -2,7 +2,7 @@
  * @file sys/bootscreen.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief BootScreen - Анимация загрузки ядра
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -56,21 +56,32 @@ void bootScreenChangeTheme(uint32_t th){
  * @return uint32_t - код цвета
  */
 uint32_t bootScreenTheme(uint32_t type){
-    if (theme == 0 && type == 0){
-        return txColorDark;
-    } else if (theme == 0 && type == 1){
-        return bgColorDark;
-    } else if (theme == 0 && type == 2){
-        return 0x262626;
-    } else if (theme == 1 && type == 0){
-        return txColorLight;
-    } else if (theme == 1 && type == 1){
-        return bgColorLight;
-    } else if (theme == 1 && type == 2){
-        return 0x262626;
-    } else {
-        return txColorDark;
-    }
+    uint32_t map[2][3] = {
+			{txColorDark, bgColorDark, 0x262626},
+			{txColorLight, bgColorLight, 0x262626}
+	};
+
+	if(theme >= 2 || type >= 3) {
+		return txColorDark;
+	}
+
+	return map[theme][type];
+
+//	if (theme == 0 && type == 0) {
+//        return txColorDark;
+//    } else if (theme == 0 && type == 1){
+//        return bgColorDark;
+//    } else if (theme == 0 && type == 2){
+//        return 0x262626;
+//    } else if (theme == 1 && type == 0){
+//        return txColorLight;
+//    } else if (theme == 1 && type == 1){
+//        return bgColorLight;
+//    } else if (theme == 1 && type == 2){
+//        return 0x262626;
+//    } else {
+//        return txColorDark;
+//    }
 }
 
 /**
@@ -81,7 +92,7 @@ uint32_t bootScreenTheme(uint32_t type){
  */
 void bootScreenClose(uint32_t bg, uint32_t tx){
     tty_setcolor(tx);
-    drawRect(0,0,getWidthScreen(),getHeightScreen(),bg);
+    drawRect(0, 0, getScreenWidth(), getScreenHeight(), bg);
     setPosX(0);
     setPosY(0);
     tty_changeState(true);
@@ -114,7 +125,7 @@ void bootScreenInfo(){
         tty_setcolor(bootScreenTheme(2));
         tty_set_bgcolor(bootScreenTheme(1));
         setPosX(((1+centerAbout)*8));
-        setPosY(getHeightScreen()-32);
+        setPosY(getScreenHeight() - 32);
         tty_printf(about);
     }
     setPosX(0);
@@ -145,7 +156,9 @@ void bootScreenProcentPaint(){
  * @param char* title - Вывести данное сообщение
  */
 void bootScreenPaint(char* title){
-    if (bs_logs) qemu_log("[BOOT] %s",title);
+    if (bs_logs)
+        qemu_log("[BOOT] %s",title);
+    
     if (mode == 1){
         tty_changeState(true);
         tty_set_bgcolor(bootScreenTheme(1));
@@ -155,24 +168,31 @@ void bootScreenPaint(char* title){
         punch();
         return;
     }
-    maxStrLine = (getWidthScreen()/8)-2;
-    maxHeightLine = getHeightScreen()/16;
+    
+    maxStrLine = (getScreenWidth() / 8) - 2;
+    maxHeightLine = getScreenHeight() / 16;
+    
     tty_set_bgcolor(bootScreenTheme(1));
     tty_setcolor(bootScreenTheme(0));
     tty_changeState(true);
+
     uint32_t centerTitle = (maxStrLine/2) - (mb_strlen(title)/2);
     uint32_t padding_h = maxHeightLine/4;
+    
+    // punch();
     if (lazy){
-        drawRect(0,16*((maxHeightLine-padding_h)),getWidthScreen(),16,bootScreenTheme(1));
+        drawRect(0,16*((maxHeightLine-padding_h)), getScreenWidth(), 16, bootScreenTheme(1));
     } else {
-        drawRect(0,0,getWidthScreen(),getHeightScreen(),bootScreenTheme(1));
+        drawRect(0, 0, getScreenWidth(), getScreenHeight(), bootScreenTheme(1));
     }
+    // punch();
     setPosX(((1+centerTitle)*8));
     setPosY(16*((maxHeightLine-padding_h)));
     tty_printf(title);
     bootScreenInfo();
     bootScreenProcentPaint();
     tty_changeState(false);
+    
     punch();
 }
 
@@ -186,8 +206,8 @@ void bootScreenInit(uint32_t count){
     maxElem = count;
     if (bs_logs) qemu_log("Init...");
     tty_changeState(false);  // Disabling print functions
-    maxStrLine = (getWidthScreen()/8)-2;
-    maxHeightLine = getHeightScreen()/16;
+    maxStrLine = (getScreenWidth() / 8) - 2;
+    maxHeightLine = getScreenHeight() / 16;
     bootScreenPaint("Загрузка...");
 
 }

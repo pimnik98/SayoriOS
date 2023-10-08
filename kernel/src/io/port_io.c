@@ -1,8 +1,8 @@
 /**
  * @file io/port_io.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru), Drew >_ (pikachu_andrey@vk.com)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Средства для работы с портами
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2023-01-07
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -174,7 +174,7 @@ void __com_writeChar(uint16_t port,char a) {
 */
 void __com_writeString(uint16_t port, char *buf){
     for (size_t i = 0, len = strlen(buf); i < len; i++) {
-        __com_writeChar(port,buf[i]);
+        __com_writeChar(port, buf[i]);
     }
 }
 
@@ -188,8 +188,12 @@ void __com_io_wait(){
 }
 
 
-void __com_writeInt(int16_t port,uint32_t i){
-    if (i < 0) __com_writeChar(port,'-');
+void __com_writeInt(int16_t port, int32_t i){
+    if (i < 0) {
+        __com_writeChar(port,'-');
+        i = -i;
+    }
+    
     uint32_t n, d = 1000000000;
     char str[255];
     uint32_t dec_index = 0;
@@ -222,14 +226,14 @@ void __com_writeHex(int16_t port,uint32_t i,bool mode){
     n = i;
 
     while (d >= 0xF) {
-        __com_writeChar(port,hex[n / d]);
+        __com_writeChar(port,(char)hex[n / d]);
         n = n % d;
         d /= 0x10;
     }
-    __com_writeChar(port,hex[n]);
+    __com_writeChar(port,(char)hex[n]);
 }
 
-void __com_pre_formatString(int16_t port,char *format, va_list args){
+void __com_pre_formatString(int16_t port, const char* format, va_list args){
     int32_t i = 0;
     char *string;
 
@@ -239,7 +243,7 @@ void __com_pre_formatString(int16_t port,char *format, va_list args){
             switch (format[i]) {
             case 's':
                 string = va_arg(args, char*);
-                __com_writeString(port, string?string:"(null)");
+                __com_writeString(port, string?string:"(nullptr)");
                 break;
             case 'c':
                 // FIXME: fix this! "warning: cast to pointer from integer of different size"
@@ -260,13 +264,18 @@ void __com_pre_formatString(int16_t port,char *format, va_list args){
 					__com_writeChar(port,'-');
 				}
 				
-				float rem = a-(int)a;
+				double rem = a - (unsigned int)a;
 				__com_writeInt(port,(int)a);
 				__com_writeChar(port,'.');
-				for(int n=0; n<7; n++) {
-				    __com_writeInt(port,(int)(rem*ipow(10, n+1))%10);
+				
+                for(int n = 0; n < 7; n++) {
+				    __com_writeInt(
+                        port,
+                        (unsigned int)(rem * ipow(10, n + 1)) % 10
+                    );
 				}
-            	break;
+            	
+                break;
             }
             case 'i':
                 __com_writeInt(port,va_arg(args, int));
@@ -290,160 +299,6 @@ void __com_pre_formatString(int16_t port,char *format, va_list args){
     }
 }
 
-/*
-void __com_pre_formatString(int16_t port, char *format, va_list args){
-    int32_t i = 0;
-    char *string;
-
-    char* fmt = (char*)format;
-
-    if (*fmt == '%') {
-        size_t width = 0;
-        bool left_align = false;
-        
-        fmt++;
-
-        if(*fmt == '-') {
-            left_align = true;
-            fmt++;
-        }
-
-        while(isdigit(*fmt)) {
-            width = width * 10 + (*fmt - '0');
-            fmt++;
-        }
-
-        // qemu_log("Width is: %d", width);
-
-        switch (*fmt) {
-            case 's': {
-                char* arg = va_arg(args, char*);
-
-                int space = (int)width - (int)strlen(arg);
-                // qemu_log("Space count: %d", space);
-                // int space = 0;
-
-                if(left_align)
-                    __com_writeString(port, arg ? arg : "(null)");
-
-                if(space > 0) {
-                    while(space--)
-                        __com_writeString(port, " ");
-                }
-
-                if(!left_align)
-                    __com_writeString(port, arg ? arg : "(null)");
-
-                break;
-            }
-            case 'c': {
-                __com_writeChar(port, va_arg(args, int));
-                break;
-            }
-            case 'f': {
-                double a = va_arg(args, double);
-                if(!fpu_isInitialized()) {
-                    __com_writeString(port, "0.FPUNOINIT");
-                    break;
-                }
-
-                if(a < 0) {
-                    a = -a;
-                    __com_writeString(port, "-");
-                }
-
-                float rem = a - (int)a;
-                __com_writeInt(port, (int)a);
-                __com_writeString(port, ".");
-                for(int n=0; n < 7; n++) {
-                    __com_writeInt(port, (int)(rem * ipow(10, n+1)) % 10);
-                }
-                break;
-            }
-            case 'i':
-            case 'd': {
-                int num = va_arg(args, int);
-                int space = width - digit_count(num);
-
-                if(num < 0)
-                    space++;
-
-                if(left_align)
-                    __com_writeInt(port, num);
-                
-                if(space > 0) {
-                    while(space--)
-                        __com_writeString(port, " ");
-                }
-
-                if(!left_align)
-                    __com_writeInt(port, num);
-                
-                break;
-            }
-            case 'u': {
-                unsigned int num = va_arg(args, unsigned int);
-                int space = width - digit_count((int)num);
-
-                if(num < 0)
-                    space++;
-
-                if(left_align)
-                    _tty_putint(num);
-                
-                if(space > 0) {
-                    while(space--)
-                        _tty_puts(" ");
-                }
-
-                if(!left_align)
-                    _tty_putint(num);
-                
-                break;
-            }
-            case 'x': {
-                int num = va_arg(args, int);
-                int space = width - hex_count(num) - 2;
-
-                if(left_align)
-                    _tty_puthex(num);
-                
-                if(space > 0) {
-                    while(space--)
-                        _tty_puts(" ");
-                }
-
-                if(!left_align)
-                    _tty_puthex(num);
-                
-                break;
-            }
-            case 'v': {
-                int num = va_arg(args, int);
-                int space = width - hex_count(num);
-
-                if(left_align)
-                    _tty_puthex_v(num);
-                
-                if(space > 0) {
-                    while(space--)
-                        _tty_puts(" ");
-                }
-
-                if(!left_align)
-                    _tty_puthex_v(num);
-                
-                break;
-            }
-            default:
-                _tty_putchar(*fmt, *(fmt+1));
-        }
-        // \n
-    }
-    fmt++;
-}
-*/
-
 /**
  * @brief Вывод через COM1 информации
  *
@@ -463,36 +318,23 @@ void __com_formatString(int16_t port, char *text, ...) {
  * @brief Инициализация порта и проверка его доступности.
  */
 int __com_init(uint16_t port) {
-    // qemu_log("[%x] Configurate",port);
     outb(port + 1, 0x00);    // Disable all interrupts
-    // qemu_log("[%x] Disable all interrupts",port);
     outb(port + 3, 0x80);    // Enable DLAB (set baud rate divisor)
-    // qemu_log("[%x] Enable DLAB",port);
     outb(port + 0, 0x01);    // Set divisor to 1 (lo byte) 115200 / divisor (1) = 115200 baud
-    // qemu_log("[%x] Set divisor to LO",port);
     outb(port + 1, 0x00);    //                  (hi byte)
-    // qemu_log("[%x] Set divisor to HI",port);
     outb(port + 3, 0x03);    // 8 bits, no parity, one stop bit
-    // qemu_log("[%x] 8 bits, no parity, one stop bit",port);
     outb(port + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
-    // qemu_log("[%x] Enable FIFO, clear them, with 14-byte threshold",port);
     outb(port + 4, 0x0B);    // IRQs enabled, RTS/DSR set
-    // qemu_log("[%x] IRQs enabled, RTS/DSR set",port);
     outb(port + 4, 0x1E);    // Set in loopback mode, test the serial chip
-    // qemu_log("[%x] Set in loopback mode, test the serial chip",port);
     outb(port + 0, 0xAE);    // Test serial chip (send byte 0xAE and check if serial returns same byte)
-    // qemu_log("[%x] Test serial chip ",port);
-    // Check if serial is faulty (i.e: not same byte as sent)
-    // qemu_log("[%x] Check if serial is faulty",port);
+
     if(inb(port + 0) != 0xAE) {
-        // qemu_log("An error occurred while configuring the com port %x",port);
         return 1;
     }
-    // qemu_log("[%x] If serial is not faulty set it in normal operation mode ",port);
         
     // If serial is not faulty set it in normal operation mode
     // (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
     outb(port + 4, 0x0F);
-    // __com_formatString(port,"COM Port %x configured successfully.",port);
+
     return 0;
 }

@@ -19,5 +19,5 @@ typedef struct {
    uint8_t parentDir;         ///< Родительская папка (0 - значит root)
 } sefs_file_header_t;
 
-fs_node_t *sefs_initrd(uint32_t location);
+fs_node_t *sefs_initrd(uint32_t location, uint32_t end);
 

@@ -71,4 +71,6 @@ extern void user_mode_switch(void* entry_point, uint32_t user_stack_top);
 /* Init user mode */
 void init_user_mode(void* entry_point, size_t stack_size);
 
+void scheduler_mode(bool on);
+
 #endif

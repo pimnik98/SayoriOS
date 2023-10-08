@@ -1,7 +1,7 @@
 #pragma once
 
 #include <common.h>
-#include <io/imaging.h>
+#include <io/duke_image.h>
 #include "widget.h"
 
 typedef enum Widget_Image_Display_Mode {

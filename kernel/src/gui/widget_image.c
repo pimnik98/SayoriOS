@@ -1,7 +1,8 @@
+#include <kernel.h>
 #include "gui/widget.h"
-#include "io/imaging.h"
+#include "io/duke_image.h"
 #include "gui/widget_image.h"
-#include "io/imaging.h"
+#include "io/duke_image.h"
 #include "io/port_io.h"
 
 void destroy_widget_image(Widget_t* widget);
@@ -14,7 +15,7 @@ void widget_image_renderer(struct Widget* this, struct Window* window) {
 
 Widget_t* new_widget_image(char* path) {
 	struct DukeImageMeta* metadata = kcalloc(sizeof(struct DukeImageMeta), 1);
-    char code = duke_get_image_metadata(path, metadata);
+    duke_get_image_metadata(path, metadata);
 
     // qemu_log("Load image metadata code: %x", code);
     

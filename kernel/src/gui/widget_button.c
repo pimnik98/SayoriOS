@@ -1,3 +1,4 @@
+#include <kernel.h>
 #include "gui/widget.h"
 #include "gui/widget_button.h"
 #include "gui/basics.h"

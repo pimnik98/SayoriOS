@@ -2,7 +2,7 @@
  * @file lib/split.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Функция для деления строк
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-11-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -41,7 +41,7 @@ void str_split(char a_str[], char *out[], char* dec){
     int i = 0;
     char *p;
     p = strtok(a_str, dec);
-    if (p == NULL){
+    if (p == nullptr){
         out[i] = a_str;
     }
     out[i] = p;
@@ -49,7 +49,7 @@ void str_split(char a_str[], char *out[], char* dec){
 
     for(uint32_t a = 0;a < x; a++){
         p = strtok(out[i], dec);
-        if (p != NULL){
+        if (p != nullptr){
             out[i] = p;
             i++;
         }

@@ -1,5 +1,11 @@
 #pragma once
 
+typedef enum {
+    CURSOR_HIDDEN = 0,
+    CURSOR_NORMAL,
+    CURSOR_LOADING
+} MouseDrawState_t;
+
 #define MOUSE_RESET           0xFF
 #define MOUSE_RESEND          0xFE
 #define MOUSE_DEFAULTS        0xF6
@@ -29,3 +35,5 @@ uint8_t  mouse_get_b2();
 uint8_t  mouse_get_b3();
 uint8_t  mouse_get_b4();
 uint8_t  mouse_get_b5();
+
+void mouse_set_state(MouseDrawState_t state);

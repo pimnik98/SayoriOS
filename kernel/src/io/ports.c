@@ -2,13 +2,14 @@
  * @file io/ports.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Средства для работы с портами
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-11-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include <kernel.h>
 #include <stdarg.h>
 #include <io/ports.h>
+#include <lib/sprintf.h>
 
 /**
  * @brief Запись 32х битного числа в порт
@@ -65,6 +66,17 @@ void outsl(uint16_t port, uint32_t *buffer, int32_t times) {
     }
 }
 
+void insw(uint16_t __port, void *__buf, unsigned long __n) {
+	asm volatile("cld; rep; insw"
+			: "+D"(__buf), "+c"(__n)
+			: "d"(__port));
+}
+ 
+void outsw(uint16_t __port, const void *__buf, unsigned long __n) {
+	asm volatile("cld; rep; outsw"
+			: "+S"(__buf), "+c"(__n)
+			: "d"(__port));
+}
 
 /**
  * @brief Проверка занятости порта
@@ -155,11 +167,35 @@ int is_com_port(int port) {
  *
  * @param text Строка с параметрами
  */
-void qemu_printf(char *text, ...) {
+void qemu_printf(const char *text, ...) {
     va_list args;
     va_start(args, text);
+
     if (__com_getInit(1) == 1) {
+        scheduler_mode(false);  // Stop scheduler
+
         __com_pre_formatString(PORT_COM1, text, args);
+
+        scheduler_mode(true);  // Start scheduler
     }
+    
+    va_end(args);
+}
+
+void new_qemu_printf(const char *format, ...) {
+    if (!__com_getInit(1)) 
+        return;
+    
+    va_list args;
+    va_start(args, format);
+
+    char* container;
+    
+    vasprintf(&container, format, args);
+
+    __com_writeString(PORT_COM1, container);
+
+    kfree(container);
+    
     va_end(args);
 }

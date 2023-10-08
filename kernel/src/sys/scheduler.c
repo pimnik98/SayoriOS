@@ -2,7 +2,7 @@
  * @file sys/scheduler.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Менеджер задач
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -17,16 +17,18 @@ list_t thread_list;				///< Список потоков
 bool multi_task = false;		///< Готова ли система к многозадачности
 process_t* kernel_proc = 0;		///< Обработчик процесса ядра
 thread_t* kernel_thread = 0;	///< Обработчик основного потока ядра
-process_t* current_proc;		///< Текущий процесс
-thread_t* current_thread;		///< Текущий поток
+process_t* current_proc = 0;	///< Текущий процесс
+thread_t* current_thread = 0;	///< Текущий поток
 extern uint32_t init_esp;
+
+bool scheduler_working = true;
 
 /**
  * @brief Инициализация менеджера задач
  */
 void init_task_manager(void){
 	uint32_t esp = 0;
-	asm volatile("mov %%esp, %0":"=a"(esp));
+	asm volatile("mov %%esp, %0" : "=a"(esp));
 	
 	/* Disable all interrupts */
 	asm volatile ("cli");
@@ -35,13 +37,13 @@ void init_task_manager(void){
 	list_init(&thread_list);
 
 	/* Create kernel process */
-	kernel_proc = (process_t*) kmalloc(sizeof(process_t));
+	kernel_proc = (process_t*)kmalloc(sizeof(process_t));
 
 	memset(kernel_proc, 0, sizeof(process_t));
 
 	kernel_proc->pid = next_pid++;
 	kernel_proc->page_dir = get_kernel_dir();
-	kernel_proc->list_item.list = NULL;
+	kernel_proc->list_item.list = nullptr;
 	kernel_proc->threads_count = 1;
 	strcpy(kernel_proc->name, "Kernel");
 	kernel_proc->suspend = false;
@@ -54,7 +56,7 @@ void init_task_manager(void){
 	memset(kernel_thread, 0, sizeof(thread_t));
 
 	kernel_thread->process = kernel_proc;
-	kernel_thread->list_item.list = NULL;
+	kernel_thread->list_item.list = nullptr;
 	kernel_thread->id = next_thread_id++;
 	kernel_thread->stack_size = 0x4000;
 	kernel_thread->suspend = false;
@@ -66,20 +68,24 @@ void init_task_manager(void){
 	current_proc = kernel_proc;
 	current_thread = kernel_thread;	
 
+	asm volatile ("sti");
+
 	/* Enable multitasking flag */
 	multi_task = true;
+}
 
-	asm volatile ("sti");
+void scheduler_mode(bool on) {
+	scheduler_working = on;
 }
 
 void create_process(void* entry_point, char* name, bool suspend, bool is_kernel) {
-	asm volatile("cli");
+	__asm__ volatile("cli");
 	
-	process_t* proc = kcalloc(1, sizeof(process_t));
+	process_t* proc = (process_t*)kcalloc(1, sizeof(process_t));
 
 	proc->pid = next_pid++;
 	proc->page_dir = get_kernel_dir();
-	proc->list_item.list = NULL;  // No nested processes hehe :)
+	proc->list_item.list = nullptr;  // No nested processes hehe :)
 	proc->threads_count = 1;
 	strcpy(proc->name, name);
 	proc->suspend = suspend;
@@ -96,23 +102,24 @@ void create_process(void* entry_point, char* name, bool suspend, bool is_kernel)
  * @brief Переключение задач
  */
 void switch_task(void){
-	if (multi_task){
-		/* Disable all interrupts */
-		asm volatile ("pushf; cli");
+	if (!multi_task)
+		return;
+	
+	/* Disable all interrupts */
+	asm volatile ("pushf; cli");
 
-		/* Remember current thread state */
-		asm volatile ("mov %%esp, %0":"=a"(current_thread->esp));
+	/* Remember current thread state */
+	asm volatile ("mov %%esp, %0":"=a"(current_thread->esp));
 
-		current_thread = (thread_t*) current_thread->list_item.next;		
+	current_thread = (thread_t*) current_thread->list_item.next;		
 
-		/* Set current page directory */
-		asm volatile ("mov %0, %%cr3"::"a"(current_proc->page_dir));
-		/* Set stack */
-		asm volatile ("mov %0, %%esp"::"a"(current_thread->esp));
+	/* Set current page directory */
+	asm volatile ("mov %0, %%cr3"::"a"(current_proc->page_dir));
+	/* Set stack */
+	asm volatile ("mov %0, %%esp"::"a"(current_thread->esp));
 
-		/* Enable interrupts */
-		asm volatile ("popf");
-	}
+	/* Enable interrupts */
+	asm volatile ("popf; sti");
 }
 
  /**
@@ -120,8 +127,7 @@ void switch_task(void){
  *
  * @return process_t* - Текущий обработчик задачи
  */
-process_t* get_current_proc(void)
-{
+process_t* get_current_proc(void) {
 	return current_proc;
 }
 
@@ -138,7 +144,7 @@ process_t* get_current_proc(void)
  */
 thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 						bool kernel, bool suspend){
-	void*	stack = NULL;
+	void*	stack = nullptr;
 	uint32_t	eflags;
 
 	/* Disable all interrupts */
@@ -152,7 +158,7 @@ thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 
 	/* Initialization of thread  */
 	tmp_thread->id = next_thread_id++;
-	tmp_thread->list_item.list = NULL;
+	tmp_thread->list_item.list = nullptr;
 	tmp_thread->process = proc;
 	tmp_thread->stack_size = stack_size;
 	tmp_thread->suspend = suspend;/* */

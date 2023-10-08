@@ -148,7 +148,6 @@ void window_destroy(Window_t* win) {
 
     kfree(win);
 
-    win = 0;
     qemu_log("Ok");
 }
 
@@ -193,8 +192,8 @@ void window_send_signal(Window_t* window, WindowSignal_t signal, void* data) {
                 coords->y,
                 wgt->x,
                 wgt->y,
-                wgt->width,
-                wgt->height
+				(ssize_t)wgt->width,
+				(ssize_t)wgt->height
             )) {
                 widget_notify(window, wgt, WIDGET_CLICK, coords);
                 qemu_log("Notified for click");
