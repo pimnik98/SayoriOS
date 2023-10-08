@@ -1,11 +1,10 @@
+#include <kernel.h>
 #include "gui/widget.h"
 #include "gui/widget_label.h"
 #include "gui/basics.h"
 #include "io/port_io.h"
 
-void destroy_widget_label(Widget_t* widget);
-
-void widget_label_renderer(struct Widget* this, struct Window* container) {
+void widget_label_renderer(struct Widget* this, __attribute__((unused)) struct Window* container) {
     Widget_Label_t* this_object = (Widget_Label_t*)(this->custom_widget_data);
     
     // uint32_t color = getColorFont();

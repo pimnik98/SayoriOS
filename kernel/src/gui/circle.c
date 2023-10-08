@@ -4,7 +4,7 @@ void draw_circle(int32_t xc, int32_t yc, int32_t radius, uint32_t color) {
     int32_t x = 0;
     int32_t y = radius;
     int32_t delta = 1 - 2 * radius;
-    int32_t error = 0;
+    int32_t error;
 
     while (y >= 0) {
         set_pixel(xc + x, yc + y, color);

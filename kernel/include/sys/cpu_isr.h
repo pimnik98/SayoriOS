@@ -24,7 +24,7 @@
 #define			EXT_BIT			(1 << 0)
 #define			IDT_BIT			(1 << 1)
 #define			TI_BIT			(1 << 2)
-#define			ERR_CODE_MASK	0xFFF8;
+#define			ERR_CODE_MASK	0xFFF8
 
 #include		"common.h"
 #include		"sys/isr.h"
@@ -45,7 +45,7 @@ void double_error(registers_t regs);
 /* INT 0Ah - invalid TSS */
 void invalid_tss(registers_t regs);
 
-/* INT 0Bh - Segment is't available */
+/* INT 0Bh - Segment isn't available */
 void segment_is_not_available(registers_t regs);
 
 /* INT 0Ch - Stack error */
@@ -62,4 +62,5 @@ void fpu_fault(registers_t regs);
 
 uint32_t extern read_cr2();
 
+void bsod_screen(registers_t regs, char* title, char* msg, uint32_t code);
 #endif

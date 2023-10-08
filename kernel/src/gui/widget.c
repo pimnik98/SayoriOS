@@ -1,3 +1,4 @@
+#include <kernel.h>
 #include "gui/widget.h"
 #include "io/port_io.h"
 
@@ -19,7 +20,6 @@ void destroy_widget(Widget_t* widget) {
     qemu_log("Destroying widget at %x: W: %d; H: %d", widget, widget->width, widget->height);
     widget->destroyer(widget);
     kfree(widget);
-    widget = 0;
 }
 
 void widget_notify(struct Window* window, struct Widget* widget, WidgetNotifyCode_t code, void* data) {

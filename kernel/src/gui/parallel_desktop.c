@@ -50,8 +50,8 @@ void parallel_desktop_start() {
 	size_t frames = 0;
 
     qemu_log("Reached init...");    
-    mouse_set_show_system_cursor(false);
     set_cursor_enabled(false);
+    keyboardctl(KEYBOARD_ECHO, false);
 
     log_window_manager_state();
     
@@ -62,8 +62,8 @@ void parallel_desktop_start() {
     Window_t* root_window = window_new(0);
     root_window->x = 0;
     root_window->y = 0;
-    root_window->width = getWidthScreen();
-    root_window->height = getHeightScreen();
+    root_window->width = getScreenWidth();
+    root_window->height = getScreenHeight();
     root_window->with_title_bar = false;
     root_window->closable = false;
     root_window->canvas_bgcolor = 0x404040;
@@ -86,8 +86,8 @@ void parallel_desktop_start() {
     Window_t* taskbar = window_new("titlebar");
     taskbar->x = 0;
     taskbar->height = 30;
-    taskbar->y = getHeightScreen() - taskbar->height;
-    taskbar->width = getWidthScreen();
+    taskbar->y = getScreenHeight() - taskbar->height;
+    taskbar->width = getScreenWidth();
 
     taskbar->with_title_bar = false;
     taskbar->closable = false;
@@ -189,11 +189,12 @@ void parallel_desktop_start() {
     qemu_log("Destroyed root_window");
 
     set_cursor_enabled(true);
-    mouse_set_show_system_cursor(true);
-
+    
     qemu_log("Exit successfully!!!");
 
     print_allocated_map();
     tty_printf("Memory allocation info written to COM1 (debug) port!!!");
     log_window_manager_state();
+
+    keyboardctl(KEYBOARD_ECHO, true);
 }

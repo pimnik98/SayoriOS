@@ -181,4 +181,12 @@ extern void irq15(void);
 
 extern void isr80(void);
 
+void idt_set_gate(uint8_t, uint32_t, uint16_t, uint8_t);
+void init_gdt(void);
+void init_idt(void);
+
+void write_tss(int32_t num, uint32_t ss0, uint32_t esp0);
+
+void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran);
+
 #endif

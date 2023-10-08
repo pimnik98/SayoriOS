@@ -41,21 +41,14 @@ __pre_init:
 		fninit
 		fldcw (conword)
 
-		# enable SSE
-		mov %cr0, %eax
-		and $~0x04, %al
-		or $0x22, %al
-		mov %eax, %cr0
-		
-		mov %cr4, %eax
-		or $0x600, %ax
-		mov %eax, %cr4
+		call sse_enable
 
 		mov $stack_top, %esp
 
 		push	%esp
 		push	%ebx
 
+		xor %ebp, %ebp
 		call	kernel
 
 		hlt

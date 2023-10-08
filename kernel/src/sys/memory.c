@@ -2,7 +2,7 @@
  * @file sys/memory.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Менеджер памяти
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -10,8 +10,9 @@
 #include		"io/ports.h"
 #include		"lib/string.h"
 #include		"lib/math.h"
+#include		"sys/timer.h"
 
-#define			KERNEL_MEMORY_START	((void*) KERNEL_BASE)
+#define			KERNEL_MEMORY_START	((void*)KERNEL_BASE)
 
 extern size_t KERNEL_BASE_pos;
 extern size_t KERNEL_END_pos;
@@ -30,13 +31,17 @@ size_t phys_memory_size = 0;					///< Всего ОЗУ
 size_t free_pages_count = 0;					///< Количество свободных страниц
 physaddr_t free_phys_memory_pointer = -1;		///< Свободная ячейка ОЗУ
 uint32_t kernel_stack = 0;						///< Точка входа
-uint32_t memory_size = 0;						///< ...
+size_t memory_size = 0;						///< ...
 heap_t kheap;									///< ...
 mutex_t phys_memory_mutex;						///< ...
+size_t mmap_length = 0; 
 
 /**
  * @brief Переключение режима страничной памяти
  */
+
+// FIXME: Rewrite memory manager ASAP
+// FIXME: Dynamically allocate pages (not on init) for heap.
 
 void switch_page_mode(void){
 	qemu_log("Reached switch page mode");
@@ -74,7 +79,7 @@ void switch_page_mode(void){
 		// !!!!!!!!
 
 		frame = vaddr >> PAGE_OFFSET_BITS;  // The address
-		table_idx = frame >> PAGE_TABLE_INDEX_BITS;  // Page directory entry (contain table)
+		table_idx = frame >> PAGE_TABLE_INDEX_BITS;  // Page directory entry (contains table)
 		page_idx = frame & PAGE_TABLE_INDEX_MASK;  // Page
 
 		// Set table flags 
@@ -116,15 +121,19 @@ void switch_page_mode(void){
 void check_memory_map(memory_map_entry_t* mmap_addr, uint32_t length){
 	int i = 0;
 	/* Entries number in memory map structure */
+	mmap_length = length;
 	size_t n = length / sizeof(memory_map_entry_t);
 
 	/* Set pointer to memory map */
 	mentry = mmap_addr;
 	qemu_log("[PMM] Map:");
 	for (i = 0; i < n; i++){
-		qemu_log("%s [Address: %x | Length: %x]", ((mentry + i)->type == 1?"Available":"Reserved"),
-				 (mentry + i)->addr_low, (mentry + i)->len_low);
-		phys_memory_size += (mentry + i)->len_low;
+		memory_map_entry_t entry = mentry[i];
+
+		qemu_log("%s [Address: %x | Length: %x] <%d>", (entry.type == 1?"Available":"Reserved"),
+				 entry.addr_low, entry.len_low, entry.type);
+
+		phys_memory_size += entry.len_low;
 	}
 	qemu_log("RAM: %d MB | %d KB | %d B", phys_memory_size/(1024*1024), phys_memory_size/1024, phys_memory_size);
 }
@@ -135,7 +144,7 @@ void check_memory_map(memory_map_entry_t* mmap_addr, uint32_t length){
  * @param physaddr_t addr - Карта
  */
 
-void temp_map_page(physaddr_t addr){
+static inline void temp_map_page(physaddr_t addr){
 	uint32_t table_idx = TEMP_PAGE >> 22;
 	uint32_t page_idx = (TEMP_PAGE >> 12) & 0x3FF;
 
@@ -332,7 +341,7 @@ physaddr_t alloc_phys_pages(size_t count){
 				/* Get previous block*/
 				tmp_block = get_free_block(prev);
 
-				/* For next block - next is next for allocated block */
+				/* For next block - is next for allocated block */
 				tmp_block->next = next;
 
 				/* If it was penultimate free block */
@@ -395,12 +404,12 @@ void init_memory_manager(uint32_t stack){
 	[LOG] (kernel/src/sys/cpu_isr.c:page_fault:253) READ ONLY, 
 	[LOG] (kernel/src/sys/cpu_isr.c:page_fault:268) at address 0x5018B8 ---\
 	                                                                       |
-	Update: When we set KERNEL_PAGE_DIRECTORY to 0x400000  <-----------/-------/
+	Update: When we set KERNEL_PAGE_DIRECTORY to 0x400000  <-------/-------/
 	the address of first #PF (Page Fault) changes to 0x4018B8 <---/
 	*/
 
 	// Possible solution: store page directory and page table in variables,
-	// not nowhere in memory address
+	// not somewhere in memory address
 	// Like in SynapseOS: uint32_t __attribute__((aligned(PAGE_SIZE))) kernel_page_dir[1024] = {0};
 	//                    uint32_t __attribute__((aligned(PAGE_SIZE))) kernel_page_table[1024] = {0};
 
@@ -452,34 +461,61 @@ void init_memory_manager(uint32_t stack){
 	}
 	
 	qemu_log("Memory size is: %d bytes.", memory_size);
+	// TODO: Zeraora wants to fix it.
+
+	// 1. Just map info (without data)
+	// 2. Dynamically allocate pages when kmalloc is called.
+	// 3. If we have next address alllcated, do not allocate it.
+	
+	// qemu_log("HeapV: %x; HeapP: %x", KERNEL_HEAP_BASE, KERNEL_MEMORY_START + KERNEL_SIZE + KERNEL_HEAP_BLOCK_INFO_SIZE);
+
+	// FIXME: This function is a bottleneck. It takes ~900 ms to map pages.
+	// map_pages() is already optimized.
+	//
+	// TODO: We need use that method I provided.
+
 	/* Map kernel heap memory */
 	map_pages(KERNEL_PAGE_DIRECTORY,
 			  (virtual_addr_t)KERNEL_HEAP_BASE,
-			  (physaddr_t) (KERNEL_MEMORY_START + KERNEL_SIZE + KERNEL_HEAP_BLOCK_INFO_SIZE),
-			  (KERNEL_HEAP_SIZE >> PAGE_OFFSET_BITS),
-			  0x07);
+			  (physaddr_t) (KERNEL_BASE + KERNEL_SIZE + KERNEL_HEAP_BLOCK_INFO_SIZE),
+			  (REAL_HEAP_SIZE >> PAGE_OFFSET_BITS),
+			  (PAGE_PRESENT | PAGE_WRITEABLE));
+
+	/*
+	for(int i = 0; i < (REAL_HEAP_SIZE >> PAGE_OFFSET_BITS); i+=128) {
+		map_pages(
+			KERNEL_PAGE_DIRECTORY,
+			KERNEL_HEAP_BASE + (i * 0x1000),
+			alloc_phys_pages(128),
+			128,
+			PAGE_PRESENT | PAGE_WRITEABLE
+		);
+	}
+	*/
+
 	qemu_log("Mapped kernel heap memory");
 
 	/* Map memory blocks info structure */
 	map_pages(KERNEL_PAGE_DIRECTORY,
-			  (virtual_addr_t)(KERNEL_MEMORY_START + KERNEL_SIZE),
-			  (physaddr_t) (KERNEL_MEMORY_START + KERNEL_SIZE),
+			  (virtual_addr_t)(KERNEL_BASE + KERNEL_SIZE),
+			  (physaddr_t) (KERNEL_BASE + KERNEL_SIZE),
 			  (KERNEL_HEAP_BLOCK_INFO_SIZE >> PAGE_OFFSET_BITS),
 			  (PAGE_PRESENT | PAGE_WRITEABLE));
+
 	qemu_log("Mapped memory blocks info structure");
 
-	kheap.blocks = (memory_block_t*) (KERNEL_MEMORY_START + KERNEL_SIZE);
+	kheap.blocks = (memory_block_t*) (KERNEL_BASE + KERNEL_SIZE);
 
+	qemu_log("Memsetting heap blocks with size: %d", KERNEL_HEAP_BLOCK_INFO_SIZE);
 	memset(kheap.blocks, 0, KERNEL_HEAP_BLOCK_INFO_SIZE);
 	qemu_log("Zeroed heap blocks");
 
 	kheap.count = 0;
 	kheap.start = KERNEL_HEAP_BASE;
 	kheap.size = KERNEL_HEAP_SIZE;
-	kheap.end = kheap.start + kheap.size;
-	qemu_log("Okay");
-
-	// dump_page_table();
+	kheap.end = (void*)((uint32_t)kheap.start + kheap.size);
+	
+	qemu_log("Heap size: %d bytes.", REAL_HEAP_SIZE);
 }
 
 void dump_page_directory() {
@@ -533,7 +569,7 @@ uint8_t map_pages(physaddr_t page_dir, virtual_addr_t vaddr, physaddr_t paddr, s
 	/* Pointer for access to temporary page */
 	physaddr_t* tmp_page = (physaddr_t*) TEMP_PAGE;
 	physaddr_t table;
-	uint32_t table_flags;
+	uint32_t table_flags = PAGE_PRESENT | PAGE_WRITEABLE | PAGE_USER;
 
 	/* Create pages in cycle */
 	for(; count; count--){
@@ -546,20 +582,25 @@ uint8_t map_pages(physaddr_t page_dir, virtual_addr_t vaddr, physaddr_t paddr, s
 		
 		if ( !(table & PAGE_PRESENT) ){
 			physaddr_t addr = alloc_phys_pages(1);
-			if(addr == -1) return FALSE;
+			if(addr == -1)
+				return FALSE;
 		
 			temp_map_page(addr);
 			memset(tmp_page, 0, PAGE_SIZE);
 			temp_map_page(page_dir);
-			table_flags = PAGE_PRESENT | PAGE_WRITEABLE | PAGE_USER;
+			
 			tmp_page[table_idx] = (addr & ~PAGE_OFFSET_MASK) | table_flags;
 			table = addr;
 		}
+
 		table &= ~PAGE_OFFSET_MASK;
 		temp_map_page(table);
+		
 		// qemu_log("The Virtual address: %x is mapepd to physical: %x (will write %x)", vaddr, paddr, (paddr & ~PAGE_OFFSET_MASK) | flags);
+		
 		tmp_page[page_idx] = (paddr & ~PAGE_OFFSET_MASK) | flags;
 		asm volatile ("invlpg (,%0,)"::"a"(vaddr));
+
 		vaddr += PAGE_SIZE;
 		paddr += PAGE_SIZE;
 	}
@@ -598,7 +639,7 @@ uint8_t unmap_pages(physaddr_t page_dir, virtual_addr_t vaddr, size_t count){
  *
  * @return uint8_t - ???
  */
-static inline uint8_t is_blocks_overlapped(void* base1,size_t size1,void* base2,size_t size2){
+static inline uint8_t is_blocks_overlapped(size_t base1, size_t size1, size_t base2, size_t size2){
 	return (( base1 >= base2 ) && (base1 < base2 + size2)) ||
 		   (( base2 >= base1 ) && (base2 < base1 + size1));
 }
@@ -619,9 +660,9 @@ void* kmalloc_common(size_t size, bool align){
 
 	// qemu_log("Checking overlapped blocks");
 	/* Check overlapped blocks */
-	for (i = kheap.count - 1; i >= 0 ; i--){
-		if (is_blocks_overlapped(kheap.blocks[i].base,kheap.blocks[i].size,vaddr,size)){
-			vaddr = kheap.blocks[i].base + kheap.blocks[i].size;
+	for (i = (int)kheap.count - 1; i >= 0 ; i--){
+		if (is_blocks_overlapped((size_t)kheap.blocks[i].base, kheap.blocks[i].size, (size_t)vaddr, size)){
+			vaddr = (void*)((size_t)kheap.blocks[i].base + kheap.blocks[i].size);
 		}
 	}
 
@@ -636,7 +677,7 @@ void* kmalloc_common(size_t size, bool align){
 	}
 
 	// qemu_log("Shifting array of blocks");
-	for (i = kheap.count - 1; i >= 0; i--){
+	for (i = (int)kheap.count - 1; i >= 0; i--){
 		kheap.blocks[i+1].base = kheap.blocks[i].base;
 		kheap.blocks[i+1].size = kheap.blocks[i].size;
 	}
@@ -649,17 +690,6 @@ void* kmalloc_common(size_t size, bool align){
 	mutex_release(&(kheap.heap_mutex));
 
 	return vaddr;
-}
-
-/**
- * @brief Выделение памяти
- * 
- * @param size_t size - Размер
- *
- * @return void* - ???
- */
-void* kmalloc(size_t size){
-	return kmalloc_common(size, false);
 }
 
 /**
@@ -687,7 +717,7 @@ void kfree(void* vaddr){
 	mutex_get(&thismutex, true);
 
 	/* Return in invalid pointer case */
-	if (vaddr == NULL) return;
+	if (vaddr == nullptr) return;
 
 	/* Find block info by virtual address */
 	for (i = 0; i < kheap.count; i++){
@@ -778,24 +808,14 @@ physaddr_t get_kernel_dir(void){
  * 
  * @return size_t - Кол-во установленной ОЗУ
  */
-size_t getInstalledRam(){
+size_t getInstalledRam() {
 	return phys_memory_size;
 }
 
-/**
- * @brief Выделение памяти
- */
-void* kcalloc(size_t count, size_t size) {
-	void* a = kmalloc(count * size);
-	memset(a, 0, count * size);
-	return a;
-}
-
 size_t virt2phys(physaddr_t page_directory, virtual_addr_t virtual_address) {
-	physaddr_t* tmp_page = (physaddr_t*) TEMP_PAGE;
+	physaddr_t* tmp_page = (physaddr_t*)TEMP_PAGE;
 	uint32_t table_idx = (uint32_t) virtual_address >> 22;
 	uint32_t page_idx = ((uint32_t) virtual_address >> PAGE_OFFSET_BITS) & PAGE_TABLE_INDEX_MASK;
-
 
 	temp_map_page(page_directory);
 
@@ -807,7 +827,32 @@ size_t virt2phys(physaddr_t page_directory, virtual_addr_t virtual_address) {
 
 	size_t paddr = tmp_page[page_idx] & ~0x3ff;
 
-	paddr = ((paddr >> 12) << 12) + (virtual_address & 0xfff);
+	paddr = (paddr & 0xfffff000) + (virtual_address & 0xfff);
 
 	return paddr;
+}
+
+bool is_suitable_phys_region(physaddr_t address) {
+	int i = 0;
+	/* Entries number in memory map structure */
+	size_t n = mmap_length / sizeof(memory_map_entry_t);
+
+	for(; i < n; i++) {
+		if(address >= mentry[i].addr_low
+		   && address <= mentry[i].addr_low + mentry[i].len_low
+		   && mentry[i].addr_low != 0
+		   && mentry[i].type == 1) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void* kcalloc(size_t count, size_t size) {
+	void* ptr = kmalloc(count * size);
+	
+	memset(ptr, 0, count * size);
+
+	return ptr;
 }

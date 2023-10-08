@@ -2,11 +2,12 @@
  * @file sys/system.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Дополнительные системные функции
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include <kernel.h>
+#include <io/status_loggers.h>
 
 // FIXME: These variables gets rewritten to address 0 when
 //        user types 'cd /' in shell
@@ -32,7 +33,7 @@ char* getSysPath(){
 void setSysPath(char* path){
     kfree(syspath);
     
-    syspath = kmalloc(sizeof(char) * (strlen(path) + 1));
+    syspath = (char*)kmalloc(sizeof(char) * (strlen(path) + 1));
     
     memset(syspath,0,strlen(path)+1);
     memcpy(syspath,path,strlen(path));
@@ -81,13 +82,13 @@ char* getUserName(){
  *
  * @return char* - Имя пользователя
  */
-char* setUserName(char* new){
+char* setUserName(char* new_name){
     kfree(whoami);
     
-    whoami = kmalloc(sizeof(char) * (strlen(new) + 1));
+    whoami = (char*)kmalloc(sizeof(char) * (strlen(new_name) + 1));
     
-    memset(whoami, 0, strlen(new)+1);
-    memcpy(whoami, new, strlen(new));
+    memset(whoami, 0, strlen(new_name)+1);
+    memcpy(whoami, new_name, strlen(new_name));
     
     return whoami;
 }
@@ -108,18 +109,18 @@ char* getHostname(){
  *
  * @return char* - Имя устройства
  */
-char* setHostname(char* new){
-    if (strlen(new) < 2){
-        tty_printf("[ОШИБКА] Имя устройства должно быть больше 2 символов");
+char* setHostname(char* new_name){
+    if (strlen(new_name) < 2){
+        tty_error("[ОШИБКА] Имя устройства должно быть больше 2 символов");
         return hostname;
     }
     
     kfree(hostname);
 
-    hostname = kmalloc(sizeof(char)*(strlen(new)+1));
+    hostname = (char*)kmalloc(sizeof(char)*(strlen(new_name)+1));
     
-    memset(hostname,0,strlen(new)+1);
-    memcpy(hostname,new,strlen(new));
+    memset(hostname,0,strlen(new_name)+1);
+    memcpy(hostname, new_name, strlen(new_name));
     
     // hostname[strlen(new)-1] = 0;
     return hostname;

@@ -1,12 +1,19 @@
 /**
  * @file lib/string.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru), Drew >_ (pikachu_andrey@vk.com)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Функции для работы со строками
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023 
  */
 #include <kernel.h>
+
+bool isalnum(char c){
+	return  (c >= '0' && c <= '9') ||
+			(c >= 'a' && c <= 'z') ||
+			(c >= 'A' && c <= 'Z') ;
+}
+
 /**
  * @brief Проверяет, является ли символ формата UTF-8
  *
@@ -74,6 +81,10 @@ uint32_t UTFConvert(char c,char c1){
  * @return size_t - Длину символов
  */
 size_t strlen(const char *str){
+	ON_NULLPTR(str, {
+		return 0;
+	});
+
     size_t len = 0;
     while (str[len] != 0){
         len++;
@@ -98,6 +109,15 @@ size_t mb_strlen(const char *str){
     return len;
 }
 
+// Increments a counter until encounters char `find`
+size_t struntil(const char* str, const char find) {
+    int len = 0;
+
+    while(str[len++] != find);
+
+    return len;
+}
+
 /**
  * @brief Копирование непересекающихся массивов
  *
@@ -105,38 +125,73 @@ size_t mb_strlen(const char *str){
  * @param void* source - Указатель на массив источник копируемых данных.
  * @param size_t n - Количество байт для копирования
  */
-void *memcpy(void *destination, const void *source, size_t n){
-    char *tmp_dest = (char *)destination;
-    const char *tmp_src = (const char *)source;
 
-    while (n--) {
+#if USE_SSE
+void sse_memcpy(void* restrict dest, const void* restrict src, size_t size) {
+    size_t i;
+
+    size_t alignedd = (size_t)dest & ~0xF;
+    size_t aligneds = (size_t)src & ~0xF;
+
+    qemu_log("Difference dest: %x", (size_t)dest - alignedd);
+    qemu_log("Difference src: %x", (size_t)src - aligneds);
+
+    __m128i* d = (__m128i*)dest;
+    const __m128i* s = (__m128i*)src;
+    const size_t num_elems = size / sizeof(__m128i);
+
+    for (i = 0; i < num_elems; i++) {
+        _mm_stream_si128(d, _mm_load_si128(s));
+        d++;
+        s++;
+    }
+
+    // Copy any remaining bytes using the regular memcpy
+    size_t remaining_bytes = size % sizeof(__m128i);
+    if (remaining_bytes > 0) {
+        const char* s_char = (const char*)s;
+        char* d_char = (char*)d;
+        for (i = 0; i < remaining_bytes; i++) {
+            *d_char = *s_char;
+            d_char++;
+            s_char++;
+        }
+    }
+}
+#endif
+
+#define USE_ENCHANCED_MEMCPY 0
+
+#if USE_ENCHANCED_MEMCPY == 1
+void memcpy(void *restrict destination, const void *restrict source, size_t n){
+    size_t *tmp_dest = (size_t *)destination;
+    size_t *tmp_src = (size_t *)source;
+    size_t len = n / sizeof(size_t);
+    size_t i = 0;
+    size_t tail = n & (sizeof(size_t) - 1);
+
+    for (; i < len; i++) {
         *tmp_dest++ = *tmp_src++;
     }
 
-    return destination;
-}
-
-void *memcpy2(void *destination, const void *source, size_t n){
-    short *tmp_dest = (short*)destination;
-    const short *tmp_src = (const short*)source;
-
-    while (n--) {
-        *tmp_dest++ = *tmp_src++;
+    if(tail) {
+        char *dest = (char *)destination;
+        const char *src = (const char *)source;
+    
+        for(i = n - tail; i < n; i++) {
+            dest[i] = src[i];
+        }
     }
-
-    return destination;
 }
+#else
+void memcpy(void* destination, const void* source, size_t n) {
+    char *dest = (char *)destination;
+    const char *src = (const char*)source;
 
-void *memcpy4(void *destination, const void *source, size_t n){
-    int *tmp_dest = (int*)destination;
-    const int *tmp_src = (const int*)source;
-
-    while (n--) {
-        *tmp_dest++ = *tmp_src++;
-    }
-
-    return destination;
+    while(n--)
+        *dest++ = *src++;
 }
+#endif
 
 /**
  * @brief Заполнение массива указанными символами
@@ -145,26 +200,17 @@ void *memcpy4(void *destination, const void *source, size_t n){
  * @param void* value - Код символа для заполнения
  * @param size_t size - Размер заполняемой части массива в байтах
  */
-/*
-void memset(void* ptr, uint8_t value, size_t size) {
-  uint8_t* b_ptr = (uint8_t*) ptr;
-  int i = 0;
-
-  for (i = 0; i < size; i++)
-    b_ptr[i] = value;
+void* memset(void* ptr, int value, size_t num) {
+    uint8_t* p = (uint8_t*)ptr;
+    unsigned char val = (unsigned char)value;
+ 
+    for (size_t i = 0; i < num; i++) {
+        p[i] = val;
+    }
+ 
+    return ptr;
 }
-*/
 
-void* memset(void* ptr, uint8_t value, size_t count) {
-  uint8_t* b_ptr = (uint8_t*)ptr;
-
-  while(count--)
-    // *b_ptr++ = value; // +2 Assembly instructions
-    // b_ptr[count] = (uint8_t)value; // +1 Assembly instruction
-    b_ptr[count] = value; // Total 4 assembly instructions
-
-  return ptr;
-}
 /**
  * @brief Копирование массивов (в том числе пересекающихся)
  *
@@ -211,6 +257,7 @@ int strcmp(const char *s1, const char *s2) {
         ++s1;
         ++s2;
     }
+
     return (*s1 - *s2);
 }
 
@@ -307,7 +354,7 @@ char *strpbrk(const char *s, const char *accept){
         }
         ++s;
     }
-    return NULL;
+    return nullptr;
 }
 
 /**
@@ -362,13 +409,13 @@ int32_t strncmp(const char *s1, const char *s2, size_t num){
  * @param char* s - Указатель на разбиваемую строку
  * @param char* delim - Указатель на строку, содержащую набор символов разделителей
  *
- * @return int - NULL – если строку str невозможно разделить на части или указатель на первый символ выделенной части строки.
+ * @return int - nullptr – если строку str невозможно разделить на части или указатель на первый символ выделенной части строки.
  */
 char *strtok(char *s, const char *delim){
-    static char *olds = NULL;
+    static char *olds = nullptr;
     char *token;
 
-    if (s == NULL){
+    if (s == nullptr){
         s = olds;
     }
 
@@ -376,12 +423,12 @@ char *strtok(char *s, const char *delim){
 
     if (*s == '\0'){
         olds = s;
-        return NULL;
+        return nullptr;
     }
 
     token = s;
     s = strpbrk(token, delim);
-    if (s == NULL){
+    if (s == nullptr){
         olds = token;
     }
     else{
@@ -441,9 +488,9 @@ void substr(char *dest, const char *source, int from, int length){
  * @param char* _s - Указатель на строку, в которой будет осуществляться поиск.
  * @param int _c - Код искомого символа
  *
- * @return char* - Указатель на искомый символ, если он найден в строке str, иначе NULL.
+ * @return char* - Указатель на искомый символ, если он найден в строке str, иначе nullptr.
  */
-char *strchr(const char *_s, int _c){
+char *strchr(const char *_s, char _c){
     while (*_s != (char)_c){
         if (!*_s++){
             return 0;
@@ -523,7 +570,7 @@ uint32_t atoi(char s[]){
 void* calloc(size_t nmemb, size_t size) {
 	void* ptr = kmalloc(nmemb * size);
 	if (!ptr) {
-		return NULL;
+		return nullptr;
 	}
 	memset(ptr, 0, nmemb * size);
 	return ptr;
@@ -580,6 +627,50 @@ int32_t itoa(int32_t n, char *buffer) {
     return strlen(buffer);
 }
 
+// Unsigned int to charptr
+size_t itou(size_t n, char *buffer) {
+    char const digits[] = "0123456789";
+    char* p = buffer;
+
+    size_t s = n;
+
+    do {
+        ++p;
+        s = s / 10;
+    } while(s);
+
+    *p = '\0';
+
+    do {
+        *--p = digits[n % 10];
+        n = n / 10;
+    } while(n);
+
+    return strlen(buffer);
+}
+
+size_t itoh(size_t i, char *buffer) {
+	const unsigned char hex[16] = "0123456789ABCDEF";
+    uint32_t n, d = 0x10000000;
+    char* p = buffer;
+
+    while ((i / d == 0) && (d >= 0x10)) {
+        d /= 0x10;
+    }
+    n = i;
+
+    while (d >= 0xF) {
+         *p++ = hex[n / d];
+        n = n % d;
+        d /= 0x10;
+    }
+
+	*p++ = hex[n];
+    *p = 0;
+
+    return strlen(buffer);
+}
+
 
 int dcmpstr( const char *s1, const char *s2 )
 {
@@ -590,15 +681,21 @@ int dcmpstr( const char *s1, const char *s2 )
 }
 
 char digit_count(size_t num) {
-    char _ = 0;
+    if(num == 0)
+        return 1;
+    
+    char count = 0;
     while(num > 0) {
         num /= 10;
-        _++;
+        count++;
     }
-    return _;
+    return count;
 }
 
 char hex_count(size_t num) {
+    if(num == 0)
+        return 1;
+    
     char _ = 0;
     while(num > 0) {
         num /= 16;
@@ -609,4 +706,36 @@ char hex_count(size_t num) {
 
 bool isdigit(char a) {
     return (a >= '0' && a <= '9');
+}
+
+bool isnumberstr(char* a) {
+    while(*a) {
+        if(!isdigit(*a)) {
+            qemu_log("%c is not a digit!", *a);
+            return false;
+        }
+        
+        a++;
+    }
+
+    return true;
+}
+
+/**
+ * @brief Посчитать количество символов `character` в строке `string` 
+ *
+ * @param const char* s1 - Строка
+ * @param char character - Символ
+ *
+ * @return size_t - количество найденных символов в строке
+ */
+size_t strcount(const char* string, char character) {
+    size_t count = 0;
+
+    while(*string++) {
+        if(*string == character)
+            count++;
+    }
+
+    return count;
 }

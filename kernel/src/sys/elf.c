@@ -1,8 +1,8 @@
 /**
  * @file sys/elf.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru), Drew >_ (pikachu_andrey@vk.com)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Загрузщик ELF
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-20
  * @copyright Copyright SayoriOS Team (c) 2022-2023
 */
@@ -12,6 +12,7 @@
 #include <lib/stdio.h>
 #include <lib/math.h>
 #include <elf/elf.h>
+#include <sys/trigger.h>
 
 uint32_t vmm_allocated[4096];
 uint32_t vmm_mapped[4096];
@@ -23,10 +24,9 @@ elf_sections_t* load_elf(const char* name){
 
 	if (file_elf->err) {
 		qemu_log("Failed to open ELF file: %s / %d", name, file_elf->err);
-		return NULL;
+		return nullptr;
 	}
 
-	size_t sz = 0;
 	/* Allocate ELF file structure */
 	elf_sections_t* elf = (elf_sections_t*) kmalloc(sizeof(elf_sections_t));
 	memset(elf, 0, sizeof(elf_sections_t));
@@ -35,7 +35,7 @@ elf_sections_t* load_elf(const char* name){
 	elf->elf_header = (Elf32_Ehdr*) kmalloc(sizeof(Elf32_Ehdr));
 	memset(elf->elf_header, 0, sizeof(Elf32_Ehdr));
 
-	sz = fread_c(file_elf, 1, sizeof(Elf32_Ehdr), elf->elf_header);
+	fread(file_elf, 1, sizeof(Elf32_Ehdr), elf->elf_header);
 
 	/* Read program header */
 	Elf32_Half proc_entries = elf->elf_header->e_phnum;
@@ -44,9 +44,9 @@ elf_sections_t* load_elf(const char* name){
 	elf->p_header = (Elf32_Phdr*)kmalloc(proc_size*proc_entries);
 	memset(elf->p_header, 0, proc_size*proc_entries);
 
-	fseek(file_elf, elf->elf_header->e_phoff, SEEK_SET);
+	fseek(file_elf, (ssize_t)elf->elf_header->e_phoff, SEEK_SET);
 
-	sz = fread_c(file_elf, proc_entries, proc_size, elf->p_header);
+	fread(file_elf, proc_entries, proc_size, elf->p_header);
 
 	/* Read ELF sections */
 	Elf32_Half sec_entries = elf->elf_header->e_shnum;
@@ -54,13 +54,11 @@ elf_sections_t* load_elf(const char* name){
 	elf->section = (Elf32_Shdr*) kmalloc(sizeof(Elf32_Shdr)*sec_entries);
 	memset(elf->section, 0, sizeof(Elf32_Shdr)*sec_entries);
 
-	fseek(file_elf, elf->elf_header->e_shoff, SEEK_SET);
+	fseek(file_elf, (ssize_t)elf->elf_header->e_shoff, SEEK_SET);
 
-	sz = fread_c(file_elf, sec_entries, sizeof(Elf32_Shdr), elf->section);
+	fread(file_elf, sec_entries, sizeof(Elf32_Shdr), elf->section);
 
 	elf->file = file_elf;
-
-	(void)sz;
 
 	return elf;
 }
@@ -68,39 +66,42 @@ elf_sections_t* load_elf(const char* name){
 int32_t run_elf_file(const char *name, int32_t argc, char* eargv[]) {
     if (!vfs_exists(name)) {
         qemu_log("run_elf_file: elf [%s] does not exist", name);
+		CallTrigger(0x0006,(void*)name,(void*)1,0,0,0);
         return -1;
     }
 
     elf_sections_t* elf_file = load_elf(name);
-    if (elf_file == NULL) {
+    if (elf_file == nullptr) {
 		qemu_log("[DBG] Error opening file %s\n", name);
+		CallTrigger(0x0006,(void*)name,(void*)2,0,0,0);
         return -1;
     }
-
+	CallTrigger(0x0004,(void*)name,(void*)0,0,0,0);
 	// char* data = kmalloc(elf_file->file->size);
 	// fseek(elf_file->file, 0, SEEK_SET);
 
-	// fread_c(elf_file->file, elf_file->file->size, 1, data);
+	// fread(elf_file->file, elf_file->file->size, 1, data);
 
-	// tty_printf("Ident: %s\n", elf_file->elf_header->e_ident);
-	// tty_printf("Type: %x\n", elf_file->elf_header->e_type);
-	// tty_printf("Machine: %x\n", elf_file->elf_header->e_mashine);
-	// tty_printf("Version: %x\n", elf_file->elf_header->e_version);
-	// tty_printf("Entry point: %x\n", elf_file->elf_header->e_entry);
-	// tty_printf("Program Header Offset: %x\n", elf_file->elf_header->e_phoff);
-	// tty_printf("Section Header Offset: %x\n", elf_file->elf_header->e_shoff);
-	// tty_printf("Flags: %x\n", elf_file->elf_header->e_flags);
-	// tty_printf("Program Header Size: %d\n", elf_file->elf_header->e_phentsize);
-	// tty_printf("Program Header Entries: %d\n", elf_file->elf_header->e_phnum);
-	// tty_printf("Section Header Size: %d\n", elf_file->elf_header->e_shentsize);
-	// tty_printf("Section Header Entries: %d\n", elf_file->elf_header->e_shnum);
+	 qemu_log("Ident: %s", elf_file->elf_header->e_ident);
+	 qemu_log("Type: %x", elf_file->elf_header->e_type);
+	 qemu_log("Machine: %x", elf_file->elf_header->e_mashine);
+	 qemu_log("Version: %x", elf_file->elf_header->e_version);
+	 qemu_log("Entry point: %x", elf_file->elf_header->e_entry);
+	 qemu_log("Program Header Offset: %x", elf_file->elf_header->e_phoff);
+	 qemu_log("Section Header Offset: %x", elf_file->elf_header->e_shoff);
+	 qemu_log("Flags: %x", elf_file->elf_header->e_flags);
+	 qemu_log("Program Header Size: %d", elf_file->elf_header->e_phentsize);
+	 qemu_log("Program Header Entries: %d", elf_file->elf_header->e_phnum);
+	 qemu_log("Section Header Size: %d", elf_file->elf_header->e_shentsize);
+	 qemu_log("Section Header Entries: %d", elf_file->elf_header->e_shnum);
 	
 	uint32_t vmm_allocated_count = 0;
 
     for (int32_t i = 0; i < elf_file->elf_header->e_phnum; i++) {
         Elf32_Phdr *phdr = elf_file->p_header + i;
 		
-		if (phdr->p_type != PT_LOAD) continue;
+		if (phdr->p_type != PT_LOAD)
+			continue;
 
 		// tty_printf(" - TYPE: %s  OFFSET: %x  VADDR: %x  PADDR:%x  FSIZE: %x  MSIZE: %x\n",
 		// 			(phdr->p_type==PT_LOAD?"LOAD":"UNKNOWN"),
@@ -136,8 +137,8 @@ int32_t run_elf_file(const char *name, int32_t argc, char* eargv[]) {
         memset((void*)phdr->p_vaddr, 0, phdr->p_memsz);
 		qemu_log("Set %x - %x to zero.", (int)((void*)phdr->p_vaddr), (int)((void*)phdr->p_vaddr) + phdr->p_memsz);
 
-		fseek(elf_file->file, phdr->p_offset, SEEK_SET);
-		fread_c(elf_file->file, phdr->p_filesz, 1, (char*)phdr->p_vaddr);
+		fseek(elf_file->file, (ssize_t)phdr->p_offset, SEEK_SET);
+		fread(elf_file->file, phdr->p_filesz, 1, (char *) phdr->p_vaddr);
 
         qemu_log("Loaded");
     }
@@ -146,7 +147,6 @@ int32_t run_elf_file(const char *name, int32_t argc, char* eargv[]) {
     qemu_log("ELF entry point: %x", elf_file->elf_header->e_entry);
 
     qemu_log("Executing");
-    // int _result = ((int (*)())elf_file->elf_header->e_entry)();
     int _result = entry_point(argc, eargv);
 	
     qemu_log("[PROGRAMM FINISHED WITH CODE <%d>]", _result);
@@ -168,6 +168,7 @@ int32_t run_elf_file(const char *name, int32_t argc, char* eargv[]) {
 	kfree(elf_file->elf_header);
 	kfree(elf_file->section);
 	kfree(elf_file->p_header);
-
+	
+	CallTrigger(0x0005,(void*)name,(void*)_result,0,0,0);
     return 0;
 }

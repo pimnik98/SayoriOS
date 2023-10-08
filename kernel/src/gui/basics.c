@@ -2,9 +2,10 @@
 #include <kernel.h>
 
 void fill_screen(uint32_t color) {
-    size_t w = getWidthScreen();
-    
-    for(int i = 0, h = getHeightScreen(); i < h; i++) {
+    size_t w = getScreenWidth();
+	size_t h = getScreenHeight();
+
+    for(int i = 0; i < h; i++) {
         for(int j = 0; j < w; j++) {
             set_pixel(j, i, color);
         }
@@ -12,12 +13,12 @@ void fill_screen(uint32_t color) {
 }
 
 void draw_rectangle(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t color) {    
-    for(int i = x, to = x+w; i < to; i++) {
+    for(size_t i = x, to = x+w; i < to; i++) {
         set_pixel(i, y, color);
         set_pixel(i, y+h, color);
     }
 	
-    for(int j = y, to2 = y+h; j < to2; j++) {
+    for(size_t j = y, to2 = y+h; j < to2; j++) {
         set_pixel(x, j, color);
         set_pixel(x+w, j, color);
     }

@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <kernel.h>
 #include <lib/math.h>
+#include <io/ports.h>
 #include <common.h>
 
 #define AC97_VENDOR 0x8086
@@ -31,11 +31,23 @@ typedef struct {
 #define NABM_GLOBAL_CONTROL 0x2C
 #define NABM_GLOBAL_STATUS  0x30
 
+#define BUFFER_SIZE (64 * 1024)
+
 typedef struct {
-    void* memory_pos;
+    uint32_t memory_pos;
     uint16_t sample_count;
     uint16_t flags;
-} AC97_BDL_t;
+} __attribute__((packed)) AC97_BDL_t;
+
+static AC97_BDL_t ac97_bdl_buffer[32];
+static uint16_t native_audio_mixer = 0;
+static uint16_t native_audio_bus_master = 0;
+
+#define ac97_clear_status_register() outb(native_audio_bus_master + 0x16, 0x1C)
+#define _ac97_update_bdl(address) outl(native_audio_bus_master + NABM_PCM_OUT, address)
+#define ac97_update_bdl() _ac97_update_bdl((uint32_t)&ac97_bdl_buffer)
+#define ac97_update_lvi(index) outb(native_audio_bus_master + NABM_PCM_OUT + 0x05, (uint8_t)(index))
+#define ac97_clear_bdl() memset(&ac97_bdl_buffer, 0, sizeof(AC97_BDL_t)*31)
 
 // Volume in dB, not %
 void ac97_set_master_volume(uint8_t left, uint8_t right, bool mute);
@@ -45,12 +57,13 @@ void ac97_set_pcm_volume(uint8_t right, uint8_t left, bool mute);
 void ac97_set_pcm_sample_rate(uint32_t sample_rate);
 void ac97_load_data(char* data, uint32_t length);
 void ac97_reset_channel();
-void ac97_clear_status_register();
-void ac97_update_bdl();
-void ac97_update_lvi(uint8_t index);
-void ac97_set_play_sound(bool play);
 void ac97_init();
 size_t ac97_copy_user_memory_to_dma(char* data, size_t length);
+void ac97_single_page_write(ssize_t page_num);
 void ac97_single_page_write_wait(ssize_t page_num);
 void ac97_destroy_user_buffer();
 bool ac97_is_initialized();
+
+static inline void ac97_set_play_sound(bool play) {
+    outb(native_audio_bus_master + 0x1b, inb(native_audio_bus_master + 0x1B) | play);
+}

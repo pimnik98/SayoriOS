@@ -16,7 +16,7 @@ bool lucario_fs_init(LucarioDescriptor_t* descr, uint8_t ata_drive) {
     descr->ata_drive = ata_drive;
     descr->disk_capacity = ata_drives[ata_drive].capacity;
     
-    ata_read(ata_drive, &(descr->header), 0, 512);  // Read header
+    ata_read(ata_drive, (uint8_t*)&(descr->header), 0, 512);  // Read header
 
     if(memcmp(descr->header.magic, LUCARIOFS_MAGIC, 7)) {
         qemu_log("Invalid magic for drive %x!", ata_drive);
@@ -51,7 +51,7 @@ void lucario_fs_read_file_entry(LucarioDescriptor_t* descr, size_t index, Lucari
 
     ata_read(
         descr->ata_drive,
-        out,
+        (uint8_t*)out,
         512 + (sizeof(LucarioFileEntry_t) * index),
         sizeof(LucarioFileEntry_t)
     );
@@ -61,7 +61,7 @@ void lucario_fs_get_file_entry(LucarioDescriptor_t* descr, char name[], size_t f
     for(size_t i = 0; i < descr->max_entries; i++) {
         lucario_fs_read_file_entry(descr, i, out);
 
-        if(out->name && strcmp(out->name, name) == 0 && out->folder_id == folder_id) {
+        if(strcmp(out->name, name) == 0 && out->folder_id == folder_id) {
             return;
         }
     }
@@ -75,7 +75,7 @@ bool lucario_fs_file_exists(LucarioDescriptor_t* descr, char name[], size_t fold
 
         lucario_fs_read_file_entry(descr, i, entry);
 
-        if(entry->name && strcmp(entry->name, name) == 0 && entry->folder_id == folder_id) {
+        if(strcmp(entry->name, name) == 0 && entry->folder_id == folder_id) {
             kfree(entry);
             return true;
         }
@@ -107,11 +107,11 @@ void lucario_fs_read_sectors_to(LucarioDescriptor_t* descr, size_t sector_list_a
     uint32_t cursector;
     
     for (size_t i = 0; i < sector_list_size; i++) {
-        ata_read(descr->ata_drive, &cursector, sector_list_addr + (i * sizeof(uint32_t)), sizeof(uint32_t));
+        ata_read(descr->ata_drive, (uint8_t*)&cursector, sector_list_addr + (i * sizeof(uint32_t)), sizeof(uint32_t));
 
         // qemu_log("Sector number at addr %x: %d", sector_list_addr + (i * sizeof(uint32_t)), cursector);
 
-        ata_read_sector(descr->ata_drive, out + (i * 512), cursector);
+        ata_read_sector(descr->ata_drive, (uint8_t*)(out + (i * 512)), cursector);
     }
 }
 
@@ -129,7 +129,13 @@ bool lucario_fs_read_file(LucarioDescriptor_t* descr, char name[], size_t folder
 
     char* temp = kcalloc(1, ALIGN(entry->file_size, 512));
 
-    lucario_fs_read_sectors_to(descr, entry->sector_list_lba * 512, entry->sector_list_size, 0, temp);
+    lucario_fs_read_sectors_to(
+    	descr,
+    	entry->sector_list_lba * 512,
+    	entry->sector_list_size,
+    	ALIGN(offset, 512) / 512,
+    	temp
+    );
     qemu_log("Temp buffer becames: %s", temp);
 
     memcpy(out, temp + offset, length);

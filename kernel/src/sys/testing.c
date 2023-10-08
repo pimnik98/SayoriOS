@@ -1,6 +1,6 @@
 #include <kernel.h>
 
-/// @brief Runs function and measure function execution time
+/// @brief Runs function and measures function execution time
 /// @param function Pointer to function to test
 /// @return Milliseconds elapsed during function execution.
 size_t measure_func(void* (function())) {

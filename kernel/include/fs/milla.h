@@ -1,9 +1,9 @@
 /**
  *
  * @file fs/milla.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru), Drew >_ (pikachu_andrey@vk.com)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Проект Милла
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2023-01-23
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
