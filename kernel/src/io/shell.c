@@ -36,6 +36,7 @@ size_t ShellKBD_i = 0;				///< Индекс триггера
 Command_t shell_commands[];
 
 void piano();
+void minesweeper();
 
 uint32_t cmd_crash() {
     // size_t a = 2/0;
@@ -911,7 +912,8 @@ Command_t shell_commands[] = {
 	{"sysinfo",  cmd_sysinfo,                                      "Показать информацию о системе"},
 	{"view",     cmd_view,                                         "Рисует картинку"},
 	{"whoami",   cmd_whoami,                                       "Кто я?"},
-    {"gb",       gbwrap,                                           "GameBoy Emulator"},
+  {"gb",       gbwrap,                                           "GameBoy Emulator"},
+  {"minesweeper", minesweeper,                                   "Сапёр"},
 	{nullptr, nullptr, nullptr}  // Конец списка (EOL), спасибо Никите (pimnik98)!
 };
 

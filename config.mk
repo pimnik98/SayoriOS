@@ -97,6 +97,7 @@ SOURCES=kernel/src/sys/bootscreen.c \
 	kernel/src/gui/circle.c \
 	kernel/src/drv/audio/ac97.c \
 	kernel/src/toys/piano.c \
+	kernel/src/toys/minesweeper.c \
 	kernel/src/toys/diskctl.c \
 	kernel/src/toys/danview.c \
 	kernel/src/toys/mala.c \
@@ -196,7 +197,7 @@ DEBUG = #-ggdb3 #-Werror
 
 COMMON_FLAGS = -nostdlib -fno-stack-protector -fno-builtin -m32 -Ikernel/include/ -ffreestanding \
 			   -Wall -Wno-div-by-zero -Wno-address-of-packed-member -Wno-implicit-function-declaration \
-			   -mno-red-zone -march=i386 -MMD -MP
+			   -mno-red-zone -march=i386 -MMD -MP -Wno-everything
 
 ifeq ($(USE_SSE),true)
 	COMMON_FLAGS := $(COMMON_FLAGS) -msse2 -DUSE_SSE
