@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/sys/trigger.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d0/d70/trigger_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">trigger.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="../../d0/d70/trigger_8c.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;io/duke_image.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;io/status_loggers.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;lib/stdio.h&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;sys/trigger.h&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;drv/input/keymap.h&gt;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">   19</a></span>&#160;<a class="code" href="../../d4/d42/structtrigger.html">trigger_t</a> <a class="code" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a>[1024];       </div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">   20</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a> = 0;       </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;thread_t* threadASYNCRUN01;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;thread_t* threadASYNCRUN02;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;thread_t* threadASYNCRUN03;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;thread_t* threadASYNCRUN04;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#a771d067b215737378532d84aed3b2a6a">   31</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="../../d0/d70/trigger_8c.html#a771d067b215737378532d84aed3b2a6a">RegTrigger</a>(<span class="keywordtype">int</span> type,trigger_cmd_t handler){</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    qemu_log(<span class="stringliteral">&quot;[Trigger] An attempt to register trigger &#39;%x&#39; was detected.&quot;</span>,type);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a>[<a class="code" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a>].<a class="code" href="../../d4/d42/structtrigger.html#a3f42f10d93f6edb91d7d3f6edad25921">index</a> = <a class="code" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a>[<a class="code" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a>].<a class="code" href="../../d4/d42/structtrigger.html#ac765329451135abec74c45e1897abf26">type</a> = type;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a>[<a class="code" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a>].<a class="code" href="../../d4/d42/structtrigger.html#a65cf7d7f8e531611b245355ab91fd749">ready</a> = 1;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a>[<a class="code" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a>].<a class="code" href="../../d4/d42/structtrigger.html#a0f94b997bf0e3e0447e0b8c9bacbf4a4">cmd</a> = handler;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    qemu_log(<span class="stringliteral">&quot;[Trigger] Format %x trigger has successfully registered and has index number %d.&quot;</span>,type,<a class="code" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a>);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a>++;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">return</span> (<a class="code" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a>)-1;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#a3f61175d9afbb5037fcd375dff4238e4">   46</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d70/trigger_8c.html#a3f61175d9afbb5037fcd375dff4238e4">OnTrigger</a>(<span class="keywordtype">int</span> index){</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    qemu_log(<span class="stringliteral">&quot;[Trigger] Trigger #%d has been enabled&quot;</span>,index);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a>[index].<a class="code" href="../../d4/d42/structtrigger.html#a65cf7d7f8e531611b245355ab91fd749">ready</a> = 1;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#a185d65d0e9d6b1bc2f129d40f39f8a81">   54</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d70/trigger_8c.html#a185d65d0e9d6b1bc2f129d40f39f8a81">OffTrigger</a>(<span class="keywordtype">int</span> index){</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    qemu_log(<span class="stringliteral">&quot;[Trigger] Trigger #%d has been disabled&quot;</span>,index);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a>[index].<a class="code" href="../../d4/d42/structtrigger.html#a65cf7d7f8e531611b245355ab91fd749">ready</a> = 0;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#a0f407fe2dfe5388d5aa925d6ce2115a3">   62</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d70/trigger_8c.html#a0f407fe2dfe5388d5aa925d6ce2115a3">CallTrigger</a>(<span class="keywordtype">int</span> type, <span class="keywordtype">void</span>* data1, <span class="keywordtype">void</span>* data2, <span class="keywordtype">void</span>* data3, <span class="keywordtype">void</span>* data4, <span class="keywordtype">void</span>* data5){</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">if</span> (type == TRIGGER_KEY_PRESSED) {</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        qemu_log(<span class="stringliteral">&quot;[Trigger] [Keyboard] Press: %d&quot;</span>, (<span class="keywordtype">int</span>) data1);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (type == TRIGGER_MOUSE_MOVE) {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        qemu_log(<span class="stringliteral">&quot;[Trigger] [Mouse] X: %d | Y: %d&quot;</span>, (<span class="keywordtype">int</span>) data1, (<span class="keywordtype">int</span>) data2);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (type == TRIGGER_MOUSE_CLICK) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        qemu_log(<span class="stringliteral">&quot;[Trigger] [Mouse] LEFT: %d | RIGHT: %d | CENTER: %d&quot;</span>, (<span class="keywordtype">int</span>) data1, (<span class="keywordtype">int</span>) data2, (<span class="keywordtype">int</span>) data3);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (type == TRIGGER_MAIN_RUNNER1 ||</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;               type == TRIGGER_MAIN_RUNNER2 ||</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;               type == TRIGGER_MAIN_RUNNER3 ||</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;               type == TRIGGER_MAIN_RUNNER4</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            ) {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="comment">//qemu_log(&quot;[Trigger] [ASYNC] [RUNNER] Thread: %x&quot;,type);</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (type == TRIGGER_ELF_START) {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        qemu_log(<span class="stringliteral">&quot;[Trigger] ELF Start\n\tPath:%s&quot;</span>, (<span class="keywordtype">char</span> *) data1);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (type == TRIGGER_ELF_END) {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        qemu_log(<span class="stringliteral">&quot;[Trigger] ELF Complete\n\tPath:%s\n\tCode:%d&quot;</span>, (<span class="keywordtype">char</span> *) data1, (<span class="keywordtype">int</span>) data2);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (type == TRIGGER_ELF_START) {</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        qemu_log(<span class="stringliteral">&quot;[Trigger] ELF Error\n\tPath:%s\n\tCode:%d&quot;</span>, (<span class="keywordtype">char</span> *) data1, (<span class="keywordtype">int</span>) data2);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        qemu_log(<span class="stringliteral">&quot;[Trigger] An attempt to call trigger &#39;%d&#39; was detected.&quot;</span>, type);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> inx = 0; inx &lt; <a class="code" href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a>; inx++){</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="comment">//if (log) qemu_log(&quot;[Trigger] Scan: %d | Type: %x | Ready: %d&quot;,inx,Triggers[inx]-&gt;type,Triggers[inx]-&gt;ready);</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">if</span> (type == <a class="code" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a>[inx].type &amp;&amp; <a class="code" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a>[inx].ready == 1){</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <a class="code" href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a>[inx].<a class="code" href="../../d4/d42/structtrigger.html#a0f94b997bf0e3e0447e0b8c9bacbf4a4">cmd</a>(data1, data2, data3, data4, data5);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    }</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;}</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#a1219ff03efd68bd28458eae8418690b5">   96</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d70/trigger_8c.html#a1219ff03efd68bd28458eae8418690b5">ASYNC_RUNNER_1</a>(){</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    qemu_log(<span class="stringliteral">&quot;[ASYNC] [RUN:1] Started....&quot;</span>);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordflow">while</span> (1) {</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <a class="code" href="../../d0/d70/trigger_8c.html#a0f407fe2dfe5388d5aa925d6ce2115a3">CallTrigger</a>(TRIGGER_MAIN_RUNNER1,0,0,0,0,0);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="comment">//punch();</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="comment">//sleep_ms(100);</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    }</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <a class="code" href="../../dd/d6c/scheduler_8c.html#a105ef3d6d1df202eba90e0e6f8322c72">thread_exit</a>(threadASYNCRUN01);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;}</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#a81eb0569b2193ccb76711b53c7fdefaa">  110</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d70/trigger_8c.html#a81eb0569b2193ccb76711b53c7fdefaa">ASYNC_RUNNER_2</a>(){</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    qemu_log(<span class="stringliteral">&quot;[ASYNC] [RUN:2] Started....&quot;</span>);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">size_t</span> old = 0;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordflow">while</span> (1) {</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keywordflow">if</span> (old+500 &lt; <a class="code" href="../../d6/d09/sys_2timer_8c.html#a8c04a7b8fb98a3b5f121aeb8540d1bf9">getTicks</a>()) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <a class="code" href="../../d0/d70/trigger_8c.html#a0f407fe2dfe5388d5aa925d6ce2115a3">CallTrigger</a>(TRIGGER_MAIN_RUNNER2,0,0,0,0,0);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        old = <a class="code" href="../../d6/d09/sys_2timer_8c.html#a8c04a7b8fb98a3b5f121aeb8540d1bf9">getTicks</a>();</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="comment">//punch();</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="comment">//sleep_ms(100);</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    }</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    qemu_log(<span class="stringliteral">&quot;[ASYNC] [RUN:2] CRASHED!!!&quot;</span>);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <a class="code" href="../../dd/d6c/scheduler_8c.html#a105ef3d6d1df202eba90e0e6f8322c72">thread_exit</a>(threadASYNCRUN02);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;}</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#ae18305bd860e6879c557a9e0c104b60e">  127</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d70/trigger_8c.html#ae18305bd860e6879c557a9e0c104b60e">ASYNC_RUNNER_3</a>(){</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    qemu_log(<span class="stringliteral">&quot;[ASYNC] [RUN:3] Started....&quot;</span>);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keywordflow">while</span> (1) {</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <a class="code" href="../../d0/d70/trigger_8c.html#a0f407fe2dfe5388d5aa925d6ce2115a3">CallTrigger</a>(TRIGGER_MAIN_RUNNER3,0,0,0,0,0);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="comment">//punch();</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <a class="code" href="../../d6/d09/sys_2timer_8c.html#ac27fcc4dbee83e960b0ac08c511b382e">sleep_ms</a>(100);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    }</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    qemu_log(<span class="stringliteral">&quot;[ASYNC] [RUN:3] CRASHED!!!&quot;</span>);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <a class="code" href="../../dd/d6c/scheduler_8c.html#a105ef3d6d1df202eba90e0e6f8322c72">thread_exit</a>(threadASYNCRUN03);</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;}</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00141"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#addcc6b4abb127b6c6f20cfde3c3ffd48">  141</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d70/trigger_8c.html#addcc6b4abb127b6c6f20cfde3c3ffd48">ASYNC_RUNNER_4</a>(){</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    qemu_log(<span class="stringliteral">&quot;[ASYNC] [RUN:4] Started....&quot;</span>);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordflow">while</span> (1) {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <a class="code" href="../../d0/d70/trigger_8c.html#a0f407fe2dfe5388d5aa925d6ce2115a3">CallTrigger</a>(TRIGGER_MAIN_RUNNER4,0,0,0,0,0);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="comment">//punch();</span></div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <a class="code" href="../../d6/d09/sys_2timer_8c.html#ac27fcc4dbee83e960b0ac08c511b382e">sleep_ms</a>(100);</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    }</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    qemu_log(<span class="stringliteral">&quot;[ASYNC] [RUN:4] CRASHED!!!&quot;</span>);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <a class="code" href="../../dd/d6c/scheduler_8c.html#a105ef3d6d1df202eba90e0e6f8322c72">thread_exit</a>(threadASYNCRUN04);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;}</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno"><a class="line" href="../../d0/d70/trigger_8c.html#a8822e246001ef135c9a4d85bfde8ff65">  157</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d70/trigger_8c.html#a8822e246001ef135c9a4d85bfde8ff65">triggersConfig</a>(){</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    qemu_log(<span class="stringliteral">&quot;[Trigger] Configurate...&quot;</span>);</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    process_t* proc = <a class="code" href="../../dd/d6c/scheduler_8c.html#a46e1e4a24fc7550788f7507f1282a7b9">get_current_proc</a>();</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    threadASYNCRUN01 = <a class="code" href="../../dd/d6c/scheduler_8c.html#a3bfee6a8ed6319708dbc7ecb0a828a2d">thread_create</a>(proc,</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;               &amp;<a class="code" href="../../d0/d70/trigger_8c.html#a1219ff03efd68bd28458eae8418690b5">ASYNC_RUNNER_1</a>,</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;               0x4000,</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;               <span class="keyword">true</span>,</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;               <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    threadASYNCRUN02 = <a class="code" href="../../dd/d6c/scheduler_8c.html#a3bfee6a8ed6319708dbc7ecb0a828a2d">thread_create</a>(proc,</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;               &amp;<a class="code" href="../../d0/d70/trigger_8c.html#a81eb0569b2193ccb76711b53c7fdefaa">ASYNC_RUNNER_2</a>,</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;               0x4000,</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;               <span class="keyword">true</span>,</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;               <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    <span class="comment">//Triggers = kmalloc(sizeof(trigger_t)*1024);   ///&lt; Выделяем память на триггеры</span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;}</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
+<div class="ttc" id="ascheduler_8c_html_a105ef3d6d1df202eba90e0e6f8322c72"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a105ef3d6d1df202eba90e0e6f8322c72">thread_exit</a></div><div class="ttdeci">void thread_exit(thread_t *thread)</div><div class="ttdoc">Завершить текущий поток</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00213">scheduler.c:213</a></div></div>
+<div class="ttc" id="ascheduler_8c_html_a3bfee6a8ed6319708dbc7ecb0a828a2d"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a3bfee6a8ed6319708dbc7ecb0a828a2d">thread_create</a></div><div class="ttdeci">thread_t * thread_create(process_t *proc, void *entry_point, size_t stack_size, bool kernel, bool suspend)</div><div class="ttdoc">Создание потока</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00145">scheduler.c:145</a></div></div>
+<div class="ttc" id="ascheduler_8c_html_a46e1e4a24fc7550788f7507f1282a7b9"><div class="ttname"><a href="../../dd/d6c/scheduler_8c.html#a46e1e4a24fc7550788f7507f1282a7b9">get_current_proc</a></div><div class="ttdeci">process_t * get_current_proc(void)</div><div class="ttdoc">Получить текущий обработчик процесса</div><div class="ttdef"><b>Definition:</b> <a href="../../dd/d6c/scheduler_8c_source.html#l00130">scheduler.c:130</a></div></div>
+<div class="ttc" id="astructtrigger_html"><div class="ttname"><a href="../../d4/d42/structtrigger.html">trigger</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d3a/trigger_8h_source.html#l00023">trigger.h:24</a></div></div>
+<div class="ttc" id="astructtrigger_html_a0f94b997bf0e3e0447e0b8c9bacbf4a4"><div class="ttname"><a href="../../d4/d42/structtrigger.html#a0f94b997bf0e3e0447e0b8c9bacbf4a4">trigger::cmd</a></div><div class="ttdeci">trigger_cmd_t cmd</div><div class="ttdoc">Команда с 5ю аргументами</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d3a/trigger_8h_source.html#l00029">trigger.h:29</a></div></div>
+<div class="ttc" id="astructtrigger_html_a3f42f10d93f6edb91d7d3f6edad25921"><div class="ttname"><a href="../../d4/d42/structtrigger.html#a3f42f10d93f6edb91d7d3f6edad25921">trigger::index</a></div><div class="ttdeci">size_t index</div><div class="ttdoc">Индекс триггера</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d3a/trigger_8h_source.html#l00025">trigger.h:25</a></div></div>
+<div class="ttc" id="astructtrigger_html_a65cf7d7f8e531611b245355ab91fd749"><div class="ttname"><a href="../../d4/d42/structtrigger.html#a65cf7d7f8e531611b245355ab91fd749">trigger::ready</a></div><div class="ttdeci">bool ready</div><div class="ttdoc">Триггер готов к работе</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d3a/trigger_8h_source.html#l00027">trigger.h:27</a></div></div>
+<div class="ttc" id="astructtrigger_html_ac765329451135abec74c45e1897abf26"><div class="ttname"><a href="../../d4/d42/structtrigger.html#ac765329451135abec74c45e1897abf26">trigger::type</a></div><div class="ttdeci">int type</div><div class="ttdoc">Тип триггера</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d3a/trigger_8h_source.html#l00026">trigger.h:26</a></div></div>
+<div class="ttc" id="asys_2timer_8c_html_a8c04a7b8fb98a3b5f121aeb8540d1bf9"><div class="ttname"><a href="../../d6/d09/sys_2timer_8c.html#a8c04a7b8fb98a3b5f121aeb8540d1bf9">getTicks</a></div><div class="ttdeci">size_t getTicks()</div><div class="ttdoc">Получить количество тиков</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/d09/sys_2timer_8c_source.html#l00031">timer.c:31</a></div></div>
+<div class="ttc" id="asys_2timer_8c_html_ac27fcc4dbee83e960b0ac08c511b382e"><div class="ttname"><a href="../../d6/d09/sys_2timer_8c.html#ac27fcc4dbee83e960b0ac08c511b382e">sleep_ms</a></div><div class="ttdeci">void sleep_ms(uint32_t milliseconds)</div><div class="ttdoc">Ожидание по милисекундам</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/d09/sys_2timer_8c_source.html#l00083">timer.c:83</a></div></div>
+<div class="ttc" id="atrigger_8c_html_a0f407fe2dfe5388d5aa925d6ce2115a3"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#a0f407fe2dfe5388d5aa925d6ce2115a3">CallTrigger</a></div><div class="ttdeci">void CallTrigger(int type, void *data1, void *data2, void *data3, void *data4, void *data5)</div><div class="ttdoc">Функция для вызовов триггеров (Если самостоятельно надо вызвать триггер)</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00062">trigger.c:62</a></div></div>
+<div class="ttc" id="atrigger_8c_html_a1219ff03efd68bd28458eae8418690b5"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#a1219ff03efd68bd28458eae8418690b5">ASYNC_RUNNER_1</a></div><div class="ttdeci">void ASYNC_RUNNER_1()</div><div class="ttdoc">Специальный поток №1.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00096">trigger.c:96</a></div></div>
+<div class="ttc" id="atrigger_8c_html_a185d65d0e9d6b1bc2f129d40f39f8a81"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#a185d65d0e9d6b1bc2f129d40f39f8a81">OffTrigger</a></div><div class="ttdeci">void OffTrigger(int index)</div><div class="ttdoc">Выключить триггер</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00054">trigger.c:54</a></div></div>
+<div class="ttc" id="atrigger_8c_html_a1ae4ce1faf63dfe943cee0622a9abf6d"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#a1ae4ce1faf63dfe943cee0622a9abf6d">TriggersCount</a></div><div class="ttdeci">size_t TriggersCount</div><div class="ttdoc">Колво активных триггеров</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00020">trigger.c:20</a></div></div>
+<div class="ttc" id="atrigger_8c_html_a3f61175d9afbb5037fcd375dff4238e4"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#a3f61175d9afbb5037fcd375dff4238e4">OnTrigger</a></div><div class="ttdeci">void OnTrigger(int index)</div><div class="ttdoc">Включить триггер</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00046">trigger.c:46</a></div></div>
+<div class="ttc" id="atrigger_8c_html_a6aee9a935f053fd6dae04d8863f02318"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#a6aee9a935f053fd6dae04d8863f02318">Triggers</a></div><div class="ttdeci">trigger_t Triggers[1024]</div><div class="ttdoc">Сетка смонтированных триггеров</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00019">trigger.c:19</a></div></div>
+<div class="ttc" id="atrigger_8c_html_a771d067b215737378532d84aed3b2a6a"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#a771d067b215737378532d84aed3b2a6a">RegTrigger</a></div><div class="ttdeci">size_t RegTrigger(int type, trigger_cmd_t handler)</div><div class="ttdoc">Регистрация триггера</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00031">trigger.c:31</a></div></div>
+<div class="ttc" id="atrigger_8c_html_a81eb0569b2193ccb76711b53c7fdefaa"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#a81eb0569b2193ccb76711b53c7fdefaa">ASYNC_RUNNER_2</a></div><div class="ttdeci">void ASYNC_RUNNER_2()</div><div class="ttdoc">Специальный поток №2 Обновляется один раз в 500 тиков.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00110">trigger.c:110</a></div></div>
+<div class="ttc" id="atrigger_8c_html_a8822e246001ef135c9a4d85bfde8ff65"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#a8822e246001ef135c9a4d85bfde8ff65">triggersConfig</a></div><div class="ttdeci">void triggersConfig()</div><div class="ttdoc">Инициализация триггеров</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00157">trigger.c:157</a></div></div>
+<div class="ttc" id="atrigger_8c_html_addcc6b4abb127b6c6f20cfde3c3ffd48"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#addcc6b4abb127b6c6f20cfde3c3ffd48">ASYNC_RUNNER_4</a></div><div class="ttdeci">void ASYNC_RUNNER_4()</div><div class="ttdoc">Специальный поток №1.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00141">trigger.c:141</a></div></div>
+<div class="ttc" id="atrigger_8c_html_ae18305bd860e6879c557a9e0c104b60e"><div class="ttname"><a href="../../d0/d70/trigger_8c.html#ae18305bd860e6879c557a9e0c104b60e">ASYNC_RUNNER_3</a></div><div class="ttdeci">void ASYNC_RUNNER_3()</div><div class="ttdoc">Специальный поток №3.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d70/trigger_8c_source.html#l00127">trigger.c:127</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_6a36b0b389513c9a28150157f1e6f252.html">sys</a></li><li class="navelem"><a class="el" href="../../d0/d70/trigger_8c.html">trigger.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 18 Окт 2023 21:52:22. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
