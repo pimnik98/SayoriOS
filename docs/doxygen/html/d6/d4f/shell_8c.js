@@ -29,6 +29,7 @@ var shell_8c =
     [ "find_and_run_program", "d6/d4f/shell_8c.html#a90ee1a4bfefbe79d73758f295826cba8", null ],
     [ "gbwrap", "d6/d4f/shell_8c.html#a4975dd87b8abb139895f01a069a7b1ca", null ],
     [ "mala_draw", "d6/d4f/shell_8c.html#af3f70e9aeb9bc8a632448f405c28360f", null ],
+    [ "minesweeper", "d6/d4f/shell_8c.html#abef988b4bfc87cf221747e15aeb25def", null ],
     [ "piano", "d6/d4f/shell_8c.html#a45ae09387929340ee1e09496b295317e", null ],
     [ "shell", "d6/d4f/shell_8c.html#a97dde9d5e0b018feddac600897f80308", null ],
     [ "shell_diskctl", "d6/d4f/shell_8c.html#a08d962dec4af3ac794ea37f2f3182f4b", null ],

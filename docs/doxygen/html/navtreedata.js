@@ -50,15 +50,15 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d1/d8d/vfs__new_8c.html#a83166be1635e9dd9f3e121e144af52b0",
-"d2/d97/_nat_suki_8c.html#ad202532336bf1449c00c9d4c0bf74f74",
-"d4/d4e/structinflate__state.html#aff4f888c31a953f2c49b6471fbf66c02",
-"d6/d4f/shell_8c.html#af3f70e9aeb9bc8a632448f405c28360f",
-"d8/dcf/structata__drive__t.html#a70c142d47e4ef417c51716eeb0271992",
-"db/d36/base64_8c.html#af0d0b285812d65c40f99aa1ebbbdcf89",
-"dc/dfa/structmultiboot__header.html#aa4cc12a03cb87bc49a99202922d3cb72",
-"de/db2/fat12_8c.html#a5280cfdcc185eaf2dbdb8ab03ae10c16",
-"dir_10a9efac6b88e559a53b8b01b99bfe83.html"
+"d1/d8d/vfs__new_8c.html#a57f736a4436a13d7fb40f366233c3116",
+"d2/d97/_nat_suki_8c.html#aad7abd87f0d57095bdbd23f97c77d3dc",
+"d4/d4e/structinflate__state.html#aa3a06f0ebaebe962b238be0793ca4880",
+"d6/d4f/shell_8c.html#a9514897db952b9e6a5dc4c1033d6961a",
+"d8/dce/structsayori__time.html",
+"da/deb/structvfs__storage__dev__t.html#a5ac083a645d964373f022d03df4849c8",
+"dc/dfa/structmultiboot__header.html#a16d86051d228416905fa5fc0996cbbba",
+"de/dab/struct_f_a_t___e_n_t_r_y.html",
+"df/df0/floppy_8c.html#a79e36e19f7c37a02c4a1b1f9c2190501"
 ];
 
 var SYNCONMSG = 'нажмите на выключить для синхронизации панелей';

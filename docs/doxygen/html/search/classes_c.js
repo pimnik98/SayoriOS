@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['oam_5fcache_839',['oam_cache',['../df/df5/structoam__cache.html',1,'']]],
-  ['out_5fof_5fbounds_5finfo_840',['out_of_bounds_info',['../d5/d4a/structout__of__bounds__info.html',1,'']]]
+  ['netcard_5fentry_5ft_841',['netcard_entry_t',['../d1/dbb/structnetcard__entry__t.html',1,'']]],
+  ['note_842',['Note',['../d1/d47/struct_note.html',1,'']]]
 ];

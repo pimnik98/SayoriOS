@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['registers_844',['registers',['../df/d94/structregisters.html',1,'']]],
-  ['rgb_5fstruct_845',['rgb_struct',['../dd/d70/structrgb__struct.html',1,'']]],
-  ['rgba_5fstruct_846',['rgba_struct',['../db/d9d/structrgba__struct.html',1,'']]],
-  ['rsdpdescriptor_847',['RSDPDescriptor',['../d5/d98/struct_r_s_d_p_descriptor.html',1,'']]],
-  ['rsdpdescriptorv2_848',['RSDPDescriptorv2',['../d2/d74/struct_r_s_d_p_descriptorv2.html',1,'']]]
+  ['pci_5fheader_5ft_845',['pci_header_t',['../d7/d00/structpci__header__t.html',1,'']]],
+  ['prdt_846',['prdt',['../da/d62/structprdt.html',1,'']]],
+  ['processorlocalapic_5ft_847',['ProcessorLocalAPIC_t',['../d1/de0/struct_processor_local_a_p_i_c__t.html',1,'']]]
 ];

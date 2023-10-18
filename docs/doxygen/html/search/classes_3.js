@@ -1,10 +1,11 @@
 var searchData=
 [
-  ['dandescriptor_793',['DANDescriptor',['../da/d7c/struct_d_a_n_descriptor.html',1,'']]],
-  ['danheader_794',['DANHeader',['../d6/d09/struct_d_a_n_header.html',1,'']]],
-  ['dir_5fentry_5ft_795',['dir_entry_t',['../de/d45/structdir__entry__t.html',1,'']]],
-  ['dir_5ft_796',['dir_t',['../d3/db8/structdir__t.html',1,'']]],
-  ['dirent_797',['dirent',['../d5/de2/structdirent.html',1,'']]],
-  ['disk_5ft_798',['disk_t',['../d1/d2a/structdisk__t.html',1,'']]],
-  ['dukeimagemeta_799',['DukeImageMeta',['../d0/d76/struct_duke_image_meta.html',1,'']]]
+  ['code_789',['code',['../da/da8/structcode.html',1,'']]],
+  ['colorzone_5ft_790',['ColorZone_t',['../d7/d39/struct_color_zone__t.html',1,'']]],
+  ['command_5ft_791',['Command_t',['../d5/d16/struct_command__t.html',1,'']]],
+  ['config_5fs_792',['config_s',['../d6/d89/structconfig__s.html',1,'']]],
+  ['coordinates_793',['Coordinates',['../d1/d29/struct_coordinates.html',1,'']]],
+  ['cpu_794',['CPU',['../d6/da6/struct_c_p_u.html',1,'']]],
+  ['cpu_5finfo_795',['cpu_info',['../d0/dc9/structcpu__info.html',1,'']]],
+  ['ct_5fdata_5fs_796',['ct_data_s',['../d6/d3b/structct__data__s.html',1,'']]]
 ];
