@@ -1,3 +1,6 @@
+// Minesweeper by Sal1r
+// Partial fixes by NDRAEY
+
 #include <kernel.h>
 #include <gui/basics.h>
 #include <gui/circle.h>
@@ -57,7 +60,7 @@ void move_array(array* from, array* to) {
   from->size = 0;
 }
 
-block field[81];
+block field[FIELD_WIDTH * FIELD_HEIGHT] = {0};
 uint8_t running = 1;
 uint8_t mb1 = 0;
 uint8_t mb2 = 0;
@@ -155,7 +158,7 @@ void input() {
       int32_t mx = mouse_get_x();
       int32_t my = mouse_get_y();
       
-      for (int i = 0; i < 81; ++i) {
+      for (int i = 0; i < FIELD_WIDTH * FIELD_HEIGHT; ++i) {
         block* b = &field[i];
 
         if (mx >= b->sx && mx <= b->sx + BLOCK_SIZE &&
@@ -163,11 +166,11 @@ void input() {
           if (!b->checked && b->closed) {
             b->closed = 0;
 
-            array arr;
+            array arr = {0};
             init_array(&arr);
             array_append(&arr, b);
 
-            array second_arr;
+            array second_arr = {0};
             init_array(&second_arr);
 
             do {
@@ -202,6 +205,9 @@ void input() {
               move_array(&second_arr, &arr);
 
             } while (arr.size != 0);
+
+			array_clear(&arr);
+			array_clear(&second_arr);
 
             break;
           }
@@ -245,9 +251,11 @@ void minesweeper() {
 
   while (running) {
     input();
+
     draw_field();
 
     draw_circle(lmx, lmy, 3, 0x000000);
+
     int32_t mx = mouse_get_x();
     int32_t my = mouse_get_y();
     draw_circle(mx, my, 3, 0xFFFFFF);
@@ -262,5 +270,6 @@ void minesweeper() {
 
   clean_screen();
   set_cursor_enabled(true);
+
   keyboardctl(KEYBOARD_ECHO, true);
 }
