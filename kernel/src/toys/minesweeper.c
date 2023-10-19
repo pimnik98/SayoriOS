@@ -249,6 +249,8 @@ void minesweeper() {
   int lmx = 0;
   int lmy = 0;
 
+  running = 1;
+
   while (running) {
     input();
 
