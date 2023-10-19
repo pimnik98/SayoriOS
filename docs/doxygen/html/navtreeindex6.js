@@ -244,10 +244,10 @@ var NAVTREEINDEX6 =
 "dc/ded/mouse_8h_source.html":[3,0,0,0,2,2,2],
 "dc/df9/v8086_8h_source.html":[3,0,0,0,10,26],
 "dc/dfa/structmultiboot__header.html":[2,0,68],
+"dc/dfa/structmultiboot__header.html#a00298bf91f9fb67f210a18d0759e1fe4":[2,0,68,0],
 "dc/dfa/structmultiboot__header.html#a01bb40ddec7cedbda1f759e4340ebfd7":[2,0,68,31],
 "dc/dfa/structmultiboot__header.html#a058f955561ac0717ad5dbe5a86c4fd3d":[2,0,68,22],
 "dc/dfa/structmultiboot__header.html#a0656d0cc189f8ae0aeb076623187050a":[2,0,68,29],
 "dc/dfa/structmultiboot__header.html#a0b8f85b5256a3670365258c1c29d4708":[2,0,68,5],
-"dc/dfa/structmultiboot__header.html#a0f90d3ce019f66bb5257d4f06585e370":[2,0,68,12],
-"dc/dfa/structmultiboot__header.html#a16d86051d228416905fa5fc0996cbbba":[2,0,68,34]
+"dc/dfa/structmultiboot__header.html#a0f90d3ce019f66bb5257d4f06585e370":[2,0,68,12]
 };
