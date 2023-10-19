@@ -338,30 +338,32 @@ $(document).ready(function(){initNavTree('dc/d70/minesweeper_8c_source.html','..
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;  <span class="keywordtype">int</span> lmx = 0;</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;  <span class="keywordtype">int</span> lmy = 0;</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  <span class="keywordflow">while</span> (running) {</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    input();</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160; </div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    draw_field();</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  running = 1;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  <span class="keywordflow">while</span> (running) {</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    input();</div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    draw_circle(lmx, lmy, 3, 0x000000);</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    draw_field();</div>
 <div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    int32_t mx = mouse_get_x();</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    int32_t my = mouse_get_y();</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    draw_circle(mx, my, 3, 0xFFFFFF);</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    lmx = mx;</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    lmy = my; <span class="comment">// По-красивше сделать курсор</span></div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    punch();</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;  }</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160; </div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  <span class="keywordflow">while</span> (1) {</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="keywordflow">if</span> (getCharRaw() == 1) <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;  }</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;  clean_screen();</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;  set_cursor_enabled(<span class="keyword">true</span>);</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160; </div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;  keyboardctl(KEYBOARD_ECHO, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;}</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    draw_circle(lmx, lmy, 3, 0x000000);</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    int32_t mx = mouse_get_x();</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    int32_t my = mouse_get_y();</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    draw_circle(mx, my, 3, 0xFFFFFF);</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    lmx = mx;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    lmy = my; <span class="comment">// По-красивше сделать курсор</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    punch();</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  }</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;  <span class="keywordflow">while</span> (1) {</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    <span class="keywordflow">if</span> (getCharRaw() == 1) <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;  }</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160; </div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;  clean_screen();</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;  set_cursor_enabled(<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;  keyboardctl(KEYBOARD_ECHO, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;}</div>
 <div class="ttc" id="amemory_8c_html_aed506f8be19e508533954916a0be0b3a"><div class="ttname"><a href="../../df/dd5/memory_8c.html#aed506f8be19e508533954916a0be0b3a">kfree</a></div><div class="ttdeci">void kfree(void *vaddr)</div><div class="ttdoc">Освобождение памяти</div><div class="ttdef"><b>Definition:</b> <a href="../../df/dd5/memory_8c_source.html#l00711">memory.c:711</a></div></div>
 <div class="ttc" id="astructarray_html"><div class="ttname"><a href="../../dc/daf/structarray.html">array</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d70/minesweeper_8c_source.html#l00029">minesweeper.c:29</a></div></div>
 <div class="ttc" id="astructblock_html"><div class="ttname"><a href="../../d1/d7f/structblock.html">block</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d70/minesweeper_8c_source.html#l00020">minesweeper.c:20</a></div></div>
@@ -372,7 +374,7 @@ $(document).ready(function(){initNavTree('dc/d70/minesweeper_8c_source.html','..
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_da865978462bd5e49eb3b7f7c4c0bfd1.html">toys</a></li><li class="navelem"><b>minesweeper.c</b></li>
-    <li class="footer">Документация по SayoriOS. Последние изменения: Ср 18 Окт 2023 22:06:51. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Чт 19 Окт 2023 01:57:59. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
