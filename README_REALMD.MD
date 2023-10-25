@@ -152,7 +152,9 @@ SayoriOS это не дистрибутив Linux, это совершенно �
 
 
 *Огромное спасибо тем, кто ставит звездочки нашему проекту <3*
+
 ![Stargazers](https://reporoster.com/stars/pimnik98/SayoriOS)
 
 *А еще тем кто ПОДДЕРЖИВАЕТ этот проект!*
-<img src="https://contrib.rocks/image?repo=pimnik98/SayoriOS"/>
+
+![Contributors](https://contrib.rocks/image?repo=pimnik98/SayoriOS)
