@@ -56,7 +56,7 @@ var NAVTREEINDEX =
 "d6/d4f/shell_8c.html#a9514897db952b9e6a5dc4c1033d6961a",
 "d8/dce/structsayori__time.html",
 "da/deb/structvfs__storage__dev__t.html#a5ac083a645d964373f022d03df4849c8",
-"dc/dfa/structmultiboot__header.html#a16d86051d228416905fa5fc0996cbbba",
+"dc/dfa/structmultiboot__header.html#a17e20c6faa4eff8d219a040086294119",
 "de/dab/struct_f_a_t___e_n_t_r_y.html",
 "df/df0/floppy_8c.html#a79e36e19f7c37a02c4a1b1f9c2190501"
 ];
