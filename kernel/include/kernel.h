@@ -15,6 +15,7 @@
 
 #include "common.h"
 #include "config.h"
+#include "rust_header.h"
 
 #include "lib/string.h"
 #include "lib/stdlib.h"

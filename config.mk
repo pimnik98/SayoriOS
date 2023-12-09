@@ -161,6 +161,11 @@ SOURCES=kernel/src/sys/bootscreen.c \
 	# kernel/src/fs/lucario/fs.c \
 	# kernel/src/drv/ata_dma.c \
 
+RUST_DIR = rust/
+RUST_TARGET = i686-unknown-none
+RUST_OBJ_DEBUG = rust/target/$(RUST_TARGET)/debug/librust.a
+RUST_OBJ_RELEASE = rust/target/$(RUST_TARGET)/release/librust.a
+
 OBJS = $(SOURCES:%.c=$(OBJ_DIRECTORY)/%.o)
 
 # NDRAEY: No one except me knows C++, so no one can develop C++ API for kernel.

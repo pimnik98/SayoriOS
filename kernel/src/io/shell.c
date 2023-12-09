@@ -22,6 +22,7 @@
 #include <gui/parallel_desktop.h>
 #include "sys/cpuid.h"
 #include "sys/pixfmt.h"
+#include <kernel.h>
 
 typedef struct {
 	char* name;
@@ -914,6 +915,7 @@ Command_t shell_commands[] = {
 	{"whoami",   cmd_whoami,                                       "Кто я?"},
   {"gb",       gbwrap,                                           "GameBoy Emulator"},
   {"minesweeper", minesweeper,                                   "Сапёр"},
+  {"rustcmd", rust_command, "Команда написанная на Rust"},
 	{nullptr, nullptr, nullptr}  // Конец списка (EOL), спасибо Никите (pimnik98)!
 };
 

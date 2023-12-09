@@ -535,6 +535,7 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp){
 // 
 	// qemu_printf("WHAT");
 
+    rust_main();
     shell();
     return 0;
 }
