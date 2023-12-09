@@ -1,0 +1,15 @@
+[lib]
+crate-type = [ "staticlib" ]
+
+[package]
+name = "rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+futures-util = { version = "0.3.4", default-features = false, features = ["alloc"] }
+
+[profile.release]
+lto = true
+opt-level = 2
+strip = true
