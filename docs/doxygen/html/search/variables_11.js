@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['ram_5ffree_1439',['RAM_Free',['../da/d48/structenv.html#a867d1666c87491c8fa1174ad451b00fc',1,'env']]],
+  ['ram_5finstall_1440',['RAM_Install',['../da/d48/structenv.html#afc904bc519e88426cac68090260c2a36',1,'env']]],
+  ['ram_5fused_1441',['RAM_Used',['../da/d48/structenv.html#a7b188d3411e9e7cf05ccbdd5d8147a41',1,'env']]],
+  ['read_1442',['read',['../d0/d77/structfs__node.html#a05ab3f286863dee95791cdf95562b35e',1,'fs_node']]],
+  ['read_1443',['Read',['../d4/dca/structfloppy.html#a43b1e158e55146a9bb75a1d2081a5188',1,'floppy']]],
+  ['readchar_1444',['readChar',['../d0/d77/structfs__node.html#a2b026aa81c95eff4169e55cd17b66236',1,'fs_node']]],
+  ['readdir_1445',['readDir',['../d0/d77/structfs__node.html#acd7e4b05cb1d045bfd231e42292daf7d',1,'fs_node']]],
+  ['ready_1446',['ready',['../d4/d42/structtrigger.html#a65cf7d7f8e531611b245355ab91fd749',1,'trigger']]],
+  ['ready_5fdelete_1447',['ready_delete',['../d4/d42/structtrigger.html#ad844356ffe05829c60708c164f862622',1,'trigger']]],
+  ['reser_1448',['Reser',['../de/dab/struct_f_a_t___e_n_t_r_y.html#a0f200c9973b323edf7cefb1421dc63b9',1,'FAT_ENTRY']]],
+  ['reserved_1449',['Reserved',['../df/d71/struct_m_b_r___i_n_f_o.html#a3bf9ce10ba90d579757ee96426e6d6a7',1,'MBR_INFO']]],
+  ['reserved_1450',['reserved',['../d7/d00/structpci__header__t.html#a72aca6ea6d8153b28ea8f139b932ec3e',1,'pci_header_t']]],
+  ['reserved2_1451',['reserved2',['../d7/d00/structpci__header__t.html#ae673672452e4741c4ab7c174af880a87',1,'pci_header_t']]],
+  ['reserved_5fsectors_1452',['reserved_sectors',['../dd/d3f/struct____attribute____.html#ab9d9cece402bcfc967b895cd556985ef',1,'__attribute__']]],
+  ['revision_1453',['revision',['../d7/d00/structpci__header__t.html#ab01c6e281b316b1770d5646f3d3101c4',1,'pci_header_t']]],
+  ['root_1454',['root',['../d0/d77/structfs__node.html#aefa205fdfef4a137320759e8a3d5d44f',1,'fs_node']]],
+  ['root_5fdir_5fcapacity_1455',['root_dir_capacity',['../dd/d3f/struct____attribute____.html#a3c7cb538ae63a18660d874b097284f1d',1,'__attribute__']]],
+  ['root_5fnodes_1456',['root_nodes',['../d1/d6e/sefs_8c.html#a200d7633f318e20f7a0e9988dc9323d5',1,'sefs.c']]],
+  ['ru_1457',['RU',['../de/dbd/keyboard_8c.html#af31f674f6882a22c901010b8e06004bf',1,'keyboard.c']]]
+];
