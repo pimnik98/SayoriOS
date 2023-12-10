@@ -26,6 +26,10 @@ pub extern "C" fn rust_command(_argc: u32, _argv: &[*const u8]) {
 #[no_mangle]
 pub extern "C" fn rust_main() {
     println!("Hello, {}!", "Rust");
+<<<<<<< HEAD
     panic!("test rust panic!");
     tty_puts("Hey guys did you know...");
 }
+=======
+}
+>>>>>>> 5c5d22cc12e36dbbc82aa77a642bc268a186160c
