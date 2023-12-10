@@ -12,3 +12,4 @@
 .vscode
 .vscode/*
 *.d
+/rust/target
