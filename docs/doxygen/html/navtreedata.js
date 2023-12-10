@@ -58,7 +58,7 @@ var NAVTREEINDEX =
 "da/deb/structvfs__storage__dev__t.html#a5ac083a645d964373f022d03df4849c8",
 "dc/dfa/structmultiboot__header.html#a16d86051d228416905fa5fc0996cbbba",
 "de/dab/struct_f_a_t___e_n_t_r_y.html",
-"df/df0/floppy_8c.html#a784cda9289015cf2db9169031ddcc649"
+"df/df0/floppy_8c.html#a79e36e19f7c37a02c4a1b1f9c2190501"
 ];
 
 var SYNCONMSG = 'нажмите на выключить для синхронизации панелей';
