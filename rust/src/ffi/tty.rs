@@ -7,6 +7,7 @@ use alloc::string::String;
 
 extern "C" {
     fn _tty_puts(c: *const u8);
+    fn _tty_putcgar(c: u8);
 }
 
 #[macro_export]
