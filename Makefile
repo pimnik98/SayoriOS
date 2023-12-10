@@ -75,11 +75,11 @@ uefilive:
 					   -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime
 # Генерация ISO-файла
 geniso: $(KERNEL)
-	grub2-mkrescue -o "kernel.iso" iso/ -V kernel
+	grub-mkrescue -o "kernel.iso" iso/ -V kernel
 
 # Генерация ISO-файла с поддержкой UEFI
 genuefi:
-	grub2-mkrescue -d /usr/lib/grub/x86_64-efi -o SayoriOS_UEFI.iso iso/ --locale-directory=/usr/share/locale/ -V "SayoriOS Soul"
+	grub-mkrescue -d /usr/lib/grub/x86_64-efi -o SayoriOS_UEFI.iso iso/ --locale-directory=/usr/share/locale/ -V "SayoriOS Soul"
 
 # Удаление оригинального файла и *.о файлов
 clean:
@@ -89,6 +89,7 @@ clean:
 
 # Линковка файлов
 $(KERNEL): $(KERNEL_NEED)
+	@$(MAKE) build_rust
 	@echo -e '\x1b[32mLINK \x1b[0m' $(KERNEL)
 	@rm -f $(KERNEL)
 	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED) $(RUST_OBJ_DEBUG)
