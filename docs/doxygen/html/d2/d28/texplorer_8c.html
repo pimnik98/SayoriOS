@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Файл kernel/src/extra/texplorer.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d2/d28/texplorer_8c.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#define-members">Макросы</a> &#124;
+<a href="#func-members">Функции</a> &#124;
+<a href="#var-members">Переменные</a>  </div>
+  <div class="headertitle">
+<div class="title">Файл texplorer.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>TShell.  
+<a href="#details">Подробнее...</a></p>
+<div class="textblock"><code>#include &lt;kernel.h&gt;</code><br />
+<code>#include &lt;io/ports.h&gt;</code><br />
+<code>#include &lt;io/duke_image.h&gt;</code><br />
+<code>#include &lt;io/status_loggers.h&gt;</code><br />
+<code>#include &lt;lib/stdio.h&gt;</code><br />
+<code>#include &lt;lib/tui.h&gt;</code><br />
+<code>#include &lt;drv/input/keymap.h&gt;</code><br />
+</div>
+<p><a href="../../d2/d28/texplorer_8c_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Макросы</h2></td></tr>
+<tr class="memitem:afff2b3028483c9ecca1e4fb0a6173a2d"><td class="memItemLeft" align="right" valign="top"><a id="afff2b3028483c9ecca1e4fb0a6173a2d"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_BODY</b>&#160;&#160;&#160;0x00</td></tr>
+<tr class="separator:afff2b3028483c9ecca1e4fb0a6173a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2f89a3a2bc112a862e7a5b52165c07f"><td class="memItemLeft" align="right" valign="top"><a id="af2f89a3a2bc112a862e7a5b52165c07f"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_TEXT</b>&#160;&#160;&#160;0x01</td></tr>
+<tr class="separator:af2f89a3a2bc112a862e7a5b52165c07f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ac4dc4176fc0508a45f476192d32fc2"><td class="memItemLeft" align="right" valign="top"><a id="a4ac4dc4176fc0508a45f476192d32fc2"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_START_BODY</b>&#160;&#160;&#160;0x02</td></tr>
+<tr class="separator:a4ac4dc4176fc0508a45f476192d32fc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03e411e7042829d89648eaff6760437d"><td class="memItemLeft" align="right" valign="top"><a id="a03e411e7042829d89648eaff6760437d"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_START_TEXT</b>&#160;&#160;&#160;0x03</td></tr>
+<tr class="separator:a03e411e7042829d89648eaff6760437d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec956c0a654bd0f517e15134d8b5e1ef"><td class="memItemLeft" align="right" valign="top"><a id="aec956c0a654bd0f517e15134d8b5e1ef"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_BORDER</b>&#160;&#160;&#160;0x04</td></tr>
+<tr class="separator:aec956c0a654bd0f517e15134d8b5e1ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07d2d33a74aa79d41c0164254e092630"><td class="memItemLeft" align="right" valign="top"><a id="a07d2d33a74aa79d41c0164254e092630"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_BACKGROUND</b>&#160;&#160;&#160;0x05</td></tr>
+<tr class="separator:a07d2d33a74aa79d41c0164254e092630"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a856923635048aae0ade58b392638b8c8"><td class="memItemLeft" align="right" valign="top"><a id="a856923635048aae0ade58b392638b8c8"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_TITLE_BODY</b>&#160;&#160;&#160;0x06</td></tr>
+<tr class="separator:a856923635048aae0ade58b392638b8c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac182be5222ee377da2f23db545b91fab"><td class="memItemLeft" align="right" valign="top"><a id="ac182be5222ee377da2f23db545b91fab"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_TITLE_TEXT</b>&#160;&#160;&#160;0x07</td></tr>
+<tr class="separator:ac182be5222ee377da2f23db545b91fab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9d243fcfbb5ccf8488bcc781387a569"><td class="memItemLeft" align="right" valign="top"><a id="aa9d243fcfbb5ccf8488bcc781387a569"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_BTN_BODY</b>&#160;&#160;&#160;0x08</td></tr>
+<tr class="separator:aa9d243fcfbb5ccf8488bcc781387a569"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9228b9edfe2c179608c2c8abf82155c"><td class="memItemLeft" align="right" valign="top"><a id="af9228b9edfe2c179608c2c8abf82155c"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_BTN_TEXT</b>&#160;&#160;&#160;0x09</td></tr>
+<tr class="separator:af9228b9edfe2c179608c2c8abf82155c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a790e9587a77fb471bf9a5c731f10d1dc"><td class="memItemLeft" align="right" valign="top"><a id="a790e9587a77fb471bf9a5c731f10d1dc"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_BTN_BORD</b>&#160;&#160;&#160;0x10</td></tr>
+<tr class="separator:a790e9587a77fb471bf9a5c731f10d1dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a5c24ffbcb2db355779ecdcd7fe690e"><td class="memItemLeft" align="right" valign="top"><a id="a5a5c24ffbcb2db355779ecdcd7fe690e"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_PGB_BORD</b>&#160;&#160;&#160;0x11</td></tr>
+<tr class="separator:a5a5c24ffbcb2db355779ecdcd7fe690e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6571355683f5063cd2650a9de7b1802f"><td class="memItemLeft" align="right" valign="top"><a id="a6571355683f5063cd2650a9de7b1802f"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_PGB_BODY</b>&#160;&#160;&#160;0x12</td></tr>
+<tr class="separator:a6571355683f5063cd2650a9de7b1802f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add7421cc4e16ab5b51b15fa70f9ad0af"><td class="memItemLeft" align="right" valign="top"><a id="add7421cc4e16ab5b51b15fa70f9ad0af"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TE_COLOR_PGB_TEXT</b>&#160;&#160;&#160;0x13</td></tr>
+<tr class="separator:add7421cc4e16ab5b51b15fa70f9ad0af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Функции</h2></td></tr>
+<tr class="memitem:a08d6ff64bb74d54d2c5e04b55b7f5321"><td class="memItemLeft" align="right" valign="top"><a id="a08d6ff64bb74d54d2c5e04b55b7f5321"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>TE_getColor</b> (int item)</td></tr>
+<tr class="separator:a08d6ff64bb74d54d2c5e04b55b7f5321"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e6a1cbfbe80bb7a1f593758200dbe5b"><td class="memItemLeft" align="right" valign="top"><a id="a4e6a1cbfbe80bb7a1f593758200dbe5b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>TE_DrawTime</b> ()</td></tr>
+<tr class="separator:a4e6a1cbfbe80bb7a1f593758200dbe5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07864788c54f6449821679f344f1a7b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d28/texplorer_8c.html#a07864788c54f6449821679f344f1a7b8">TE_DrawMessageBox</a> (char *title, char *msg, int <a class="el" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a>, int x, int y, int close, int data, int data2)</td></tr>
+<tr class="separator:a07864788c54f6449821679f344f1a7b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada2255307a009ce9824e961bd4cfc981"><td class="memItemLeft" align="right" valign="top"><a id="ada2255307a009ce9824e961bd4cfc981"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>TE_IconsLoader</b> ()</td></tr>
+<tr class="separator:ada2255307a009ce9824e961bd4cfc981"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f5a0a19b905351c469203a52d8973c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d28/texplorer_8c.html#a7f5a0a19b905351c469203a52d8973c8">TE_DesktopBG</a> ()</td></tr>
+<tr class="separator:a7f5a0a19b905351c469203a52d8973c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09557397cad667d233cea3dfa25f4f54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d28/texplorer_8c.html#a09557397cad667d233cea3dfa25f4f54">TE_Desktop</a> ()</td></tr>
+<tr class="separator:a09557397cad667d233cea3dfa25f4f54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7168505330fdfa033958c9fe93b451e8"><td class="memItemLeft" align="right" valign="top"><a id="a7168505330fdfa033958c9fe93b451e8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>TExplorer</b> ()</td></tr>
+<tr class="separator:a7168505330fdfa033958c9fe93b451e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Переменные</h2></td></tr>
+<tr class="memitem:a4019a4945c0c3a4ee4087b577b3ab3b8"><td class="memItemLeft" align="right" valign="top"><a id="a4019a4945c0c3a4ee4087b577b3ab3b8"></a>
+<a class="el" href="../../d0/d76/struct_duke_image_meta.html">DukeHeader_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>TE_Icons</b> [32]</td></tr>
+<tr class="separator:a4019a4945c0c3a4ee4087b577b3ab3b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>TShell. </p>
+<dl class="section author"><dt>Авторы</dt><dd>Пиминов Никита (github.com/pimnik98 | VK: @piminov_remont) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.0.3 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2023-06-02</dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright Пиминов Никита (с) 2023 </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d2/d28/texplorer_8c_source.html">texplorer.c</a></p>
+</div><h2 class="groupheader">Функции</h2>
+<a id="a09557397cad667d233cea3dfa25f4f54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09557397cad667d233cea3dfa25f4f54">&#9670;&nbsp;</a></span>TE_Desktop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TE_Desktop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>&lt; Рисуем квадрат малевича</p>
+<p>&lt; Оформляем меню пуск</p>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d2/d28/texplorer_8c_source.html">texplorer.c</a> строка <a class="el" href="../../d2/d28/texplorer_8c_source.html#l00187">187</a></p>
+
+</div>
+</div>
+<a id="a7f5a0a19b905351c469203a52d8973c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f5a0a19b905351c469203a52d8973c8">&#9670;&nbsp;</a></span>TE_DesktopBG()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TE_DesktopBG </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>&lt; Вот СХУЯЛИ баня загорелась? ПРИЧЕМ ТУТ ЖД, если считывание с вирт диска???????????</p>
+<p>&lt; Спасибо</p>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d2/d28/texplorer_8c_source.html">texplorer.c</a> строка <a class="el" href="../../d2/d28/texplorer_8c_source.html#l00153">153</a></p>
+
+</div>
+</div>
+<a id="a07864788c54f6449821679f344f1a7b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07864788c54f6449821679f344f1a7b8">&#9670;&nbsp;</a></span>TE_DrawMessageBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TE_DrawMessageBox </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>title</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>msg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>close</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>data2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>&lt; Рисуем основу</p>
+<p>&lt; Рисуем заголовок</p>
+<p>&lt; Рисуем текст</p>
+<p>&lt; Рисуем кнопку закрытия</p>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d2/d28/texplorer_8c_source.html">texplorer.c</a> строка <a class="el" href="../../d2/d28/texplorer_8c_source.html#l00070">70</a></p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_dea59b951000a423f8f16c0a74f8ea47.html">extra</a></li><li class="navelem"><a class="el" href="../../d2/d28/texplorer_8c.html">texplorer.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 10 Дек 2023 13:37:29. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

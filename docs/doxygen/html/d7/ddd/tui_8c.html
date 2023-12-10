@@ -1,0 +1,643 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Файл kernel/src/lib/tui.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d7/ddd/tui_8c.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Функции</a> &#124;
+<a href="#var-members">Переменные</a>  </div>
+  <div class="headertitle">
+<div class="title">Файл tui.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Драйвер библиотеки TUI (Text User Interface)  
+<a href="#details">Подробнее...</a></p>
+<div class="textblock"><code>#include &lt;kernel.h&gt;</code><br />
+<code>#include &lt;io/ports.h&gt;</code><br />
+<code>#include &lt;io/duke_image.h&gt;</code><br />
+<code>#include &lt;io/status_loggers.h&gt;</code><br />
+<code>#include &lt;lib/stdio.h&gt;</code><br />
+<code>#include &lt;lib/tui.h&gt;</code><br />
+</div>
+<p><a href="../../d7/ddd/tui_8c_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Функции</h2></td></tr>
+<tr class="memitem:aff91330529d4af37644b4b87038bb036"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#aff91330529d4af37644b4b87038bb036">getColorsTUI</a> (bool bg)</td></tr>
+<tr class="memdesc:aff91330529d4af37644b4b87038bb036"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить цвет TUI.  <a href="../../d7/ddd/tui_8c.html#aff91330529d4af37644b4b87038bb036">Подробнее...</a><br /></td></tr>
+<tr class="separator:aff91330529d4af37644b4b87038bb036"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31fe74e32cc877cfd4c22cd85348c95d"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a31fe74e32cc877cfd4c22cd85348c95d">getModeTUI</a> ()</td></tr>
+<tr class="memdesc:a31fe74e32cc877cfd4c22cd85348c95d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить текущий режим меню  <a href="../../d7/ddd/tui_8c.html#a31fe74e32cc877cfd4c22cd85348c95d">Подробнее...</a><br /></td></tr>
+<tr class="separator:a31fe74e32cc877cfd4c22cd85348c95d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93f080cbcc7c51ada1ac23f56375fee9"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a93f080cbcc7c51ada1ac23f56375fee9">getWorkSpaceWidthTUI</a> ()</td></tr>
+<tr class="memdesc:a93f080cbcc7c51ada1ac23f56375fee9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить длину рабочего пространства  <a href="../../d7/ddd/tui_8c.html#a93f080cbcc7c51ada1ac23f56375fee9">Подробнее...</a><br /></td></tr>
+<tr class="separator:a93f080cbcc7c51ada1ac23f56375fee9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a576caca1d368d89c201ad813d7b539f9"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a576caca1d368d89c201ad813d7b539f9">getWorkSpaceHeightTUI</a> ()</td></tr>
+<tr class="memdesc:a576caca1d368d89c201ad813d7b539f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить высоту рабочего пространств  <a href="../../d7/ddd/tui_8c.html#a576caca1d368d89c201ad813d7b539f9">Подробнее...</a><br /></td></tr>
+<tr class="separator:a576caca1d368d89c201ad813d7b539f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52c5525ea9e55a12f43442a3524fe41c"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a52c5525ea9e55a12f43442a3524fe41c">setModeTUI</a> (int32_t <a class="el" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a>)</td></tr>
+<tr class="memdesc:a52c5525ea9e55a12f43442a3524fe41c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить режим работы TUI.  <a href="../../d7/ddd/tui_8c.html#a52c5525ea9e55a12f43442a3524fe41c">Подробнее...</a><br /></td></tr>
+<tr class="separator:a52c5525ea9e55a12f43442a3524fe41c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab32b38afa7a243706fc790518bfda073"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#ab32b38afa7a243706fc790518bfda073">getLastUpdateTUI</a> ()</td></tr>
+<tr class="memdesc:ab32b38afa7a243706fc790518bfda073"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить последнее время обновления TUI.  <a href="../../d7/ddd/tui_8c.html#ab32b38afa7a243706fc790518bfda073">Подробнее...</a><br /></td></tr>
+<tr class="separator:ab32b38afa7a243706fc790518bfda073"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaddd1cd57100f76341816e69279a0793"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#aaddd1cd57100f76341816e69279a0793">setLastUpdateTUI</a> (int32_t time)</td></tr>
+<tr class="memdesc:aaddd1cd57100f76341816e69279a0793"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить время обновления TUI.  <a href="../../d7/ddd/tui_8c.html#aaddd1cd57100f76341816e69279a0793">Подробнее...</a><br /></td></tr>
+<tr class="separator:aaddd1cd57100f76341816e69279a0793"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada23ba3deeb67437d9326d8122c384f0"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#ada23ba3deeb67437d9326d8122c384f0">getCurrentItemTUI</a> ()</td></tr>
+<tr class="memdesc:ada23ba3deeb67437d9326d8122c384f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить текущию позицию в меню  <a href="../../d7/ddd/tui_8c.html#ada23ba3deeb67437d9326d8122c384f0">Подробнее...</a><br /></td></tr>
+<tr class="separator:ada23ba3deeb67437d9326d8122c384f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92e602b0284a36245d64713c885551ce"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a92e602b0284a36245d64713c885551ce">setCurrentItemTUI</a> (int32_t item)</td></tr>
+<tr class="memdesc:a92e602b0284a36245d64713c885551ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить позицию в меню  <a href="../../d7/ddd/tui_8c.html#a92e602b0284a36245d64713c885551ce">Подробнее...</a><br /></td></tr>
+<tr class="separator:a92e602b0284a36245d64713c885551ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ef11afdfcacb66d0c3b104009aca639"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a3ef11afdfcacb66d0c3b104009aca639">setMaxItemTUI</a> (int32_t item)</td></tr>
+<tr class="memdesc:a3ef11afdfcacb66d0c3b104009aca639"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установить максимальное количество элементов в меню  <a href="../../d7/ddd/tui_8c.html#a3ef11afdfcacb66d0c3b104009aca639">Подробнее...</a><br /></td></tr>
+<tr class="separator:a3ef11afdfcacb66d0c3b104009aca639"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a1316bbe333658b2e830e87d5052729"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a1a1316bbe333658b2e830e87d5052729">getMaxListMenuTUI</a> ()</td></tr>
+<tr class="memdesc:a1a1316bbe333658b2e830e87d5052729"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить максимальное количество элементов в меню  <a href="../../d7/ddd/tui_8c.html#a1a1316bbe333658b2e830e87d5052729">Подробнее...</a><br /></td></tr>
+<tr class="separator:a1a1316bbe333658b2e830e87d5052729"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e6305ceb0fad87c661f1e59464748e1"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a5e6305ceb0fad87c661f1e59464748e1">getMaxStrLineTUI</a> ()</td></tr>
+<tr class="memdesc:a5e6305ceb0fad87c661f1e59464748e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получить максимальное символов в одной строке  <a href="../../d7/ddd/tui_8c.html#a5e6305ceb0fad87c661f1e59464748e1">Подробнее...</a><br /></td></tr>
+<tr class="separator:a5e6305ceb0fad87c661f1e59464748e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b8f15e6bcdf9020d6a28757fbb20a21"><td class="memItemLeft" align="right" valign="top"><a id="a0b8f15e6bcdf9020d6a28757fbb20a21"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a0b8f15e6bcdf9020d6a28757fbb20a21">cleanItems</a> ()</td></tr>
+<tr class="memdesc:a0b8f15e6bcdf9020d6a28757fbb20a21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отчищает список элементов <br /></td></tr>
+<tr class="separator:a0b8f15e6bcdf9020d6a28757fbb20a21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a757248bf4e34df9cecb04515c416559d"><td class="memItemLeft" align="right" valign="top"><a id="a757248bf4e34df9cecb04515c416559d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getMaxStrLineBoxTUI</b> ()</td></tr>
+<tr class="separator:a757248bf4e34df9cecb04515c416559d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa568fd361f52e4d311302d8f39452103"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#aa568fd361f52e4d311302d8f39452103">cleanWorkSpace</a> (int color)</td></tr>
+<tr class="memdesc:aa568fd361f52e4d311302d8f39452103"><td class="mdescLeft">&#160;</td><td class="mdescRight">Добавляет позицию в список элементов  <a href="../../d7/ddd/tui_8c.html#aa568fd361f52e4d311302d8f39452103">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa568fd361f52e4d311302d8f39452103"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e749acd510cd65aebe93205924ba9a7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a6e749acd510cd65aebe93205924ba9a7">createMenuBox</a> (char *title)</td></tr>
+<tr class="memdesc:a6e749acd510cd65aebe93205924ba9a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Выводит список меню  <a href="../../d7/ddd/tui_8c.html#a6e749acd510cd65aebe93205924ba9a7">Подробнее...</a><br /></td></tr>
+<tr class="separator:a6e749acd510cd65aebe93205924ba9a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26e292a38c068b706bd4059e0009e2c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#a26e292a38c068b706bd4059e0009e2c9">createErrorBox</a> (char *title, char *text)</td></tr>
+<tr class="memdesc:a26e292a38c068b706bd4059e0009e2c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Выводит фатальный красный блок  <a href="../../d7/ddd/tui_8c.html#a26e292a38c068b706bd4059e0009e2c9">Подробнее...</a><br /></td></tr>
+<tr class="separator:a26e292a38c068b706bd4059e0009e2c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef45eff15511b7f959505711b3ac5cfc"><td class="memItemLeft" align="right" valign="top"><a id="aef45eff15511b7f959505711b3ac5cfc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/ddd/tui_8c.html#aef45eff15511b7f959505711b3ac5cfc">tui_configurate</a> ()</td></tr>
+<tr class="memdesc:aef45eff15511b7f959505711b3ac5cfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Инициализация и сброс TUI на стандартное значение <br /></td></tr>
+<tr class="separator:aef45eff15511b7f959505711b3ac5cfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a349e9ff1952fb50770b54cf86cb48ded"><td class="memItemLeft" align="right" valign="top"><a id="a349e9ff1952fb50770b54cf86cb48ded"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>tui_destroy</b> ()</td></tr>
+<tr class="separator:a349e9ff1952fb50770b54cf86cb48ded"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Переменные</h2></td></tr>
+<tr class="memitem:a9527b664d7d89eb473cbd00238e16898"><td class="memItemLeft" align="right" valign="top"><a id="a9527b664d7d89eb473cbd00238e16898"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>bgColor</b> = VESA_BLUE</td></tr>
+<tr class="separator:a9527b664d7d89eb473cbd00238e16898"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13f583be01e8e375c706c3197f81fa79"><td class="memItemLeft" align="right" valign="top"><a id="a13f583be01e8e375c706c3197f81fa79"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>txColor</b> = VESA_WHITE</td></tr>
+<tr class="separator:a13f583be01e8e375c706c3197f81fa79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba7172a8ade3c9fd6af7adb4e7ae4a00"><td class="memItemLeft" align="right" valign="top"><a id="aba7172a8ade3c9fd6af7adb4e7ae4a00"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>TUIMode</b> = TUI_DEFAULT</td></tr>
+<tr class="separator:aba7172a8ade3c9fd6af7adb4e7ae4a00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d8d448f0305616bda294638b23912b8"><td class="memItemLeft" align="right" valign="top"><a id="a2d8d448f0305616bda294638b23912b8"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>typeDisplay</b> = 0</td></tr>
+<tr class="separator:a2d8d448f0305616bda294638b23912b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6939e6028648c695e43aed1fd3b5b98e"><td class="memItemLeft" align="right" valign="top"><a id="a6939e6028648c695e43aed1fd3b5b98e"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lastUpdate</b> = 0</td></tr>
+<tr class="separator:a6939e6028648c695e43aed1fd3b5b98e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10eaf5bb734b696e5bcb6fd5b7033b60"><td class="memItemLeft" align="right" valign="top"><a id="a10eaf5bb734b696e5bcb6fd5b7033b60"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>w</b> = 0</td></tr>
+<tr class="separator:a10eaf5bb734b696e5bcb6fd5b7033b60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a749034ae387fecbeeffedfb1d9b8aa51"><td class="memItemLeft" align="right" valign="top"><a id="a749034ae387fecbeeffedfb1d9b8aa51"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>h</b> = 0</td></tr>
+<tr class="separator:a749034ae387fecbeeffedfb1d9b8aa51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af91f12fae2ab2d54af415220533d9527"><td class="memItemLeft" align="right" valign="top"><a id="af91f12fae2ab2d54af415220533d9527"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>ww</b> = 0</td></tr>
+<tr class="separator:af91f12fae2ab2d54af415220533d9527"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3d9a1bb035400ea01dff39abbc1e5d1"><td class="memItemLeft" align="right" valign="top"><a id="aa3d9a1bb035400ea01dff39abbc1e5d1"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>wh</b> = 0</td></tr>
+<tr class="separator:aa3d9a1bb035400ea01dff39abbc1e5d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64f614759c0f40d2a938e8970ba28584"><td class="memItemLeft" align="right" valign="top"><a id="a64f614759c0f40d2a938e8970ba28584"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>maxStrLineTUI</b> = 0</td></tr>
+<tr class="separator:a64f614759c0f40d2a938e8970ba28584"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7f4e176cdc5da713395af747ca05509"><td class="memItemLeft" align="right" valign="top"><a id="af7f4e176cdc5da713395af747ca05509"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>maxHeightLineTUI</b> = 0</td></tr>
+<tr class="separator:af7f4e176cdc5da713395af747ca05509"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a668101a02f8a25aabe6f0d53e8f84e2b"><td class="memItemLeft" align="right" valign="top"><a id="a668101a02f8a25aabe6f0d53e8f84e2b"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>Display</b> = 0</td></tr>
+<tr class="separator:a668101a02f8a25aabe6f0d53e8f84e2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af96899f623bfd7641357ea719bdfa571"><td class="memItemLeft" align="right" valign="top"><a id="af96899f623bfd7641357ea719bdfa571"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>currentMenu</b> = 0</td></tr>
+<tr class="separator:af96899f623bfd7641357ea719bdfa571"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9f6cfd91a097cbb4717528515e0c919"><td class="memItemLeft" align="right" valign="top"><a id="aa9f6cfd91a097cbb4717528515e0c919"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>currentList</b> = 0</td></tr>
+<tr class="separator:aa9f6cfd91a097cbb4717528515e0c919"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb1b03eae311ac6b6d45af1749aec4f8"><td class="memItemLeft" align="right" valign="top"><a id="abb1b03eae311ac6b6d45af1749aec4f8"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>listMenu</b> [128]</td></tr>
+<tr class="separator:abb1b03eae311ac6b6d45af1749aec4f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15265f0ea7be83ed0d1213148c69d3e1"><td class="memItemLeft" align="right" valign="top"><a id="a15265f0ea7be83ed0d1213148c69d3e1"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>maxListMenu</b> = 0</td></tr>
+<tr class="separator:a15265f0ea7be83ed0d1213148c69d3e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4968d5183a6871516030f3d7220b485c"><td class="memItemLeft" align="right" valign="top"><a id="a4968d5183a6871516030f3d7220b485c"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>maxItemScreen</b> = 0</td></tr>
+<tr class="separator:a4968d5183a6871516030f3d7220b485c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3bcf49d239fdb12b5e35d06329a9695"><td class="memItemLeft" align="right" valign="top"><a id="ac3bcf49d239fdb12b5e35d06329a9695"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>pageMenuCurrent</b> = 0</td></tr>
+<tr class="separator:ac3bcf49d239fdb12b5e35d06329a9695"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2dcec7aceea27d31a4f7861e8da7824"><td class="memItemLeft" align="right" valign="top"><a id="ac2dcec7aceea27d31a4f7861e8da7824"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>pageMenuMax</b> = 0</td></tr>
+<tr class="separator:ac2dcec7aceea27d31a4f7861e8da7824"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02bbeecc7d1002ced11fecd2f0169ff3"><td class="memItemLeft" align="right" valign="top"><a id="a02bbeecc7d1002ced11fecd2f0169ff3"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>ItemsMax</b> = 256</td></tr>
+<tr class="separator:a02bbeecc7d1002ced11fecd2f0169ff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44e4d374b6e10b599dd07ab23ba82784"><td class="memItemLeft" align="right" valign="top"><a id="a44e4d374b6e10b599dd07ab23ba82784"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>Items</b> [256]</td></tr>
+<tr class="separator:a44e4d374b6e10b599dd07ab23ba82784"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Драйвер библиотеки TUI (Text User Interface) </p>
+<dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (<a href="#" onclick="location.href='mai'+'lto:'+'nik'+'it'+'a.p'+'im'+'ino'+'ff'+'@ya'+'nd'+'ex.'+'ru'; return false;">nikit<span style="display: none;">.nosp@m.</span>a.pi<span style="display: none;">.nosp@m.</span>minof<span style="display: none;">.nosp@m.</span>f@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>ru</a>) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.3.3 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2022-10-20 </dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022-2023 </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a></p>
+</div><h2 class="groupheader">Функции</h2>
+<a id="aa568fd361f52e4d311302d8f39452103"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa568fd361f52e4d311302d8f39452103">&#9670;&nbsp;</a></span>cleanWorkSpace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cleanWorkSpace </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>color</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Добавляет позицию в список элементов </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">char*</td><td>name - Название позиции</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Отчистить пользовательское пространство</p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int</td><td>- Цвет для фона </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00191">191</a></p>
+
+</div>
+</div>
+<a id="a26e292a38c068b706bd4059e0009e2c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26e292a38c068b706bd4059e0009e2c9">&#9670;&nbsp;</a></span>createErrorBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void createErrorBox </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>title</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>text</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Выводит фатальный красный блок </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">title</td><td>- Заголовок </td></tr>
+    <tr><td class="paramname">text</td><td>- Текст ошибки. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00255">255</a></p>
+
+</div>
+</div>
+<a id="a6e749acd510cd65aebe93205924ba9a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e749acd510cd65aebe93205924ba9a7">&#9670;&nbsp;</a></span>createMenuBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void createMenuBox </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>title</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Выводит список меню </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">title</td><td>- Заголовок </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00199">199</a></p>
+
+</div>
+</div>
+<a id="aff91330529d4af37644b4b87038bb036"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff91330529d4af37644b4b87038bb036">&#9670;&nbsp;</a></span>getColorsTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t getColorsTUI </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить цвет TUI. </p>
+<p>@params bool bg - Если true, то фон, в противном случае основной цвет </p>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00042">42</a></p>
+
+</div>
+</div>
+<a id="ada23ba3deeb67437d9326d8122c384f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada23ba3deeb67437d9326d8122c384f0">&#9670;&nbsp;</a></span>getCurrentItemTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t getCurrentItemTUI </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить текущию позицию в меню </p>
+<dl class="section return"><dt>Возвращает</dt><dd>int32_t - Выводит позицию в меню </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00105">105</a></p>
+
+</div>
+</div>
+<a id="ab32b38afa7a243706fc790518bfda073"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab32b38afa7a243706fc790518bfda073">&#9670;&nbsp;</a></span>getLastUpdateTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t getLastUpdateTUI </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить последнее время обновления TUI. </p>
+<dl class="section return"><dt>Возвращает</dt><dd>int32_t - Выводит последнее время обновления </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00087">87</a></p>
+
+</div>
+</div>
+<a id="a1a1316bbe333658b2e830e87d5052729"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a1316bbe333658b2e830e87d5052729">&#9670;&nbsp;</a></span>getMaxListMenuTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t getMaxListMenuTUI </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить максимальное количество элементов в меню </p>
+<dl class="section return"><dt>Возвращает</dt><dd>int32_t - Выводит кол-во элементов </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00132">132</a></p>
+
+</div>
+</div>
+<a id="a5e6305ceb0fad87c661f1e59464748e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e6305ceb0fad87c661f1e59464748e1">&#9670;&nbsp;</a></span>getMaxStrLineTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t getMaxStrLineTUI </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить максимальное символов в одной строке </p>
+<dl class="section return"><dt>Возвращает</dt><dd>int32_t - Выводит кол-во символов на одну строку экрана </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00141">141</a></p>
+
+</div>
+</div>
+<a id="a31fe74e32cc877cfd4c22cd85348c95d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31fe74e32cc877cfd4c22cd85348c95d">&#9670;&nbsp;</a></span>getModeTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t getModeTUI </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить текущий режим меню </p>
+<dl class="section return"><dt>Возвращает</dt><dd>int32_t - Выводит ID статуса </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00051">51</a></p>
+
+</div>
+</div>
+<a id="a576caca1d368d89c201ad813d7b539f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a576caca1d368d89c201ad813d7b539f9">&#9670;&nbsp;</a></span>getWorkSpaceHeightTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t getWorkSpaceHeightTUI </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить высоту рабочего пространств </p>
+<dl class="section return"><dt>Возвращает</dt><dd>int32_t - Высота пространства </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00069">69</a></p>
+
+</div>
+</div>
+<a id="a93f080cbcc7c51ada1ac23f56375fee9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93f080cbcc7c51ada1ac23f56375fee9">&#9670;&nbsp;</a></span>getWorkSpaceWidthTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t getWorkSpaceWidthTUI </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получить длину рабочего пространства </p>
+<dl class="section return"><dt>Возвращает</dt><dd>int32_t - Длина пространства </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00060">60</a></p>
+
+</div>
+</div>
+<a id="a92e602b0284a36245d64713c885551ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92e602b0284a36245d64713c885551ce">&#9670;&nbsp;</a></span>setCurrentItemTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t setCurrentItemTUI </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Установить позицию в меню </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int32_t</td><td>item - Позиция в меню </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00114">114</a></p>
+
+</div>
+</div>
+<a id="aaddd1cd57100f76341816e69279a0793"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaddd1cd57100f76341816e69279a0793">&#9670;&nbsp;</a></span>setLastUpdateTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t setLastUpdateTUI </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>time</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Установить время обновления TUI. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int32_t</td><td>time - Время (в тиках) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00096">96</a></p>
+
+</div>
+</div>
+<a id="a3ef11afdfcacb66d0c3b104009aca639"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ef11afdfcacb66d0c3b104009aca639">&#9670;&nbsp;</a></span>setMaxItemTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t setMaxItemTUI </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Установить максимальное количество элементов в меню </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int32_t</td><td>item - Максимальное кол-во элементов </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00123">123</a></p>
+
+</div>
+</div>
+<a id="a52c5525ea9e55a12f43442a3524fe41c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52c5525ea9e55a12f43442a3524fe41c">&#9670;&nbsp;</a></span>setModeTUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t setModeTUI </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Установить режим работы TUI. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">int32_t</td><td>mode - Режим TUI </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d7/ddd/tui_8c_source.html">tui.c</a> строка <a class="el" href="../../d7/ddd/tui_8c_source.html#l00078">78</a></p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_30344f54b1e95ac4cceded48601d8b77.html">lib</a></li><li class="navelem"><a class="el" href="../../d7/ddd/tui_8c.html">tui.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 10 Дек 2023 13:37:29. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
