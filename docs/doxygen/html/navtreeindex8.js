@@ -190,7 +190,6 @@ var NAVTREEINDEX8 =
 "df/da9/struct_widget.html#a912f41c06defd941dbbe59b108872373":[2,0,109,7],
 "df/da9/struct_widget.html#ac40fb48c853f1d348f49dcd200965bd5":[2,0,109,6],
 "df/da9/struct_widget.html#ac58a87d932bd5c36d4fa3ff82df26dfe":[2,0,109,0],
-"df/dae/rust__header_8h_source.html":[3,0,0,0,16],
 "df/db1/math_8h_source.html":[3,0,0,0,8,2],
 "df/db6/structgz_file__s.html":[2,0,49],
 "df/db6/structgz_file__s.html#a23e1c8c5dbaaba5b7f2abc17cebd9dcc":[2,0,49,0],
@@ -249,5 +248,6 @@ var NAVTREEINDEX8 =
 "df/df0/floppy_8c.html#a4ed756ffaf1e10ff094a4484da89f218":[3,0,0,1,2,1,2,10],
 "df/df0/floppy_8c.html#a509dcb65f908b044074fd7a3fafe11f1":[3,0,0,1,2,1,2,16],
 "df/df0/floppy_8c.html#a6032bd1a31dfcdac08604ea6dd0dcfa4":[3,0,0,1,2,1,2,4],
-"df/df0/floppy_8c.html#a69c644d09bf6ae22c5cd6fd634a8d519":[3,0,0,1,2,1,2,0]
+"df/df0/floppy_8c.html#a69c644d09bf6ae22c5cd6fd634a8d519":[3,0,0,1,2,1,2,0],
+"df/df0/floppy_8c.html#a784cda9289015cf2db9169031ddcc649":[3,0,0,1,2,1,2,2]
 };
