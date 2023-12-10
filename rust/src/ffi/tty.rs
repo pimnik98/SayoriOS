@@ -3,11 +3,11 @@ use core::fmt::Write;
 use lazy_static::lazy_static;
 use spin::Mutex;
 
+use x86::irq;
 use alloc::string::String;
 
 extern "C" {
     fn _tty_puts(c: *const u8);
-    fn _tty_putcgar(c: u8);
 }
 
 #[macro_export]
@@ -23,7 +23,11 @@ macro_rules! println {
 
 #[doc(hidden)]
 pub fn _print_tty(args: fmt::Arguments) {
-    WRITER.lock().write_fmt(args).unwrap();
+	unsafe {
+		irq::disable();
+	    WRITER.lock().write_fmt(args).unwrap();
+	    irq::enable();
+    }
 }
 
 pub fn tty_puts(s: &str) {

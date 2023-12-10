@@ -11,7 +11,8 @@ use ffi::tty::*;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
-    println!("{}", _info);
+    // println!("{}", _info);
+    tty_puts("panek");
     loop {}
 }
 
@@ -23,7 +24,7 @@ pub extern "C" fn rust_command(_argc: u32, _argv: &[*const u8]) {
 
 #[no_mangle]
 pub extern "C" fn rust_main() {
-    // panic!("test rust panic!");
-    // println!("Hello, {}!", "Rust");
+    panic!("test rust panic!");
+    println!("Hello, {}!", "Rust");
     tty_puts("Hey guys did you know...");
 }
