@@ -2,7 +2,7 @@
  * @file lib/base64.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Base64 Encode/Decode
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -47,8 +47,8 @@ static const unsigned char decoding_table[256] = {
 uint8_t* b64e(const char *string){
     uint32_t len = ((strlen(string)));
     int i;
-    uint8_t *p = NULL;
-    uint8_t *encoded = NULL;
+    uint8_t *p = nullptr;
+    uint8_t *encoded = nullptr;
     p = encoded;
     for (i = 0; i < len - 2; i += 3) {
         *p++ = encoding_table[(string[i] >> 2) & 0x3F];
@@ -81,13 +81,12 @@ uint8_t* b64e(const char *string){
  */
 uint8_t* b64d(const char *data) {
     size_t decode_size = strlen(data);
-    size_t output_length = decode_size;
-    
+
     if (decode_size % 4 != 0){
         return 0;
     }
-    
-    output_length = decode_size / 4 * 3;
+
+    size_t output_length = decode_size / 4 * 3;
     
     if (data[decode_size - 1] == '=') (output_length)--;
     if (data[decode_size - 2] == '=') (output_length)--;
@@ -103,7 +102,7 @@ uint8_t* b64d(const char *data) {
         uint32_t sextet_b = data[i] == '=' ? 0 & i++ : decoding_table[(uint8_t)data[i++]];
         uint32_t sextet_c = data[i] == '=' ? 0 & i++ : decoding_table[(uint8_t)data[i++]];
         uint32_t sextet_d = data[i] == '=' ? 0 & i++ : decoding_table[(uint8_t)data[i++]];
-        int32_t triple = (sextet_a << 3 * 6)
+        uint32_t triple = (sextet_a << 3 * 6)
                     + (sextet_b << 2 * 6)
                     + (sextet_c << 1 * 6)
                     + (sextet_d << 0 * 6);
@@ -114,4 +113,4 @@ uint8_t* b64d(const char *data) {
     }
     decoded_data[output_length] = '\0';
     return decoded_data;
-};
+}

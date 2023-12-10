@@ -3,7 +3,7 @@
  * @file drv/pci.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), Арен Елчинян (SynapseOS)
  * @brief Драйвер PCI (Peripheral Component Interconnect)
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2023-01-14
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -36,7 +36,7 @@ uint16_t pci_read_confspc_word(uint8_t bus, uint8_t slot, uint8_t function, uint
 
     outl(PCI_ADDRESS_PORT, addr);
 
-    return ((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffff); //this too... I'm too lazy to write them
+    return (uint16_t)((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffff); //this too... I'm too lazy to write them
 }
 
 uint32_t pci_read32(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset) {
@@ -56,7 +56,7 @@ uint32_t pci_read32(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)
  *
  */
 static struct {
-    uint8_t class, subclass;
+    uint8_t klass, subclass;
     const char *name;
 } pci_device_type_strings[] = {
     {0x00, 0x00, "Неизвестное устройство"},
@@ -147,7 +147,7 @@ static struct {
     {0x0D, 0x20, "802.11a (Wi-Fi) Ethernet-контроллер"},
     {0x0D, 0x21, "802.11b (Wi-Fi) Ethernet-контроллер"},
     {0x0D, 0x80, "Другой беспроводной контроллер"},
-    {0x00, 0x00, NULL} // Конец
+    {0x00, 0x00, nullptr} // Конец
 };
 
 /**
@@ -188,7 +188,7 @@ static struct {
     {0x1234, "[QEMU] Technical Corp"},
     {0x106B, "Apple Inc."},
     {0x1AF4, "Red Hat, Inc."},
-    {0, NULL}
+    {0, nullptr}
 };
 
 /**
@@ -264,11 +264,12 @@ uint16_t pci_get_device(uint8_t bus, uint8_t slot, uint8_t function) {
  * @param uint8_t subclass Группа Б
  * @return const char * Возращает классификацию устройства
  */
-const char *pci_get_device_type(uint8_t class, uint8_t subclass) {
-    for (int i=0; pci_device_type_strings[i].name != NULL; i++)
-        if (pci_device_type_strings[i].class == class && pci_device_type_strings[i].subclass == subclass)
+const char *pci_get_device_type(uint8_t klass, uint8_t subclass) {
+    for (int i=0; pci_device_type_strings[i].name != nullptr; i++)
+        if (pci_device_type_strings[i].klass == klass && pci_device_type_strings[i].subclass == subclass)
             return pci_device_type_strings[i].name;
-    return NULL;
+
+    return nullptr;
 }
 
 /**
@@ -278,10 +279,12 @@ const char *pci_get_device_type(uint8_t class, uint8_t subclass) {
  * @return const char * Возращает имя поставщика
  */
 const char *pci_get_vendor_name(uint16_t vendor) {
-    for (int i=0; pci_vendor_name_strings[i].name != NULL; i++)
-        if (pci_vendor_name_strings[i].vendor == vendor)
-            return pci_vendor_name_strings[i].name;
-    return "unknown";
+	for (int i = 0; pci_vendor_name_strings[i].name != nullptr; i++) {
+		if(pci_vendor_name_strings[i].vendor == vendor)
+			return pci_vendor_name_strings[i].name;
+	}
+
+	return "unknown";
 }
 
 /**
@@ -343,16 +346,25 @@ void pci_write(uint8_t bus, uint8_t slot, uint8_t func, uint32_t offset, uint32_
  * @param uint8_t *func_ret
  */
 void pci_find_device(uint16_t vendor, uint16_t device, uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret) {
-    for (uint32_t bus=0; bus<256; bus++)
-        for (uint32_t slot=0; slot<32; slot++)
-            for (uint32_t func=0; func<8; func++)
-                if (pci_get_device(bus, slot, func) == device && pci_get_vendor(bus, slot, func) == vendor) {
-                    *bus_ret  = bus;
-                    *slot_ret = slot;
-                    *func_ret = func;
-                    return;
-                }
+//	qemu_log("Checking device: %x:%x\n", vendor, device);
+
+	for (uint32_t bus = 0; bus < 256; bus++) {
+		for (uint32_t slot = 0; slot < 32; slot++) {
+			for (uint32_t func = 0; func < 8; func++) {
+				if (pci_get_device(bus, slot, func) == device
+					&& pci_get_vendor(bus, slot, func) == vendor) {
+					*bus_ret = bus;
+					*slot_ret = slot;
+					*func_ret = func;
+					return;
+				}
+			}
+		}
+	}
+
     *bus_ret = *slot_ret = *func_ret = 0xFF;
+
+//	qemu_log("Not found");
 }
 
 /**
@@ -378,8 +390,8 @@ void pci_print_list() {
 
             if (clid != 0xFF && vendor != 0xFFFF) {
                 qemu_log("%u:%u.%u %s: %s (%x), девайс: %x", bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
-                tty_printf("\t%u:%u.%u %s: %s (%x), девайс: %x\n", bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
-            }
+                _tty_printf("\t%u:%u.%u %s: %s (%x), девайс: %x\n", bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
+			}
 
             if ((hdrtype & 0x80) == 0) {
                 for (func = 1; func < 8; func++) {
@@ -390,10 +402,12 @@ void pci_print_list() {
 
                     if (clid != 0xFF && vendor != 0xFFFF) {
                         qemu_log("%u:%u.%u %s: %s (%x), девайс: %x", bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
-                        tty_printf("\t%u:%u.%u %s: %s (%x), девайс: %x\n", bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
+                        _tty_printf("\t%u:%u.%u %s: %s (%x), девайс: %x\n", bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
                     }
                 }
             }
         }
     }
+
+    qemu_log("PCI scan end");
 }

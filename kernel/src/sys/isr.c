@@ -2,7 +2,7 @@
  * @file sys/isr.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Обработчик прерывания высокого уровня
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -32,7 +32,9 @@ void irq_handler(registers_t regs){
 	if (regs.int_num >= 40){
 		outb(0xA0, 0x20);
 	}
+
 	outb(0x20, 0x20);
+
 	if (interrupt_handlers[regs.int_num] != 0){
 		isr_t handler = interrupt_handlers[regs.int_num];
 		handler(regs);

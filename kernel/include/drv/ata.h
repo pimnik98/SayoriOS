@@ -34,9 +34,6 @@
 #define ATA_CMD_IDENTIFY_PACKET   0xA1
 #define ATA_CMD_IDENTIFY          0xEC
 
-#define      ATAPI_CMD_READ       0xA8
-#define      ATAPI_CMD_EJECT      0x1B
-
 #define ATA_IDENT_DEVICETYPE   0
 #define ATA_IDENT_CYLINDERS    2
 #define ATA_IDENT_HEADS        6
@@ -54,6 +51,14 @@
  
 #define ATA_MASTER     0x00
 #define ATA_SLAVE      0x01
+
+#define ATA_DMA_PRIMARY_CMD 0x00
+#define ATA_DMA_PRIMARY_STATUS 0x02
+#define ATA_DMA_PRIMARY_PRDT 0x04
+
+#define ATA_DMA_SECONDARY_CMD 0x08
+#define ATA_DMA_SECONDARY_STATUS 0x0A
+#define ATA_DMA_SECONDARY_PRDT 0x0C
 
 #define ATA_REG_DATA       0x00
 #define ATA_REG_ERROR      0x01
@@ -81,28 +86,48 @@
 #define      ATA_READ      0x00
 #define      ATA_WRITE     0x013
 
+
+#define ATA_PRIMARY_IO 0x1F0
+#define ATA_SECONDARY_IO 0x170
+
+#define ATA_PRIMARY_DCR_AS 0x3F6
+#define ATA_SECONDARY_DCR_AS 0x376
+
+#define ATA_PRIMARY_IRQ 14
+#define ATA_SECONDARY_IRQ 15
+
 #define PRIM_SEC(bus) ((bus) == ATA_PRIMARY?"Primary  ":"Secondary")
 #define MAST_SLV(drive) ((drive) == ATA_PRIMARY?"master":"slave ")
 #define DRIVE(bus, drive) ((bus) << 1 | (drive))
+#define ATA_PORT(bus) ((bus) == ATA_PRIMARY ? ATA_PRIMARY_IO : ATA_SECONDARY_IO)
 
 typedef struct {
     bool online;
     size_t capacity;
+
+    bool is_packet;
+    bool is_chs_addressing;
+
+    uint16_t block_size;
+
+    uint16_t cylinders;
+    uint16_t heads;
+    uint16_t sectors;
+
+    bool is_sata;
 } ata_drive_t;
 
 
-void ide_select_drive(uint8_t bus, uint8_t i);
+void ide_select_drive(uint8_t bus, bool slave);
 void ide_400ns_delay(uint16_t io);
 void ide_poll(uint16_t io);
 
 uint8_t ata_read_sector(uint8_t drive, uint8_t *buf, uint32_t lba);
-uint8_t ata_write_raw_sector(uint8_t drive, uint8_t *buf, uint32_t lba);
+uint8_t ata_write_raw_sector(uint8_t drive, const uint8_t *buf, uint32_t lba);
 
-// UNTESTED
 void ata_write_sectors(uint8_t drive, uint8_t *buf, uint32_t lba, size_t sectors);
 void ata_read_sectors(uint8_t drive, uint8_t *buf, uint32_t lba, uint32_t numsects);
 
-// UNTESTED
 void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) ;
 void ata_write(uint8_t drive, const uint8_t* buf, size_t location, size_t length);
 
@@ -110,3 +135,6 @@ void ata_list();
 void ata_init();
 
 ata_drive_t* ata_get_drives();
+void ata_check_all();
+
+uint8_t ide_identify(uint8_t bus, uint8_t drive);

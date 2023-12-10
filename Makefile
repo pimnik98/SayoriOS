@@ -2,143 +2,40 @@
 # SayoriOS Soul
 # (c) SayoriOS Team 2022-2023
 
-# Исходные объектные модули
-ASM=kernel/asm/init.o \
-	kernel/asm/interrupt.o \
-	kernel/asm/switch_task.o \
-	kernel/asm/sys_calls.o \
-	kernel/asm/usr.o \
-	kernel/asm/gdt.o \
-	kernel/asm/regs.o \
-
-SOURCES=kernel/src/sys/bootscreen.o \
-	kernel/src/sys/cpu_isr.o \
-	kernel/src/sys/cpuinfo.o \
-	kernel/src/sys/gdt.o \
-	kernel/src/sys/isr.o \
-	kernel/src/sys/memory.o \
-	kernel/src/sys/scheduler.o \
-	kernel/src/sys/sync.o \
-	kernel/src/sys/syscalls.o \
-	kernel/src/sys/system.o \
-	kernel/src/sys/timer.o \
-	kernel/src/sys/io_disp.o \
-	kernel/src/sys/elf.o \
-	kernel/src/lib/list.o \
-	kernel/src/lib/stdio.o \
-	kernel/src/lib/string.o \
-	kernel/src/lib/rand.o \
-	kernel/src/lib/math.o \
-	kernel/src/lib/split.o \
-	kernel/src/io/tty.o \
-	kernel/src/io/screen.o \
-	kernel/src/drv/ata.o \
-	kernel/src/drv/cmos.o \
-	kernel/src/drv/vfs_new.o \
-	kernel/src/drv/input/keyboard.o \
-	kernel/src/drv/input/mouse.o \
-	kernel/src/drv/beeper.o \
-	kernel/src/drv/fpu.o \
-	kernel/src/drv/pci.o \
-	kernel/src/io/ports.o \
-	kernel/src/io/shell.o \
-	kernel/src/fs/sefs.o \
-	kernel/src/fs/milla.o \
-	kernel/src/fs/lucario/fs.o \
-	kernel/src/fs/NatSuki.o \
-	kernel/src/user/env.o \
-	kernel/src/sys/logo.o \
-	kernel/src/io/port_io.o \
-	kernel/src/gui/pointutils.o \
-	kernel/src/gui/circle.o \
-	kernel/src/gui/eki.o \
-	kernel/src/drv/audio/ac97.o \
-	kernel/src/toys/piano.o \
-	kernel/src/sys/testing.o \
-	kernel/src/kernel.o 
-
-OPTIMIZABLE = kernel/src/gui/basics.o \
-	kernel/src/gui/render.o \
-	kernel/src/drv/psf.o \
-	kernel/src/gui/window.o \
-	kernel/src/gui/widget.o \
-	kernel/src/gui/sayori_font_file.o \
-	kernel/src/gui/widget_button.o \
-	kernel/src/gui/widget_label.o \
-	kernel/src/gui/widget_image.o \
-	kernel/src/gui/parallel_desktop.o \
-	kernel/src/lib/base64.o \
-	kernel/src/io/imaging.o	
-
-CPP_CODE = kernel/cpp/src/lib/tty.o \
-		   kernel/cpp/src/lib/math.o \
-		   kernel/cpp/src/lib/memory.o \
-		   kernel/cpp/src/lib/string.o \
-		   kernel/cpp/src/lib/file.o \
-		   kernel/cpp/src/lib/conv.o \
-		   kernel/cpp/src/lib/log.o \
-		   kernel/cpp/src/lib/display.o \
-		   kernel/cpp/src/audio/machinist.o \
-		   kernel/cpp/src/audio/machinist_server.o \
-		   kernel/cpp/src/audio/machinist_client.o \
-		   kernel/cpp/src/audio/machinist_ac97.o \
-		   kernel/cpp/src/gui/window.o \
-		   kernel/cpp/src/gui/window_manager.o \
-		   kernel/cpp/src/test.o
-
-KERNEL = iso/boot/kernel.elf
-
-DEBUG=-ggdb3 # -Werror
-
-# Флаги компилятора языка C
-CFLAGS=$(DEBUG) -nostdlib -fno-builtin -fno-stack-protector -msse -msse2 -m32 -Ikernel/include/ -ffreestanding -Wall -Wno-div-by-zero -Wno-address-of-packed-member -Wno-implicit-function-declaration
-CPP_FLAGS=$(DEBUG) -nostdinc -fno-use-cxa-atexit -fno-exceptions -nostdlib -fno-builtin -fno-stack-protector -msse -msse2 -m32 -Ikernel/include/ -Ikernel/cpp/include/ -ffreestanding -w -Wall -Werror
-
-# Флаги компоновщика
-LDFLAGS=-T kernel/asm/link.ld -m elf_i386
-
-# Флаги ассемблера
-ASFLAGS=--32
-
-QEMU = qemu-system-i386
-# QEMU = ../qemu-5.2.0/build/qemu-system-x86_64
-
-QEMU_FLAGS = -cdrom kernel.iso -m 128M \
-			 -name "SayoriOS Soul" -d guest_errors \
-			 -rtc base=localtime -soundhw pcspk \
-			 -device AC97 -hda disk.img
+include config.mk
 
 # Правило сборки
 ############################################################
 # Cтандартное действие при вызове Make
 
-all: $(KERNEL)
+all:
+	@-mkdir -p $(OBJ_DIRECTORY) $(DIRECTORIES)
+	@$(MAKE) $(KERNEL)
 
-$(ASM): %.o : %.s
+$(OBJ_DIRECTORY)/%.o : %.s | $(OBJ_DIRECTORY)
 	@echo -e '\x1b[32mASM  \x1b[0m' $@
 	@$(AS) $< $(ASFLAGS) -o $@
 
-$(SOURCES): %.o : %.c
+$(OBJ_DIRECTORY)/%.o : %.c | $(OBJ_DIRECTORY)
 	@echo -e '\x1b[32mC    \x1b[0m' $@
-	@$(CC) $(CFLAGS) -c -o $@ $<
+	@$(CC) $(CFLAGS) -O0 -c -o $@ $<
 
-$(OPTIMIZABLE): %.o : %.c
-	@echo -e '\x1b[32mC-OPT\x1b[0m' $@
-	@$(CC) $(CFLAGS) -Ofast -c -o $@ $<
-
-$(CPP_CODE): %.o : %.cpp
+$(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
 	@echo -e '\x1b[32mCPP  \x1b[0m' $@
 	@$(CXX) $(CPP_FLAGS) -c -o $@ $<
+
+build_rust:
+	cd $(RUST_DIR) && cargo build && cd ..
 
 # Сборка ядра
 build: $(SOURCES)
 
 # Запуск
 run:
-	$(QEMU) -serial file:Qemu.log -accel kvm $(QEMU_FLAGS)
-# Запуск
-lite:
 	$(QEMU) -serial file:Qemu.log $(QEMU_FLAGS)
+
+lite:
+	$(QEMU) -serial file:Qemu.log -serial telnet:sayorios.piminoff.ru:10000 $(QEMU_FLAGS)
 
 run_milla:
 	$(QEMU) -serial file:Qemu.log -serial telnet:sayorios.piminoff.ru:10000 $(QEMU_FLAGS)
@@ -150,9 +47,18 @@ runLocalMode:
 run_remote_mon:
 	$(QEMU) $(QEMU_FLAGS) -serial mon:stdio -monitor tcp:127.0.0.1:1234,server
 
+run_ahci_sata:
+	$(QEMU) $(QEMU_FLAGS) -serial mon:stdio \
+	-drive id=disk,file=disk.img,if=none \
+	-device ahci,id=ahci \
+	-device ide-hd,drive=disk,bus=ahci.0
+
 # Запуск Milla
 milla:
 	qemu-system-i386 -cdrom kernel.iso -serial file:Qemu.log -serial tcp:127.0.0.1:64552,server,nowait -accel kvm -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime -soundhw pcspk
+
+floppy:
+	qemu-system-i386 -cdrom kernel.iso -serial file:Qemu.log -m 128M -name "SayoriOS v0.3.x (Dev)" -d guest_errors -rtc base=localtime -fda floppy.img -boot order=dc
 
 # Запуск с логами в консоль
 runlive:
@@ -160,15 +66,15 @@ runlive:
 
 # Запуск в режиме UEFI с логами в файл
 uefi:
-	qemu-system-x86_64 -bios /usr/share/qemu/OVMF.fd -cdrom SayoriOS_UEFI.iso -serial file:Qemu.log -accel kvm -soundhw pcspk \
+	qemu-system-x86_64 -bios /usr/share/qemu/OVMF.fd -cdrom SayoriOS_UEFI.iso -serial file:Qemu.log -accel kvm \
 					   -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime
 
 # Запуск в режиме UEFI с логами в консоль
 uefilive:
-	qemu-system-x86_64 -bios /usr/share/qemu/OVMF.fd -cdrom SayoriOS_UEFI.iso -serial mon:stdio -accel kvm -soundhw pcspk \
+	qemu-system-x86_64 -bios /usr/share/qemu/OVMF.fd -cdrom SayoriOS_UEFI.iso -serial mon:stdio -accel kvm \
 					   -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime
 # Генерация ISO-файла
-geniso:
+geniso: $(KERNEL)
 	grub-mkrescue -o "kernel.iso" iso/ -V kernel
 
 # Генерация ISO-файла с поддержкой UEFI
@@ -177,16 +83,19 @@ genuefi:
 
 # Удаление оригинального файла и *.о файлов
 clean:
-	rm kernel.iso || true
-	rm $(ASM) || true
-	rm $(SOURCES) || true
-	rm $(OPTIMIZABLE) || true
-	rm $(CPP_CODE) || true
+	-rm -f $(KERNEL)
+	-rm -f $(KERNEL_NEED)
+	-rm -f $(DEPS)
 
 # Линковка файлов
-$(KERNEL): $(ASM) $(SOURCES) $(OPTIMIZABLE) $(CPP_CODE)
+$(KERNEL): $(KERNEL_NEED)
+	@$(MAKE) build_rust
 	@echo -e '\x1b[32mLINK \x1b[0m' $(KERNEL)
-	@ld $(LDFLAGS) -o $(KERNEL) $(ASM) $(SOURCES) $(OPTIMIZABLE) $(CPP_CODE)
+	@rm -f $(KERNEL)
+	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED) $(RUST_OBJ_DEBUG)
+	@bash tools/genmap.sh
+	@bash tools/insertmap.sh
+	@-rm kernel.map
 
 # Быстрая линковка, генерация ISO, запуск
 bir:
@@ -207,11 +116,38 @@ cir:
 
 cirl:
 	@$(MAKE) clean
-	@$(MAKE) birl
+	@$(MAKE) geniso
+	@$(MAKE) lite
+
+bf:
+	@$(MAKE) clean
+	@$(MAKE) geniso
+	@$(MAKE) floppy
 
 cppcheck:
 	cppcheck --enable=warning,performance,portability .
 
-#debug:
-#	qemu-system-i386 -cdrom kernel.iso -serial file:Qemu.log -accel kvm -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime -S -s -soundhw pcspk &
-#	sleep 1 && gdb iso/boot/kernel.elf -ex "target remote tcp::1234"
+
+debug: geniso
+	$(QEMU) $(QEMU_FLAGS) -s -S &
+	gdb -ex "target remote localhost:1234" -ex "break kernel" -ex "continue"
+
+ensure_tools:
+	@echo "C:" $(CC)
+	@echo "C++:" $(CXX)
+
+release:
+	ADDCFLAGS="-DRELEASE" $(MAKE)
+
+deploy: $(KERNEL)
+	sudo cp iso/boot/kernel.elf /boot/sayorios_kernel.elf
+	sudo cp iso/boot/sayori_sefs.img /boot/
+	sudo cp other/41_sayori /etc/grub.d/
+
+	sudo update-grub
+
+clangd:
+	$(MAKE) clean
+	bear -- $(MAKE) -j2
+
+-include $(DEPS)

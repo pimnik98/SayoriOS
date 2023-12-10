@@ -1,8 +1,8 @@
 /**
  * @file fs/sefs.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru), Drew >_ (pikachu_andrey@vk.com)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Файловая система SEFS (Sayori Easy File System)
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-11-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -34,7 +34,7 @@ size_t dirCount = 0;               ///< Количество папок
 char* sefs_readChar(uint32_t node){
     sefs_file_header_t header = file_headers[node];
     //qemu_log("[SEFS] [readChar] Elem: %d",node);
-    char* buf = kmalloc(header.length);
+    char* buf = (char*)kmalloc(header.length);
     memcpy(buf, (void*)header.offset, header.length);
     return buf;
 }
@@ -57,6 +57,8 @@ uint32_t sefs_read(uint32_t node, size_t offset, size_t size, void *buffer){
     if (header.length < size) {
         size = header.length;
     }
+
+    qemu_log("SEFS -> Read from: %x to (%x) (size %d)", header.offset + offset, header.offset + offset + size, size);
 
     memcpy(buffer, (char*)(header.offset+offset), size);
     
@@ -92,13 +94,13 @@ uint32_t sefs_write(uint32_t node, size_t offset, size_t size, void *buffer){
         memcpy(newfile, tmp1, offset);
     }
     // Сохраняем буфер
-    strcat(newfile, buffer);
+    strcat((char*)newfile, (const char*)buffer);
     // если остались остатки, то копируем
     if ((size + offset < header.length)){
         w_tmp3 = header.length - (size + offset);   // Откуда копируем
         void* tmp3 = kmalloc(offset);
         w_tmp3 = sefs_read(node,0,w_tmp3,tmp3);
-        strcat(newfile, tmp3);
+        strcat((char*)newfile, (const char*)tmp3);
     }
     return w_tmp1+size+w_tmp3;
 }
@@ -134,8 +136,8 @@ size_t sefs_getOffsetFile(int node){
  * 
  * @return int - Индекс файла, или отрицательное значение при ошибке
  */
-uint32_t sefs_findFile(char* filename){
-    char* file = kmalloc(sizeof(char)*256);
+int32_t sefs_findFile(const char* filename){
+    char* file = (char*)kmalloc(sizeof(char)*256);
     char* sl = "/";
     strcpy(file, sl);
     strcat(file,filename);
@@ -158,8 +160,8 @@ uint32_t sefs_findFile(char* filename){
  *
  * @return int - Индекс папки, или отрицательное значение при ошибке
  */
-int32_t sefs_findDir(char* path){
-    char* file = kmalloc(sizeof(char)*256);
+int32_t sefs_findDir(const char* path){
+    char* file = (char*)kmalloc(sizeof(char)*256);
     char* sl = "/";
 
     strcpy(file, sl);
@@ -169,7 +171,7 @@ int32_t sefs_findDir(char* path){
 
     for (size_t i = 0, a = 0; i < sefs_header->nfiles; i++){
         if (root_nodes[i].flags != FS_DIRECTORY) continue;
-        if (strcmpn(root_nodes[i].name,file)){
+        if (strcmpn(root_nodes[i].name, file)){
             kfree(file);
             return a;
         }
@@ -200,13 +202,13 @@ size_t sefs_countElemFolder(char* path){
 /**
  * @brief [SEFS] Выводит список файлов
  */
-struct dirent* sefs_list(char* path){
+struct dirent* sefs_list(const char* path){
     size_t inxDir = sefs_findDir(path);
     if (inxDir < 0){
         return 0;
     }
 
-    struct dirent* testFS = kcalloc(sefs_header->nfiles, sizeof(struct dirent));
+    struct dirent* testFS = (struct dirent*)kcalloc(sefs_header->nfiles, sizeof(struct dirent));
     
     qemu_log("[Index Dir] %d",inxDir);
     size_t inxFile = 0;
@@ -293,11 +295,41 @@ void sefs_dirfree(struct dirent* ptr) {
  * 
  * @return fs_node_t - Структура с файлами
  */
-fs_node_t *sefs_initrd(uint32_t location){
-    qemu_log("[SEFS] [Init] loc: %x",location);
+fs_node_t *sefs_initrd(uint32_t location, uint32_t end) {
+    qemu_log("[SEFS] [Init] loc: %x", location);
+    qemu_log("[SEFS] Disk size is: %d bytes.", end - location);
+
+    qemu_log("SEFS INIT SCOPE =====================================");
+
+    // TODO: FIXME: XXX: NEED TO MAP PAGES FOR SEFS LOCATION!
+
+    size_t page_count = (end - location) / PAGE_SIZE;
+
+    page_count += 1;
+
+    // size_t* pages = kcalloc(page_count, sizeof(size_t));
+
+    // for(int i = 0; i < page_count; i++) {
+    //     pages[i] = alloc_phys_pages(1);
+    // }
+
+    for(int i = 0; i < page_count; i++) {
+        map_pages(
+            get_kernel_dir(),
+            location + (i * PAGE_SIZE),  // Find secure place to map pages
+            location + (i * PAGE_SIZE),
+            1,
+            PAGE_WRITEABLE | PAGE_PRESENT
+        );
+    }
+
+    // qemu_log("Ok");
+
+    // while(1);
+
     // Инициализирует указатели main и заголовке файлов и заполняет корневой директорий.
     sefs_header = (sefs_header_t *)location;
-    file_headers = (sefs_file_header_t *) (location + sizeof(sefs_header_t));
+    file_headers = (sefs_file_header_t *)(location + sizeof(sefs_header_t));
     sefs_root = (fs_node_t*)kcalloc(1, sizeof(fs_node_t));
 
     strcpy(sefs_root->name, "/");
@@ -325,10 +357,10 @@ fs_node_t *sefs_initrd(uint32_t location){
     sefs_root->getListElem = &sefs_list;
     sefs_root->unlistElem = &sefs_dirfree;
 
-    root_nodes = (fs_node_t*)kmalloc(sizeof(fs_node_t) * sefs_header->nfiles);
+    root_nodes = (fs_node_t*)kcalloc(sefs_header->nfiles, sizeof(fs_node_t));
     nroot_nodes = sefs_header->nfiles;
     // Для каждого файла...
-    for (int i = 0; i < sefs_header->nfiles; i++){
+    for (int i = 0; i < nroot_nodes; i++){
         // Отредактируем заголовок файла — в настоящее время в нем указывается смещение файла
         // относительно ramdisk. Мы хотим, чтобы оно указывалось относительно начала
         // памяти.

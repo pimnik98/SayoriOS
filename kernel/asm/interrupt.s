@@ -130,7 +130,6 @@ isr80:
 
 
 isr_common_stub_err:
-
       pusha
          
       push  %ds
@@ -185,5 +184,4 @@ irq_common_stub:
       
       add   $8, %esp
             
-      iret
-      
+      iret      

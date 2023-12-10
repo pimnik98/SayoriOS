@@ -1,9 +1,11 @@
+#include <common.h>
 #include <drv/beeper.h>
+#include <io/screen.h>
 #include <gui/basics.h>
 #include <drv/psf.h>
-#include <io/tty.h>
+#include <lib/string.h>
 #include <drv/input/keyboard.h>
-#include <io/ports.h>
+#include <io/tty.h>
 
 #define PADDING 32
 #define KEY_SIZE 32
@@ -54,8 +56,8 @@ void play_key(char key) {
 }
 
 void draw_piano() {
-    size_t dispw = getWidthScreen();
-    size_t disph = getHeightScreen();
+    size_t dispw = getScreenWidth();
+    size_t disph = getScreenHeight();
 
     size_t starth = (disph - (KEY_SIZE*2)+PADDING)/2;
     size_t startbw = (dispw - (KEY_SIZE+PADDING)*(strlen(keys_black)+1))/2;
@@ -79,10 +81,10 @@ void draw_piano() {
     }
 }
 
-void handle_key_piano(char key) {
+void handle_key_piano(int key) {
     if(key == 0) return;
     char* printable_key = getCharKeyboard(key, false);
-    char pressed = !getPressReleaseKeyboard();
+    uint8_t pressed = !getPressReleaseKeyboard();
 
     // qemu_log("Key pressed: %d (%d)", pressed, key);
 
@@ -122,13 +124,13 @@ void piano() {
     keyboardctl(KEYBOARD_ECHO, false);
 
     while(1) {
-        char key = getCharRaw();
+        int key = getCharRaw();
         if(key == 129 || key == 1) break;
 
         handle_key_piano(key);
 
         draw_piano();
-        draw_vga_str("NDRAEY (Drew >_) [Press Esc to exit]", 36, 8, getHeightScreen() - 16, 0xaaaaaa);
+        draw_vga_str("NDRAEY >_ [Press Esc to exit]", 36, 8, getScreenHeight() - 16, 0xaaaaaa);
         punch();
     }
 

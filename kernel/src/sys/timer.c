@@ -2,7 +2,7 @@
  * @file sys/timer.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Модуль системного таймера
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -12,9 +12,12 @@
 #include	"drv/fpu.h"
 #include	"io/ports.h"
 
+extern bool scheduler_working;
+
 size_t tick = 0;			///< Количество тиков
 size_t frequency = 0;		///< Частота
 
+// FIXME: Invalid and deprecated implementation.
 void microseconds_delay(size_t microseconds) {
     for (size_t i = 0; i < microseconds; ++i)
         inb(0x80);
@@ -51,10 +54,10 @@ size_t getFrequency(){
  * 
  * @param registers_t regs - Регистр
  */
-static void timer_callback(registers_t regs){
+static void timer_callback(__attribute__((unused)) registers_t regs){
 	tick++;
 	
-	if (is_multitask())
+	if (is_multitask() && scheduler_working)
 		task_switch();
 }
 
@@ -85,32 +88,25 @@ void sleep_ms(uint32_t milliseconds) {
 }
 
 /**
- * @brief Ожидание по секундам
- *
- * @param uint32_t _d - Секунды
- */
-void sleep(size_t _d) {
-	sleep_ms(_d * 1000);
-}
-
-/**
  * @brief Инициализация модуля системного таймера
  * 
  * @param uint32_t - Частота
  */
 void init_timer(uint32_t f){
 	frequency = f;
+
 	uint32_t divisor;
 	uint8_t low;
 	uint8_t high;
+
 	register_interrupt_handler(IRQ0, &timer_callback);
 	
-	divisor = 1193180/frequency;
+	divisor = 1193180 / frequency;
 	 
 	outb(0x43, 0x36);
 	
 	low = (uint8_t) (divisor & 0xFF);
-	high = (uint8_t) ( (divisor >> 8) & 0xFF);
+	high = (uint8_t) ((divisor >> 8) & 0xFF);
 	
 	outb(0x40, low);
 	outb(0x40, high);	

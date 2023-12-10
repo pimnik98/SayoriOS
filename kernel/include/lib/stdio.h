@@ -1,6 +1,8 @@
 #pragma once
 
-#define EOF -1
+#include "common.h"
+
+#define EOF (-1)
 #define SEEK_SET 0
 #define SEEK_CUR 1
 #define SEEK_END 2
@@ -15,7 +17,7 @@
  * @brief Структура файла. Требуется для работы с VFS
  * 
  */
-typedef struct {
+typedef struct FILE {
 	char* path;
     int32_t size;
     uint32_t fmode;
@@ -35,9 +37,9 @@ enum FileOpenMode {
 
 FILE* fopen(const char* filename, const char* mode);
 void fclose(FILE *stream);
-int32_t fread_c(FILE* stream, size_t count, size_t size, void* buf);
-ssize_t ftell(FILE* stream);
-ssize_t fsize(FILE *stream);
+int32_t fread(FILE* stream, size_t count, size_t size, void* buffer);
+int ftell(FILE* stream);
+int fsize(FILE *stream);
 ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence);
 void rewind(FILE *stream);
 void perror(FILE* stream,char* s);
@@ -47,4 +49,4 @@ ssize_t fgetpos(FILE* stream);
 void fdebuginfo(FILE* stream);
 
 //size_t fread(FILE* stream, char* ptr, size_t size, size_t nmemb);
-size_t fwrite(const void *ptr, size_t size, size_t count, FILE *stream);
+size_t fwrite(FILE *stream, size_t size, size_t count, const void *ptr);

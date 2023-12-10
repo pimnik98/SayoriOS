@@ -2,7 +2,7 @@
  * @file sys/cpuinfo.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Определение процессора
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -36,7 +36,7 @@ char brandAllName[128] = {0};                ///< Название процес�
  * @warning Не для личного использования. Если вы хотите получить название процессора используйте функцию getNameBrand()
  */
 int detect_cpu(bool silent) {
-    int type = 0;
+    int type;
     size_t ebx, unused;
     cpuid(0, unused, ebx, unused, unused);
     switch (ebx) {
@@ -134,36 +134,6 @@ char *Intel_Other[] = {
 };
 
 /**
- * @brief [CPUInfo] Печать регистров
- *
- * @param int eax - Регистр 1
- * @param int ebx - Регистр 2
- * @param int ecx - Регистр 3
- * @param int edx - Регистр 4
- *
- * @return char* - Имя процессора
- *
- * @warning Не для личного использования. Если вы хотите получить название процессора используйте функцию getNameBrand()
- */
-char* cpuinfo_printregs(int eax, int ebx, int ecx, int edx) {
-    int j;
-    char *string = kmalloc(18);
-    memset(string, 0, 18);
-    string[17] = 0;
-    for (j = 0; j < 4; j++) {
-        string[j] = eax >> (8 * j);
-        string[j + 4] = ebx >> (8 * j);
-        string[j + 8] = ecx >> (8 * j);
-        string[j + 12] = edx >> (8 * j);
-    }
-    //tty_printf("%s",string);
-    //memset(brandAllName,0,128);
-    strcat(brandAllName,string);
-    //qemu_log("%d | %s",strlen(brandAllName),brandAllName);
-    return string;
-}
-
-/**
  * @brief Получение информации о процессоре Intel
  *
  * @param bool silent - Тихий режим
@@ -176,9 +146,9 @@ int do_intel(bool silent) {
     if (silent == 0){
         tty_printf("Detected Intel CPU.\nIntel-specific features:\n");
     }
-    unsigned long eax, ebx, ecx, edx, max_eax, signature, unused;
-    int model, family, type, brand, stepping, reserved;
-    int extended_family = -1;
+    size_t eax, ebx, max_eax, signature, unused;
+    size_t model, family, type, brand, stepping, reserved;
+    size_t extended_family;
     cpuid(1, eax, ebx, unused, unused);
     model = (eax >> 4) & 0xf;
     family = (eax >> 8) & 0xf;
@@ -189,39 +159,44 @@ int do_intel(bool silent) {
     signature = eax;
     if (silent == 0){
         tty_printf("Type %d - ", type);
-        switch (type) {
-        case 0:
-            tty_printf("Original OEM");
-            break;
-        case 1:
-            tty_printf("Overdrive");
-            break;
-        case 2:
-            tty_printf("Dual-capable");
-            break;
-        case 3:
-            tty_printf("Reserved");
-            break;
+
+		switch(type) {
+			case 0:
+				tty_printf("Original OEM");
+				break;
+			case 1:
+				tty_printf("Overdrive");
+				break;
+			case 2:
+				tty_printf("Dual-capable");
+				break;
+			case 3:
+				tty_printf("Reserved");
+				break;
+			default:
+				tty_printf("Unknown");
         }
 
         tty_printf("\n");
 
         tty_printf("Family %d - ", family);
-        switch (family) {
-        case 3:
-            tty_printf("i386");
-            break;
-        case 4:
-            tty_printf("i486");
-            break;
-        case 5:
-            tty_printf("Pentium");
-            break;
-        case 6:
-            tty_printf("Pentium Pro");
-            break;
-        case 15:
-            tty_printf("Pentium 4");
+        switch(family) {
+			case 3:
+				tty_printf("i386");
+				break;
+			case 4:
+				tty_printf("i486");
+				break;
+			case 5:
+				tty_printf("Pentium");
+				break;
+			case 6:
+				tty_printf("Pentium Pro");
+				break;
+			case 15:
+				tty_printf("Pentium 4");
+			default:
+				tty_printf("Unknown");
         }
 
         tty_printf("\n");
@@ -233,74 +208,80 @@ int do_intel(bool silent) {
         tty_printf("Model %d - ", model);
 
         switch (family) {
-        case 3:
-            break;
-        case 4:
-            switch (model) {
-            case 0:
-            case 1:
-                tty_printf("DX");
-                break;
-            case 2:
-                tty_printf("SX");
-                break;
-            case 3:
-                tty_printf("487/DX2");
-                break;
-            case 4:
-                tty_printf("SL");
-                break;
-            case 5:
-                tty_printf("SX2");
-                break;
-            case 7:
-                tty_printf("Write-back enhanced DX2");
-                break;
-            case 8:
-                tty_printf("DX4");
-                break;
-            }
-            break;
-        case 5:
-            switch (model) {
-            case 1:
-                tty_printf("60/66");
-                break;
-            case 2:
-                tty_printf("75-200");
-                break;
-            case 3:
-                tty_printf("for 486 system");
-                break;
-            case 4:
-                tty_printf("MMX");
-                break;
-            }
-            break;
-        case 6:
-            switch (model) {
-            case 1:
-                tty_printf("Pentium Pro");
-                break;
-            case 3:
-                tty_printf("Pentium II Model 3");
-                break;
-            case 5:
-                tty_printf("Pentium II Model 5/Xeon/Celeron");
-                break;
-            case 6:
-                tty_printf("Celeron");
-                break;
-            case 7:
-                tty_printf("Pentium III/Pentium III Xeon - external L2 cache");
-                break;
-            case 8:
-                tty_printf("Pentium III/Pentium III Xeon - internal L2 cache");
-                break;
-            }
-            break;
-        case 15:
-            break;
+			case 3:
+				break;
+			case 4:
+				switch (model) {
+					case 0:
+					case 1:
+						tty_printf("DX");
+						break;
+					case 2:
+						tty_printf("SX");
+						break;
+					case 3:
+						tty_printf("487/DX2");
+						break;
+					case 4:
+						tty_printf("SL");
+						break;
+					case 5:
+						tty_printf("SX2");
+						break;
+					case 7:
+						tty_printf("Write-back enhanced DX2");
+						break;
+					case 8:
+						tty_printf("DX4");
+						break;
+					default:
+						break;
+				}
+				break;
+			case 5:
+				switch (model) {
+					case 1:
+						tty_printf("60/66");
+						break;
+					case 2:
+						tty_printf("75-200");
+						break;
+					case 3:
+						tty_printf("for 486 system");
+						break;
+					case 4:
+						tty_printf("MMX");
+						break;
+					default:
+						break;
+				}
+				break;
+			case 6:
+				switch (model) {
+					case 1:
+						tty_printf("Pentium Pro");
+						break;
+					case 3:
+						tty_printf("Pentium II Model 3");
+						break;
+					case 5:
+						tty_printf("Pentium II Model 5/Xeon/Celeron");
+						break;
+					case 6:
+						tty_printf("Celeron");
+						break;
+					case 7:
+						tty_printf("Pentium III/Pentium III Xeon - external L2 cache");
+						break;
+					case 8:
+						tty_printf("Pentium III/Pentium III Xeon - internal L2 cache");
+						break;
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
         }
 
         tty_printf("\n");
@@ -320,16 +301,16 @@ int do_intel(bool silent) {
             memset(brandAllName,0,128);
         }
         if (max_eax >= 0x80000002) {
-            cpuid(0x80000002, eax, ebx, ecx, edx);
-            (cpuinfo_printregs(eax, ebx, ecx, edx));
+//            cpuid(0x80000002, eax, ebx, ecx, edx)
+//            cpuinfo_printregs(eax, ebx, ecx, edx);
         }
         if (max_eax >= 0x80000003) {
-            cpuid(0x80000003, eax, ebx, ecx, edx);
-            (cpuinfo_printregs(eax, ebx, ecx, edx));
+//            cpuid(0x80000003, eax, ebx, ecx, edx)
+//            (cpuinfo_printregs(eax, ebx, ecx, edx));
         }
         if (max_eax >= 0x80000004) {
-            cpuid(0x80000004, eax, ebx, ecx, edx);
-            (cpuinfo_printregs(eax, ebx, ecx, edx));
+//            cpuid(0x80000004, eax, ebx, ecx, edx)
+//            cpuinfo_printregs(eax, ebx, ecx, edx);
         }
         if (silent == 0){
             tty_printf("\n");
@@ -365,8 +346,9 @@ int do_amd(bool silent) {
     if (silent == 0){
         tty_printf("Detected AMD CPU. \nAMD-specific features:\n");
     }
-    unsigned long extended, eax, ebx, ecx, edx, unused;
-    int family, model, stepping, reserved;
+
+    size_t extended, eax, ebx, ecx, edx, unused;
+    size_t family, model, stepping, reserved;
     cpuid(1, eax, unused, unused, unused);
 
     model = (eax >> 4) & 0xf;
@@ -376,52 +358,56 @@ int do_amd(bool silent) {
     if (silent == 0){
         tty_printf("Family: %d Model: %d [", family, model);
         switch (family) {
-        case 4:
-            tty_printf("486 Model %d", model);
-            break;
-        case 5:
-            switch (model) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 6:
-            case 7:
-                tty_printf("K6 Model %d", model);
-                break;
-            case 8:
-                tty_printf("K6-2 Model 8");
-                break;
-            case 9:
-                tty_printf("K6-III Model 9");
-                break;
-            default:
-                tty_printf("K5/K6 Model %d", model);
-                break;
-            }
-            break;
-        case 6:
-            switch (model) {
-            case 1:
-            case 2:
-            case 4:
-                tty_printf("Athlon Model %d", model);
-                break;
-            case 3:
-                tty_printf("Duron Model 3");
-                break;
-            case 6:
-                tty_printf("Athlon MP/Mobile Athlon Model 6");
-                break;
-            case 7:
-                tty_printf("Mobile Duron Model 7");
-                break;
-            default:
-                tty_printf("Duron/Athlon Model %d", model);
-                break;
-            }
-            break;
-        }
+			case 4:
+				tty_printf("486 Model %d", model);
+				break;
+			case 5:
+				switch (model) {
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 6:
+					case 7:
+						tty_printf("K6 Model %d", model);
+						break;
+					case 8:
+						tty_printf("K6-2 Model 8");
+						break;
+					case 9:
+						tty_printf("K6-III Model 9");
+						break;
+					default:
+						tty_printf("K5/K6 Model %d", model);
+						break;
+				}
+				break;
+			case 6:
+				switch (model) {
+					case 1:
+					case 2:
+					case 4:
+						tty_printf("Athlon Model %d", model);
+						break;
+					case 3:
+						tty_printf("Duron Model 3");
+						break;
+					case 6:
+						tty_printf("Athlon MP/Mobile Athlon Model 6");
+						break;
+					case 7:
+						tty_printf("Mobile Duron Model 7");
+						break;
+					default:
+						tty_printf("Duron/Athlon Model %d", model);
+						break;
+				}
+				break;
+
+			default:
+				tty_printf("Unknown");
+				break;
+			}
 
         tty_printf("]\n");
     }
@@ -438,7 +424,7 @@ int do_amd(bool silent) {
             cpuid(j, eax, ebx, ecx, edx);
             if (silent == 0){
 
-                tty_printf(cpuinfo_printregs(eax, ebx, ecx, edx));
+//                tty_printf(cpuinfo_printregs(eax, ebx, ecx, edx));
                 memset(brandAllName,0,128);
             }
         }
@@ -448,7 +434,7 @@ int do_amd(bool silent) {
     }
     if (extended >= 0x80000007) {
         cpuid(0x80000007, unused, unused, unused, edx);
-        if (edx & 1 && silent == 0) {
+        if ((edx & 1) && silent == 0) {
             tty_printf("Temperature Sensing Diode Detected!\n");
         }
     }
@@ -456,4 +442,17 @@ int do_amd(bool silent) {
         tty_printf("Stepping: %d Reserved: %d\n", stepping, reserved);
     }
     return 0;
+}
+
+size_t get_max_cpuid_count() {
+	uint32_t info[4] = {0};
+
+	cpuid(0x0,
+		  info[0],
+		  info[1],
+		  info[2],
+		  info[3]
+	);
+
+	return info[0];
 }

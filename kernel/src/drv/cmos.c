@@ -1,8 +1,8 @@
 /**
  * @file drv/cmos.c
  * @brief Драйвер CMOS
- * @author Drew >_ (pikachu_andrey@vk.com)
- * @version 0.3.2
+ * @author NDRAEY >_ (pikachu_andrey@vk.com)
+ * @version 0.3.3
  * @date 2022-11-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -13,13 +13,13 @@
  
 int32_t century_register = 0x00;     // Set by ACPI table parsing code if possible
  
-unsigned char second;
-unsigned char minute;
-unsigned char hour;
-unsigned char day;
-unsigned char month;
-uint32_t year;
-unsigned char century;
+unsigned char cmos_second;
+unsigned char cmos_minute;
+unsigned char cmos_hour;
+unsigned char cmos_day;
+unsigned char cmos_month;
+unsigned short cmos_year;
+unsigned char cmos_century;
 
 unsigned char last_second;
 unsigned char last_minute;
@@ -57,68 +57,71 @@ unsigned char get_RTC_register(int32_t reg) {
  
 void read_rtc() {
     while (get_update_in_progress_flag());          // Make sure an update isn't in progress
-    second = get_RTC_register(0x00);
-    minute = get_RTC_register(0x02);
-    hour = get_RTC_register(0x04);
-    day = get_RTC_register(0x07);
-    month = get_RTC_register(0x08);
-    year = get_RTC_register(0x09);
-    if(century_register != 0) {
-        century = get_RTC_register(century_register);
+
+	cmos_second = get_RTC_register(0x00);
+    cmos_minute = get_RTC_register(0x02);
+    cmos_hour = get_RTC_register(0x04);
+    cmos_day = get_RTC_register(0x07);
+    cmos_month = get_RTC_register(0x08);
+    cmos_year = get_RTC_register(0x09);
+
+	if(century_register != 0) {
+        cmos_century = get_RTC_register(century_register);
     }
  
     do {
-        last_second = second;
-        last_minute = minute;
-        last_hour = hour;
-        last_day = day;
-        last_month = month;
-        last_year = year;
-        last_century = century;
+        last_second = cmos_second;
+        last_minute = cmos_minute;
+        last_hour = cmos_hour;
+        last_day = cmos_day;
+        last_month = cmos_month;
+        last_year = cmos_year;
+        last_century = cmos_century;
  
         while (get_update_in_progress_flag());       // Make sure an update isn't in progress
-        second = get_RTC_register(0x00);
-        minute = get_RTC_register(0x02);
-        hour = get_RTC_register(0x04);
-        day = get_RTC_register(0x07);
-        month = get_RTC_register(0x08);
-        year = get_RTC_register(0x09);
+
+		cmos_second = get_RTC_register(0x00);
+        cmos_minute = get_RTC_register(0x02);
+        cmos_hour = get_RTC_register(0x04);
+        cmos_day = get_RTC_register(0x07);
+        cmos_month = get_RTC_register(0x08);
+        cmos_year = get_RTC_register(0x09);
         if(century_register != 0) {
-            century = get_RTC_register(century_register);
+            cmos_century = get_RTC_register(century_register);
         }
-    } while( (last_second != second) || (last_minute != minute) || (last_hour != hour) ||
-           (last_day != day) || (last_month != month) || (last_year != year) ||
-           (last_century != century) );
+    } while( (last_second != cmos_second) || (last_minute != cmos_minute) || (last_hour != cmos_hour) ||
+           (last_day != cmos_day) || (last_month != cmos_month) || (last_year != cmos_year) ||
+           (last_century != cmos_century) );
  
     registerB = get_RTC_register(0x0B);
  
     // Convert BCD to binary values if necessary
  
     if (!(registerB & 0x04)) {
-        second = (second & 0x0F) + ((second / 16) * 10);
-        minute = (minute & 0x0F) + ((minute / 16) * 10);
-        hour = ( (hour & 0x0F) + (((hour & 0x70) / 16) * 10) ) | (hour & 0x80);
-        day = (day & 0x0F) + ((day / 16) * 10);
-        month = (month & 0x0F) + ((month / 16) * 10);
-        year = (year & 0x0F) + ((year / 16) * 10);
+        cmos_second = (cmos_second & 0x0F) + ((cmos_second / 16) * 10);
+        cmos_minute = (cmos_minute & 0x0F) + ((cmos_minute / 16) * 10);
+        cmos_hour = ( (cmos_hour & 0x0F) + (((cmos_hour & 0x70) / 16) * 10) ) | (cmos_hour & 0x80);
+        cmos_day = (cmos_day & 0x0F) + ((cmos_day / 16) * 10);
+        cmos_month = (cmos_month & 0x0F) + ((cmos_month / 16) * 10);
+        cmos_year = (cmos_year & 0x0F) + ((cmos_year / 16) * 10);
         if(century_register != 0) {
-            century = (century & 0x0F) + ((century / 16) * 10);
+            cmos_century = (cmos_century & 0x0F) + ((cmos_century / 16) * 10);
         }
     }
  
-    // Convert 12 hour clock to 24 hour clock if necessary
+    // Convert 12-hour clock to 24-hour clock if necessary
  
-    if (!(registerB & 0x02) && (hour & 0x80)) {
-        hour = ((hour & 0x7F) + 12) % 24;
+    if (!(registerB & 0x02) && (cmos_hour & 0x80)) {
+        cmos_hour = ((cmos_hour & 0x7F) + 12) % 24;
     }
  
     // Calculate the full (4-digit) year
  
     if(century_register != 0) {
-        year += century * 100;
+        cmos_year += cmos_century * 100;
     } else {
-        year += (CURRENT_YEAR / 100) * 100;
-        if(year < CURRENT_YEAR) year += 100;
+        cmos_year += (CURRENT_YEAR / 100) * 100;
+        if(cmos_year < CURRENT_YEAR) cmos_year += 100;
     }
 }
 
@@ -135,23 +138,7 @@ int isleap(int year) {
 sayori_time_t get_time() {
     read_rtc();
 	struct sayori_time time = {
-		second, minute, hour, day, month, year, century
+		cmos_second, cmos_minute, cmos_hour, cmos_day, cmos_month, cmos_year, cmos_century
 	};
 	return time;
 }
-
-/*
-unsigned int sayori_time_to_unix(struct sayori_time ktime) {
-	unsigned int t = 0;
-	unsigned char cmdt = (isleap(ktime.year)?sayori_months_leap[ktime.month-1]:sayori_months[ktime.month-1]);
-
-	t += ktime.seconds;
-	t += ktime.minutes*60;
-	t += ktime.hours*60*60;
-	t += ktime.day*60*60*24;
-	t += ktime.month*60*60*24*cmdt;
-	t -= 33555600; // WHAT A MAGIC???
-	t += (ktime.year-1970)*60*60*24*cmdt*12;
-    return t;
-}
-*/

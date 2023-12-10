@@ -13,3 +13,5 @@ void keyboardInit();
 void gets(char *buffer);
 bool is_lctrl_key();
 int getCharRaw();
+int getIntKeyboardWait();
+uint8_t getPressReleaseKeyboard();

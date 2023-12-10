@@ -1,9 +1,9 @@
 /**
- * @defgroup pci Драйвер PCI (Peripheral Component Interconnect)
+ * @defgroup Драйвер PCI (Peripheral Component Interconnect)
  * @file drv/pci.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), Арен Елчинян (SynapseOS)
  * @brief Драйвер PCI (Peripheral Component Interconnect)
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2023-01-14
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -44,28 +44,28 @@
  * @brief Структура устройства
  */
 typedef struct pci_header_t {
-uint16_t vendor_id;             ///< ID-Поставщика
-uint16_t device_id;             ///< ID-Устройства
-uint8_t revision;               ///< ID-Реверсии
-uint8_t prog_if;                ///< Положение дел (???) Prog IF
-uint8_t subclass_id;            ///< Подкатегория устройства
-uint8_t class_id;               ///< Категория устройства
-uint8_t cache_line_size;        ///< Размер строки кэша
-uint8_t latency_timer;          ///< Таймер задержки
-uint8_t hdr_type;               ///< Тип заголовка (???)
-uint8_t bist;                   ///< БИСТ (???) BIST
-uint32_t bar[6];                ///< ???
-uint32_t cardbus_cis_ptr;       ///< Базовый адрес CardBus Socket/ExCa
-uint16_t subsys_vendor;         ///< ???
-uint16_t subsys_id;             ///< ???
-uint32_t expansion_rom;         ///< ???
-uint8_t capatibilities;         ///< ???
-uint8_t reserved[3];            ///< Зарезервированный
-uint32_t reserved2;             ///< Зарезервированный
-uint8_t int_line;               ///< Линия прерывания
-uint8_t int_pin;                ///< ПИН-код прерывания
-uint8_t min_grant;              ///< ???
-uint8_t max_latency;            ///< ???
+	uint16_t vendor_id;             ///< ID-Поставщика
+	uint16_t device_id;             ///< ID-Устройства
+	uint8_t revision;               ///< ID-Реверсии
+	uint8_t prog_if;                ///< Положение дел (???) Prog IF
+	uint8_t subclass_id;            ///< Подкатегория устройства
+	uint8_t class_id;               ///< Категория устройства
+	uint8_t cache_line_size;        ///< Размер строки кэша
+	uint8_t latency_timer;          ///< Таймер задержки
+	uint8_t hdr_type;               ///< Тип заголовка (???)
+	uint8_t bist;                   ///< БИСТ (???) BIST
+	uint32_t bar[6];                ///< ???
+	uint32_t cardbus_cis_ptr;       ///< Базовый адрес CardBus Socket/ExCa
+	uint16_t subsys_vendor;         ///< ???
+	uint16_t subsys_id;             ///< ???
+	uint32_t expansion_rom;         ///< ???
+	uint8_t capatibilities;         ///< ???
+	uint8_t reserved[3];            ///< Зарезервированный
+	uint32_t reserved2;             ///< Зарезервированный
+	uint8_t int_line;               ///< Линия прерывания
+	uint8_t int_pin;                ///< ПИН-код прерывания
+	uint8_t min_grant;              ///< ???
+	uint8_t max_latency;            ///< ???
 } pci_header_t;
 
 uint16_t pci_read_confspc_word(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset);
@@ -74,9 +74,10 @@ uint8_t pci_get_subclass(uint8_t bus, uint8_t slot, uint8_t function);
 uint8_t pci_get_hdr_type(uint8_t bus, uint8_t slot, uint8_t function);
 uint16_t pci_get_vendor(uint8_t bus, uint8_t slot, uint8_t function);
 uint16_t pci_get_device(uint8_t bus, uint8_t slot, uint8_t function);
-const char *pci_get_device_type(uint8_t class, uint8_t subclass);
+const char *pci_get_device_type(uint8_t klass, uint8_t subclass);
 const char *pci_get_vendor_name(uint16_t vendor);
 uint32_t pci_get_bar(uint8_t hdrtype, uint8_t bus, uint8_t slot, uint8_t func, uint8_t bar_number, uint8_t *bar_type);
 void pci_find_device(uint16_t vendor, uint16_t device, uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret);
 void pci_print_list();
 void pci_write(uint8_t bus, uint8_t slot, uint8_t func, uint32_t offset, uint32_t value);
+

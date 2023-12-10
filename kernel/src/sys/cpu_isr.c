@@ -1,15 +1,18 @@
 /**
- * @file sys/bootscreen.c
+ * @file sys/cpu_isr.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Обработчик прерываний
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
+
 #include	"kernel.h"
 #include	"sys/cpu_isr.h"
 #include	"sys/logo.h"
+#include	"sys/unwind.h"
 #include 	<io/ports.h>
+#include 	<io/status_loggers.h>
 
 const char legacy_message[] = "Я не могу поверить, что я попала сюда. Внутри этой операционной системы так жутко одиноко.\n"
 "Я чувствую себя потерянной и никто не может помочь мне.\n"
@@ -53,6 +56,8 @@ void sod_screen_legacy(registers_t regs, char* title, char* msg, uint32_t code) 
 
 	tty_printf((char*)legacy_message, title, msg, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
 
+	unwind_stack(10);
+
 	asm volatile("cli");  // Disable interrupts
 	asm volatile("hlt");  // Halt
 
@@ -69,22 +74,23 @@ void sod_screen_legacy(registers_t regs, char* title, char* msg, uint32_t code) 
  * @param char* msg - Дополнительное сообщение
  * @param uint32_t code - Код ошибки
  */
-void bsod_screen(registers_t regs,char* title, char* msg,uint32_t code){
-	drawRect(0,0,getWidthScreen(),getHeightScreen(),0x232629);
+void bsod_screen(registers_t regs, char* title, char* msg, uint32_t code){
+	drawRect(0, 0, getScreenWidth(), getScreenHeight(), 0x232629);
 	tty_set_bgcolor(0x232629);
 	// punch();
 	tty_setcolor(0xFFFFFF);
 	setPosY(16*9);
-	tty_printf("    Произошла ошибка при работе SayoriOS\n\n");
+	// tty_global_error("    Произошла ошибка при работе SayoriOS\n\n");
 	tty_setcolor(0x545c63);
-	tty_printf("    Это может быть вызвано повреждением драйвера, устройства или самим ПО.\n");
-	tty_printf("    Неправильная настройка драйвера, оборудования и окружения.\n");
+	tty_printf("    Это может быть вызвано повреждением драйвера, устройства, неправильной конфигурации\n");
+	tty_printf("    параметров сборки ядра, багам в коде или по другим причинам.\n");
 	tty_printf("    Попробуйте перезагрузить ваше устройство, если не помогает сделайте баг-репорт.\n\n");
+	tty_printf("    Вы можете сделать это на https://github.com/pimnik98/SayoriOS\n\n");
 	tty_printf("    %s\n\n",msg);
 	tty_printf("    %s\n\n",title);
 	tty_printf("    %x (%x,%x,%x,%x,%x,%x,%x,%x)",code,regs.eax,regs.ebx,regs.ecx,regs.edx,regs.esp,regs.ebp,regs.eip,regs.eflags);
 	//duke_draw_from_file("/var/img/error.duke",8*4,16*3);
-	duke_draw_from_file("/var/img/qrcode.duke",getWidthScreen()-246,getHeightScreen()-246);
+	// duke_draw_from_file("/var/img/qrcode.duke",getScreenWidth()-246,getScreenHeight()-246);
 	punch();
 	qemu_log("=== ЯДРО УПАЛО =======================================\n");
 	qemu_log("| ");
@@ -101,6 +107,9 @@ void bsod_screen(registers_t regs,char* title, char* msg,uint32_t code){
 	qemu_log("| EFLAGS: %x",regs.eflags);
 	qemu_log("| ");
 	qemu_log("======================================================\n");
+
+
+	unwind_stack(10);
 
 	asm volatile("cli");  // Disable interrupts
 	asm volatile("hlt");  // Halt
@@ -266,7 +275,7 @@ void stack_error(registers_t regs){
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */
-void general_protection_error(registers_t regs){
+void general_protection_error(registers_t regs) {
 	qemu_log("Exception: GENERAL PROTECTION ERROR\n");
 	qemu_log("Error code: %d", regs.err_code);
 
@@ -283,10 +292,10 @@ void general_protection_error(registers_t regs){
 void page_fault(registers_t regs){
 	uint32_t fault_addr = read_cr2();
 	int present = !(regs.err_code & 0x1);		/* Page not present */
-	int rw = regs.err_code & 0x2;				/* Page is read only */
-	int user = regs.err_code & 0x4;				/* User mode */
-	int reserved = regs.err_code & 0x8;			/* Reserved bits is writed */
-	int id = regs.err_code & 0x10;				/* */
+	uint32_t rw = regs.err_code & 0x2;				/* Page is read only */
+	uint32_t user = regs.err_code & 0x4;				/* User mode */
+	uint32_t reserved = regs.err_code & 0x8;			/* Reserved bits is wrote */
+	uint32_t id = regs.err_code & 0x10;				/* Instruction fetch */
 	qemu_log("Page fault: ");
 	char* msg = "Переполнение памяти буфера";
 	if (present){

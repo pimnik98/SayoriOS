@@ -2,7 +2,7 @@
  * @file drv/beeper.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Драйвер пищалки
- * @version 0.3.2
+ * @version 0.3.3
  * @date 2022-10-10
  * @copyright Copyright SayoriOS Team (c) 2022-2023
 */
@@ -20,12 +20,16 @@ uint32_t config = 0;            ///< Корректировка
 void beeperPlay(uint32_t nFrequence) {
     uint32_t Div;
     uint8_t tmp;
+
     Div = (getFrequency()*1000) + config;
     Div /= nFrequence;
+    
     outb(0x43, 0xb6);
     outb(0x42, (uint8_t) (Div) );
     outb(0x42, (uint8_t) (Div >> 8));
+    
     tmp = inb(0x61);
+    
     if (tmp != (tmp | 3)) {
         outb(0x61, tmp | 3);
     }
@@ -54,11 +58,15 @@ void beeperConfig(uint32_t val){
 
 void beeperInit(int test){
     qemu_log("[Beeper] Init...");
-    beeperPlay(1000);
+    if(test != 1 & test != 2)
+    {
+       // beeperPlay(1000);
+    }
     sleep_ms(50);
     beeperSilent();
     // FIXME: Beeper interrupts for a short time.
     if (test == 1){
+
         Note notes[150] = {
             {A4, 200},
             {A4, 200},
@@ -182,7 +190,49 @@ void beeperInit(int test){
             {A4, 200},
             {A4, 200},
         };
-
+        for(int i = 0; i < 122; i++) {
+            if(notes[i].freq == 0) continue;
+            beeperPlay(notes[i].freq);
+            tty_printf("%d ", notes[i].freq);
+            if (notes[i].duration == 0){
+                beeperSilent();
+                sleep_ms(100);
+                continue;
+            }
+            sleep_ms((notes[i].duration)/3);
+            beeperSilent();
+            sleep_ms(100);
+        }
+        beeperSilent();
+    }
+    else if (test == 2)
+    {
+        Note notes[150] = {
+            {A2, 50},
+            {A3, 1000},
+            {A4, 1000},
+            {A2, 50},
+            {A3, 1000},
+            {A4, 1000},
+            {C3, 50},
+            {F3, 1000},
+            {Fd4, 1000},
+            {C3, 50},
+            {F3, 1000},
+            {Fd4, 1000},
+            {A2, 50},
+            {A3, 1000},
+            {A4, 1000},
+            {A2, 50},
+            {A3, 1000},
+            {A4, 1000},
+            {C3, 50},
+            {F3, 1000},
+            {Fd4, 1000},
+            {C3, 50},
+            {F3, 1000},
+            {Fd4, 1000},
+        };
         for(int i = 0; i < 122; i++) {
             if(notes[i].freq == 0) continue;
             beeperPlay(notes[i].freq);

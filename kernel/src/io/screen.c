@@ -7,17 +7,22 @@ uint32_t framebuffer_bpp;				///< Глубина цвета экрана
 uint32_t framebuffer_width;				///< Длина экрана
 uint32_t framebuffer_height;			///< Высота экрана
 uint32_t framebuffer_size;				///< Кол-во пикселей
-uint8_t *back_framebuffer_addr = 0;			///< Позиция буфера экрана
+uint8_t *back_framebuffer_addr = 0;		///< Позиция буфера экрана
 bool lazyDraw = true;					///< Включен ли режим ленивой прорисовки
 bool tty_oem_mode = false;				///< Режим работы
-void* (*fb_copier)(void*, const void*, size_t);                   ///< Depends on framebuffer size
 
 /**
  * @brief Обновить информацию на основном экране
  */
-void punch() {
-    fb_copier(framebuffer_addr, back_framebuffer_addr, framebuffer_size);
-}
+// void punch() {
+//     fb_copier(framebuffer_addr, back_framebuffer_addr, framebuffer_size);
+// }
+
+// void punch() {
+// 	uint8_t* temp = back_framebuffer_addr;
+// 	back_framebuffer_addr = framebuffer_addr;
+// 	framebuffer_addr = temp;
+// }
 
 /**
  * @brief Получение адреса расположения драйвера экрана
@@ -61,7 +66,7 @@ size_t getDisplaySize(){
 
 void create_back_framebuffer() {
     qemu_log("^---- 1. Allocating");
-    back_framebuffer_addr = kmalloc(framebuffer_size);
+    back_framebuffer_addr = (uint8_t*)kmalloc(framebuffer_size);
 
     qemu_log("framebuffer_size = %d (%dK) (%dM)", framebuffer_size, framebuffer_size/1024, framebuffer_size/(1024*1024));
     qemu_log("back_framebuffer_addr = %x", back_framebuffer_addr);
@@ -83,11 +88,17 @@ void init_vbe(multiboot_header_t *mboot) {
     framebuffer_height = svga_mode->screen_height;
     framebuffer_size = framebuffer_height * framebuffer_pitch;
 
-    fb_copier = (framebuffer_size % 4 == 0 ? memcpy4 : (framebuffer_size % 2 == 0 ? memcpy2 : memcpy));
-
     qemu_log("Booster is: %d",  (framebuffer_size % 4 == 0 ? 4 : (framebuffer_size % 2 == 0 ? 2 : 1)));
 
-    qemu_log("[VBE] [Install] W:%d H:%d B:%d S:%d M:%x",framebuffer_width,framebuffer_height,framebuffer_bpp,framebuffer_size,framebuffer_addr);
+    qemu_log("[VBE] [Install] Width: %d; Height: %d; Pitch: %d; BPP: %d; Size: %d; Address: %x",
+        framebuffer_width,
+        framebuffer_height,
+        framebuffer_pitch,
+        framebuffer_bpp,
+        framebuffer_size,
+        framebuffer_addr
+        );
+    
     physaddr_t frame;
     virtual_addr_t virt;
     physaddr_t to;
@@ -99,11 +110,11 @@ void init_vbe(multiboot_header_t *mboot) {
     	 virt = (virtual_addr_t)framebuffer_addr,
          to = (physaddr_t)(framebuffer_addr + framebuffer_size);
          frame < to;
-         frame += PAGE_SIZE,
-         virt += PAGE_SIZE) {
+         frame += PAGE_SIZE*2048,
+         virt += PAGE_SIZE*2048) {
             // map_pages(kdir, frame, virt, PAGE_SIZE, (PAGE_PRESENT | PAGE_WRITEABLE));
 
-            // FIXME: WHy it doesn't run when setting size = 1? (Workaround is 2048)
+            // FIXME: Why it doesn't run when setting size = 1? (Workaround is 2048)
             map_pages(kdir, frame, virt, 2048, (PAGE_PRESENT | PAGE_WRITEABLE));
     }
 
@@ -126,7 +137,7 @@ void init_vbe(multiboot_header_t *mboot) {
  */
 size_t getPixel(int32_t x, int32_t y){
     if (x < 0 || y < 0 ||
-        x >= (int) VESA_WIDTH ||
+			x >= (int) VESA_WIDTH ||
         y >= (int) VESA_HEIGHT) {
         return 0x000000;
     }
@@ -143,9 +154,9 @@ size_t getPixel(int32_t x, int32_t y){
  * @param y - позиция по y
  * @param color - цвет
  */
-void set_pixel(int32_t x, int32_t y, uint32_t color) {
+void set_pixel(uint32_t x, uint32_t y, uint32_t color) {
     if (x < 0 || y < 0 ||
-        x >= (int) VESA_WIDTH ||
+			x >= (int) VESA_WIDTH ||
         y >= (int) VESA_HEIGHT) {
             return;
     }
@@ -157,7 +168,7 @@ void set_pixel(int32_t x, int32_t y, uint32_t color) {
     pixels[2] = (color >> 16) & 255;
 }
 
-void rgba_blend(uint8_t result[4], uint8_t fg[4], uint8_t bg[4])
+void rgba_blend(uint8_t result[4], const uint8_t fg[4], const uint8_t bg[4])
 {
     uint32_t alpha = fg[3] + 1;
     uint32_t inv_alpha = 256 - fg[3];
@@ -170,7 +181,7 @@ void rgba_blend(uint8_t result[4], uint8_t fg[4], uint8_t bg[4])
 
 void setPixelAlpha(int x, int y, rgba_color color) {
     if (x < 0 || y < 0 ||
-        x >= (int) VESA_WIDTH ||
+			x >= (int) VESA_WIDTH ||
         y >= (int) VESA_HEIGHT) {
         return;
     }
@@ -186,21 +197,21 @@ void setPixelAlpha(int x, int y, rgba_color color) {
 
             rgba_blend(res, fg, bg);
 
-            framebuffer_addr[where] = res[0];
-            framebuffer_addr[where + 1] = res[1];
-            framebuffer_addr[where + 2] = res[2];
+            // framebuffer_addr[where] = res[0];
+            // framebuffer_addr[where + 1] = res[1];
+            // framebuffer_addr[where + 2] = res[2];
 
             back_framebuffer_addr[where] = res[0];
             back_framebuffer_addr[where + 1] = res[1];
             back_framebuffer_addr[where + 2] = res[2];
 
-        } else { // if absolutely transparent dont draw anything
+        } else { // if absolutely transparent don't draw anything
             return;
         }
     } else { // if non transparent just draw rgb
-        framebuffer_addr[where] = color.b & 255;
-        framebuffer_addr[where + 1] = color.g & 255;
-        framebuffer_addr[where + 2] = color.r & 255;
+        // framebuffer_addr[where] = color.b & 255;
+        // framebuffer_addr[where + 1] = color.g & 255;
+        // framebuffer_addr[where + 2] = color.r & 255;
 
         back_framebuffer_addr[where] = color.b & 255;
         back_framebuffer_addr[where + 1] = color.g & 255;
@@ -213,7 +224,7 @@ void setPixelAlpha(int x, int y, rgba_color color) {
  *
  * @return uint32_t - длина
  */
-uint32_t getWidthScreen(){
+uint32_t getScreenWidth(){
     return framebuffer_width;
 }
 
@@ -223,7 +234,7 @@ uint32_t getWidthScreen(){
  *
  * @return uint32_t - ширина
  */
-uint32_t getHeightScreen(){
+uint32_t getScreenHeight(){
     return framebuffer_height;
 }
 
@@ -232,7 +243,20 @@ uint32_t getHeightScreen(){
  *
  */
 void clean_screen(){
+    // punch();
     memset(back_framebuffer_addr, 0, framebuffer_size);  // Optimized variant
 
     punch();
+}
+
+void rect_copy(int x, int y, int width, int height) {
+    unsigned char* src = (unsigned char*)back_framebuffer_addr + (y * framebuffer_pitch) + (x * (framebuffer_bpp/8));
+    unsigned char* dest = (unsigned char*)framebuffer_addr + (y * framebuffer_pitch) + (x * (framebuffer_bpp/8));
+    size_t bytes_per_line = width * (framebuffer_bpp/8);
+    
+    for(int i = 0; i < height; i++) {
+        memcpy(dest, src, bytes_per_line);
+        src += framebuffer_pitch;
+        dest += framebuffer_pitch;
+    }
 }

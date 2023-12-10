@@ -20,6 +20,7 @@ typedef struct {
 typedef struct {
     uint8_t type;
     char name[256];
+    uint32_t folder_target_id;
     uint32_t folder_id;
     uint32_t sector_list_lba;
     uint32_t sector_list_size;

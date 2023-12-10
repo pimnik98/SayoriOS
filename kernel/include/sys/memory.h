@@ -4,6 +4,7 @@
 #include	"common.h"
 #include	"multiboot.h"
 #include	"sys/sync.h"
+#include	"lib/string.h"
 
 #define		PAGE_SIZE		0x1000	/* Memory page size */
 #define		PAGE_OFFSET_BITS	12	/* */
@@ -29,15 +30,9 @@
 // #define		KERNEL_SIZE		0x1800000		/* Size of area for kernel */
 
 /*------------------------------------------------------------------------------
-//		User virtual address space
-//----------------------------------------------------------------------------*/
-// FIXME: IDK WHY IT's NEEDED
-#define			USER_MEMORY_START	((void*) 0x80000000)
-#define			USER_MEMORY_END		((void*) 0xFFFFFFFF)
-/*------------------------------------------------------------------------------
 //		Kernel virtual address space
 //----------------------------------------------------------------------------*/
-#define			KERNEL_MEMORY_END	((void*) 0x7FFFFFFF)
+#define			KERNEL_MEMORY_END	(0x80000000)
 
 /* Kernel heap params */
 #define			KERNEL_HEAP_SIZE			0x20000000
@@ -101,12 +96,18 @@ typedef struct
 #define PAGE_TABLE_INDEX(x)     (((x) >> 12) & 0x3FF)
 
 #define PAGE_GET_TABLE_ADDRESS(x)    (*x & ~0xFFF)
-#define PAGE_GET_physical_addres_tESS(x) (*x & ~0xFFF)
 
 #define GET_PDE(v) (page_dir_entry*) (0xFFFFF000 +  (v >> 22) * 4)
 #define GET_PTE(v) (page_table_entry*) (0xFFC00000 + (v >> 12) * 4)
 
 #define GET_PT() (size_t*)(kernel_page_dir + PAGE_SIZE)
+
+extern size_t memory_size;
+extern size_t KERNEL_BASE;
+extern size_t KERNEL_SIZE;
+
+// #define REAL_HEAP_SIZE (memory_size - (KERNEL_BASE + KERNEL_SIZE + KERNEL_HEAP_BLOCK_INFO_SIZE - (8 << 20)))
+#define REAL_HEAP_SIZE KERNEL_HEAP_SIZE
 
 /* Switch processor to page mode */
 void switch_page_mode(void);
@@ -125,12 +126,31 @@ physaddr_t alloc_phys_pages(size_t count);
 void vmm_free_page(virtual_addr_t vaddr);
 physaddr_t get_kernel_dir(void);
 
-void* kmalloc(size_t size);
+void* kmalloc_common(size_t size, bool align);
 void kfree(void* vaddr);
-void* kcalloc(size_t count, size_t size);
 void* krealloc(void* vaddr, size_t size);
 size_t memory_get_used_kernel();
 size_t virt2phys(physaddr_t page_directory, virtual_addr_t virtual_address);
 uint8_t unmap_pages(physaddr_t page_dir, virtual_addr_t vaddr, size_t count);
+
+/**
+ * @brief Выделение памяти
+ * 
+ * @param size_t size - Размер
+ *
+ * @return void* - ???
+ */
+static inline void* kmalloc(size_t size){
+	return kmalloc_common(size, false);
+}
+
+/**
+ * @brief Выделение памяти
+ */
+void* kcalloc(size_t count, size_t size);
+
+void* kmalloc_a(size_t size);
+
+bool is_suitable_phys_region(physaddr_t address);
 
 #endif

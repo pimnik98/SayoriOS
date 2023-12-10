@@ -3,9 +3,8 @@
 
 #include	"common.h"
 #include	"sys/isr.h"
-#include	"sys/io_disp.h"
 
-#define		NUM_CALLS	8
+#define		NUM_CALLS	9
 
 /*-----------------------------------------------------------------------------
  *		Syscall interrupt number
@@ -85,8 +84,6 @@ int get_digit(int dig);
 /*-----------------------------------------------------------------------------
  *		System calls declaration
  *---------------------------------------------------------------------------*/
-DECL_SYSCALL1(in_byte, uint16_t);
-DECL_SYSCALL2(out_byte, uint16_t, uint8_t);
 DECL_SYSCALL2(tty_ctl, void*, void*);
 // ...
 DECL_SYSCALL2(screen_ctl, size_t, size_t);
