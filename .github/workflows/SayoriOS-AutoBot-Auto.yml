@@ -27,13 +27,6 @@ jobs:
       - name: Step 3 - ISO assembly
         run: make geniso
 
-      - name: Step 4 - Preparing for DoxyGen
-        run: |
-          rm -rf docs/doxygen/
-          sudo doxygen Doxyfile
-          ls docs/doxygen/
-          ls
-
       - name: Step 5 - File Existence Check
         run: |
           echo "done!"
