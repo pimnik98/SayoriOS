@@ -15,5 +15,6 @@ var dir_009f605b833ac4622acd6c3c0c26c0f0 =
     [ "common.h", "dc/d54/common_8h.html", "dc/d54/common_8h" ],
     [ "config.h", "db/d16/config_8h_source.html", null ],
     [ "kernel.h", "d0/daa/kernel_8h_source.html", null ],
-    [ "multiboot.h", "d1/dc0/multiboot_8h_source.html", null ]
+    [ "multiboot.h", "d1/dc0/multiboot_8h_source.html", null ],
+    [ "rust_header.h", "df/dae/rust__header_8h_source.html", null ]
 ];
