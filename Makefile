@@ -25,7 +25,8 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
 	@$(CXX) $(CPP_FLAGS) -c -o $@ $<
 
 build_rust:
-	cd $(RUST_DIR) && cargo build && cd ..
+	@echo -e '\x1b[32mRUST  \x1b[0mBuild rust kernel'
+	cd $(RUST_DIR) && rustup override set nightly && rustup component add rust-src --toolchain nightly-x86_64-unknown-linux-gnu && cargo build --release
 
 # Сборка ядра
 build: $(SOURCES)
@@ -86,13 +87,15 @@ clean:
 	-rm -f $(KERNEL)
 	-rm -f $(KERNEL_NEED)
 	-rm -f $(DEPS)
+	-rm -f $(RUST_OBJ_DEBUG)
+	-rm -f $(RUST_OBJ_RELEASE)
 
 # Линковка файлов
-$(KERNEL): $(KERNEL_NEED)
+$(KERNEL): $(KERNEL_NEED) $(RUST_SOURCES) rust/Cargo.toml
 	@$(MAKE) build_rust
 	@echo -e '\x1b[32mLINK \x1b[0m' $(KERNEL)
 	@rm -f $(KERNEL)
-	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED) $(RUST_OBJ_DEBUG)
+	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED) $(RUST_OBJ_RELEASE)
 	@bash tools/genmap.sh
 	@bash tools/insertmap.sh
 	@-rm kernel.map

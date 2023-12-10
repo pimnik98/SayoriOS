@@ -6,6 +6,10 @@ name = "rust"
 version = "0.1.0"
 edition = "2021"
 
+[dependencies]
+lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+spin = "0.5.2"
+
 [profile.release]
 lto = true
 opt-level = 2
