@@ -24,6 +24,9 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
 	@echo -e '\x1b[32mCPP  \x1b[0m' $@
 	@$(CXX) $(CPP_FLAGS) -c -o $@ $<
 
+build_rust:
+	cd $(RUST_DIR) && cargo build && cd ..
+
 # Сборка ядра
 build: $(SOURCES)
 
@@ -72,11 +75,11 @@ uefilive:
 					   -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime
 # Генерация ISO-файла
 geniso: $(KERNEL)
-	grub-mkrescue -o "kernel.iso" iso/ -V kernel
+	grub2-mkrescue -o "kernel.iso" iso/ -V kernel
 
 # Генерация ISO-файла с поддержкой UEFI
 genuefi:
-	grub-mkrescue -d /usr/lib/grub/x86_64-efi -o SayoriOS_UEFI.iso iso/ --locale-directory=/usr/share/locale/ -V "SayoriOS Soul"
+	grub2-mkrescue -d /usr/lib/grub/x86_64-efi -o SayoriOS_UEFI.iso iso/ --locale-directory=/usr/share/locale/ -V "SayoriOS Soul"
 
 # Удаление оригинального файла и *.о файлов
 clean:
@@ -88,7 +91,7 @@ clean:
 $(KERNEL): $(KERNEL_NEED)
 	@echo -e '\x1b[32mLINK \x1b[0m' $(KERNEL)
 	@rm -f $(KERNEL)
-	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED)
+	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED) $(RUST_OBJ_DEBUG)
 	@bash tools/genmap.sh
 	@bash tools/insertmap.sh
 	@-rm kernel.map
