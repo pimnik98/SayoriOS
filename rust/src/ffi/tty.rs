@@ -3,7 +3,6 @@ use core::fmt::Write;
 use lazy_static::lazy_static;
 use spin::Mutex;
 
-use x86::irq;
 use alloc::string::String;
 
 extern "C" {
@@ -23,11 +22,7 @@ macro_rules! println {
 
 #[doc(hidden)]
 pub fn _print_tty(args: fmt::Arguments) {
-	unsafe {
-		irq::disable();
-	    WRITER.lock().write_fmt(args).unwrap();
-	    irq::enable();
-    }
+    WRITER.lock().write_fmt(args).unwrap();
 }
 
 pub fn tty_puts(s: &str) {
