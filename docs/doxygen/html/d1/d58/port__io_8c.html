@@ -1,0 +1,728 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Файл kernel/src/io/port_io.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d1/d58/port__io_8c.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Функции</a> &#124;
+<a href="#var-members">Переменные</a>  </div>
+  <div class="headertitle">
+<div class="title">Файл port_io.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Средства для работы с портами  
+<a href="#details">Подробнее...</a></p>
+<div class="textblock"><code>#include &lt;kernel.h&gt;</code><br />
+<code>#include &lt;io/port_io.h&gt;</code><br />
+<code>#include &lt;stdarg.h&gt;</code><br />
+</div>
+<p><a href="../../d1/d58/port__io_8c_source.html">См. исходные тексты.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Функции</h2></td></tr>
+<tr class="memitem:a9511afe92834a90787081c514ee9e75c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a9511afe92834a90787081c514ee9e75c">__com_setInit</a> (uint16_t key, uint16_t value)</td></tr>
+<tr class="memdesc:a9511afe92834a90787081c514ee9e75c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Установка значения для инициализированного порта  <a href="../../d1/d58/port__io_8c.html#a9511afe92834a90787081c514ee9e75c">Подробнее...</a><br /></td></tr>
+<tr class="separator:a9511afe92834a90787081c514ee9e75c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fd1a3e367313efb54127a0fcfbe2823"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a1fd1a3e367313efb54127a0fcfbe2823">__com_getInit</a> (uint16_t key)</td></tr>
+<tr class="memdesc:a1fd1a3e367313efb54127a0fcfbe2823"><td class="mdescLeft">&#160;</td><td class="mdescRight">Чтение значения для инициализированного порта  <a href="../../d1/d58/port__io_8c.html#a1fd1a3e367313efb54127a0fcfbe2823">Подробнее...</a><br /></td></tr>
+<tr class="separator:a1fd1a3e367313efb54127a0fcfbe2823"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a206c6566f1202f3d677ccd3a64fb1ff0"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a206c6566f1202f3d677ccd3a64fb1ff0">__com_readByte</a> (uint16_t port)</td></tr>
+<tr class="memdesc:a206c6566f1202f3d677ccd3a64fb1ff0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получение одного байта из порта (Аналог inb)  <a href="../../d1/d58/port__io_8c.html#a206c6566f1202f3d677ccd3a64fb1ff0">Подробнее...</a><br /></td></tr>
+<tr class="separator:a206c6566f1202f3d677ccd3a64fb1ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd91938529948e9349fd30b7ecbdf626"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#afd91938529948e9349fd30b7ecbdf626">__com_writeByte</a> (uint16_t port, uint8_t val)</td></tr>
+<tr class="memdesc:afd91938529948e9349fd30b7ecbdf626"><td class="mdescLeft">&#160;</td><td class="mdescRight">Запись одного байта в порт  <a href="../../d1/d58/port__io_8c.html#afd91938529948e9349fd30b7ecbdf626">Подробнее...</a><br /></td></tr>
+<tr class="separator:afd91938529948e9349fd30b7ecbdf626"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec44a21aec6bb020c89211afd045a69c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#aec44a21aec6bb020c89211afd045a69c">__com_writeInt32</a> (uint16_t port, uint32_t val)</td></tr>
+<tr class="memdesc:aec44a21aec6bb020c89211afd045a69c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Запись 32х битного числа в порт  <a href="../../d1/d58/port__io_8c.html#aec44a21aec6bb020c89211afd045a69c">Подробнее...</a><br /></td></tr>
+<tr class="separator:aec44a21aec6bb020c89211afd045a69c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a954e2d518e8274f589d51b39add2648d"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a954e2d518e8274f589d51b39add2648d">__com_readInt32</a> (uint16_t port)</td></tr>
+<tr class="memdesc:a954e2d518e8274f589d51b39add2648d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Чтение 32х битного числа  <a href="../../d1/d58/port__io_8c.html#a954e2d518e8274f589d51b39add2648d">Подробнее...</a><br /></td></tr>
+<tr class="separator:a954e2d518e8274f589d51b39add2648d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d7562e2c5b810fadb3763ba109508cc"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a7d7562e2c5b810fadb3763ba109508cc">__com_readWord</a> (uint16_t port)</td></tr>
+<tr class="memdesc:a7d7562e2c5b810fadb3763ba109508cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Чтение word из порта  <a href="../../d1/d58/port__io_8c.html#a7d7562e2c5b810fadb3763ba109508cc">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7d7562e2c5b810fadb3763ba109508cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9746266cbaff7ec6e2c03018de4c4fbc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a9746266cbaff7ec6e2c03018de4c4fbc">__com_writeWord</a> (uint16_t port, uint16_t data)</td></tr>
+<tr class="memdesc:a9746266cbaff7ec6e2c03018de4c4fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Запись word в порт  <a href="../../d1/d58/port__io_8c.html#a9746266cbaff7ec6e2c03018de4c4fbc">Подробнее...</a><br /></td></tr>
+<tr class="separator:a9746266cbaff7ec6e2c03018de4c4fbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a511c54bd3918d587a90e330141c1de27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a511c54bd3918d587a90e330141c1de27">__com_readBigData</a> (uint16_t port, uint32_t *buffer, size_t times)</td></tr>
+<tr class="memdesc:a511c54bd3918d587a90e330141c1de27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Чтение длинного слова через порт  <a href="../../d1/d58/port__io_8c.html#a511c54bd3918d587a90e330141c1de27">Подробнее...</a><br /></td></tr>
+<tr class="separator:a511c54bd3918d587a90e330141c1de27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9548cd6f45aa13e75c0f10848c79a07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#aa9548cd6f45aa13e75c0f10848c79a07">__com_writeBigData</a> (uint16_t port, uint32_t *buffer, size_t times)</td></tr>
+<tr class="memdesc:aa9548cd6f45aa13e75c0f10848c79a07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Запись длинного слова через порт  <a href="../../d1/d58/port__io_8c.html#aa9548cd6f45aa13e75c0f10848c79a07">Подробнее...</a><br /></td></tr>
+<tr class="separator:aa9548cd6f45aa13e75c0f10848c79a07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad821caff4f978eb63e86ccece3dcf7a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#ad821caff4f978eb63e86ccece3dcf7a6">__com_readString</a> (uint16_t port, uint32_t *buf, size_t size)</td></tr>
+<tr class="memdesc:ad821caff4f978eb63e86ccece3dcf7a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Чтение строки через порт  <a href="../../d1/d58/port__io_8c.html#ad821caff4f978eb63e86ccece3dcf7a6">Подробнее...</a><br /></td></tr>
+<tr class="separator:ad821caff4f978eb63e86ccece3dcf7a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a03f0f70d498b4823668d48995e28da"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a0a03f0f70d498b4823668d48995e28da">__com_is_ready</a> (uint16_t port)</td></tr>
+<tr class="memdesc:a0a03f0f70d498b4823668d48995e28da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверка занятости com-порта  <a href="../../d1/d58/port__io_8c.html#a0a03f0f70d498b4823668d48995e28da">Подробнее...</a><br /></td></tr>
+<tr class="separator:a0a03f0f70d498b4823668d48995e28da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e7541671d44e8db3df9a582cb7a7b25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a7e7541671d44e8db3df9a582cb7a7b25">__com_writeChar</a> (uint16_t port, char a)</td></tr>
+<tr class="memdesc:a7e7541671d44e8db3df9a582cb7a7b25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Отправка CHAR через COM-порт  <a href="../../d1/d58/port__io_8c.html#a7e7541671d44e8db3df9a582cb7a7b25">Подробнее...</a><br /></td></tr>
+<tr class="separator:a7e7541671d44e8db3df9a582cb7a7b25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8d6185341598718dc8c3d6ba37f1c52"><td class="memItemLeft" align="right" valign="top"><a id="ad8d6185341598718dc8c3d6ba37f1c52"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>__com_writeString</b> (uint16_t port, char *buf)</td></tr>
+<tr class="separator:ad8d6185341598718dc8c3d6ba37f1c52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55354d739a539e91cea4a476f61c52d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a55354d739a539e91cea4a476f61c52d0">__com_io_wait</a> ()</td></tr>
+<tr class="memdesc:a55354d739a539e91cea4a476f61c52d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Небольшая задержка используя порт 128(0x80)  <a href="../../d1/d58/port__io_8c.html#a55354d739a539e91cea4a476f61c52d0">Подробнее...</a><br /></td></tr>
+<tr class="separator:a55354d739a539e91cea4a476f61c52d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb9b7330c9f77a61641465cd88d103c4"><td class="memItemLeft" align="right" valign="top"><a id="adb9b7330c9f77a61641465cd88d103c4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>__com_writeInt</b> (int16_t port, int32_t i)</td></tr>
+<tr class="separator:adb9b7330c9f77a61641465cd88d103c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2f76d0d57480b61f060bbf09cc80640"><td class="memItemLeft" align="right" valign="top"><a id="ac2f76d0d57480b61f060bbf09cc80640"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>__com_writeHex</b> (int16_t port, uint32_t i, bool <a class="el" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a>)</td></tr>
+<tr class="separator:ac2f76d0d57480b61f060bbf09cc80640"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a498da680a3ddaef6fd75b8f0a689b9ee"><td class="memItemLeft" align="right" valign="top"><a id="a498da680a3ddaef6fd75b8f0a689b9ee"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>__com_pre_formatString</b> (int16_t port, const char *format, <a class="el" href="../../d5/d6b/structva__list.html">va_list</a> args)</td></tr>
+<tr class="separator:a498da680a3ddaef6fd75b8f0a689b9ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2727fcb490d6fde487aea9c5da88778e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a2727fcb490d6fde487aea9c5da88778e">__com_formatString</a> (int16_t port, char *text,...)</td></tr>
+<tr class="memdesc:a2727fcb490d6fde487aea9c5da88778e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Вывод через COM1 информации  <a href="../../d1/d58/port__io_8c.html#a2727fcb490d6fde487aea9c5da88778e">Подробнее...</a><br /></td></tr>
+<tr class="separator:a2727fcb490d6fde487aea9c5da88778e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a687b4fa1efee72b69504db30eec78b29"><td class="memItemLeft" align="right" valign="top"><a id="a687b4fa1efee72b69504db30eec78b29"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a687b4fa1efee72b69504db30eec78b29">__com_init</a> (uint16_t port)</td></tr>
+<tr class="memdesc:a687b4fa1efee72b69504db30eec78b29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Инициализация порта и проверка его доступности. <br /></td></tr>
+<tr class="separator:a687b4fa1efee72b69504db30eec78b29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Переменные</h2></td></tr>
+<tr class="memitem:a6c797687580ad8b5600931f1c76c7183"><td class="memItemLeft" align="right" valign="top"><a id="a6c797687580ad8b5600931f1c76c7183"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d58/port__io_8c.html#a6c797687580ad8b5600931f1c76c7183">com_init</a> [8] = {0}</td></tr>
+<tr class="memdesc:a6c797687580ad8b5600931f1c76c7183"><td class="mdescLeft">&#160;</td><td class="mdescRight">Массив с инициализированными портами <br /></td></tr>
+<tr class="separator:a6c797687580ad8b5600931f1c76c7183"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Средства для работы с портами </p>
+<dl class="section author"><dt>Автор</dt><dd>Пиминов Никита (<a href="#" onclick="location.href='mai'+'lto:'+'nik'+'it'+'a.p'+'im'+'ino'+'ff'+'@ya'+'nd'+'ex.'+'ru'; return false;">nikit<span style="display: none;">.nosp@m.</span>a.pi<span style="display: none;">.nosp@m.</span>minof<span style="display: none;">.nosp@m.</span>f@ya<span style="display: none;">.nosp@m.</span>ndex.<span style="display: none;">.nosp@m.</span>ru</a>), NDRAEY &gt;_ (<a href="#" onclick="location.href='mai'+'lto:'+'pik'+'ac'+'hu_'+'an'+'dre'+'y@'+'vk.'+'co'+'m'; return false;">pikac<span style="display: none;">.nosp@m.</span>hu_a<span style="display: none;">.nosp@m.</span>ndrey<span style="display: none;">.nosp@m.</span>@vk.<span style="display: none;">.nosp@m.</span>com</a>) </dd></dl>
+<dl class="section version"><dt>Версия</dt><dd>0.3.3 </dd></dl>
+<dl class="section date"><dt>Дата</dt><dd>2023-01-07 </dd></dl>
+<dl class="section copyright"><dt>Авторство</dt><dd>Copyright SayoriOS Team (c) 2022-2023 </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a></p>
+</div><h2 class="groupheader">Функции</h2>
+<a id="a2727fcb490d6fde487aea9c5da88778e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2727fcb490d6fde487aea9c5da88778e">&#9670;&nbsp;</a></span>__com_formatString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __com_formatString </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Вывод через COM1 информации </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">text</td><td>Строка с параметрами </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00307">307</a></p>
+
+</div>
+</div>
+<a id="a1fd1a3e367313efb54127a0fcfbe2823"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fd1a3e367313efb54127a0fcfbe2823">&#9670;&nbsp;</a></span>__com_getInit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t __com_getInit </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Чтение значения для инициализированного порта </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>- порт</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>uint16_t - данные </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00032">32</a></p>
+
+</div>
+</div>
+<a id="a55354d739a539e91cea4a476f61c52d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55354d739a539e91cea4a476f61c52d0">&#9670;&nbsp;</a></span>__com_io_wait()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __com_io_wait </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Небольшая задержка используя порт 128(0x80) </p>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00186">186</a></p>
+
+</div>
+</div>
+<a id="a0a03f0f70d498b4823668d48995e28da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a03f0f70d498b4823668d48995e28da">&#9670;&nbsp;</a></span>__com_is_ready()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t __com_is_ready </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Проверка занятости com-порта </p>
+<dl class="section return"><dt>Возвращает</dt><dd>int32_t - состояние (если 0 - готов) </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00155">155</a></p>
+
+</div>
+</div>
+<a id="a511c54bd3918d587a90e330141c1de27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a511c54bd3918d587a90e330141c1de27">&#9670;&nbsp;</a></span>__com_readBigData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __com_readBigData </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>times</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Чтение длинного слова через порт </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>- порт </td></tr>
+    <tr><td class="paramname">buffer</td><td>- данные </td></tr>
+    <tr><td class="paramname">times</td><td>- сколько данных прочесть </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00119">119</a></p>
+
+</div>
+</div>
+<a id="a206c6566f1202f3d677ccd3a64fb1ff0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a206c6566f1202f3d677ccd3a64fb1ff0">&#9670;&nbsp;</a></span>__com_readByte()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t __com_readByte </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Получение одного байта из порта (Аналог inb) </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>- порт </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>uint8_t - данные </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00042">42</a></p>
+
+</div>
+</div>
+<a id="a954e2d518e8274f589d51b39add2648d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a954e2d518e8274f589d51b39add2648d">&#9670;&nbsp;</a></span>__com_readInt32()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t __com_readInt32 </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Чтение 32х битного числа </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>- порт </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>uint32_t - число </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00080">80</a></p>
+
+</div>
+</div>
+<a id="ad821caff4f978eb63e86ccece3dcf7a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad821caff4f978eb63e86ccece3dcf7a6">&#9670;&nbsp;</a></span>__com_readString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __com_readString </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>buf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Чтение строки через порт </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>- порт </td></tr>
+    <tr><td class="paramname">buf</td><td>- данные </td></tr>
+    <tr><td class="paramname">size</td><td>- сколько данных прочесть </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00146">146</a></p>
+
+</div>
+</div>
+<a id="a7d7562e2c5b810fadb3763ba109508cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d7562e2c5b810fadb3763ba109508cc">&#9670;&nbsp;</a></span>__com_readWord()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t __com_readWord </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Чтение word из порта </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>- порт </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>uint16_t - word </dd></dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00094">94</a></p>
+
+</div>
+</div>
+<a id="a9511afe92834a90787081c514ee9e75c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9511afe92834a90787081c514ee9e75c">&#9670;&nbsp;</a></span>__com_setInit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __com_setInit </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Установка значения для инициализированного порта </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>- порт </td></tr>
+    <tr><td class="paramname">value</td><td>- данные </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00021">21</a></p>
+
+</div>
+</div>
+<a id="aa9548cd6f45aa13e75c0f10848c79a07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9548cd6f45aa13e75c0f10848c79a07">&#9670;&nbsp;</a></span>__com_writeBigData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __com_writeBigData </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>times</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Запись длинного слова через порт </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>- порт </td></tr>
+    <tr><td class="paramname">buffer</td><td>- данные </td></tr>
+    <tr><td class="paramname">times</td><td>- сколько данных отправить </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00133">133</a></p>
+
+</div>
+</div>
+<a id="afd91938529948e9349fd30b7ecbdf626"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd91938529948e9349fd30b7ecbdf626">&#9670;&nbsp;</a></span>__com_writeByte()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __com_writeByte </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Запись одного байта в порт </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>- порт </td></tr>
+    <tr><td class="paramname">val</td><td>- данные </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00056">56</a></p>
+
+</div>
+</div>
+<a id="a7e7541671d44e8db3df9a582cb7a7b25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e7541671d44e8db3df9a582cb7a7b25">&#9670;&nbsp;</a></span>__com_writeChar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __com_writeChar </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Отправка CHAR через COM-порт </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>- символ </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00164">164</a></p>
+
+</div>
+</div>
+<a id="aec44a21aec6bb020c89211afd045a69c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec44a21aec6bb020c89211afd045a69c">&#9670;&nbsp;</a></span>__com_writeInt32()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __com_writeInt32 </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Запись 32х битного числа в порт </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>- порт </td></tr>
+    <tr><td class="paramname">val</td><td>- число </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00070">70</a></p>
+
+</div>
+</div>
+<a id="a9746266cbaff7ec6e2c03018de4c4fbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9746266cbaff7ec6e2c03018de4c4fbc">&#9670;&nbsp;</a></span>__com_writeWord()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __com_writeWord </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Запись word в порт </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">port</td><td>- порт </td></tr>
+    <tr><td class="paramname">data</td><td>- данные </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">См. определение в файле <a class="el" href="../../d1/d58/port__io_8c_source.html">port_io.c</a> строка <a class="el" href="../../d1/d58/port__io_8c_source.html#l00107">107</a></p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_f684e8e1ebea567db7f673c0b997cee3.html">io</a></li><li class="navelem"><a class="el" href="../../d1/d58/port__io_8c.html">port_io.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 10 Дек 2023 13:37:29. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
