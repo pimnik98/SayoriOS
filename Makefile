@@ -87,9 +87,11 @@ clean:
 	-rm -f $(KERNEL)
 	-rm -f $(KERNEL_NEED)
 	-rm -f $(DEPS)
+	-rm -f $(RUST_OBJ_DEBUG)
+	-rm -f $(RUST_OBJ_RELEASE)
 
 # Линковка файлов
-$(KERNEL): $(KERNEL_NEED)
+$(KERNEL): $(KERNEL_NEED) $(RUST_SOURCES) rust/Cargo.toml
 	@$(MAKE) build_rust
 	@echo -e '\x1b[32mLINK \x1b[0m' $(KERNEL)
 	@rm -f $(KERNEL)
@@ -100,14 +102,12 @@ $(KERNEL): $(KERNEL_NEED)
 
 # Быстрая линковка, генерация ISO, запуск
 bir:
-	@$(MAKE) build_rust
 	@$(MAKE)
 	@$(MAKE) geniso
 	@$(MAKE) run
 
 # Быстрая линковка, генерация ISO, запуск
 birl:
-	@$(MAKE) build_rust
 	@$(MAKE)
 	@$(MAKE) geniso
 	@$(MAKE) runlive

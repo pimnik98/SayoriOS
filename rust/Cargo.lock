@@ -3,10 +3,6 @@
 version = 3
 
 [[package]]
-<<<<<<< HEAD
-name = "rust"
-version = "0.1.0"
-=======
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -28,4 +24,3 @@ name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
->>>>>>> 5604ab35b853e6bdb2c6219d3f1ffee87d4d2a5d
