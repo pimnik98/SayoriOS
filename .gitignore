@@ -13,8 +13,4 @@
 .vscode/*
 *.d
 /rust/target
-<<<<<<< HEAD
 /rust/Cargo.lock
-=======
-/rust/Cargo.lock
->>>>>>> 5c5d22cc12e36dbbc82aa77a642bc268a186160c
