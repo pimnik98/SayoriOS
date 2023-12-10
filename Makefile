@@ -25,7 +25,8 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
 	@$(CXX) $(CPP_FLAGS) -c -o $@ $<
 
 build_rust:
-	cd $(RUST_DIR) && cargo build && cd ..
+	@echo -e '\x1b[32mRUST  \x1b[0mBuild rust kernel'
+	cd $(RUST_DIR) && cargo build --release && cd ..
 
 # Сборка ядра
 build: $(SOURCES)
@@ -92,19 +93,21 @@ $(KERNEL): $(KERNEL_NEED)
 	@$(MAKE) build_rust
 	@echo -e '\x1b[32mLINK \x1b[0m' $(KERNEL)
 	@rm -f $(KERNEL)
-	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED) $(RUST_OBJ_DEBUG)
+	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED) $(RUST_OBJ_RELEASE)
 	@bash tools/genmap.sh
 	@bash tools/insertmap.sh
 	@-rm kernel.map
 
 # Быстрая линковка, генерация ISO, запуск
 bir:
+	@$(MAKE) build_rust
 	@$(MAKE)
 	@$(MAKE) geniso
 	@$(MAKE) run
 
 # Быстрая линковка, генерация ISO, запуск
 birl:
+	@$(MAKE) build_rust
 	@$(MAKE)
 	@$(MAKE) geniso
 	@$(MAKE) runlive
