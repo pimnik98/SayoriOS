@@ -2,13 +2,12 @@
  * @file sys/gdt.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief (GDT) Глобальная таблица дескрипторов
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include	"sys/descriptor_tables.h"
 #include	"lib/string.h"
-#include	"io/ports.h"
 
 extern void gdt_flush(uint32_t);
 
@@ -31,8 +30,6 @@ void init_gdt(void){
 	gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF);		///< Пользовательские сегменты
 	write_tss(5, 0x10, init_esp);
 
-	qemu_log("Initial esp is: %x", init_esp);
-
 	gdt_flush( (uint32_t) &gdt_ptr);
 	tss_flush(0x28);
 }
@@ -48,11 +45,11 @@ void init_descriptor_tables(void){
 /**
  * @brief Установка сегмента
  *
- * @param int32_t num - ???
- * @param int32_t base - ???
- * @param int32_t limit - ???
- * @param uint8_t access - ???
- * @param uint8_t gran - ???
+ * @param num - ???
+ * @param base - ???
+ * @param limit - ???
+ * @param access - ???
+ * @param gran - ???
  */
 void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran){
 	gdt_entries[num].base_low = (base & 0xFFFF);

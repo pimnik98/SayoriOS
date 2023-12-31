@@ -2,20 +2,25 @@
  * @file drv/input/mouse.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), Рустем Гимадутдинов (https://github.com/rgimad/EOS)
  * @brief Драйвер мыши
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-12-11
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 
-#include <kernel.h>
 #include <io/ports.h>
 #include <sys/trigger.h>
 #include <drv/input/mouse.h>
+#include "io/screen.h"
+#include "sys/isr.h"
 
 uint8_t mouse_ready = 0;        ///< Готова ли мышь к работе
 
 int32_t mouse_x  = 0;           ///< Позиция мыши по X
 int32_t mouse_y  = 0;           ///< Позиция мыши по Y
+
+
+int32_t mouse_ox  = 0;           ///< Позиция мыши по X (старое значение)
+int32_t mouse_oy  = 0;           ///< Позиция мыши по Y (старое значение)
 
 uint32_t mouse_b1 = 0;           ///< Левая кнопка мыши
 uint32_t mouse_b2 = 0;           ///< Правая кнопка мыши
@@ -24,15 +29,6 @@ uint32_t mouse_b4 = 0;           ///< ???
 uint32_t mouse_b5 = 0;           ///< ???
 
 int mouse_wheel = 0;            ///< После каждого чтения меняем на 0
-
-MouseDrawState_t mouse_state = CURSOR_LOADING;
-
-DANDescriptor_t* mouse_normal = 0;
-char* mouse_normal_frame = 0;
-DANDescriptor_t* mouse_loading = 0;
-char* mouse_loading_frame = 0;
-
-size_t mouse_animation_frame = 0;
 
 /**
  * @brief Структура данных пакета от мыши
@@ -72,10 +68,6 @@ bool isMouseInit(){
     return mouse_ready==1?true:false;
 }
 
-void mouse_set_state(MouseDrawState_t state) {
-    mouse_state = state;
-}
-
 /**
  * @brief Парсинг пакета мыши
  *
@@ -100,8 +92,11 @@ void mouse_parse_packet(const char *buf, uint8_t has_wheel, uint8_t has_5_button
     ps2m_buffer.button_r = mouse_b2;
     ps2m_buffer.button_m = mouse_b3;
 
-	if (mouse_b1 || mouse_b2 || mouse_b3){
+
+	if (mouse_b1 || mouse_b2 || mouse_b3 || (mouse_x != mouse_ox) || (mouse_y != mouse_oy)){
 		CallTrigger(0x0003,(void*)mouse_b1,(void*)mouse_b2,(void*)mouse_b3,(void*)mouse_x,(void*)mouse_y);
+        mouse_ox = mouse_x;
+        mouse_oy = mouse_y;
 	}
 	//qemu_log("MPP: B1: %d | B2: %d | B3: %d | X:%d | Y:%d",mouse_b1,mouse_b2,mouse_b3,mouse_x,mouse_y);
 
@@ -112,50 +107,6 @@ void mouse_parse_packet(const char *buf, uint8_t has_wheel, uint8_t has_5_button
             // parse buttons 4-5 (byte 3, bits 4-5)
         }
     }
-}
-
-/**
- * @brief Рисует мышь
- *
- * @warning Не нужно вызывать самостоятельно, только для обработчика мыши!
- */
-void mouse_draw() {
-    if(mouse_state == CURSOR_HIDDEN)
-        return;
-
-    if(mouse_state == CURSOR_NORMAL) {
-        if(!mouse_normal)
-            return;
-        
-        read_frame_dan(mouse_normal, mouse_animation_frame, mouse_normal_frame);
-
-        // duke_rawdraw(mouse_normal_frame, &(struct DukeImageMeta) {
-        //     {'D', 'U', 'K', 'E'},
-        //     mouse_normal->header.width,
-        //     mouse_normal->header.height,
-        //     mouse_normal->framesize,
-        //     mouse_normal->header.alpha
-        // }, mouse_x, mouse_y);
-
-        mouse_animation_frame = (mouse_animation_frame + 1) % mouse_normal->header.frame_count;
-    } else if(mouse_state == CURSOR_LOADING) {
-        if(!mouse_loading)
-            return;
-        
-        read_frame_dan(mouse_loading, mouse_animation_frame, mouse_loading_frame);
-
-        // duke_rawdraw(mouse_loading_frame, &(struct DukeImageMeta) {
-        //     {'D', 'U', 'K', 'E'},
-        //     mouse_loading->header.width,
-        //     mouse_loading->header.height,
-        //     mouse_loading->framesize,
-        //     mouse_loading->header.alpha
-        // }, mouse_x, mouse_y);
-
-        mouse_animation_frame = (mouse_animation_frame + 1) % mouse_loading->header.frame_count;
-    }
-
-    punch();
 }
 
 /**
@@ -190,7 +141,7 @@ void mouse_handler(__attribute__((unused)) struct registers r) {
 /**
  * @brief Ожидание ответа мыши
  *
- * @param uint8_t a_type - Тип отправляемых данных
+ * @param a_type - Тип отправляемых данных
  *
  * @warning Не нужно вызывать самостоятельно, только для обработчика мыши!
  */
@@ -246,15 +197,6 @@ uint8_t mouse_read() {
  * @warning Не нужно вызывать самостоятельно, только для обработчика мыши!
  */
 void mouse_install() {
-    mouse_normal = alloc_dan("/Sayori/Cursor/normal.dan", false);
-    mouse_loading = alloc_dan("/Sayori/Cursor/loading.dan", false);
-
-    if(mouse_normal)
-        mouse_normal_frame = (char*)kcalloc(1, mouse_normal->framesize);
-    
-    if(mouse_loading)
-        mouse_loading_frame = (char*)kcalloc(1, mouse_normal->framesize);
-
     uint8_t _status;  //unsigned char
 
     // Включить вспомогательное устройство мыши

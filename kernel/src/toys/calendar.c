@@ -4,7 +4,7 @@
 #include "drv/cmos.h"
 #include "io/tty.h"
 
-#define printf(M, ...) tty_printf(M, ##__VA_ARGS__)
+#define printf(M, ...) _tty_printf(M, ##__VA_ARGS__)
 
 unsigned int days_in_months[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 

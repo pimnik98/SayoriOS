@@ -1,4 +1,5 @@
-#include <kernel.h>
+#include "common.h"
+#include "io/screen.h"
 
 void draw_circle(int32_t xc, int32_t yc, int32_t radius, uint32_t color) {
     int32_t x = 0;

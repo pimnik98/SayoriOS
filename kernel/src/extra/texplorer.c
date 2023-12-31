@@ -10,7 +10,6 @@
  */
 #include <kernel.h>
 #include <io/ports.h>
-#include <io/duke_image.h>
 #include <io/status_loggers.h>
 #include <lib/stdio.h>
 #include <lib/tui.h>
@@ -31,8 +30,7 @@
 #define TE_COLOR_PGB_BODY		0x12
 #define TE_COLOR_PGB_TEXT		0x13
 
-
-DukeHeader_t* TE_Icons[32];
+//DukeHeader_t* TE_Icons[32];
 
 int TE_getColor(int item){
 	if (item == TE_COLOR_BODY) 			return 0xFFFFFF;
@@ -55,7 +53,7 @@ int TE_getColor(int item){
 void TE_DrawTime(){
     setPosY(getScreenHeight() - 20);
 	
-	sayori_time_t time = get_time();
+//	sayori_time_t time = get_time();
 	setPosX(getScreenWidth() - 68);
 
 	tty_puts_color("22:22:22",TE_getColor(TE_COLOR_START_TEXT),TE_getColor(TE_COLOR_START_BODY));
@@ -118,68 +116,44 @@ void TE_DrawMessageBox(char* title, char* msg, int mode, int x, int y, int close
 }
 
 void TE_IconsLoader(){
-	char* app		= "/Sayori/Icons/app.duke";
-	char* config	= "/Sayori/Icons/config.duke";
-	char* file		= "/Sayori/Icons/file.duke";
-	char* folder	= "/Sayori/Icons/folder.duke";
-	char* hdd		= "/Sayori/Icons/hdd.duke";
-	char* img		= "/Sayori/Icons/img.duke";
-	char* off		= "/Sayori/Icons/off.duke";
-	char* start		= "/Sayori/Icons/start.duke";
-	char* videocard	= "/Sayori/Icons/videocard.duke";
-
-	FILE* fp_app = fopen(app, "r");
-
-	if(!fp_app) {
-        qemu_log("[TE] [ICONS] FATAL ERROR LOADER!!! File: %s | Code: %x\n", app,0);
-		kfree(TE_Icons[0]);
-		return;
-	}
-
-	fread(fp_app, 1, sizeof(DukeHeader_t), TE_Icons[0]);
-    fclose(fp_app);
-
-	bool error = duke_draw_from_file(app, 0, 0);
-
-    if(error) {
-        qemu_log("[TE] [DBG] Во время рендера картинки произошла ошибка.\n");
-    }
-
-	
-	
-	//TE_Icons[1];
+	// If you want to place icons here, use TGA.
 }
 
 void TE_DesktopBG(){
-	DukeHeader_t* imdata = kmalloc(sizeof(DukeHeader_t));
-    char* rpath = "/Sayori/Wallpaper/wallpaper.png.duke";
+	// TODO: If you want to support TExplorer further, replace duke with TGA!
+//	DukeHeader_t* imdata = kmalloc(sizeof(DukeHeader_t));
+//    char* rpath = "/Sayori/Wallpaper/wallpaper.png.duke";
 
 	///< Вот СХУЯЛИ баня загорелась? ПРИЧЕМ ТУТ ЖД, если считывание с вирт диска???????????
 	// Да всё Никита, успокойся, я пофиксил.
 	///< Спасибо
-	FILE* fp = fopen(rpath, "r");
 
-	if(!fp) {
-        qemu_log("[TE] [DBG] Произошла ошибка при открытии файла %s\n", rpath);
-		kfree(imdata);
-		return;
-	}
+	// TODO: If you want to support TExplorer further, replace duke with TGA!
+//	FILE* fp = fopen(rpath, "r");
 
-	fread(fp, 1, sizeof(DukeHeader_t), imdata);
-    fclose(fp);
+//	if(!fp) {
+//        qemu_log("[TE] [DBG] Произошла ошибка при открытии файла %s\n", rpath);
+//		kfree(imdata);
+//		return;
+//	}
 
-	uint32_t w = getScreenWidth() - imdata->width;
-	uint32_t h = getScreenHeight() - imdata->height;
+//	fread(fp, 1, sizeof(DukeHeader_t), imdata);
+//    fclose(fp);
+//
+//	uint32_t w = getScreenWidth() - imdata->width;
+//	uint32_t h = getScreenHeight() - imdata->height;
+//
 
-	bool error = duke_draw_from_file(rpath, w / 2, h / 2);
+	// TODO: If you want to support TExplorer further, replace duke with TGA!
+//	bool error = duke_draw_from_file(rpath, w / 2, h / 2);
 
-    if(error) {
-        qemu_log("[TE] [DBG] Во время рендера картинки произошла ошибка.\n");
-    }
-
-    kfree(rpath);
-    kfree(imdata);
-	
+//    if(error) {
+//        qemu_log("[TE] [DBG] Во время рендера картинки произошла ошибка.\n");
+//    }
+//
+//    kfree(rpath);
+//    kfree(imdata);
+//
 	TE_IconsLoader();
 	punch();
 }

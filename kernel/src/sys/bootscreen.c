@@ -2,12 +2,13 @@
  * @file sys/bootscreen.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief BootScreen - Анимация загрузки ядра
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
-#include <kernel.h>
+#include <version.h>
 #include <io/ports.h>
+#include "io/tty.h"
 
 uint32_t theme = 0;					///< Текущая тема (0 или 1)
 uint32_t bgColorDark = 0x000000;	///< Цвет заднего фона для темной темы
@@ -25,26 +26,16 @@ bool bs_logs = true;                ///< Включено ли логгиров�
 /**
  * @brief Включить ленивую загрузку для BootScreen
  *
- * @param bool l - true/false - Вкл/Выкл.
+ * @param l - true/false - Вкл/Выкл.
  */
 void bootScreenLazy(bool l){
     lazy = l;
 }
 
-
-/**
- * @brief Включить логирование в com1 для BootScreen
- *
- * @param bool l - true/false - Вкл/Выкл.
- */
-void bootScreenLogs(bool l){
-    bs_logs = l;
-}
-
 /**
  * @brief Сменить тему BootScreen
  *
- * @param uint32_t th - 0 - Dark | 1 - Light
+ * @param th - 0 - Dark | 1 - Light
  */
 void bootScreenChangeTheme(uint32_t th){
     theme = th;
@@ -87,8 +78,8 @@ uint32_t bootScreenTheme(uint32_t type){
 /**
  * @brief Завершает работу BootScreen
  *
- * @param uint32_t bg - Отчистить указаным цветом экран
- * @param uint32_t tx - Установить цвет для вывода текста
+ * @param bg - Отчистить указаным цветом экран
+ * @param tx - Установить цвет для вывода текста
  */
 void bootScreenClose(uint32_t bg, uint32_t tx){
     tty_setcolor(tx);
@@ -101,7 +92,7 @@ void bootScreenClose(uint32_t bg, uint32_t tx){
 /**
  * @brief Смена режима отображения BootScreen
  *
- * @param int m - Режим (0 - Обычный | 1 - Лог)
+ * @param m - Режим (0 - Обычный | 1 - Лог)
  */
 void bootScreenChangeMode(int m){
     mode = m;
@@ -153,7 +144,7 @@ void bootScreenProcentPaint(){
 /**
  * @brief Обновить информацию для BootScreen
  *
- * @param char* title - Вывести данное сообщение
+ * @param title - Вывести данное сообщение
  */
 void bootScreenPaint(char* title){
     if (bs_logs)
@@ -199,7 +190,7 @@ void bootScreenPaint(char* title){
 /**
  * @brief Инициализирует BootScreen
  *
- * @param uint32_t count - Кол-во этапов
+ * @param count - Кол-во этапов
  */
 void bootScreenInit(uint32_t count){
     // Предварительная настройка BootScreen

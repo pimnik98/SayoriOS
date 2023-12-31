@@ -1,6 +1,5 @@
 #pragma once
 
-#include <kernel.h>
 #include <stdarg.h>
 
 size_t measure_vsprintf(const char *format, va_list args);

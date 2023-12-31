@@ -1,4 +1,8 @@
 #pragma once
+
+#include "mem/vmm.h"
+#include "lib/stdio.h"
+
 #define		EI_NIDENT	16
 
 /*-----------------------------------------------------------------------------
@@ -134,18 +138,19 @@ typedef struct
 
 typedef struct elf_sections
 {
-	Elf32_Ehdr*		elf_header;	///< ELF заголовок
+	Elf32_Ehdr		elf_header;	///< ELF заголовок
 	Elf32_Shdr*		section;	///< Секции
 	Elf32_Phdr*		p_header;	///< Программный заголовок
 
 	FILE*			file;		///< Ссылка на файл
+} elf_t;
 
-} elf_sections_t;
-
-elf_sections_t* load_elf(const char* name);
+elf_t* load_elf(const char* name);
+void unload_elf(elf_t* elf);
+int32_t run_elf_file(const char *name, int argc, char* eargv[]);
 
 static inline bool is_elf_file(FILE* fp) {
-	char* temp = (char*)kmalloc(4);
+	char* temp = kmalloc(4);
 	size_t orig = ftell(fp);
 
 	fseek(fp, 0, SEEK_SET);

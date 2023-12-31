@@ -1,6 +1,7 @@
 #pragma once
 
-#include "kernel.h"
+#include "common.h"
+#include "cards.h"
 
 #define ARP_REQUEST 1
 #define ARP_REPLY 2

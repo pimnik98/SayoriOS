@@ -2,7 +2,7 @@
  * @file lib/list.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Массивы
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */

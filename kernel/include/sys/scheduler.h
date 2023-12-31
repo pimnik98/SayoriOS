@@ -3,7 +3,7 @@
 
 #include	"common.h"
 #include	"lib/list.h"
-#include	"sys/memory.h"
+#include	"mem/pmm.h"
 
 #define DEFAULT_STACK_SIZE 0x4000
 
@@ -13,12 +13,12 @@
 typedef	struct
 {
 	list_item_t		list_item;		/* List item */
-	physaddr_t		page_dir;		/* Page directory */
+	physical_addr_t	page_dir;		/* Page directory */
 	size_t			threads_count;	/* Count of threads */
 	bool			suspend;		/* Suspend flag */
 	uint32_t			pid;		/* Process ID (PID) */
 	char			name[256];		/* Process name */
-
+    // Every process should have a path that process operates
 }__attribute__((packed)) process_t;
 
 /*-----------------------------------------------------------------------------
@@ -41,9 +41,6 @@ typedef	struct
 /* Initialization */
 void init_task_manager(void);
 
-/* Switching of tasks */
-void switch_task(void);
-
 extern void task_switch(void);
 
 /* Create new thread */
@@ -61,6 +58,8 @@ void thread_suspend(thread_t* thread, bool suspend);
 
 /* Exit from thread */
 void thread_exit(thread_t* thread);
+
+void create_process(void* entry_point, char* name, bool suspend, bool is_kernel);
 
 /* Check multitask flag */
 bool is_multitask(void);

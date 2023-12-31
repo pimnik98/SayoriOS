@@ -15,3 +15,4 @@ bool is_lctrl_key();
 int getCharRaw();
 int getIntKeyboardWait();
 uint8_t getPressReleaseKeyboard();
+int gets_max(char *buffer, int length);

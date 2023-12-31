@@ -60,5 +60,5 @@ typedef struct Note {
     unsigned short duration;
 } Note;
 
-void beeperPlay(uint32_t nFrequence);
+void beeperPlay(uint32_t frequency);
 void beeperSilent();

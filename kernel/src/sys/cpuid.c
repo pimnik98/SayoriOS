@@ -5,10 +5,11 @@
 #include "common.h"
 #include "../../include/sys/cpuid.h"
 #include "../../include/sys/cpu_intel.h"
+#include "io/ports.h"
 #include "io/tty.h"
 
 size_t cpu_get_id() {
-	size_t ebx = 0, unused;
+	uint32_t ebx = 0, unused;
 
 	cpuid(0, unused, ebx, unused, unused);
 
@@ -18,7 +19,7 @@ size_t cpu_get_id() {
 void cpu_get_id_string(char out[12]) {
 	uint32_t* out32 = (uint32_t*)out;
 
-	size_t ebx, ecx, edx, unused;
+	uint32_t ebx, ecx, edx, unused;
 
 	cpuid(0, unused, ebx, ecx, edx);
 
@@ -31,7 +32,7 @@ void cpu_get_id_string(char out[12]) {
 struct cpu_info cpu_get_basic_info() {
 	struct cpu_info info = {};
 
-	size_t eax, ebx, extended_max, unused;
+	uint32_t eax, ebx, extended_max, unused;
 
 	info.manufacturer_id = cpu_get_id();
 
@@ -67,7 +68,7 @@ struct cpu_info cpu_get_basic_info() {
 			}
 		}
 
-		size_t cache_info[4] = {0};
+		uint32_t cache_info[4] = {0};
 
 		if (extended_max >= 0x80000005) {
 			cpuid(0x80000005,
@@ -100,4 +101,16 @@ struct cpu_info cpu_get_basic_info() {
 	}
 
 	return info;
+}
+
+bool is_long_mode_supported() {
+	uint32_t eax = 0, unused = 0;
+
+	cpuid(0x80000000, eax, unused, unused, unused);
+
+	if(eax < 0x80000001) {
+		return false;
+	}
+
+	return true;
 }

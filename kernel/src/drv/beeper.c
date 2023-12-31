@@ -2,27 +2,28 @@
  * @file drv/beeper.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Драйвер пищалки
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-10
  * @copyright Copyright SayoriOS Team (c) 2022-2023
 */
 
-#include <kernel.h>
 #include <io/ports.h>
 #include <drv/beeper.h>
+#include <sys/timer.h>
+
 uint32_t config = 0;            ///< Корректировка
 
 /**
- * @brief [Beeper] Вопроизвести звук
+ * @brief Вопроизвести звук (квадратной формы волны)
  *
- * @param uint32_t nFrequence - Частота звука
+ * @param frequency - Частота звука
  */
-void beeperPlay(uint32_t nFrequence) {
+void beeperPlay(uint32_t frequency) {
     uint32_t Div;
     uint8_t tmp;
 
-    Div = (getFrequency()*1000) + config;
-    Div /= nFrequence;
+    Div = getFrequency() * 1000;
+    Div /= frequency;
     
     outb(0x43, 0xb6);
     outb(0x42, (uint8_t) (Div) );
@@ -41,212 +42,4 @@ void beeperPlay(uint32_t nFrequence) {
 void beeperSilent() {
     uint8_t tmp = inb(0x61) & 0xFC;
     outb(0x61, tmp);
-}
-
-/**
- * @brief [Beeper] Настроить звук
- *
- * @param uint32_t val - Корректировка частоты
- */
-void beeperConfig(uint32_t val){
-    config = val;
-}
-
-/**
- * @brief [Beeper] Инициализация
- */
-
-void beeperInit(int test){
-    qemu_log("[Beeper] Init...");
-    if(test != 1 & test != 2)
-    {
-       // beeperPlay(1000);
-    }
-    sleep_ms(50);
-    beeperSilent();
-    // FIXME: Beeper interrupts for a short time.
-    if (test == 1){
-
-        Note notes[150] = {
-            {A4, 200},
-            {A4, 200},
-            {C5, 200},
-            {A4, 200},
-            {D5, 200},
-            {A4, 200},
-            {E5, 200},
-            {D5, 200},
-            {C5, 200},
-            {C5, 200},
-            {E5, 200},
-            {C5, 200},
-            {E5, 200},
-            {C5, 200},
-            {G5, 200},
-            {C5, 200},
-            {E5, 200},
-            {C5, 200},
-            {G4, 200},
-            {G4, 200},
-            {B4, 200},
-            {G4, 200},
-            {C5, 200},
-            {G4, 200},
-            {D5, 200},
-            {C5, 200},
-            {F4, 200},
-            {F4, 200},
-            {A4, 200},
-            {F4, 200},
-            {C5, 200},
-            {F4, 200},
-            {C5, 200},
-            {B4, 200},
-            {A4, 200},
-            {A4, 200},
-            {C5, 200},
-            {A4, 200},
-            {D5, 200},
-            {A4, 200},
-            {E5, 200},
-            {D5, 200},
-            {C5, 200},
-            {C5, 200},
-            {E5, 200},
-            {D5, 200},
-            {C5, 200},
-            {C5, 200},
-            {E5, 200},
-            {C5, 200},
-            {G5, 200},
-            {C5, 200},
-            {E5, 200},
-            {C5, 200},
-            {G4, 200},
-            {G4, 200},
-            {B4, 200},
-            {G4, 200},
-            {C5, 200},
-            {G4, 200},
-            {C5, 200},
-            {G4, 200},
-            {D5, 200},
-            {C5, 200},
-            {F4, 200},
-            {F4, 200},
-            {A4, 200},
-            {F4, 200},
-            {C5, 200},
-            {F4, 200},
-            {C5, 200},
-            {B4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {G4, 200},
-            {C5, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {G4, 200},
-            {E4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {G4, 200},
-            {C5, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {G4, 200},
-            {C4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {G4, 200},
-            {E4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {G4, 200},
-            {C5, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-            {A4, 200},
-        };
-        for(int i = 0; i < 122; i++) {
-            if(notes[i].freq == 0) continue;
-            beeperPlay(notes[i].freq);
-            tty_printf("%d ", notes[i].freq);
-            if (notes[i].duration == 0){
-                beeperSilent();
-                sleep_ms(100);
-                continue;
-            }
-            sleep_ms((notes[i].duration)/3);
-            beeperSilent();
-            sleep_ms(100);
-        }
-        beeperSilent();
-    }
-    else if (test == 2)
-    {
-        Note notes[150] = {
-            {A2, 50},
-            {A3, 1000},
-            {A4, 1000},
-            {A2, 50},
-            {A3, 1000},
-            {A4, 1000},
-            {C3, 50},
-            {F3, 1000},
-            {Fd4, 1000},
-            {C3, 50},
-            {F3, 1000},
-            {Fd4, 1000},
-            {A2, 50},
-            {A3, 1000},
-            {A4, 1000},
-            {A2, 50},
-            {A3, 1000},
-            {A4, 1000},
-            {C3, 50},
-            {F3, 1000},
-            {Fd4, 1000},
-            {C3, 50},
-            {F3, 1000},
-            {Fd4, 1000},
-        };
-        for(int i = 0; i < 122; i++) {
-            if(notes[i].freq == 0) continue;
-            beeperPlay(notes[i].freq);
-            tty_printf("%d ", notes[i].freq);
-            if (notes[i].duration == 0){
-                beeperSilent();
-                sleep_ms(100);
-                continue;
-            }
-            sleep_ms((notes[i].duration)/3);
-            beeperSilent();
-            sleep_ms(100);
-        }
-        beeperSilent();
-    }
-	qemu_log("Ok");
 }

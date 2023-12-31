@@ -3,16 +3,15 @@
  * @file fs/milla.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Проект Милла
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2023-01-23
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
-#include <kernel.h>
 
 void __milla_sendcmd(char* msg);
 char* __milla_getcmd();
 int __milla_cleanState();
-char* __milla_getFile(char* path);
+char* __milla_getFile(const char *path);
 int __milla_writeFile(char* path, char* data);
 int __milla_delete(char* path);
 int __milla_mkdir(char* path);

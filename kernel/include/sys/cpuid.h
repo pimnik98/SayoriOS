@@ -80,9 +80,10 @@ struct cpu_info {
 	size_t l2_size;
 	size_t l3_size;
 
-	size_t feature_flags_ecx;
-	size_t feature_flags_edx;
+	uint32_t feature_flags_ecx;
+	uint32_t feature_flags_edx;
 };
 
 size_t cpu_get_id();
 struct cpu_info cpu_get_basic_info();
+bool is_long_mode_supported();

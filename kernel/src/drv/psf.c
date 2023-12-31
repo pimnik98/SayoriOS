@@ -2,14 +2,17 @@
  * @file drv/psf.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), Арен Елчинян (SynapseOS)
  * @brief Поддержка шрифтов PSF
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2023-01-13
  * @copyright Copyright SayoriOS Team (c) 2023
  */
-#include <kernel.h>
+
 #include <drv/psf.h>
 #include <lib/stdio.h>
 #include <io/ports.h>
+#include "mem/vmm.h"
+#include "io/serial_port.h"
+#include "io/screen.h"
 
 uint32_t psf_font_version = 0;
 
@@ -134,6 +137,9 @@ void draw_vga_ch(uint16_t c, uint16_t c2, size_t pos_x, size_t pos_y, size_t col
 
     uint8_t *glyph = psf1_get_glyph(psf1_rupatch(c, c2));
 
+	if(!glyph)
+		return;
+
     // size_t ph = _h; //psf1_get_h();
     // size_t pw = _w; //psf1_get_w();
     for (size_t y = 0; y < _h; y++){
@@ -157,7 +163,7 @@ void draw_vga_str(const char* text, size_t len, int x, int y, uint32_t color){
 
     size_t scrwidth = getScreenWidth();
     for(int i = 0; i < len; i++){
-        if (x + 8 <= scrwidth){
+        if (x + _w <= scrwidth){
             if (isUTF(text[i])){
                 draw_vga_ch(text[i], text[i+1], x, y, color);
                 i++;
@@ -166,7 +172,7 @@ void draw_vga_str(const char* text, size_t len, int x, int y, uint32_t color){
                     return;
                 draw_vga_ch(text[i], 0, x, y, color);
             }
-            x += 8;
+            x += _w;
         } else {
             break;
         }

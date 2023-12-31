@@ -2,13 +2,16 @@
  * @file drv/cmos.c
  * @brief Драйвер CMOS
  * @author NDRAEY >_ (pikachu_andrey@vk.com)
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-11-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
- 
-#include <kernel.h>
 
+#include "common.h"
+#include "io/ports.h"
+#include "drv/cmos.h"
+
+// FIXME: We need this?
 #define CURRENT_YEAR        2022    // Change this each year!
  
 int32_t century_register = 0x00;     // Set by ACPI table parsing code if possible
@@ -37,6 +40,8 @@ enum {
 
 /**
  * @brief Проверяет CMOS на обновление
+ *
+ * @return Если значение не равно нулю, значит CMOS обновляется
  */
 int32_t get_update_in_progress_flag() {
     outb(cmos_address, 0x0A);
@@ -54,7 +59,6 @@ unsigned char get_RTC_register(int32_t reg) {
 /**
  * @brief Считывает время с CMOS
  */
- 
 void read_rtc() {
     while (get_update_in_progress_flag());          // Make sure an update isn't in progress
 
@@ -127,6 +131,8 @@ void read_rtc() {
 
 /**
  * @brief Это високосный год?
+ *
+ * @param year Год в формате YYYY
  */
 int isleap(int year) {
     return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);

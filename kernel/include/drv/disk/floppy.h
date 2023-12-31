@@ -105,7 +105,8 @@ enum FloppyRegisters
    FLOPPY_DIGITAL_INPUT_REGISTER           = 7,	///< (?) Доступно в режиме только чтения
    FLOPPY_CONFIGURATION_CONTROL_REGISTER   = 7	///< [Исп] Регистр для управления конфигурацией, в режиме только записи
 };
-typedef int (*FloppyRW_t)(int,char*,uint32_t,uint32_t);
+typedef size_t (*FloppyR_t)(int,char*,uint32_t,uint32_t);
+typedef size_t (*FloppyW_t)(int,const char*,uint32_t,uint32_t);
 typedef int (*FloppyCache_t)(int,FloppyMode,uint32_t,uint32_t*,uint32_t*);
 typedef struct floppy
 {
@@ -118,9 +119,9 @@ typedef struct floppy
 	int  Motor;				///< Статус мотора
 	char Name[12];			///< Название дискеты
 	char FileSystem[12];	///< Файловая система
-	unsigned Cyr;			///< ?
-	FloppyRW_t Read;		///< Команда для чтения данных
-	FloppyRW_t Write;		///< Команда для записи данных
+	unsigned Cyr;			///< Цилиндры
+	FloppyR_t Read;		///< Команда для чтения данных
+	FloppyW_t Write;		///< Команда для записи данных
 	FloppyCache_t Cache;	///< Команда для кэша
 	const char* Buffer;		///< Буфер
 } floppy_t;

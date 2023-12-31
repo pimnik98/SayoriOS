@@ -10,19 +10,22 @@
 Коммиты идут пачками (по одному коммиту на каждый релиз) 
 <h1>Скриншоты</h1>
 <center>
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/1.png" alt="v0.3.2 S1">
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/2.png" alt="v0.3.2 S2">
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/3.png" alt="v0.3.2 S3">
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/4.png" alt="v0.3.2 S4">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/1.png" alt="v0.3.4 S1">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/2.png" alt="v0.3.4 S2">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/3.png" alt="v0.3.4 S3">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/4.png" alt="v0.3.4 S4">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/5.png" alt="v0.3.4 S5">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/6.png" alt="v0.3.4 S6">
+	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/7.png" alt="v0.3.4 S7">
 </center><br>
 <h1>Примерный план действий:</h1>
 <p>
 	Прогресс: <br>
-	❤ [Ядро] Выполнено 4 из 7 (57%) [=====-----]<br>
-	💫 [Драйвера] Выполнено 3 из 6 (50%) [=====-----]<br>
-	📂 [Файлы] Выполнено 4 из 8 (50%) [=====-----]<br>
-	🌐 [Сеть] Выполнено 0 из 1 (0%) [----------]<br>
-	🔌 [Прочие] Выполнено 2 из 5 (40%) [====------]<br>
+	❤ [Ядро] Выполнено 10 из 20 (50%) [=====-----]<br>
+	💫 [Драйвера] Выполнено 9 из 10 (90%) [=========-]<br>
+	📂 [Файлы] Выполнено 8 из 10 (80%) [========--]<br>
+	🌐 [Сеть] Выполнено 1 из 3 (33%) [===-------]<br>
+	🔌 [Прочие] Выполнено 6 из 9 (66%) [======----]<br>
 	<img src="http://forum.glark.ru/smiles.lm?id=38" alt="*"> <a href="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/soul.png">Нажав сюда</a>, вы увидите изображение, где отображены примерные планы на ядро.<br>
 	<b>Обновление данного изображения, будет только при следующем релизе.</b> или <a href="https://sayorios.piminoff.ru/page/1-plans.html">нажмите сюда</a>, для просмотра на сайте
 </p>
@@ -88,11 +91,13 @@
 	<b><i>make clean-objs</b></i> - Удаляет все скомпилированные файлы <br>
 	<b><i>make link</b></i> - Линк файлов ядра <br>
 	<b><i>make bir</b></i> - Сборка ISO и запуск ядра <br>
+	<b><i>make WSL</b></i> - Сборка ISO и запуск ядра через WSL <br>
 </p>
 <h1>Список людей, которые поддерживают ядро:</h1>
 <p>
 	* <a href="https://github.com/pimnik98">Nikita Piminoff</a> (Создатель SayoriOS)<br>
 	* <a href="https://github.com/NDRAEY">Drew Pavlenko</a><br><br>
+	* <a href="https://github.com/durisash">Даниил Лебедев</a><br><br>
 	* <a href="https://vk.com/sayorios">Коммьюнити SayoriOS в VK</a><br>
 </p>
 <h1>Отказ от ответственности:</h1>

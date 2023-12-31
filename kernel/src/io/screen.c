@@ -1,7 +1,13 @@
-#include <kernel.h>
+#include <io/screen.h>
+#include <multiboot.h>
+#include <lib/stdlib.h>
+#include <sys/timer.h>
+#include <io/ports.h>
 #include <common.h>
+#include "mem/pmm.h"
+#include "mem/vmm.h"
 
-uint8_t *framebuffer_addr;				///< Точка монтирования
+uint8_t *framebuffer_addr = 0;				///< Точка монтирования
 uint32_t framebuffer_pitch;				///< Частота обновления экрана
 uint32_t framebuffer_bpp;				///< Глубина цвета экрана
 uint32_t framebuffer_width;				///< Длина экрана
@@ -10,19 +16,6 @@ uint32_t framebuffer_size;				///< Кол-во пикселей
 uint8_t *back_framebuffer_addr = 0;		///< Позиция буфера экрана
 bool lazyDraw = true;					///< Включен ли режим ленивой прорисовки
 bool tty_oem_mode = false;				///< Режим работы
-
-/**
- * @brief Обновить информацию на основном экране
- */
-// void punch() {
-//     fb_copier(framebuffer_addr, back_framebuffer_addr, framebuffer_size);
-// }
-
-// void punch() {
-// 	uint8_t* temp = back_framebuffer_addr;
-// 	back_framebuffer_addr = framebuffer_addr;
-// 	framebuffer_addr = temp;
-// }
 
 /**
  * @brief Получение адреса расположения драйвера экрана
@@ -55,23 +48,12 @@ uint32_t getDisplayBpp(){
     return framebuffer_bpp;
 }
 
-/**
- * @brief Получение размера буфера экрана
- *
- * @return uint32_t - Размер буфера экрана
- */
-size_t getDisplaySize(){
-    return framebuffer_size;
-}
-
 void create_back_framebuffer() {
     qemu_log("^---- 1. Allocating");
-    back_framebuffer_addr = (uint8_t*)kmalloc(framebuffer_size);
+    back_framebuffer_addr = (uint8_t*)kcalloc(framebuffer_size, 1);
 
     qemu_log("framebuffer_size = %d (%dK) (%dM)", framebuffer_size, framebuffer_size/1024, framebuffer_size/(1024*1024));
     qemu_log("back_framebuffer_addr = %x", back_framebuffer_addr);
-    
-    memset(back_framebuffer_addr, 0, framebuffer_size);
 }
 
 /**
@@ -80,48 +62,54 @@ void create_back_framebuffer() {
  * @param mboot - информация полученная от загрузчика
  */
 void init_vbe(multiboot_header_t *mboot) {
-    svga_mode_info_t *svga_mode = (svga_mode_info_t*) mboot->vbe_mode_info;
-    framebuffer_addr = (uint8_t*)svga_mode->physbase;
-    framebuffer_pitch = svga_mode->pitch;
-    framebuffer_bpp = svga_mode->bpp;
-    framebuffer_width = svga_mode->screen_width;
-    framebuffer_height = svga_mode->screen_height;
+    // FIXME: Something wrong with `svga_mode_info_t` structure!
+//    svga_mode_info_t *svga_mode = (svga_mode_info_t*) mboot->vbe_mode_info;
+//    framebuffer_addr = (uint8_t*)svga_mode->physbase;
+//    framebuffer_pitch = svga_mode->pitch;
+//    framebuffer_bpp = svga_mode->bpp;
+//    framebuffer_width = svga_mode->screen_width;
+//    framebuffer_height = svga_mode->screen_height;
+//    framebuffer_size = framebuffer_height * framebuffer_pitch;
+
+//    qemu_log("[VBE] [Install] Width: %d; Height: %d; Pitch: %d; BPP: %d; Size: %d; Address: %x",
+//             framebuffer_width,
+//             framebuffer_height,
+//             framebuffer_pitch,
+//             framebuffer_bpp,
+//             framebuffer_size,
+//             framebuffer_addr
+//    );
+
+
+    framebuffer_addr = (uint8_t *) mboot->framebuffer_addr;
+    framebuffer_pitch = mboot->framebuffer_pitch;
+    framebuffer_bpp = mboot->framebuffer_bpp;
+    framebuffer_width = mboot->framebuffer_width;
+    framebuffer_height = mboot->framebuffer_height;
     framebuffer_size = framebuffer_height * framebuffer_pitch;
 
-    qemu_log("Booster is: %d",  (framebuffer_size % 4 == 0 ? 4 : (framebuffer_size % 2 == 0 ? 2 : 1)));
-
-    qemu_log("[VBE] [Install] Width: %d; Height: %d; Pitch: %d; BPP: %d; Size: %d; Address: %x",
-        framebuffer_width,
-        framebuffer_height,
-        framebuffer_pitch,
-        framebuffer_bpp,
-        framebuffer_size,
-        framebuffer_addr
-        );
+    qemu_log("[VBE] [USING LEGACY INFO] Width: %d; Height: %d; Pitch: %d; BPP: %d; Size: %d; Address: %x",
+             mboot->framebuffer_width,
+             mboot->framebuffer_height,
+             mboot->framebuffer_pitch,
+             mboot->framebuffer_bpp,
+             mboot->framebuffer_height * mboot->framebuffer_pitch,
+             mboot->framebuffer_addr
+    );
     
-    physaddr_t frame;
-    virtual_addr_t virt;
-    physaddr_t to;
+    physical_addr_t frame = (physical_addr_t)framebuffer_addr;
+    virtual_addr_t virt = (virtual_addr_t)framebuffer_addr;
 
-    physaddr_t kdir = get_kernel_dir();
     size_t start_tk = getTicks();
 
-    for (frame = (physaddr_t)framebuffer_addr,
-    	 virt = (virtual_addr_t)framebuffer_addr,
-         to = (physaddr_t)(framebuffer_addr + framebuffer_size);
-         frame < to;
-         frame += PAGE_SIZE*2048,
-         virt += PAGE_SIZE*2048) {
-            // map_pages(kdir, frame, virt, PAGE_SIZE, (PAGE_PRESENT | PAGE_WRITEABLE));
-
-            // FIXME: Why it doesn't run when setting size = 1? (Workaround is 2048)
-            map_pages(kdir, frame, virt, 2048, (PAGE_PRESENT | PAGE_WRITEABLE));
-    }
+	map_pages(get_kernel_page_directory(),
+			  frame,
+			  virt,
+			  framebuffer_size,
+			  PAGE_WRITEABLE);
 
     qemu_log("Okay mapping! (took %d millis)", (getTicks() - start_tk)/(getFrequency()/1000));
 
-    // map_pages(get_kernel_dir(), framebuffer_addr, framebuffer_addr,
-    //           framebuffer_size / PAGE_SIZE, 0x07);
     qemu_log("Creating framebuffer");
     create_back_framebuffer();
     qemu_log("^---- OKAY");
@@ -130,8 +118,8 @@ void init_vbe(multiboot_header_t *mboot) {
 /**
  * @brief Получить цвет на пикселе по X и Y
  *
- * @param int32_t x - X
- * @param int32_t y - Y
+ * @param x - X
+ * @param y - Y
  *
  * @return uint32_t - Цвет
  */
@@ -147,27 +135,6 @@ size_t getPixel(int32_t x, int32_t y){
     return ((back_framebuffer_addr[where+2] & 0xff) << 16) + ((back_framebuffer_addr[where+1] & 0xff) << 8) + (back_framebuffer_addr[where] & 0xff);
 }
 
-/**
- * @brief Вывод одного пикселя на экран
- *
- * @param x - позиция по x
- * @param y - позиция по y
- * @param color - цвет
- */
-void set_pixel(uint32_t x, uint32_t y, uint32_t color) {
-    if (x < 0 || y < 0 ||
-			x >= (int) VESA_WIDTH ||
-        y >= (int) VESA_HEIGHT) {
-            return;
-    }
-
-    uint8_t* pixels = back_framebuffer_addr + (x * (framebuffer_bpp >> 3)) + y * framebuffer_pitch;
-
-    pixels[0] = color & 255;
-    pixels[1] = (color >> 8) & 255;
-    pixels[2] = (color >> 16) & 255;
-}
-
 void rgba_blend(uint8_t result[4], const uint8_t fg[4], const uint8_t bg[4])
 {
     uint32_t alpha = fg[3] + 1;
@@ -179,10 +146,9 @@ void rgba_blend(uint8_t result[4], const uint8_t fg[4], const uint8_t bg[4])
     result[3] = 0xff;
 }
 
-void setPixelAlpha(int x, int y, rgba_color color) {
-    if (x < 0 || y < 0 ||
-			x >= (int) VESA_WIDTH ||
-        y >= (int) VESA_HEIGHT) {
+void setPixelAlpha(uint32_t x, uint32_t y, rgba_color color) {
+    if (x >= VESA_WIDTH ||
+        y >= VESA_HEIGHT) {
         return;
     }
 
@@ -190,7 +156,6 @@ void setPixelAlpha(int x, int y, rgba_color color) {
 
     if (color.a != 255) {
         if (color.a != 0) {
-
             uint8_t bg[4] = {back_framebuffer_addr[where], back_framebuffer_addr[where + 1], back_framebuffer_addr[where + 2], 255};
             uint8_t fg[4] = {(uint8_t)color.b, (uint8_t)color.g, (uint8_t)color.r, (uint8_t)color.a};
             uint8_t res[4];
@@ -243,10 +208,7 @@ uint32_t getScreenHeight(){
  *
  */
 void clean_screen(){
-    // punch();
     memset(back_framebuffer_addr, 0, framebuffer_size);  // Optimized variant
-
-    punch();
 }
 
 void rect_copy(int x, int y, int width, int height) {

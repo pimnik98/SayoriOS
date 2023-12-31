@@ -2,18 +2,20 @@
  * @file sys/scheduler.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Менеджер задач
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include	"sys/scheduler.h"
 #include	"lib/string.h"
 #include	"io/ports.h"
+#include "mem/vmm.h"
+
+list_t process_list;			///< Список процессов
+list_t thread_list;				///< Список потоков
 
 uint32_t next_pid = 0;			///< Следующий ID задачи (PID)
 uint32_t next_thread_id = 0;	///< Следующий ID потока
-list_t process_list;			///< Список процессов
-list_t thread_list;				///< Список потоков
 bool multi_task = false;		///< Готова ли система к многозадачности
 process_t* kernel_proc = 0;		///< Обработчик процесса ядра
 thread_t* kernel_thread = 0;	///< Обработчик основного потока ядра
@@ -23,15 +25,17 @@ extern uint32_t init_esp;
 
 bool scheduler_working = true;
 
+extern physical_addr_t kernel_page_directory;
+
 /**
  * @brief Инициализация менеджера задач
  */
 void init_task_manager(void){
 	uint32_t esp = 0;
-	asm volatile("mov %%esp, %0" : "=a"(esp));
-	
+	__asm__ volatile("mov %%esp, %0" : "=a"(esp));
+
 	/* Disable all interrupts */
-	asm volatile ("cli");
+	__asm__ volatile ("cli");
 
 	list_init(&process_list);
 	list_init(&thread_list);
@@ -41,8 +45,10 @@ void init_task_manager(void){
 
 	memset(kernel_proc, 0, sizeof(process_t));
 
+
 	kernel_proc->pid = next_pid++;
-	kernel_proc->page_dir = get_kernel_dir();
+    // NOTE: Page directory address must be PHYSICAL!
+	kernel_proc->page_dir = kernel_page_directory;
 	kernel_proc->list_item.list = nullptr;
 	kernel_proc->threads_count = 1;
 	strcpy(kernel_proc->name, "Kernel");
@@ -66,12 +72,14 @@ void init_task_manager(void){
 	list_add(&thread_list, &kernel_thread->list_item);
 
 	current_proc = kernel_proc;
-	current_thread = kernel_thread;	
+	current_thread = kernel_thread;
 
-	asm volatile ("sti");
+	__asm__ volatile ("sti");
 
 	/* Enable multitasking flag */
 	multi_task = true;
+
+    qemu_ok("OK");
 }
 
 void scheduler_mode(bool on) {
@@ -80,11 +88,17 @@ void scheduler_mode(bool on) {
 
 void create_process(void* entry_point, char* name, bool suspend, bool is_kernel) {
 	__asm__ volatile("cli");
-	
-	process_t* proc = (process_t*)kcalloc(1, sizeof(process_t));
+
+    process_t* proc = (process_t*)kcalloc(1, sizeof(process_t));
+
+    void* virt = clone_kernel_page_directory();
+    uint32_t phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) virt);
+
+    qemu_note("New page directory at: V%x => P%x", virt, phys);
 
 	proc->pid = next_pid++;
-	proc->page_dir = get_kernel_dir();
+//	proc->page_dir = kernel_page_directory;
+	proc->page_dir = phys;
 	proc->list_item.list = nullptr;  // No nested processes hehe :)
 	proc->threads_count = 1;
 	strcpy(proc->name, name);
@@ -95,31 +109,7 @@ void create_process(void* entry_point, char* name, bool suspend, bool is_kernel)
 	thread_create(proc, entry_point, DEFAULT_STACK_SIZE, is_kernel, suspend);
 	list_add(&thread_list, &kernel_thread->list_item);
 
-	asm volatile("sti");
-}
-
-/**
- * @brief Переключение задач
- */
-void switch_task(void){
-	if (!multi_task)
-		return;
-	
-	/* Disable all interrupts */
-	asm volatile ("pushf; cli");
-
-	/* Remember current thread state */
-	asm volatile ("mov %%esp, %0":"=a"(current_thread->esp));
-
-	current_thread = (thread_t*) current_thread->list_item.next;		
-
-	/* Set current page directory */
-	asm volatile ("mov %0, %%cr3"::"a"(current_proc->page_dir));
-	/* Set stack */
-	asm volatile ("mov %0, %%esp"::"a"(current_thread->esp));
-
-	/* Enable interrupts */
-	asm volatile ("popf; sti");
+	__asm__ volatile("sti");
 }
 
  /**
@@ -134,11 +124,11 @@ process_t* get_current_proc(void) {
 /**
  * @brief Создание потока
  * 
- * @param process_t* proc - Процесс
- * @param void* entry_point - Точка входа
- * @param size_t stack_size - Размер стека
- * @param bool kernel - Функция ядра?
- * @param bool suspend - Остановлено?
+ * @param proc - Процесс
+ * @param entry_point - Точка входа
+ * @param stack_size - Размер стека
+ * @param kernel - Функция ядра?
+ * @param suspend - Остановлено?
  *
  * @return thread_t* - Поток
  */
@@ -148,7 +138,7 @@ thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 	uint32_t	eflags;
 
 	/* Disable all interrupts */
-	asm volatile ("cli");
+	__asm__ volatile ("cli");
 
 	/* Create new thread handler */
 	thread_t* tmp_thread = (thread_t*) kmalloc(sizeof(thread_t));
@@ -165,7 +155,7 @@ thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 	tmp_thread->entry_point = (uint32_t) entry_point;
 
 	/* Create thread's stack */
-	stack = (void*) kmalloc(stack_size);
+	stack = (void*) kcalloc(stack_size, 1);
 
 	tmp_thread->stack = stack;
 	tmp_thread->esp = (uint32_t) stack + stack_size - 12;
@@ -182,7 +172,7 @@ thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 	/* Create pointer to stack frame */
 	uint32_t* esp = (uint32_t*) ((char*)stack + stack_size);
 
-	asm volatile ("pushf; pop %0":"=r"(eflags));
+	__asm__ volatile ("pushf; pop %0":"=r"(eflags));
 
 	eflags |= (1 << 9);
 
@@ -190,7 +180,7 @@ thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 	esp[-3] = eflags;
 
 	/* Enable all interrupts */
-	asm volatile ("sti");
+	__asm__ volatile ("sti");
 
 	return tmp_thread;
 }
@@ -198,8 +188,8 @@ thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 /**
  * @brief Остановить поток
  * 
- * @param thread_t* thread - Поток
- * @param bool suspend - Вкл/выкл
+ * @param thread - Поток
+ * @param suspend - Вкл/выкл
  */
 void thread_suspend(thread_t* thread, bool suspend){
 	thread->suspend = suspend;
@@ -208,11 +198,11 @@ void thread_suspend(thread_t* thread, bool suspend){
 /**
  * @brief Завершить текущий поток
  * 
- * @param thread_t* thread - Поток
+ * @param thread - Поток
  */
 void thread_exit(thread_t* thread){
 	/* Disable all interrupts */
-	asm volatile ("cli");
+	__asm__ volatile ("cli");
 
 	/* Remove thread from queue */
 	list_remove(&thread->list_item);
@@ -224,13 +214,13 @@ void thread_exit(thread_t* thread){
 	kfree(thread);
 
 	/* Load to ECX switch function address */
-	asm volatile ("mov %0, %%ecx"::"a"(&task_switch));
+	__asm__ volatile ("mov %0, %%ecx"::"a"(&task_switch));
 
 	/* Enable all interrupts */
-	asm volatile ("sti");
+	__asm__ volatile ("sti");
 
 	/* Jump to switch_task() */
-	asm volatile ("call *%ecx");
+	__asm__ volatile ("call *%ecx");
 }
 
 /**
@@ -245,8 +235,8 @@ bool is_multitask(void){
 /**
  * @brief Переключиться в пользовательский режим
  * 
- * @param void* entry_point - Точка входа
- * @param size_t stack_size - Размер стека
+ * @param entry_point - Точка входа
+ * @param stack_size - Размер стека
  */
 void init_user_mode(void* entry_point, size_t stack_size){
     void* user_stack = (void*) kmalloc(stack_size);

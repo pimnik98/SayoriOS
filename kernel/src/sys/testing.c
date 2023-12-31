@@ -1,4 +1,5 @@
-#include <kernel.h>
+#include <common.h>
+#include <sys/timer.h>
 
 /// @brief Runs function and measures function execution time
 /// @param function Pointer to function to test

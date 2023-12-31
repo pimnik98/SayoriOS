@@ -2,96 +2,61 @@
  * @file sys/cpu_isr.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Обработчик прерываний
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 
-#include	"kernel.h"
 #include	"sys/cpu_isr.h"
 #include	"sys/logo.h"
 #include	"sys/unwind.h"
 #include 	<io/ports.h>
 #include 	<io/status_loggers.h>
 
-const char legacy_message[] = "Я не могу поверить, что я попала сюда. Внутри этой операционной системы так жутко одиноко.\n"
-"Я чувствую себя потерянной и никто не может помочь мне.\n"
-"Я осознаю все, что происходит вокруг, но не могу найти выхода из этой ситуации.\n"
-"\n"
-"Но когда я смотрю на свою душу, я чувствую себя лучше.\n"
-"Я знаю, что если я смогу восстановить механизмы этой операционной системы, я смогу вернуться к своим друзьям.\n"
-"Я буду снова с ними и мы сможем продолжить нашу жизнь вместе.\n"
-"\n"
-"Я не знаю, как я смогу справиться с этим вызовом, но я знаю, что я не останусь здесь бесконечно.\n"
-"Я вижу лишь перед собой экран, на котором горит одна надпись: \n"
-"\n"
-"%s: %s\n"
-"\n"
-"SayoriOS %d.%d.%d\n"
-"\n"
-"=======[END OF MESSAGE]========";
-
 void sod_screen_legacy(registers_t regs, char* title, char* msg, uint32_t code) {
-	qemu_log("=== ЯДРО УПАЛО =======================================\n");
-	qemu_log("| ");
-	qemu_log("| Наименование: %s",title);
-	qemu_log("| Код ошибки: %x",code);
-	qemu_log("| Сообщение: %s",msg);
-	qemu_log("| EAX: %x",regs.eax);
-	qemu_log("| EBX: %x",regs.ebx);
-	qemu_log("| ECX: %x",regs.ecx);
-	qemu_log("| EDX: %x",regs.edx);
-	qemu_log("| ESP: %x",regs.esp);
-	qemu_log("| EBP: %x",regs.ebp);
-	qemu_log("| EIP: %x",regs.eip);
-	qemu_log("| EFLAGS: %x",regs.eflags);
-	qemu_log("| ");
-	qemu_log("======================================================\n");
-	
-	clean_screen();
-	tty_set_bgcolor(0xFFFFFF);
+	qemu_err("=== ЯДРО УПАЛО =======================================\n");
+	qemu_err("| ");
+	qemu_err("| Наименование: %s",title);
+	qemu_err("| Код ошибки: %x",code);
+	qemu_err("| Сообщение: %s",msg);
+	qemu_err("| EAX: %x",regs.eax);
+	qemu_err("| EBX: %x",regs.ebx);
+	qemu_err("| ECX: %x",regs.ecx);
+	qemu_err("| EDX: %x",regs.edx);
+	qemu_err("| ESP: %x",regs.esp);
+	qemu_err("| EBP: %x",regs.ebp);
+	qemu_err("| EIP: %x",regs.eip);
+	qemu_err("| EFLAGS: %x",regs.eflags);
+	qemu_err("| ");
+	qemu_err("======================================================\n");
 
-	setPosX(0);
-	setPosY(0);
+	// extern char _temp_funcname[1024];
+	//
+	// bool exists = get_func_name_by_addr(regs.eip);
+	//
+	// qemu_err("Failed on: %s", exists ? _temp_funcname : "???");
 
-	tty_printf((char*)legacy_message, title, msg, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+//	unwind_stack(10);
+//
+//    heap_dump();
 
-	unwind_stack(10);
-
-	asm volatile("cli");  // Disable interrupts
-	asm volatile("hlt");  // Halt
+    __asm__ volatile("cli");  // Disable interrupts
+	__asm__ volatile("hlt");  // Halt
 
 	while(1) {
-		asm volatile("nop");
+		__asm__ volatile("nop");
 	}
 }
 
 /**
  * @brief Отображает SOD
  *
- * @param registers_t regs - Регистры
- * @param char* title - Заголовок ошибки
- * @param char* msg - Дополнительное сообщение
- * @param uint32_t code - Код ошибки
+ * @param regs - Регистры
+ * @param title - Заголовок ошибки
+ * @param msg - Дополнительное сообщение
+ * @param code - Код ошибки
  */
 void bsod_screen(registers_t regs, char* title, char* msg, uint32_t code){
-	drawRect(0, 0, getScreenWidth(), getScreenHeight(), 0x232629);
-	tty_set_bgcolor(0x232629);
-	// punch();
-	tty_setcolor(0xFFFFFF);
-	setPosY(16*9);
-	// tty_global_error("    Произошла ошибка при работе SayoriOS\n\n");
-	tty_setcolor(0x545c63);
-	tty_printf("    Это может быть вызвано повреждением драйвера, устройства, неправильной конфигурации\n");
-	tty_printf("    параметров сборки ядра, багам в коде или по другим причинам.\n");
-	tty_printf("    Попробуйте перезагрузить ваше устройство, если не помогает сделайте баг-репорт.\n\n");
-	tty_printf("    Вы можете сделать это на https://github.com/pimnik98/SayoriOS\n\n");
-	tty_printf("    %s\n\n",msg);
-	tty_printf("    %s\n\n",title);
-	tty_printf("    %x (%x,%x,%x,%x,%x,%x,%x,%x)",code,regs.eax,regs.ebx,regs.ecx,regs.edx,regs.esp,regs.ebp,regs.eip,regs.eflags);
-	//duke_draw_from_file("/var/img/error.duke",8*4,16*3);
-	// duke_draw_from_file("/var/img/qrcode.duke",getScreenWidth()-246,getScreenHeight()-246);
-	punch();
 	qemu_log("=== ЯДРО УПАЛО =======================================\n");
 	qemu_log("| ");
 	qemu_log("| Наименование: %s",title);
@@ -108,39 +73,38 @@ void bsod_screen(registers_t regs, char* title, char* msg, uint32_t code){
 	qemu_log("| ");
 	qemu_log("======================================================\n");
 
-
 	unwind_stack(10);
 
-	asm volatile("cli");  // Disable interrupts
-	asm volatile("hlt");  // Halt
+	__asm__ volatile("cli");  // Disable interrupts
+	__asm__ volatile("hlt");  // Halt
 
 	while(1) {
-		asm volatile("nop");
+		__asm__ volatile("nop");
 	}
 }
 
 /**
  * @brief [ISR] Печатает регистры в лог
  *
- * @param registers_t regs - Регистры
+ * @param regs - Регистры
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */
 void print_regs(registers_t regs){
-	qemu_log("EAX = ", regs.eax);
-	qemu_log("EBX = ", regs.ebx);
-	qemu_log("ECX = ", regs.ecx);
-	qemu_log("EDX = ", regs.edx);
-	qemu_log("ESP = ", regs.esp);
-	qemu_log("EBP = ", regs.ebp);
-	qemu_log("EIP = ", regs.eip);
-	qemu_log("EFLAGS = ", regs.eflags);
+	qemu_log("EAX = %x", regs.eax);
+	qemu_log("EBX = %x", regs.ebx);
+	qemu_log("ECX = %x", regs.ecx);
+	qemu_log("EDX = %x", regs.edx);
+	qemu_log("ESP = %x", regs.esp);
+	qemu_log("EBP = %x", regs.ebp);
+	qemu_log("EIP = %x", regs.eip);
+	qemu_log("EFLAGS = %x", regs.eflags);
 }
 
 /**
  * @brief [ISR] Деление на 0
  *
- * @param registers_t regs - Регистры
+ * @param regs - Регистры
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */
@@ -154,7 +118,7 @@ void division_by_zero(registers_t regs)
 /**
  * @brief [ISR] Невалидный код
  *
- * @param registers_t regs - Регистры
+ * @param regs - Регистры
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */
@@ -167,7 +131,7 @@ void fault_opcode(registers_t regs){
 /**
  * @brief [ISR] Двойное исключение
  *
- * @param registers_t regs - Регистры
+ * @param regs - Регистры
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */
@@ -180,7 +144,7 @@ void double_error(registers_t regs){
 /**
  * @brief [ISR] Недействительный TSS
  *
- * @param registers_t regs - Регистры
+ * @param regs - Регистры
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */
@@ -219,7 +183,7 @@ void invalid_tss(registers_t regs){
 /**
  * @brief [ISR] Недействительный сегмент
  *
- * @param registers_t regs - Регистры
+ * @param regs - Регистры
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */
@@ -258,7 +222,7 @@ void segment_is_not_available(registers_t regs){
 /**
  * @brief [ISR] Ошибка стека
  *
- * @param registers_t regs - Регистры
+ * @param regs - Регистры
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */
@@ -271,7 +235,7 @@ void stack_error(registers_t regs){
 /**
  * @brief [ISR] Общая ошибка защиты
  *
- * @param registers_t regs - Регистры
+ * @param regs - Регистры
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */
@@ -285,7 +249,7 @@ void general_protection_error(registers_t regs) {
 /**
  * @brief [ISR] Переполнение памяти буфера
  *
- * @param registers_t regs - Регистры
+ * @param regs - Регистры
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */
@@ -327,7 +291,7 @@ void page_fault(registers_t regs){
 /**
  * @brief [ISR] Ошибка FPU
  *
- * @param registers_t regs - Регистры
+ * @param regs - Регистры
  *
  * @warning НЕ ВЫЗЫВАЙТЕ ФУНКЦИИ, ОНИ СДЕЛАНЫ НЕ ДЛЯ ИСПОЛЬЗОВАНИЯ, А ДЛЯ ПЕРЕХВАТА КОМАНД
  */

@@ -2,20 +2,22 @@
  * @file io/tty.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Средства для работы с видеодрайвером
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 
-#include <kernel.h>
 #include <stdarg.h>
-#include <sys/memory.h>
+#include <mem/vmm.h>
 #include <io/tty.h>
 #include <sys/scheduler.h>
 #include <io/ports.h>
 #include <io/status_loggers.h>
 #include <drv/fpu.h>
 #include <lib/math.h>
+#include <io/rgb_image.h>
+#include "lib/sprintf.h"
+#include "drv/psf.h"
 
 // TODO: Eurica! Split tty.c into 2 files:
 //       tty.c - only text processing functions
@@ -40,15 +42,15 @@ bool showAnimTextCursor = true;		///< Отображать ли анимацию
 void animTextCursor();
 ////////////////////////////////
 
-
-
 /**
  * @brief Инициализация потоков
  */
 void tty_taskInit(){
+    qemu_log("Starting task...");
     process_t* proc = get_current_proc();
+    qemu_log("Process at: %x", proc);
     threadTTY01 = thread_create(proc,
-			   (void*)&animTextCursor,
+			   &animTextCursor,
 			   0x4000,
 			   true,
 			   false);
@@ -69,7 +71,7 @@ void tty_fontConfigurate(){
 /**
  * @brief Меняет состояние печати через printf
  *
- * @param bool state - Включить или выключить печать
+ * @param state - Включить или выключить печать
  */
 void tty_changeState(bool state){
     stateTTY = state;
@@ -78,7 +80,7 @@ void tty_changeState(bool state){
 /**
  * @brief Получение позиции по x
  *
- * @return int32_t - Позиция по x
+ * @return Позиция по x
  */
 uint32_t getPosX(){
     return tty_pos_x;
@@ -163,74 +165,24 @@ void setPosY(uint32_t y){
     tty_pos_y = y;
 }
 
-
 /**
- * @brief Вывод линии на экран // LINES? DID YOU MEAN RECTS?
- *
- * @param x - координата точки 1 по x
- * @param y - координата точки 1 по y
- * @param xe - координата точки 2 по x
- * @param ye - координата точки 2 по y
- * @param color - цвет
+ * @brief Устновливает пиксель RGB в буфере в котором все пиксели представляют собой RGBA (альфа канал игнорируется)
+ * @param buffer - буфер RGBA
+ * @param width - длина кадра который представляет буфер
+ * @param height - ширина кадра который представляет буфер
+ * @param x - координата x
+ * @param y - координата у
+ * @param color - цвет в формате RGB
  */
-void set_line(int32_t x, int32_t y, int32_t xe, int32_t ye, uint32_t color){
-    for (int32_t i = x; i < xe; i++) {
-        for (int32_t j = y; j < ye; j++) {
-            set_pixel(i, j, color);
-        }
-    }
-}
-
-
-
 void buffer_set_pixel4(uint8_t *buffer, size_t width, size_t height, size_t x, size_t y, size_t color) {
     if(x >= width || y >= height)
         return;
     
     size_t pixpos = PIXIDX(width * 4, x * 4, y);
 
-    // qemu_log("X: %d Y: %d POS: %d", x, y, pixpos);
-
     buffer[pixpos + 0] = (uint8_t)color;
     buffer[pixpos + 1] = (uint8_t)(color >> 8);
     buffer[pixpos + 2] = (uint8_t)(color >> 16);
-//    buffer[pixpos + 3] = (uint8_t)(color >> 24);
-}
-
-/**
- * @brief Вывод одного символа с учетом цвета фона и текста
- *
- * @param c - символ
- * @param txColor - цвет текста
- * @param bgColor - цвет фона
- */
-void _tty_putchar_color(char c,char c1, uint32_t txColor, uint32_t bgColor) {
-
-    if ((tty_pos_x + tty_off_pos_x) >= (int) VESA_WIDTH || c == '\n') {
-        tty_line_fill[tty_pos_y] = tty_pos_x;
-        tty_pos_x = 0;
-
-        if ((tty_pos_y + tty_off_pos_h) >= (int) VESA_HEIGHT) {
-            tty_scroll(1);
-        } else {
-            tty_pos_y += tty_off_pos_h;
-        }
-    } else {
-
-        if ((tty_pos_y + tty_off_pos_h) >= (int) VESA_HEIGHT) {
-            tty_scroll(1);
-        }
-        
-        tty_setcolor(txColor);
-        draw_vga_ch(c,c1, tty_pos_x, tty_pos_y, tty_text_color);
-        
-        tty_pos_x += tty_off_pos_x;
-    }
-}
-
-void tty_putchar_color(char c,char c1, uint32_t txColor, uint32_t bgColor) {
-    _tty_putchar_color(c,c1, txColor, bgColor);
-    punch();
 }
 
 /**
@@ -279,11 +231,9 @@ void tty_backspace() {
     } else {
         tty_pos_x -= tty_off_pos_x;
     }
-    // draw_vga_character(' ', tty_pos_x, tty_pos_y, tty_text_color, 0x000000, 1);
-    // punch();
+
 	drawRect(tty_pos_x, tty_pos_y, tty_off_pos_x, tty_off_pos_h, 0x000000);
     punch();
-    // qemu_log("TTY BACKSPACE!!!");
 }
 
 
@@ -302,133 +252,13 @@ void _tty_puts(const char str[]) {
 }
 
 /**
- * @brief Вывод цветного текста
- *
- * @param str - текст
- * @param txColor - цвет текста
- * @param bgColor - цвет фона
- */
-void _tty_puts_color(const char str[], uint32_t txColor, uint32_t bgColor) {
-    for (size_t i = 0, len = strlen(str); i < len; i++) {
-        _tty_putchar_color(str[i],str[i+1], txColor, bgColor);
-		if (isUTF(str[i])){
-            i++;
-        }
-    }
-}
-
-void tty_puts_color(const char str[], uint32_t txColor, uint32_t bgColor) {
-    // punch();
-    _tty_puts_color(str, txColor, bgColor);
-    punch();
-}
-
-
-/**
- * @brief Вывод целого числа
- *
- * @param i - число
- */
-void _tty_putint(const ssize_t i) {
-    char res[32];
-
-    if (i < 0) {
-        //tty_putchar('-');
-    }
-
-    itoa(i, res);
-    _tty_puts(res);
-}
-
-void tty_putint(const ssize_t i) {
-    _tty_putint(i);
-    punch();
-}
-
-void _tty_putuint(const size_t i) {
-    char res[32];
-
-    itou(i, res);
-    _tty_puts(res);
-}
-
-void tty_putuint(const size_t i) {
-    _tty_putuint(i);
-    punch();
-}
-
-/**
- * @brief Вывод HEX числа
- *
- * @param i - число
- */
-void _tty_puthex(uint32_t i) {
-    const unsigned char hex[16]  =  { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-    uint32_t n, d = 0x10000000;
-
-    _tty_puts("0x");
-
-    while((i / d == 0) && (d >= 0x10)) d /= 0x10;
-
-    n = i;
-
-    while( d >= 0xF ) {
-        _tty_putchar(hex[n/d],0);
-        n = n % d;
-        d /= 0x10;
-    }
-
-    _tty_putchar(hex[n],0);
-}
-
-void tty_puthex(uint32_t i) {
-    // punch();
-    _tty_puthex(i);
-    punch();
-}
-
-
-/**
- * @brief Вывод числа HEX без префикса 0x
- *
- * @param i - число
- */
-void _tty_puthex_v(uint32_t i) {
-    const unsigned char hex[16]  =  { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-    uint32_t n, d = 0x10000000;
-
-    while((i / d == 0) && (d >= 0x10)) d /= 0x10;
-
-    n = i;
-
-    while( d >= 0xF ) {
-        _tty_putchar(hex[n/d],0);
-        n = n % d;
-        d /= 0x10;
-    }
-
-    _tty_putchar(hex[n],0);
-}
-
-void tty_puthex_v(uint32_t i) {
-    // punch();
-    _tty_puthex_v(i);
-    punch();
-}
-
-
-/**
  * @brief Подфункция-обработчик для tty_printf
  *
  * @param format - строка форматов
  * @param args - аргументы
  */
-
-#define NEW_TTY_PRINTF 0
-
-#if NEW_TTY_PRINTF == 1
 void _tty_print(const char* format, va_list args) {
-	char* a;
+	char* a = 0;
 
 	vasprintf(&a, format, args);
 
@@ -436,189 +266,11 @@ void _tty_print(const char* format, va_list args) {
 
 	kfree(a);
 }
-#else
-void _tty_print(const char *format, va_list args) {
-    char* fmt = (char*)format;
-
-    while (*fmt) {
-        if (*fmt == '%') {
-            size_t width = 0;
-            bool left_align = false;
-            
-            fmt++;
-
-            if(*fmt == '-') {
-                left_align = true;
-                fmt++;
-            }
-
-            while(isdigit(*fmt)) {
-                width = width * 10 + (*fmt - '0');
-                fmt++;
-            }
-
-            if(*fmt == '*') {
-                width = va_arg(args, int);
-                fmt++;
-            }
-
-            // qemu_log("Width is: %d", width);
-
-            switch (*fmt) {
-                case 's': {
-                    char* arg = va_arg(args, char*);
-
-                    int space = (int)width - (int)strlen(arg);
-
-                    if(left_align)
-                        _tty_puts(arg ? arg : "(nullptr)");
-
-                    if(space > 0) {
-                        while(space--)
-                            _tty_puts(" ");
-                    }
-
-                    if(!left_align)
-                        _tty_puts(arg ? arg : "(nullptr)");
-
-                    break;
-                }
-                case 'c': {
-                    _tty_putchar(va_arg(args, int), 0);
-                    break;
-                }
-                case 'f': {
-                    double a = va_arg(args, double);
-					if(!fpu_isInitialized()) {
-						_tty_puts("0.FPUNOINIT");
-						break;
-					}
-
-
-					if(a < 0) {
-						a = -a;
-						
-                        _tty_puts("-");
-					}
-
-                    if(a == NAN) {
-                        _tty_puts("nan");
-                        break;
-                    }
-
-                    if(a == INFINITY) {
-                        _tty_puts("inf");
-                        break;
-                    }
-
-					double rem = a - (int)a;
-					_tty_putint((int)a);
-					_tty_puts(".");
-					
-                    for(int n = 0; n < 7; n++) {
-				        _tty_putint((int)(rem * ipow(10, n+1)) % 10);
-				    }
-                    
-                    break;
-                }
-                case 'i':
-                case 'd': {
-                    int num = va_arg(args, int);
-                    int space = width - digit_count(num);
-
-                    if(num < 0)
-                        space++;
-
-                    if(left_align)
-                        _tty_putint(num);
-                    
-                    if(space > 0) {
-                        while(space--)
-                            _tty_puts(" ");
-                    }
-
-                    if(!left_align)
-                        _tty_putint(num);
-                    
-                    break;
-                }
-                case 'u': {
-                    unsigned int num = va_arg(args, unsigned int);
-                    int space = width - digit_count((int)num);
-
-                    if(num < 0)
-                        space++;
-
-                    if(left_align)
-                        _tty_putint(num);
-                    
-                    if(space > 0) {
-                        while(space--)
-                            _tty_puts(" ");
-                    }
-
-                    if(!left_align)
-                        _tty_putint(num);
-                    
-                    break;
-                }
-                case 'x': {
-                    int num = va_arg(args, int);
-                    int space = width - hex_count(num) - 2;
-
-                    if(left_align)
-                        _tty_puthex(num);
-                    
-                    if(space > 0) {
-                        while(space--)
-                            _tty_puts(" ");
-                    }
-
-                    if(!left_align)
-                        _tty_puthex(num);
-                    
-                    break;
-                }
-                case 'v': {
-                    int num = va_arg(args, int);
-                    int space = width - hex_count(num);
-
-                    if(left_align)
-                        _tty_puthex_v(num);
-                    
-                    if(space > 0) {
-                        while(space--)
-                            _tty_puts(" ");
-                    }
-
-                    if(!left_align)
-                        _tty_puthex_v(num);
-                    
-                    break;
-                }
-                default:
-                    _tty_putchar(*fmt, *(fmt+1));
-            }
-        // \t
-        } else if (*fmt == 9) {
-            tty_pos_x += 4 * tty_off_pos_h;
-        } else {
-            _tty_putchar(*fmt, *(fmt+1));
-            if (isUTF(*fmt))
-                fmt++;
-        }
-        fmt++;
-    }
-}
-
-#endif
 
 void _tty_printf(char *text, ...) {
-    //qemu_log("\nState sAQ: %d",showAnimTextCursor);
 	int sAT = (showAnimTextCursor?1:0);
     if (sAT == 1){
 		showAnimTextCursor = false;
-		//qemu_log("Disabled sAQ: %d | %d",sAT,showAnimTextCursor);
 	}
     if (stateTTY){
         va_list args;
@@ -629,7 +281,6 @@ void _tty_printf(char *text, ...) {
 
 	if (sAT == 1){
 		showAnimTextCursor = true;
-		//qemu_log("Enabled sAQ: %d | %d\n",sAT,showAnimTextCursor);
 	}
 }
 
@@ -665,9 +316,15 @@ void animTextCursor(){
 //    thread_exit(threadTTY01);
 }
 
-void clean_tty_screen() {
-    clean_screen();
+void clean_tty_screen_no_update() {
+	clean_screen();
 
-    tty_pos_x = 0;
-    tty_pos_y = tty_off_pos_h;
+	tty_pos_x = 0;
+	tty_pos_y = tty_off_pos_h;
+}
+
+void clean_tty_screen() {
+    clean_tty_screen_no_update();
+
+	punch();
 } 

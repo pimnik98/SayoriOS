@@ -50,3 +50,18 @@ typedef struct {
 	char Data[33];					///< Пакет данных
 	uint32_t Next;					///< Следующий пакет данных
 } __attribute__((__packed__)) SMFS_PACKAGE_BIG;  // Получится 39 байт
+
+
+int fs_smfs_format(const char Disk);
+
+size_t fs_smfs_read(const char Disk,const char* Path,size_t Offset,size_t Size,void* Buffer);
+size_t fs_smfs_write(const char Disk,const char* Path,size_t Offset,size_t Size,void* Buffer);
+FSM_FILE fs_smfs_info(const char Disk,const char* Path);
+int fs_smfs_create(const char Disk,const char* Path,int Mode);
+int fs_smfs_delete(const char Disk,const char* Path,int Mode);
+
+TarFS_ROOT* fs_smfs_init(uint32_t in, uint32_t size, int Mode);
+FSM_DIR* fs_smfs_dir(const char Disk,const char* Path);
+
+int fs_smfs_detect(const char Disk);
+void fs_smfs_label(const char Disk, char* Label);

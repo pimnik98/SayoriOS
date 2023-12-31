@@ -2,14 +2,20 @@
  * @file fs/NatSuki.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief [VFS] [Драйвер] NatSuki - Виртуальная файловая система
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2023-01-27
  * @copyright Copyright SayoriOS Team (c) 2022-2023
 */
 
-#include <kernel.h>
+#include <lib/string.h>
 #include <io/ports.h>
-fs_node_t *nat_root;                        ///< Ссылка на виртуальную фс
+#include "drv/vfs_new.h"
+#include "io/serial_port.h"
+#include "mem/vmm.h"
+#include "lib/split.h"
+#include "io/tty.h"
+
+fs_node_t *nat_root = 0;                        ///< Ссылка на виртуальную фс
 bool    __milla_b_init = false;             ///< Milla готова к работе?
 char*   __milla_null = "null";              ///< Ответ, если Milla не готовa
 char*   __milla_buffer = 0;                 ///< Буфер
@@ -40,7 +46,9 @@ int __milla_getCode(){
  * @brief [Milla] Отправка пакета
 */
 void __milla_sendcmd(char* msg){
-    if (!__milla_b_init){return;}
+    if (!__milla_b_init)
+		return;
+
     __com_formatString(PORT_COM2,"%s |$MC#|",msg);
 }
 
@@ -156,7 +164,7 @@ int __milla_cleanState(){
     }
 }
 
-char* __milla_getFile(char* path) {
+char* __milla_getFile(const char *path) {
     if (!__milla_b_init){return __milla_null;}
     __com_formatString(PORT_COM2,"READ %s |$MC#|",path);
     int answer = atoi(__milla_getcmd());
@@ -173,9 +181,16 @@ char* __milla_getFile(char* path) {
     size_t inx = 0;
     char* buf = (char*)kmalloc(sizeof(char*) * answer);
     memset(buf,0,answer);
+    bool st1 = false;
     for(;;) {
         if (inx >= answer)break;
-        tmp = serial_readchar(PORT_COM2);
+        tmp = serial_readchar_timeout(PORT_COM2,10000,false);
+        if (tmp == 0xFFFFFFFF && !st1){
+            //qemu_log("SKIP 0xFFFFFFFF");
+            continue;
+        }
+        if (tmp != 0xFFFFFFFF && !st1) st1 = true;
+
         buf[inx] = tmp;
         inx++;
     }
@@ -281,9 +296,17 @@ char* __milla_getList(char* path){
     size_t inx = 0;
     char* buf = (char*)kmalloc(sizeof(char*) * answer);
     memset(buf,0,answer);
+    bool st1 = false;
     for(;;) {
         if (inx >= answer)break;
-        tmp = serial_readchar(PORT_COM2);
+
+        tmp = serial_readchar_timeout(PORT_COM2,10000,false);
+        if (tmp == 0xFFFFFFFF && !st1){
+            //qemu_log("SKIP 0xFFFFFFFF");
+            continue;
+        }
+        if (tmp != 0xFFFFFFFF && !st1) st1 = true;
+
         buf[inx] = tmp;
         inx++;
     }
@@ -354,7 +377,7 @@ void __milla_destroy(){
 /**
  * @brief [SEFS] Полное чтение файла
  *
- * @param int node - Индекс файла
+ * @param node - Индекс файла
  *
  * @return char* - Содержимое файла
  */
@@ -366,10 +389,10 @@ char* nat_readChar(uint32_t node){
 /**
  * @brief [SEFS] Чтение файла
  *
- * @param int node - Индекс файла
- * @param int offset - С какой позиции читать файл
- * @param int size - Длина читаемого файла
- * @param void* buf - Буфер
+ * @param node - Индекс файла
+ * @param offset - С какой позиции читать файл
+ * @param size - Длина читаемого файла
+ * @param buf - Буфер
  *
  * @return uint32_t - Размер файла или отрицательное значение при ошибке
  */
@@ -386,10 +409,10 @@ uint32_t nat_read(uint32_t node, size_t offset, size_t size, void *buffer){
 /**
  * @brief [SEFS] запись в файл
  *
- * @param int node - Индекс файла
- * @param int offset - С какой позиции писать файл
- * @param int size - Сколько пишем
- * @param void* buf - Буфер
+ * @param node - Индекс файла
+ * @param offset - С какой позиции писать файл
+ * @param size - Сколько пишем
+ * @param buf - Буфер
  *
  * @return uint32_t - Размер записаных байтов или отрицательное значение при ошибке
  */
@@ -402,7 +425,7 @@ uint32_t nat_write(uint32_t node, size_t offset, size_t size, void *buffer){
 /**
  * @brief [SEFS] Получить размер файла (поиск по индексу)
  *
- * @param int node - Индекс файла
+ * @param node - Индекс файла
  *
  * @return size_t - Размер файла или 0
  */
@@ -416,7 +439,7 @@ size_t nat_getLengthFile(int node){
 /**
  * @brief [SEFS] Получить отступ в файловой системе у файла
  *
- * @param int node - Индекс файла
+ * @param node - Индекс файла
  *
  * @return int - Позиция файла или отрицательное значение при ошибке
  */
@@ -428,7 +451,7 @@ size_t nat_getOffsetFile(int node){
 /**
  * @brief [SEFS] Поиск файла на устройстве
  *
- * @param char* filename - Путь к файлу (виртуальный)
+ * @param filename - Путь к файлу (виртуальный)
  *
  * @return int - Индекс файла, или отрицательное значение при ошибке
  */
@@ -441,7 +464,7 @@ int32_t nat_findFile(char* filename){
 /**
  * @brief [SEFS] Поиск папки на устройстве
  *
- * @param char* filename - Путь к папке (виртуальный)
+ * @param filename - Путь к папке (виртуальный)
  *
  * @return int - Индекс папки, или отрицательное значение при ошибке
  */
@@ -513,7 +536,7 @@ struct dirent* nat_list(char* path){
 /**
  * @brief [SEFS] Количество используемого места устройства
  *
- * @param int node - Нода
+ * @param node - Нода
  *
  * @return uint64_t - Количество используемого места устройства
  */
@@ -525,7 +548,7 @@ size_t nat_diskUsed(int node){
 /**
  * @brief [SEFS] Количество свободного места устройства
  *
- * @param int node - Нода
+ * @param node - Нода
  *
  * @return uint64_t - Количество свободного места устройства
  */
@@ -537,7 +560,7 @@ size_t nat_diskSpace(int node){
 /**
  * @brief [SEFS] Количество всего места устройства
  *
- * @param int node - Нода
+ * @param node - Нода
  *
  * @return uint64_t - Количество всего места устройства
  */
@@ -549,7 +572,7 @@ size_t nat_diskSize(int node){
 /**
  * @brief [SEFS] Получение имени устройства
  *
- * @param int node - Нода
+ * @param node - Нода
  *
  * @return char* - Имя устройства
  */
@@ -570,7 +593,7 @@ bool isInitNatSuki(){
 /**
  * @brief [SEFS] Инициализация Sayori Easy File System
  *
- * @param uint32_t location - Точка монтирования
+ * @param location - Точка монтирования
  *
  * @return fs_node_t - Структура с файлами
  */
@@ -596,22 +619,22 @@ fs_node_t *NatSuki_initrd(uint32_t location){
     nat_root->flags = FS_DIRECTORY;
     nat_root->open = 0;
     nat_root->close = 0;
-    nat_root->findFile = &nat_findFile;
-    nat_root->findDir = &nat_findDir;
+    nat_root->findFile = (findFile_type_t) &nat_findFile;
+    nat_root->findDir = (findFile_type_t) &nat_findDir;
     nat_root->getLengthFile = &nat_getLengthFile;
     nat_root->getOffsetFile = &nat_getOffsetFile;
-    nat_root->list = &nat_list;
+    nat_root->list = (list_type_t) &nat_list;
     nat_root->ptr = 0;
     nat_root->impl = 0;
     nat_root->readChar = &nat_readChar;
     nat_root->read = &nat_read;
-    nat_root->write = &nat_write;
+    nat_root->write = (write_type_t) &nat_write;
     nat_root->diskUsed = &nat_diskUsed;
     nat_root->diskSpace = &nat_diskSpace;
     nat_root->diskSize = &nat_diskSize;
     nat_root->getDevName = &nat_getDevName;
     nat_root->getCountElemFolder = &nat_countElemFolder;
-    nat_root->getListElem = &nat_list;
+    nat_root->getListElem = (dirlist_type_t) &nat_list;
     nat_root->unlistElem = &nat_dirfree;
 
     return nat_root;

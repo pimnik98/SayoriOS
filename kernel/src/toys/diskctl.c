@@ -1,5 +1,6 @@
 #include "drv/atapi.h"
 #include "io/tty.h"
+#include "io/status_loggers.h"
 
 extern ata_drive_t drives[4];
 
@@ -139,7 +140,7 @@ void diskctl_test(uint32_t argc, char** argv) {
 
         tty_printf("Reading 1 MB from address 0...\n");
 
-        ata_read(disk_n, buf, 0, 1 * 1024 * 1024);
+        ata_pio_read(disk_n, buf, 0, 1 * 1024 * 1024);
 
         tty_printf("Freeing buffer...\n");
 

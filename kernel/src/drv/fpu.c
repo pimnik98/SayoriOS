@@ -2,7 +2,7 @@
  * @file fpu.c
  * @author NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief FPU
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2023-12-19
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -11,16 +11,19 @@
 
 bool fpu_initialized = false;
 
+/// Возвращает статус FPU
 bool fpu_isInitialized() {
 	return fpu_initialized;
 }
 
+/// Для инициализации FPU
 void fpu_fldcw(const uint16_t cw) {
     __asm__ volatile("fldcw %0" : : "m"(cw));
 }
 
+/// Инициализация FPU
 void fpu_init() {
-	uint32_t cr4 = 0;
+	size_t cr4 = 0;
 
 	__asm__ volatile ("mov %%cr4, %0":"=r"(cr4));
 	cr4 |= 0x200;

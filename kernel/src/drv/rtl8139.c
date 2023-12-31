@@ -1,11 +1,28 @@
-#include <kernel.h>
-#include <sys/memory.h>
+/**
+ * @brief Драйвер сетевой карты RTL8139
+ * @author NDRAEY >_
+ * @version 0.3.4
+ * @date 2022-04-12
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
+ */
+
+#include <drv/rtl8139.h>
+#include <net/cards.h>
+#include <drv/pci.h>
+#include <io/ports.h>
+#include <net/endianess.h>
+#include <net/ethernet.h>
+#include <debug/hexview.h>
 #include <sys/isr.h>
+#include "lib/string.h"
+#include "mem/vmm.h"
+#include "mem/pmm.h"
 
 uint8_t rtl8139_busnum, rtl8139_slot, rtl8139_func;
 uint32_t rtl8139_io_base, rtl8139_mem_base, rtl8139_bar_type;
 
-size_t rtl8139_phys_buffer;
+size_t rtl8139_phys_buffer = 0;
+char* rtl8139_virt_buffer = (char*)0;
 uint8_t rtl8139_irq;
 
 uint8_t rtl8139_mac[6];
@@ -14,6 +31,12 @@ uint8_t TSAD_array[4] = {0x20, 0x24, 0x28, 0x2C};
 uint8_t TSD_array[4] = {0x10, 0x14, 0x18, 0x1C};
 
 size_t rtl8139_current_tx_index = 0;
+
+void* rtl8139_transfer_buffer;
+size_t rtl8139_transfer_buffer_phys;
+
+void rtl8139_send_packet(void* data, size_t length);
+void rtl8139_receive_packet();
 
 #define NETCARD_NAME ("RTL8139")
 
@@ -25,8 +48,9 @@ void rtl8139_netcard_get_mac(uint8_t mac[6]) {
 
 netcard_entry_t rtl8139_netcard = {
     NETCARD_NAME,
+	{0, 0, 0, 0},
     rtl8139_netcard_get_mac,
-    rtl8139_send_packet
+    rtl8139_send_packet,
 };
 
 void rtl8139_init() {
@@ -68,17 +92,13 @@ void rtl8139_init() {
     rtl8139_wake_up();
     rtl8139_sw_reset();
 
-    rtl8139_phys_buffer = alloc_phys_pages(RTL8139_BUFFER_PAGE_COUNT);
+	rtl8139_virt_buffer = kmalloc_common(RTL8139_BUFFER_PAGE_COUNT, PAGE_SIZE);
+    rtl8139_phys_buffer = virt2phys(get_kernel_page_directory(), (virtual_addr_t) rtl8139_virt_buffer);
 
-    map_pages(
-        get_kernel_dir(),
-        rtl8139_phys_buffer,
-        rtl8139_phys_buffer,
-        RTL8139_BUFFER_PAGE_COUNT,
-        (PAGE_WRITEABLE | PAGE_PRESENT)
-    );
+	rtl8139_transfer_buffer = kmalloc_common(65535, PAGE_SIZE);
+	rtl8139_transfer_buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t)rtl8139_transfer_buffer);
 
-    rtl8139_init_buffer();
+	rtl8139_init_buffer();
 
     qemu_log("RTL8139 Physical buffer at: %x", rtl8139_phys_buffer);
 
@@ -90,12 +110,12 @@ void rtl8139_init() {
     rtl8139_read_mac();
 
     // If okay, add network card to list.
-    netcard_add(rtl8139_netcard);
+    netcard_add(&rtl8139_netcard);
 }
 
 void rtl8139_read_mac() {
     uint32_t mac_part1 = inl(rtl8139_io_base + MAC0_5);
-    uint16_t mac_part2 = ins(rtl8139_io_base + MAC0_5 + 4);
+    uint16_t mac_part2 = inw(rtl8139_io_base + MAC0_5 + 4);
 
     rtl8139_mac[0] = (mac_part1 >> 0) & 0xFF;
     rtl8139_mac[1] = mac_part1 >> 8;
@@ -140,7 +160,7 @@ void rtl8139_init_buffer() {
 void rtl8139_handler(registers_t regs) {
     qemu_log("Received RTL8139 interrupt!");
 
-    uint16_t status = ins(rtl8139_io_base + 0x3e);
+    uint16_t status = inw(rtl8139_io_base + 0x3e);
 
     if(status & TOK) {
         qemu_log("Packet sent");
@@ -148,66 +168,77 @@ void rtl8139_handler(registers_t regs) {
 
     if (status & ROK) {
         qemu_log("Packet received!\n");
+
+        // TODO: Push packet to stack then, when needed, work with packets on the stack
+		rtl8139_receive_packet();
     }
 
-    outs(rtl8139_io_base + 0x3E, 0x05);
+    outw(rtl8139_io_base + 0x3E, 0x05);
 }
 
-void rtl8139_send_packet(void* data, size_t length) {
-    // First, copy the data to a physically contiguous chunk of memory
+void rtl8139_send_packet(void *data, size_t length) {
+	// First, copy the data to a physically contiguous chunk of memory
 
-    void* transfer_data = kmalloc_a(ALIGN(length, 4096));
-    size_t phys_addr = virt2phys(get_kernel_dir(), (virtual_addr_t)transfer_data);
-    memcpy(transfer_data, data, length);
+	memset(rtl8139_transfer_buffer, 0, 65535);
 
-    qemu_log("Send packet: Virtual memory at %x", transfer_data);
-    qemu_log("Send packet: Physical memory at %x", phys_addr);
+	memcpy(rtl8139_transfer_buffer, data, length);
 
-    // Second, fill in physical address of data, and length
+	qemu_log("Send packet: Virtual memory at %x", rtl8139_transfer_buffer);
+	qemu_log("Send packet: Physical memory at %x", rtl8139_transfer_buffer_phys);
 
-    qemu_log("Before: %d",  rtl8139_current_tx_index);
-    
-    outl(rtl8139_io_base + TSAD_array[rtl8139_current_tx_index], (uint32_t)phys_addr);
-    outl(rtl8139_io_base + TSD_array[rtl8139_current_tx_index++], length);
-    
-    qemu_log("After: %d",  rtl8139_current_tx_index);
+	// Second, fill in physical address of data, and length
 
-    if(rtl8139_current_tx_index == 4)
-        rtl8139_current_tx_index = 0;
+	qemu_log("Before: %d",  rtl8139_current_tx_index);
+
+	outl(rtl8139_io_base + TSAD_array[rtl8139_current_tx_index], (uint32_t)rtl8139_transfer_buffer_phys);
+	outl(rtl8139_io_base + TSD_array[rtl8139_current_tx_index++], length);
+
+	qemu_log("After: %d",  rtl8139_current_tx_index);
+
+	if(rtl8139_current_tx_index > 3)
+		rtl8139_current_tx_index = 0;
 }
 
 size_t rtl8139_current_packet_ptr = 0;
 
 void rtl8139_receive_packet() {
-    uint16_t* packet = (uint16_t*)(rtl8139_phys_buffer + rtl8139_current_packet_ptr);
+    uint16_t* packet = (uint16_t*)(rtl8139_virt_buffer + rtl8139_current_packet_ptr);
+
+	EthernetPacked* e_pack = (EthernetPacked*)packet;
+
+	qemu_log("[Net] [RTL8139] Получен пакет!");
+	qemu_log("  |-- Заголовок данных: %x",e_pack->Header);
+	qemu_log("  |-- Длина данных: %d",e_pack->Size);
+	qemu_log("  |-- Источник: %x:%x:%x:%x:%x:%x",e_pack->MAC_SOURCE[0] ,e_pack->MAC_SOURCE[1],e_pack->MAC_SOURCE[2], e_pack->MAC_SOURCE[3] ,e_pack->MAC_SOURCE[4] ,e_pack->MAC_SOURCE[5]);
+	qemu_log("  |-- Кому: %x:%x:%x:%x:%x:%x", e_pack->MAC_DEVICE[0], e_pack->MAC_DEVICE[1], e_pack->MAC_DEVICE[2], e_pack->MAC_DEVICE[3], e_pack->MAC_DEVICE[4], e_pack->MAC_DEVICE[5]);
+	qemu_log("  |-- Тип данных: %x", bit_flip_short(e_pack->Type));
+
     // Skip packet header, get packet length
-    uint16_t packet_header = packet[0];
-    uint16_t packet_length = packet[1];
+	//^ Может быть и верно, но теряется сама логика пакета, из-за этого я не мог понять некоторые моменты
+	// NDRAEY: Это сырая реализция!!!1
+
+    uint16_t packet_header = e_pack->Header;
+    uint16_t packet_length = e_pack->Size;
 
     uint16_t* packet_data = packet + 2;
 
-    qemu_log("Packet!!!");
-    qemu_log("Packet header: %x", packet_header);
-    qemu_log("Packet length: %d", packet_length);
+    qemu_log("[Net] [RTL8139] Данные с пакета:\n");
 
-    qemu_log("Packet data: ");
+//	hexview_advanced((char *) packet_data, packet_length, 10, true, new_qemu_printf);
 
-    for(int i = 0; i < packet_length / sizeof(uint16_t); i++) {
-        qemu_printf("%x", packet_data[i]);
-    }
-
-    qemu_printf("\n");
+	if(packet_header == HARDWARE_TYPE_ETHERNET)
+		ethernet_handle_packet(&rtl8139_netcard, (ethernet_frame_t *)packet_data, packet_length);
 
     rtl8139_current_packet_ptr = (rtl8139_current_packet_ptr + packet_length + 7) & RX_READ_POINTER_MASK;
 
     if(rtl8139_current_packet_ptr > 8192)
         rtl8139_current_packet_ptr -= 8192;
 
-    outs(rtl8139_io_base + CAPR, rtl8139_current_packet_ptr - 0x10);
+    outw(rtl8139_io_base + CAPR, rtl8139_current_packet_ptr - 0x10);
 }
 
 void rtl8139_init_interrupts() {
-    outs(rtl8139_io_base + IMR, 0x0005);
+    outw(rtl8139_io_base + IMR, 0x0005);
 
     // https://wiki.osdev.org/PCI
     //

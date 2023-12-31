@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common.h"
-
+#include <fs/fsm.h>  
 #define EOF (-1)
 #define SEEK_SET 0
 #define SEEK_CUR 1
@@ -44,9 +44,5 @@ ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence);
 void rewind(FILE *stream);
 void perror(FILE* stream,char* s);
 uint32_t ferror(FILE* stream);
-void fsetpos(FILE* stream, ssize_t pos);
-ssize_t fgetpos(FILE* stream);
-void fdebuginfo(FILE* stream);
 
-//size_t fread(FILE* stream, char* ptr, size_t size, size_t nmemb);
 size_t fwrite(FILE *stream, size_t size, size_t count, const void *ptr);

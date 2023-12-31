@@ -1,8 +1,9 @@
 #pragma once
 
 #include "common.h"
-#include "drv/ata.h"
+#include "drv/disk/ata.h"
 #include "io/ports.h"
+#include <mem/vmm.h>
 
 #define ATAPI_CMD_READY      0x00
 #define ATAPI_CMD_RQ_SENSE   0x03

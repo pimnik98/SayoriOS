@@ -1,10 +1,13 @@
 #pragma once
 
 #include <common.h>
+#include "lib/string.h"
 
 extern uint8_t* framebuffer_addr;
+extern uint32_t framebuffer_bpp;
+extern uint32_t framebuffer_pitch;
 extern uint8_t* back_framebuffer_addr;
-extern size_t framebuffer_size;
+extern uint32_t framebuffer_size;
 
 #define VESA_WIDTH  (getScreenWidth())
 #define VESA_HEIGHT (getScreenHeight())
@@ -27,10 +30,6 @@ typedef struct rgb_struct {
 	uint8_t b;
 } rgb_color;
 
-typedef struct screen_pixel {
-	rgb_color color;
-	uint32_t x, y;
-} screen_pixel;
 
 enum colors  {
 	VESA_BLACK = 0x000000,
@@ -78,15 +77,47 @@ typedef struct svga_mode_info {
 	uint8_t reserved1[206];
 } __attribute__ ((packed)) svga_mode_info_t;
 
-#define punch() memcpy(framebuffer_addr, back_framebuffer_addr, framebuffer_size);
+#define punch() memcpy(framebuffer_addr, back_framebuffer_addr, framebuffer_size)
 //#define punch() rect_copy(0, 0, VESA_WIDTH, VESA_HEIGHT)
 
 uint32_t getDisplayPitch();
 uint32_t getScreenWidth();
 uint32_t getScreenHeight();
-uint32_t getDisplaySize();
 size_t getDisplayAddr();
+uint32_t getDisplayBpp();
 size_t getFrameBufferAddr();
 size_t getPixel(int32_t x, int32_t y);
-void set_pixel(uint32_t x, uint32_t y, uint32_t color);
+
+
+/**
+ * @brief Вывод одного пикселя на экран
+ *
+ * @param x - позиция по x
+ * @param y - позиция по y
+ * @param color - цвет
+ */
+inline static __attribute__((always_inline)) void set_pixel(uint32_t x, uint32_t y, uint32_t color) {
+	#ifndef RELEASE
+	if (x >= VESA_WIDTH ||
+		y >= VESA_HEIGHT) {
+		return;
+	}
+	#endif
+	uint8_t* pixels = back_framebuffer_addr + (x * (framebuffer_bpp >> 3)) + y * framebuffer_pitch;
+
+	pixels[0] = color & 255;
+	pixels[1] = (color >> 8) & 255;
+	pixels[2] = (color >> 16) & 255;
+}
+
+/**
+ * @brief Получение размера буфера экрана
+ *
+ * @return uint32_t - Размер буфера экрана
+ */
+inline static __attribute__((always_inline)) uint32_t getDisplaySize(){
+	return framebuffer_size;
+}
+
+void setPixelAlpha(uint32_t x, uint32_t y, rgba_color color);
 void rect_copy(int x, int y, int width, int height);

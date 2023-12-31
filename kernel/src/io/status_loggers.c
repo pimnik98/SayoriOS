@@ -1,4 +1,3 @@
-#include <kernel.h>
 #include <io/ports.h>
 #include <drv/beeper.h>
 #include <io/status_loggers.h>
