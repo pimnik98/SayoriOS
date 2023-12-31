@@ -10,13 +10,13 @@
 Коммиты идут пачками (по одному коммиту на каждый релиз) 
 <h1>Скриншоты</h1>
 <center>
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/1.png" alt="v0.3.4 S1">
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/2.png" alt="v0.3.4 S2">
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/3.png" alt="v0.3.4 S3">
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/4.png" alt="v0.3.4 S4">
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/5.png" alt="v0.3.4 S5">
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/6.png" alt="v0.3.4 S6">
-	<img src="https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.4/7.png" alt="v0.3.4 S7">
+	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.4/1.png" alt="v0.3.4 S1">
+	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.4/2.png" alt="v0.3.4 S2">
+	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.4/3.png" alt="v0.3.4 S3">
+	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.4/4.png" alt="v0.3.4 S4">
+	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.4/5.png" alt="v0.3.4 S5">
+	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.4/6.png" alt="v0.3.4 S6">
+	<img src="https://raw.githubusercontent.com/pimnik98/SayoriOS/screens/screens/v0.3.4/7.png" alt="v0.3.4 S7">
 </center><br>
 <h1>Примерный план действий:</h1>
 <p>
