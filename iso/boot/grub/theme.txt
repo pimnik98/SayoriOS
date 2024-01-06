@@ -1,0 +1,25 @@
+desktop-color: "#24282c"
+desktop-image: "background.tga"
+
++ boot_menu {
+    left = 15%
+    width = 70%
+    top = 30%
+    height = 45%
+    item_height = 30
+    item_padding = 5
+    icon_width = 32
+    icon_height = 32
+    item_icon_space = 20
+    item_spacing = 5
+    item_color = "#cccccc"
+    selected_item_color = "#00ff00"
+}
+
++ hbox {
+    left = 50%-250
+    top = 80%
+    width = 500
+    + label { width = 250 height = 20 align = "center" color = "#ffffff" text = "E = Edit Boot Options" }
+    + label { width = 250 height = 20 align = "center" color = "#ffffff" text = "C = GRUB Commandline" }
+}

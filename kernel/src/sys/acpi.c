@@ -1,6 +1,10 @@
 #include "sys/acpi.h"
 #include "sys/apic_table.h"
 #include "lib/string.h"
+#include "io/ports.h"
+#include "io/tty.h"
+#include "mem/pmm.h"
+#include "mem/vmm.h"
 
 uint32_t system_processors_found = 0;
 
@@ -64,15 +68,21 @@ ACPISDTHeader* find_table(uint32_t rsdt_addr, uint32_t sdt_count, char signature
 }
 
 void find_facp(size_t rsdt_addr) {
+	qemu_log("FACP at P%x", rsdt_addr);
+
     map_pages(
-        get_kernel_dir(),
+        get_kernel_page_directory(),
         rsdt_addr,
-        rsdt_addr,
-        2,
+		rsdt_addr,
+        PAGE_SIZE,
         PAGE_PRESENT
     );
 
     ACPISDTHeader* rsdt = (ACPISDTHeader*)rsdt_addr;
+
+//	new_qemu_printf("OEM: %.11s\n", rsdt->OEMID);
+//	qemu_log("Length: %d", rsdt->Length);
+//	new_qemu_printf("OEMTableID: %.8s\n", rsdt->OEMTableID);
 
     bool check = acpi_checksum_sdt(rsdt);
 
@@ -92,7 +102,7 @@ void find_facp(size_t rsdt_addr) {
 
     // Find FACP here
 
-    ACPISDTHeader* fadt = find_table(rsdt_addr, sdt_count, "FACP");
+    ACPISDTHeader* fadt = find_table((uint32_t) rsdt_addr, sdt_count, "FACP");
 
     if(!fadt) {
         qemu_log("FADT not found...");
@@ -101,18 +111,37 @@ void find_facp(size_t rsdt_addr) {
 
     qemu_log("Found FADT!");
 
-    unmap_pages(get_kernel_dir(), rsdt_addr, 1);
+    unmap_single_page(get_kernel_page_directory(), (virtual_addr_t) rsdt_addr);
 }
 
 void find_apic(size_t rsdt_addr) {
+// We have apic fail on real hardware, so I would to see logs on the screen
+// #undef qemu_log
+// #define qemu_log(M, ...) do { tty_printf(M, ##__VA_ARGS__); tty_puts("\n"); } while(0)
+
+	qemu_log("!!! Starting RSDT: %x", rsdt_addr);
+
+    // map_pages(
+        // get_kernel_page_directory(),
+        // rsdt_addr,
+        // rsdt_addr,
+        // PAGE_SIZE,
+        // PAGE_PRESENT
+    // );
+
+	size_t start = rsdt_addr & ~0xfff;
+	size_t end = ALIGN(rsdt_addr + PAGE_SIZE, PAGE_SIZE);
+
     map_pages(
-        get_kernel_dir(),
-        rsdt_addr,
-        rsdt_addr,
-        2,
+        get_kernel_page_directory(),
+        start,
+        start,
+        end - start,
         PAGE_PRESENT
     );
 
+	qemu_log("!!! Should be: %x - %x", start, end);
+	qemu_log("!!! Mapped memory range: %x - %x", rsdt_addr, rsdt_addr + (PAGE_SIZE));
     ACPISDTHeader* rsdt = (ACPISDTHeader*)rsdt_addr;
 
     bool check = acpi_checksum_sdt(rsdt);
@@ -144,6 +173,8 @@ void find_apic(size_t rsdt_addr) {
 
     size_t table_end = (size_t)apic + sizeof(ACPISDTHeader);
 
+	qemu_log("Table end at: %x", table_end);
+
     struct APIC_Base_Table* apic_base = (struct APIC_Base_Table*)table_end;
 
     qemu_log("LAPIC at: %x", apic_base->lapic_addr);
@@ -154,7 +185,7 @@ void find_apic(size_t rsdt_addr) {
     for(int i = 0; i < sdt_count; i++) {
         struct APIC_Entry* entry = (struct APIC_Entry*)base_table_end;
 
-        qemu_log("Type: %d", entry->type);
+        qemu_log("[%x] Type: %d", entry, entry->type);
 
         switch(entry->type) {
             case APIC_PLAPIC: {
@@ -222,5 +253,5 @@ void find_apic(size_t rsdt_addr) {
 
     apic_detect_end:
 
-    unmap_pages(get_kernel_dir(), rsdt_addr, 1);
+    unmap_single_page(get_kernel_page_directory(), rsdt_addr);
 }

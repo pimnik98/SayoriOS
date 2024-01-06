@@ -2,7 +2,7 @@
  * @file common.h
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Основные определения ядра
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2023-12-07
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -23,7 +23,14 @@ typedef enum {
 
 #endif
 
+#define SAYORI_INLINE static inline __attribute__((always_inline))
+
+#define KB (1 << 10)
+#define MB (1 << 20)
+#define GB (1 << 30)
+
 #define ALIGN(value, align) ((value) + ((-(value)) & ((align) - 1)))
+#define IS_ALIGNED(value, align) ((value) % (align) == 0)
 
 /* 64-bit types */
 typedef	unsigned long long	uint64_t;
@@ -38,8 +45,16 @@ typedef	short		int16_t;
 typedef	unsigned char	uint8_t;
 typedef	char		int8_t;
 
+#ifdef SAYORI64
+typedef	uint64_t		size_t;
+typedef	int64_t			ssize_t;
+#else
 typedef	uint32_t		size_t;
 typedef	int32_t			ssize_t;
+#endif
+
+
+
 
 struct registers {
     uint32_t	ds;
@@ -51,8 +66,14 @@ struct registers {
 typedef	struct	registers	registers_t;
 
 // Use ON_NULLPTR macro to tell a user (developer) that he passed a nullptr
-#define ON_NULLPTR(ptr, code) do { if((ptr) == 0) { \
-		qemu_err("Mumble, you have an illusion that you see an object but you can't touch it because it's not exist..."); \
-		code                                               \
-	}      \
-} while(0)
+#ifndef RELEASE
+#define ON_NULLPTR(ptr, code) \
+	do {                         \
+		if((ptr) == 0) { \
+			qemu_err("You have an illusion that you see an object but you can't touch it because it's not exist..."); \
+			code                                               \
+		}      \
+	} while(0)
+#else
+#define ON_NULLPTR(ptr, code)
+#endif

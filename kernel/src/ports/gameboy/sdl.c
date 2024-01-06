@@ -1,14 +1,15 @@
 #include "common.h"
 #include "drv/input/keymap.h"
 #include "cpu.h"
-#include "kernel.h"
+#include "io/rgb_image.h"
+#include "io/screen.h"
 
 static unsigned int frames;
 
 static int button_start, button_select;
 static int button_a, button_b;
 static int button_down, button_up, button_left, button_right;
-static int button_debug, button_quit;
+static int button_quit;
 
 struct keymap {
 	char code;
@@ -28,7 +29,6 @@ static struct keymap keys[] =
 	{KEY_UP,    &button_up,     NULL, 0},
 	{KEY_DOWN,  &button_down,   NULL, 0},
 	{KEY_ESC,   &button_quit,   NULL, 0}
-	// {KEY_F1,    &button_debug, debug, 0}
 };
 
 #define WIDTH 640
@@ -113,10 +113,7 @@ unsigned int *sdl_get_framebuffer(void)
 	return gb_framebuffer;
 }
 
-extern const size_t framebuffer_pitch;
-extern const size_t framebuffer_bpp;
-
-void gb_display_helper(char* display_addr) {
+void gb_display_helper(uint8_t* display_addr) {
 	size_t real_bpp = framebuffer_bpp >> 3;
 
 	for(register int i = 0; i < HEIGHT; i++) {
@@ -137,7 +134,7 @@ void sdl_frame(void)
 {
 	frames++;
 
-	char* displ = getDisplayAddr();
+	uint8_t* displ = (uint8_t*)getDisplayAddr();
 
 	gb_display_helper(displ);
 

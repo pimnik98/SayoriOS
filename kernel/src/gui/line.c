@@ -1,4 +1,7 @@
-#include <kernel.h>
+#include <common.h>
+#include <io/screen.h>
+#include "lib/math.h"
+#include "io/tty.h"
 
 void draw_line(int x0, int y0, int x1, int y1, int thickness, int color) {
     // Calculate the differences and absolute values of x and y coordinates
@@ -40,7 +43,7 @@ void draw_line(int x0, int y0, int x1, int y1, int thickness, int color) {
 }
 
 
-void draw_line_extern(char* buffer, size_t width, size_t height, int x0, int y0, int x1, int y1, int thickness, int color) {
+void draw_line_extern(uint8_t *buffer, size_t width, size_t height, int x0, int y0, int x1, int y1, int thickness, int color) {
     // Calculate the differences and absolute values of x and y coordinates
     int dx = ABS(x1 - x0);
     int dy = ABS(y1 - y0);

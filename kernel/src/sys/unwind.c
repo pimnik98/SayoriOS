@@ -1,12 +1,12 @@
-#include "kernel.h"
 #include "sys/unwind.h"
 #include "io/ports.h"
+#include "lib/string.h"
 
-__attribute__((section(".debug_symbols"))) char* function_addr_data[128 * 1024] = {0};
+__attribute__((section(".debug_symbols"))) char function_addr_data[128 * 1024] = {0};
 
 char _temp_funcname[1024] = {0};
 
-size_t decode_hex(char s[], int length) {
+size_t decode_hex(const char s[], int length) {
     int dec = 0;
     int power = 1;
 
@@ -37,19 +37,19 @@ bool get_func_name_by_addr(size_t addr) {
     
         size_t current_addr = decode_hex(temp, 8); // First addr
         
-        temp += 8; // Address in HEX
         temp += 3; // Type
+        temp += 8; // Address in HEX
 
-        memcpy(_temp_funcname, temp, struntil(temp, '\n') - 1);
+        memcpy(_temp_funcname, temp, struntil(temp, '\n'));
 
-        temp += struntil(temp, '\n'); // Name
+        temp += struntil(temp, '\n') + 1; // Name
 
         size_t next_addr = decode_hex(temp, 8); // Second addr
         
+        // qemu_log("%x | %x | %x", current_addr, addr, next_addr);
+
         if(addr >= current_addr && addr < next_addr) {
             return true;
-        } else {
-            // qemu_log("%x | %x | %x", current_addr, addr, next_addr);
         }
     } while(*temp != '\0');
 
@@ -58,7 +58,7 @@ bool get_func_name_by_addr(size_t addr) {
 
 void unwind_stack(uint32_t MaxFrames) {
     struct stackframe *stk;
-    asm ("movl %%ebp, %0" : "=r"(stk) :: );
+    __asm__ volatile("movl %%ebp, %0" : "=r"(stk) :: );
 
     qemu_log("Stack trace:");
 

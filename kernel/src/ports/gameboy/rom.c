@@ -93,18 +93,18 @@ static unsigned char header[] = {
 
 static int rom_init(unsigned char *rombytes, size_t filesize)
 {
-	char buf[17];
+	char buf[17] = {0};
 	int type, bank_index, ram, region, version, i, pass;
 	unsigned char checksum = 0;
 
-	if(memcmp(&rombytes[0x104], header, sizeof(header)) != 0)
+	if(memcmp((const char*)&rombytes[0x104], (const char*)header, sizeof(header)) != 0)
 		return 0;
 
 	memcpy(buf, &rombytes[0x134], 16);
 	buf[16] = '\0';
 	printf("Rom title: %s\n", buf);
 
-	type = rombytes[0x147];
+	type = (int)rombytes[0x147];
 
 	printf("Cartridge type: %s (%02X)\n", carts[type], type);
 
@@ -207,8 +207,8 @@ unsigned int rom_get_mapper(void)
 }
 
 int rom_load(const char *filename) {
-	int f;
-	unsigned char *bytes = 0;
+	FILE* f;
+	unsigned char *bytes = NULL;
 	size_t rom_size = 0;
 
 	f = fopen(filename, "r");

@@ -31,3 +31,4 @@ typedef struct {
 
 bool tga_extract_info(const char* path, tga_header_t* out_meta);
 int tga_extract_pixels(const char* path, uint32_t* pixel_buf);
+int tga_extract_pixels_from_data(const char* raw_data, uint32_t* pixel_buf);

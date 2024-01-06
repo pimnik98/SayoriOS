@@ -2,19 +2,21 @@
  * @file sys/isr.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Обработчик прерывания высокого уровня
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
-#include	"kernel.h"
+
 #include	"sys/isr.h"
+#include "io/ports.h"
+#include "sys/cpu_isr.h"
 
 isr_t	interrupt_handlers[256];
 
 /**
  * @brief Обработчик ISR
  * 
- * @param registers_t regs - Регистр
+ * @param regs - Регистр
  */
 void isr_handler(registers_t regs){
 	if (interrupt_handlers[regs.int_num] != 0){
@@ -26,7 +28,7 @@ void isr_handler(registers_t regs){
 /**
  * @brief Обработчик IRQ
  * 
- * @param registers_t regs - Регистр
+ * @param regs - Регистр
  */
 void irq_handler(registers_t regs){
 	if (regs.int_num >= 40){
@@ -44,10 +46,12 @@ void irq_handler(registers_t regs){
 /**
  * @brief Регистрация собственного обработчика
  * 
- * @param uint8_t n - Номер обработчика
- * @param isr_t handler - Функция обработчик
+ * @param n - Номер обработчика
+ * @param handler - Функция обработчик
  */
 void register_interrupt_handler(uint8_t n, isr_t handler){
+	qemu_warn("Updated handler for IRQ%d", n);
+
 	interrupt_handlers[n] = handler;			
 }
 

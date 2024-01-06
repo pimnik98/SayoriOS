@@ -2,12 +2,14 @@
  * @file sys/system.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Дополнительные системные функции
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
-#include <kernel.h>
+
 #include <io/status_loggers.h>
+#include "mem/vmm.h"
+#include "io/ports.h"
 
 // FIXME: These variables gets rewritten to address 0 when
 //        user types 'cd /' in shell
@@ -26,7 +28,7 @@ char* getSysPath(){
 /**
  * @brief Установить текущий путь
  *
- * @param char* path - путь
+ * @param path - путь
  *
  * @return char* путь
  */
@@ -53,7 +55,7 @@ void reboot() {
         good = inb(0x64);
     outb(0x64, 0xFE);
     
-    asm volatile("hlt");
+    __asm__ volatile("hlt");
 }
 
 /**
@@ -78,17 +80,20 @@ char* getUserName(){
 /**
  * @brief Устанавливает имя пользователя
  *
- * @param char* new - Новое имя пользователя
+ * @param new - Новое имя пользователя
  *
  * @return char* - Имя пользователя
  */
 char* setUserName(char* new_name){
     kfree(whoami);
+
+	size_t len = strlen(new_name) + 1;
     
-    whoami = (char*)kmalloc(sizeof(char) * (strlen(new_name) + 1));
+    whoami = kcalloc(len, 1);
     
-    memset(whoami, 0, strlen(new_name)+1);
     memcpy(whoami, new_name, strlen(new_name));
+
+	whoami[len] = 0;
     
     return whoami;
 }
@@ -105,7 +110,7 @@ char* getHostname(){
 /**
  * @brief Устанавливает имя устройства
  *
- * @param char* new - Новое имя устройства
+ * @param new - Новое имя устройства
  *
  * @return char* - Имя устройства
  */

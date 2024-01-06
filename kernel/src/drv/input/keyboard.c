@@ -2,15 +2,21 @@
  * @file drv/input/keyboard.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Драйвер клавиатуры
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-11-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 extern void tty_backspace();
 
-#include <kernel.h>
+#include <lib/string.h>
 #include <io/ports.h>
 #include <sys/trigger.h>
+#include "drv/input/keyboard.h"
+#include "sys/sync.h"
+#include "sys/timer.h"
+#include "io/tty.h"
+#include "drv/psf.h"
+#include "sys/isr.h"
 
 #define		KEY_BUFFER_SIZE		16
 #define		KBD_IS_READDATA			(1 << 0)
@@ -28,8 +34,7 @@ extern void tty_backspace();
 bool    SHIFT = false,          ///< Включен ли SHIFT
         RU = false,             ///< Печатаем русскими?
         enabled = true;         ///< Включен ли вывод?
-int     lastKey = 0,            ///< Последний индекс клавишы
-        timePresed = 0;         ///< Время последнего нажатия
+int     lastKey = 0;            ///< Последний индекс клавишы
 char    kbdbuf[256] = {0};      ///< Буфер клавиатуры
 uint8_t kbdstatus = 0;          ///< Статус клавиатуры
 bool    echo = true;            ///< Включен ли вывод?
@@ -42,10 +47,10 @@ uint32_t chartyped = 0;
 /**
  * @brief Выводит правильный символ, в зависимости от языка и шифта
  *
- * @param char* en_s - Символ маленький англиский
- * @param char* en_b - Символ большой англиский
- * @param char* ru_s - Символ маленький русский
- * @param char* ru_b - Символ большой русский
+ * @param en_s - Символ маленький англиский
+ * @param en_b - Символ большой англиский
+ * @param ru_s - Символ маленький русский
+ * @param ru_b - Символ большой русский
  *
  * @return char* - Символ в зависимости от раскладки и языка
  */
@@ -66,8 +71,9 @@ void changeStageKeyboard(bool s){
 /**
  * @brief Выводит символ, в зависимости от кода полученного с клавиатуры
  *
- * @param int key - Код клавиатуры
- * 
+ * @param key - Код клавиатуры
+ * @param mode - Какой-то режим
+ *
  * @return char* - Или символ или код
  */
 char* getCharKeyboard(int key, bool mode){
@@ -245,9 +251,7 @@ void* getCharKeyboardWait(bool ints) {
 char* getStringBufferKeyboard(){
     memset(kbdbuf, 0, 256);
     while(1){
-
-        int kblen;
-        if ((kblen = strlen(kbdbuf)) > 254){
+        if (strlen(kbdbuf) > 254){
             qemu_log("Buffer FULL! Max 255!!");
             break;
         }
@@ -280,34 +284,57 @@ void kbd_add_char(char *buf, char* key) {
 		}
 		
 		if(lastKey == 0x0E) { // BACKSPACE
-            // qemu_log("BACKSPACE!");
-
-			if(chartyped > 0) {
+            if(chartyped > 0) {
 				tty_backspace();
 				chartyped--;
-				// qemu_log("Deleted character: %c", buf[chartyped]);
 				buf[chartyped] = 0;
 			}
         }
-	}else if(kmode==2){
+	} else if(kmode == 2) {
 		curbuf = key;
 	}
 }
 
 void gets(char *buffer) { // TODO: Backspace
-	// qemu_log("KMODE is: %d, curbuf at: %x", kmode, (int)((void*)curbuf));
-    
-	kmode = 1;
-	curbuf = buffer;
+    // qemu_log("KMODE is: %d, curbuf at: %x", kmode, (int)((void*)curbuf));
 
-	while(kmode==1) {
-		if (lastKey == 0x9C) { // Enter key pressed
+    kmode = 1;
+    curbuf = buffer;
+
+    while(kmode == 1) {
+        if (lastKey == 0x9C) { // Enter key pressed
             curbuf = 0;
-			lastKey = 0;
+            lastKey = 0;
             kmode = 0;
-			chartyped = 0;
+            chartyped = 0;
         }
-	}
+    }
+}
+
+// Limited version of gets.
+// Returns 0 if okay, returns 1 if you typed more than `length` keys.
+int gets_max(char *buffer, int length) { // TODO: Backspace
+    kmode = 1;
+    curbuf = buffer;
+
+    while(kmode == 1) {
+        if(chartyped >= length) {
+            curbuf = 0;
+            lastKey = 0;
+            kmode = 0;
+            chartyped = 0;
+            return 1;
+        }
+
+        if (lastKey == 0x9C) { // Enter key pressed
+            curbuf = 0;
+            lastKey = 0;
+            kmode = 0;
+            chartyped = 0;
+        }
+    }
+
+    return 0;
 }
 
 /**
@@ -372,7 +399,6 @@ void keyboardHandler(registers_t regs){
         }
         */
 
-        timePresed = getTicks()+100;
         return;
     }
 }
@@ -406,7 +432,6 @@ void keyboardInit() {
     outb(KBD_STATE_REG, 0xA7); // 2
 
     // Flush The Output Buffer
-    // FIXME: It works on QEMU, but on real hardware it hangs until you press any key.
 
 	draw_vga_str("Warning: Now, SayoriOS will perform PS/2 buffer flushing. Process is very fast,", 79, 0, 16, 0xffffff);
     draw_vga_str("         but on real hardware you can encounter system hanging.", 63, 0, 32, 0xffffff);
@@ -414,22 +439,11 @@ void keyboardInit() {
     draw_vga_str("         And even better, help us on https://github.com/pimnik98/SayoriOS", 73, 0, 64 + 16, 0xffffff);
     
     punch();
-
-    // inb(KBD_DATA_PORT);
-
-    size_t spin = 1000;
-
-    while(spin--) {
-        uint8_t bit = (inb(KBD_STATE_REG));
-
-        qemu_log("Status reg is: %x", bit);
-        
-        if((bit & 1) == 1)
-	        inb(KBD_DATA_PORT);
-		else
-            break;
-    };
     
+    while(inb(KBD_STATE_REG) & 1) {
+        inb(KBD_DATA_PORT);
+    }
+
     uint8_t byte = ps2_read_configuration_byte();
 
     if((byte >> 5) & 1) {

@@ -161,7 +161,7 @@ void mala_control() {
     }
 }
 
-void mala_draw() {
+uint32_t mala_draw(uint32_t argc, char* argv[]) {
     // Disable TTY cursor
 
     mala_init();
@@ -182,4 +182,6 @@ void mala_draw() {
 
         mala_flush();
     }
+
+	return 0;
 }

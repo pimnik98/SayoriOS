@@ -6,7 +6,7 @@
 
 #include "common.h"
 
-#define is_aligned(value, alignment) !(value & (alignment - 1))
+#define is_aligned(value, alignment) !((value) & ((alignment) - 1))
 
 struct source_location {
 	const char *file;

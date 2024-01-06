@@ -2,42 +2,23 @@
  * @file io/ports.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Средства для работы с портами
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-11-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
-#include <kernel.h>
+
 #include <stdarg.h>
 #include <io/ports.h>
 #include <lib/sprintf.h>
+#include "io/serial_port.h"
+#include "sys/scheduler.h"
+#include "mem/vmm.h"
 
-/**
- * @brief Запись 32х битного числа в порт
- *
- * @param port - порт
- * @param val - число
- */
-void outl(uint16_t port, uint32_t val) {
-    asm volatile ( "outl %0, %1" : : "a"(val), "Nd"(port) );
+void (*default_qemu_printf)(const char *text, ...) = qemu_printf;
+
+void switch_qemu_logging() {
+    default_qemu_printf = new_qemu_printf;
 }
-
-
-/**
- * @brief Чтение 32х битного числа
- *
- * @param port - порт
- * @return uint32_t - число
- */
-uint32_t inl(uint16_t port) {
-    uint32_t ret;
-    asm volatile ( "inl %1, %0"
-                   : "=a"(ret)
-                   : "Nd"(port) );
-    return ret;
-}
-
-
-
 
 /**
  * @brief Чтение длинного слова через порт
@@ -67,13 +48,13 @@ void outsl(uint16_t port, uint32_t *buffer, int32_t times) {
 }
 
 void insw(uint16_t __port, void *__buf, unsigned long __n) {
-	asm volatile("cld; rep; insw"
+	__asm__ volatile("cld; rep; insw"
 			: "+D"(__buf), "+c"(__n)
 			: "d"(__port));
 }
  
 void outsw(uint16_t __port, const void *__buf, unsigned long __n) {
-	asm volatile("cld; rep; outsw"
+	__asm__ volatile("cld; rep; outsw"
 			: "+S"(__buf), "+c"(__n)
 			: "d"(__port));
 }
@@ -89,8 +70,27 @@ int32_t is_transmit_empty(uint16_t port) {
 
 // Read 1 byte (char) from port.
 uint8_t serial_readchar(uint16_t port) {
-   while (is_signal_received(port) == 0);
+   //size_t to = 0;
+    while (is_signal_received(port) == 0){
+       //to++;
+       //qemu_warn("TIMEOUT: %d",to);
+   }
    return inb(port);
+}
+
+
+// Read 1 byte (char) from port.
+int8_t serial_readchar_timeout(uint16_t port,size_t timeout, bool Alert) {
+    size_t to = 0;
+    while (is_signal_received(port) == 0){
+        to++;
+        //qemu_warn("TIMEOUT: %d",to);
+        if (to >= timeout){
+            if (Alert) qemu_warn("TIMEOUT: %d",to);
+            return -1;
+        }
+    }
+    return inb(port);
 }
 
 /**
@@ -99,19 +99,6 @@ uint8_t serial_readchar(uint16_t port) {
 void io_wait(void) {
     outb(0x80, 0);
 }
-
-/**
- * @brief Чтение 16х битного числа
- *
- * @param port - порт
- * @return uint16_t - число
- */
-uint16_t inw(uint16_t port){
-	uint16_t ret;
-	asm volatile ("inw %1, %0":"=a"(ret):"dN"(port));
-	return ret;
-}
-
 
 /**
  * @brief Проверка, читаем ли символ
@@ -134,44 +121,36 @@ int is_com_port(int port) {
     switch (port) {
         case PORT_COM1:
             return 1;
-            break;
         case PORT_COM2:
             return 2;
-            break;
         case PORT_COM3:
             return 3;
-            break;
         case PORT_COM4:
             return 4;
-            break;
         case PORT_COM5:
             return 5;
-            break;
         case PORT_COM6:
             return 6;
-            break;
         case PORT_COM7:
             return 7;
-            break;
         case PORT_COM8:
             return 8;
-            break;
         default:
             return 0;
-            break;
     }
 }
 
 /**
  * @brief Вывод QEMU через COM1 информации
  *
- * @param text Строка с параметрами
+ * @param text Форматная строка
+ * @param ... Дополнительные параметры
  */
 void qemu_printf(const char *text, ...) {
     va_list args;
     va_start(args, text);
 
-    if (__com_getInit(1) == 1) {
+    if (__com_getInit(1)) {
         scheduler_mode(false);  // Stop scheduler
 
         __com_pre_formatString(PORT_COM1, text, args);
@@ -183,19 +162,19 @@ void qemu_printf(const char *text, ...) {
 }
 
 void new_qemu_printf(const char *format, ...) {
-    if (!__com_getInit(1)) 
+    if (!__com_getInit(1))
         return;
-    
+
     va_list args;
     va_start(args, format);
 
     char* container;
-    
+
     vasprintf(&container, format, args);
+
+    va_end(args);
 
     __com_writeString(PORT_COM1, container);
 
     kfree(container);
-    
-    va_end(args);
 }

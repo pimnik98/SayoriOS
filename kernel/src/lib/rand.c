@@ -1,4 +1,4 @@
-#include <kernel.h>
+#include "drv/cmos.h"
 
 int rand_seed = 5829466;
 

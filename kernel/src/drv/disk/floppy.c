@@ -2,20 +2,25 @@
  * @file drv/disk/floppy.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Драйвер Floppy
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2023-07-25
  * @copyright Copyright SayoriOS Team (c) 2022-2023
 */
 
-#include <kernel.h>
+
 #include <drv/disk/floppy.h>
 #include <io/ports.h>
+#include "sys/timer.h"
+#include "mem/vmm.h"
+#include "drv/disk/dpm.h"
+#include "io/tty.h"
+#include "sys/isr.h"
 
 bool _FloppyDebug = false;
 
 floppy_t floppy_data[2] = {0};
 // standard IRQ number for floppy controllers
-static const int floppy_irq = 6;
+//static const int floppy_irq = 6;
 static const char * drive_types[8] = {
     "none",
     "360kB 5.25\"",
@@ -28,7 +33,7 @@ static const char * drive_types[8] = {
     "unknown type"
 };
 static const char FLOPPY_DMABUFA[floppy_dmalen] __attribute__((aligned(0x8000)));	///< Буфер дискеты 1
-static const char FLOPPY_DMABUFB[floppy_dmalen] __attribute__((aligned(0x8000)));	///< Буфер дискеты 2
+//static const char FLOPPY_DMABUFB[floppy_dmalen] __attribute__((aligned(0x8000)));	///< Буфер дискеты 2
 bool interrupted = false;
 
 floppy_t Floppy(int device){
@@ -194,13 +199,16 @@ int _FloppyReset(int device){
     _FloppyCMD(device, 0x02); /* load time = 16ms, no-DMA = 0 */
 
     // it could fail...
-    if(_FloppyCalibrate(device) != 0) return _FloppyError(device,FLOPPY_ERROR_RESET);
+    if(_FloppyCalibrate(device) != 0)
+		return _FloppyError(device,FLOPPY_ERROR_RESET);
+	else
+		return 0;
 }
 
 
 
 int _FloppySeek(int device, unsigned cyli, int head){
-	unsigned i, st0, cyl = -1;
+	int i, st0, cyl = -1;
 	_FloppyMotor(device, 1);
 	for(i = 0; i < 10; i++) {
 		if (_FloppyDebug) qemu_log("  [FD%c] Attempt Seek %d | Cyli: %c | Head: %d",(device?'B':'A'),i,cyli,head);
@@ -326,17 +334,18 @@ int _FloppyCache(int device,FloppyMode mode,unsigned int addr,unsigned int* offs
 /** 
   * @brief [Floppy] Чтение данных на устройство
   *
-  * @param dst - Данные, куда выполнить запись
-  * @param addr - Адрес,откуда читать (0 - в начало)
+  * @param dst - Данные, откуда выполнить чтение
+  * @param addr - Адрес, откуда читать (0 - в начало)
   * @param size - Сколько считать данных
   *
   * @return int Количество записанных байт
   */
-int _FloppyRead(int device,char* dst,uint32_t addr,uint32_t size){
+size_t _FloppyRead(int device,char* dst,uint32_t addr,uint32_t size){
 	if (Floppy(device).Status != 1) return _FloppyError(FDA,FLOPPY_ERROR_NOREADY);
 	//qemu_log("[FD%c] Read | Addr: %d | Size: %d",(device==FDB?'B':'A'),addr,size);
 	floppy_data[device].LastErr = 0;
-	uint32_t offset,ws,ds = 0;
+	uint32_t offset=0, ws=0;
+	size_t ds = 0;
 	int ret;
 	while (size > ds){
 		ret = _FloppyCache(device,FLOPPY_READ,addr+ds,&offset,&ws);
@@ -348,10 +357,12 @@ int _FloppyRead(int device,char* dst,uint32_t addr,uint32_t size){
 	return ds;
 }
 
-int _FloppyWrite(int device,const char* dst,uint32_t addr,uint32_t size){
+size_t _FloppyWrite(int device,const char* dst,uint32_t addr,uint32_t size){
 	if (Floppy(device).Status != 1) return _FloppyError(FDA,FLOPPY_ERROR_NOREADY);
 	//qemu_log("[FD%c] Write | Addr: %d | Size: %d",(device==FDB?'B':'A'),addr,size);
-	uint32_t offset,ws,ds = 0;
+	
+	uint32_t offset=0, ws=0;
+	size_t ds = 0;
 	int ret;
 	while (size > ds){
 		ret = _FloppyCache(device,FLOPPY_READ,addr+ds, &offset, &ws);
@@ -363,6 +374,19 @@ int _FloppyWrite(int device,const char* dst,uint32_t addr,uint32_t size){
 		ds += ws;
 	}
 	return ds;
+}
+
+void _FloppyServiceA(){
+	outb(0x70, 0x10);
+	unsigned drives = inb(0x71);
+	int DiskA = drives >> 4;
+	if (DiskA != floppy_data[FDA].Type){
+		// Выполняем обслуживание Диска А, так как диск извлечен.
+		floppy_data[FDA].Type = DiskA;
+		floppy_data[FDA].Status = (floppy_data[FDA].Type == 4?1:0);
+		dpm_unmount('A', false);
+		dpm_reg('A',"Disk A","Unknown",floppy_data[FDA].Status,0,0,0,3,"FLOP-PYDA",0);
+	}
 }
 
 /**
@@ -394,12 +418,14 @@ void _FloppyCheck(){
 	} else {
 		floppy_data[FDB].Status = 1;
 	}
+
+	
 	// Обновление имени устройства
 	
 	char fda_fs[6],fdb_fs[6] = {0};
 	char fda_label[12],fdb_label[12] = {0};
 	char fs_fat12[6] = {'F','A','T','1','2',0};
-	char fs_smfs10[8] = {'S','M','F','S','1','.','0',0};
+//	char fs_smfs10[8] = {'S','M','F','S','1','.','0',0};
 	int read = -1;
 	if (Floppy(FDA).Status == 1){
 		//qemu_log("[FD%c] U",(device==FDB?'B':'A'));
@@ -411,15 +437,14 @@ void _FloppyCheck(){
 			floppy_data[FDA].LastErr = 0;
 		}
 		read = Floppy(FDA).Read(FDA,fda_fs,54,8);
-		if (Floppy(FDA).LastErr == 0 & strcmp(fs_fat12, fda_fs) == 0){
+		if (Floppy(FDA).LastErr == 0 && strcmp(fs_fat12, fda_fs) == 0){
 			if (_FloppyDebug) qemu_log("[FDA] File System: FAT12");
 			Floppy(FDA).Read(FDA, fda_label, 43, 11);
 			fda_label[11] = 0;
     		memcpy((void*) floppy_data[FDA].Name, fda_label, 12);
     		memcpy((void*) floppy_data[FDA].FileSystem, fda_fs, 6);
 			if (_FloppyDebug) qemu_log("[FDA] Label: %s",floppy_data[FDA].Name);
-			kfree(fda_label);
-			kfree(fda_fs);
+			
 		}
 	}
 	if (Floppy(FDB).Status == 1){
@@ -436,12 +461,48 @@ void _FloppyCheck(){
 			memcpy((void*) floppy_data[FDB].Name, fdb_label, 12);
 			if (_FloppyDebug) qemu_log("[FDB] Label: %s",floppy_data[FDB].Name);
     		memcpy((void*) floppy_data[FDB].FileSystem, fdb_fs, 6);
-			kfree(fdb_label);
-			kfree(fdb_fs);
+			
 		}
 	}
-	kfree(fs_fat12);
+	//kfree(fs_fat12);
 	
+}
+
+size_t _FloppyDPMWriteA(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+	qemu_log("[DPM] Floppy A Write! Offset: %d | Size: %d",Offset, Size);
+	if (Floppy(0).Status != 1) return 0;
+	//qemu_log("[FD%c] Write | Addr: %d | Size: %d",(device==FDB?'B':'A'),addr,size);
+	
+	uint32_t _offset = 0, ws = 0;
+	size_t ds = 0;
+	int ret;
+	while (Size > ds){
+		ret = _FloppyCache(0,FLOPPY_READ, Offset+ds, &_offset, &ws);
+		if (ret < 0) return ret;
+		if (ws > Size - ds) ws = Size - ds;
+		memcpy((void*) &FLOPPY_DMABUFA[_offset], Buffer+ds, ws);
+		ret = _FloppyCache(0,FLOPPY_WRITE, Offset+ds, nullptr, nullptr);
+		if (ret < 0) return ret;
+		ds += ws;
+	}
+	return ds;
+}
+
+size_t _FloppyDPMReadA(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+	qemu_log("[DPM] Floppy A Read! Offset: %d | Size: %d",Offset, Size);
+	if (Floppy(0).Status != 1) return 0;
+	floppy_data[0].LastErr = 0;
+	uint32_t _offset=0, ws=0;
+	size_t ds = 0;
+	int ret;
+	while (Size > ds){
+		ret = _FloppyCache(0, FLOPPY_READ, Offset+ds, &_offset, &ws);
+		if (ret < 0) return ret;
+		if (ws > Size - ds) ws = Size - ds;
+		memcpy(Buffer + ds, (void*) &FLOPPY_DMABUFA[_offset], ws);
+		ds += ws;
+	}
+	return ds;
 }
 
 void _FloppyPrint(){
@@ -496,10 +557,29 @@ void initFloppy() {
 	_FloppyReset(FDB);
 	register_interrupt_handler(32+6,&irqFloppy);
 
+	dpm_reg('A',"Disk A","Unknown",1,0,0,0,3,"FLOP-PYDA",0);
+	dpm_metadata_write('A', (uint32_t) &floppy_data[FDA]);
+	dpm_fnc_write('A',_FloppyDPMReadA,_FloppyDPMWriteA);
+	
+	_FloppyServiceA();
+
+
+	dpm_reg('B',"Disk B","Unknown",0,0,0,0,3,"FLOP-PYDB",0);
+	dpm_metadata_write('B', (uint32_t) &floppy_data[FDB]);
+
 	_FloppyCheck();
 	_FloppyPrint();
+	
+// 	fs_tarfs_detect('A');
+// 	fs_tarfs_detect('R');
+// 
+// 	char* fs_fat12 = kmalloc(32);
+// 	size_t read = dpm_read('A', 0x1F, 12, fs_fat12);
+// 
+// 	qemu_log("[DPM] [A] Ready: %d | '%s'",read,fs_fat12);
+
 	// base - 0x03f0
-	//int data = 0;
+	//int data = 0;ЮПСРВЯАФ1234567890-=
 	//char text[32] = {0};
 	//int read = Floppy(0).Read(0,text,0xD0,32);
 	//qemu_log("FD0:TEST = (%d) '%s'",read,text);

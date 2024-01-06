@@ -11,3 +11,6 @@
 *.tmp
 .vscode
 .vscode/*
+*.d
+/rust/target
+/rust/Cargo.lock

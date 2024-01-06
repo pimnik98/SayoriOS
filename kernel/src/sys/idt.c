@@ -2,7 +2,7 @@
  * @file sys/gdt.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief (GDT) Глобальная таблица дескрипторов
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -97,10 +97,10 @@ void init_idt(void) {
 /**
  * @brief ???
  *
- * @param uint8_t num - ???
- * @param uint32_t base - ???
- * @param uint16_t selector - ???
- * @param uint8_t flags - ???
+ * @param num - ???
+ * @param base - ???
+ * @param selector - ???
+ * @param flags - ???
  */
 void idt_set_gate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags){
 	idt_entries[num].base_low = base & 0xFFFF;

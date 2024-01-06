@@ -1,6 +1,6 @@
 #pragma once
 
-#include "kernel.h"
+#include "common.h"
 #include "sys/rsdp.h"
 #include "sys/rsdt.h"
 

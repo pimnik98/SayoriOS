@@ -1,8 +1,14 @@
 #pragma once
 
-#include <kernel.h>
+#include <common.h>
+#include "io/screen.h"
+#include <stdarg.h>
+
+#define NEW_TTY_PRINTF 1
 
 extern bool stateTTY;
+
+void tty_fontConfigurate();
 
 void _tty_puts(const char str[]);
 void _tty_print(const char *format, va_list args);
@@ -38,4 +44,6 @@ void _tty_putchar(char c, char c1);
 void tty_putchar(char c, char c1);
 
 void clean_screen();
+void clean_tty_screen();
 void buffer_set_pixel4(uint8_t *buffer, size_t width, size_t height, size_t x, size_t y, size_t color);
+void clean_tty_screen_no_update();

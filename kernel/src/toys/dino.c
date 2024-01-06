@@ -7,6 +7,8 @@
 #include "sys/trigger.h"
 #include "drv/input/keymap.h"
 #include "lib/string.h"
+#include "drv/psf.h"
+#include "io/ports.h"
 
 char dino_cur_path[1024] = "/";
 struct dirent* dino_cur_dirent = nullptr;
@@ -90,7 +92,7 @@ uint32_t dino_filemanager(int argc, char* argv[]) {
 
 	keyboardctl(KEYBOARD_ECHO, false);
 
-	RegTrigger(TRIGGER_KEY_PRESSED, dino_keyhandler);
+	RegTrigger(TRIGGER_KEY_PRESSED, (trigger_cmd_t)dino_keyhandler);
 
 	while(1) {
 		int key = getCharRaw();
@@ -104,6 +106,7 @@ uint32_t dino_filemanager(int argc, char* argv[]) {
 		punch();
 	}
 
+	clean_tty_screen();
 
 	keyboardctl(KEYBOARD_ECHO, true);
 

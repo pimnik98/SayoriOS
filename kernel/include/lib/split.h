@@ -2,5 +2,5 @@
 
 #include "common.h"
 
-uint32_t str_cdsp(char* a_str, char* del);
-void str_split(char a_str[], char *out[], char* dec);
+uint32_t str_cdsp(const char *a_str, const char* del);
+void str_split(const char a_str[], char *out[], char* dec);

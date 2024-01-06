@@ -1,4 +1,10 @@
-#include <kernel.h>
+#include <stdarg.h>
+#include "common.h"
+#include "lib/math.h"
+#include "mem/vmm.h"
+#include "io/ports.h"
+#include "drv/fpu.h"
+#include "lib/stdlib.h"
 
 size_t measure_vsprintf(const char *format, va_list args) {
 	ON_NULLPTR(format, {
@@ -65,7 +71,6 @@ size_t measure_vsprintf(const char *format, va_list args) {
 
                     size++;
 
-                    qemu_log("Size + 1");
                     break;
                 }
                 case 'f': {
@@ -250,7 +255,7 @@ int vsprintf(char* buffer, const char *format, va_list args) {
 
                 case 'f': {
                 	// FIXME: IMPLEMENT PRECISION HERE!
-                	
+
                     double a = va_arg(args, double);
 					if(!fpu_isInitialized()) {
 						memcpy(buffer, "0.00000", 7);
@@ -259,39 +264,40 @@ int vsprintf(char* buffer, const char *format, va_list args) {
 						break;
 					}
 
-					if(a < 0) {
+					if(a < 0.0) {
 						*buffer++ = '-';
 						a = -a;
 					}
 
-                    if(is_nan(a)) {
-						*buffer++ = 'n';
-						*buffer++ = 'a';
-						*buffer++ = 'n';
+//                    if(is_nan((float)a)) {
+//						*buffer++ = 'n';
+//						*buffer++ = 'a';
+//						*buffer++ = 'n';
+//
+//                        break;
+//                    }
+//
+//                    if(is_inf((float)a)) {
+//                        *buffer++ = 'i';
+//						*buffer++ = 'n';
+//						*buffer++ = 'f';
+//
+//                        break;
+//                    }
 
-                        break;
-                    }
+                    double intpart;
+					double floatpart = modf(a, &intpart);
 
-                    if(is_inf(a)) {
-                        *buffer++ = 'i';
-						*buffer++ = 'n';
-						*buffer++ = 'f';
-                        
-                        break;
-                    }
+                    itoa((int)intpart, buffer);
 
-					double rem = a - (int)a;
-
-                    itoa((int)a, buffer);
-
-					buffer += digit_count((int)a);
+					buffer += digit_count((int)intpart);
                     
                     *buffer++ = '.';
 
                     size_t prec = is_precision ? width : 5;
 
                     for(int i = 0; i < prec; i++) {
-                        *buffer++ = '0' + (int)(rem * ipow(10, i + 1)) % 10;
+                        *buffer++ = '0' + (char)((int)(floatpart * pow(10.0, i + 1)) % 10);
                     }
 
                     break;
@@ -360,8 +366,8 @@ int vsprintf(char* buffer, const char *format, va_list args) {
                 case 'x': {
                 	// FIXME: IMPLEMENT PRECISION HERE!
                 	
-                    int num = va_arg(args, int);
-                    int space = width - hex_count(num) - 2;
+                    unsigned int num = va_arg(args, unsigned int);
+                    int space = (int)width - hex_count(num) - 2;
 
                     if(left_align) {
                         *buffer++ = '0';

@@ -2,17 +2,17 @@
  * @file fmt/tga.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief [Images] Targa - Формат, который также используется многими игровыми движками (например, Quake)
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2023-07-28
  * @copyright Copyright SayoriOS Team (c) 2022-2023
 */
 
-
-
-#include <kernel.h>
-#include <io/ports.h>
+#include "lib/stdio.h"
+#include "mem/vmm.h"
+#include "io/screen.h"
+#include "io/tty.h"
 #include <fmt/tga.h>
-
+#include <io/ports.h>
 
 int tga_paint(char* path) {
 	ON_NULLPTR(path, {
@@ -26,7 +26,8 @@ int tga_paint(char* path) {
 		qemu_log("[CMD] [TGA] [PAINT] Не удалось найти файл `%s`. Проверьте правильность введенного вами пути.\n",path);
         return -1;
     }
-	rgba_color* rgba = kmalloc(sizeof(rgba_color));
+
+//	rgba_color* rgba = kmalloc(sizeof(rgba_color));
 	size_t zxfsize = fsize(file);
 
 	char* ptr = kmalloc(zxfsize);
@@ -126,7 +127,7 @@ int tga_paint(char* path) {
 
             y = i = 0;
 
-			size_t pixel = 0;
+//			size_t pixel = 0;
 			size_t current_processing = 0;
 
 			size_t cur_x = 0;
@@ -203,6 +204,8 @@ int tga_paint(char* path) {
 	qemu_log("[TGA] DONE %d-1",ptr[2]);
 	punch();
 	qemu_log("[TGA] DONE %d-2",ptr[2]);
+
+	return 0;
 }
 
 int tga_info(char* path){

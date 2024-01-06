@@ -2,7 +2,7 @@
  * @file lib/base64.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Base64 Encode/Decode
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -40,7 +40,7 @@ static const unsigned char decoding_table[256] = {
 /**
  * @brief Кодирует строку в Base64
  *
- * @param char* string - Строка для кодирования
+ * @param string - Строка для кодирования
  *
  * @return char* - Возращает закодированую строку
  */
@@ -75,7 +75,7 @@ uint8_t* b64e(const char *string){
 /**
  * @brief Декодирует строку Base64
  *
- * @param char* string - Строка для декодирования
+ * @param string - Строка для декодирования
  *
  * @return char* - Возращает декодированую строку
  */

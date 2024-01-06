@@ -1,7 +1,7 @@
-#include <kernel.h>
 #include <io/ports.h>
 #include <drv/beeper.h>
 #include <io/status_sounds.h>
+#include "sys/timer.h"
 
 void ERROR_sound()
 {

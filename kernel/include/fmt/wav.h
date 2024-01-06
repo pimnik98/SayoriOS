@@ -1,3 +1,7 @@
+#pragma once
+
+#include "common.h"
+
 typedef struct __attribute__((packed)) {
     char chunkID[4];
     uint32_t chunkSize;
@@ -10,6 +14,9 @@ typedef struct __attribute__((packed)) {
     uint32_t byteRate;
     uint16_t blockAlign;
     uint16_t bitsPerSample;
-    char subchunk2ID[4];
-    uint32_t subchunk2Size;
 } WAVHeader;
+
+struct WAVInfoChunk {
+	char name[4];
+	uint32_t size;
+} __attribute__((packed));

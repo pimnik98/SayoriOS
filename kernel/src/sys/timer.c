@@ -2,20 +2,20 @@
  * @file sys/timer.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Модуль системного таймера
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include	"sys/timer.h"
 #include	"sys/isr.h"
-#include	"sys/scheduler.h"
+//#include	"sys/scheduler.h"
 #include	"drv/fpu.h"
 #include	"io/ports.h"
 
 extern bool scheduler_working;
 
 size_t tick = 0;			///< Количество тиков
-size_t frequency = 0;		///< Частота
+size_t frequency = CLOCK_FREQ;		///< Частота
 
 // FIXME: Invalid and deprecated implementation.
 void microseconds_delay(size_t microseconds) {
@@ -34,9 +34,9 @@ size_t getTicks(){
 
 double getUptime() {
 	if(getFrequency() == 0) {
-		return 0;
+		return 0.0;
 	}else{
-		return (double)getTicks() / (double)getFrequency();
+		return (double)tick / (double)frequency;
 	}
 }
 
@@ -52,7 +52,7 @@ size_t getFrequency(){
 /**
  * @brief Таймер Callback
  * 
- * @param registers_t regs - Регистр
+ * @param regs - Регистр
  */
 static void timer_callback(__attribute__((unused)) registers_t regs){
 	tick++;
@@ -64,7 +64,7 @@ static void timer_callback(__attribute__((unused)) registers_t regs){
 /**
  * @brief Ожидание по тикам
  *
- * @param uint32_t delay - Тики
+ * @param delay - Тики
  */
 void sleep_ticks(uint32_t delay){
 	size_t current_ticks = getTicks();
@@ -78,11 +78,11 @@ void sleep_ticks(uint32_t delay){
 /**
  * @brief Ожидание по милисекундам
  *
- * @param uint32_t milliseconds - Милисекунды
+ * @param milliseconds - Милисекунды
  */
 void sleep_ms(uint32_t milliseconds) {
 	uint32_t needticks = milliseconds * frequency;
-	sleep_ticks(needticks/1000);
+	sleep_ticks(needticks / 1000);
 
 	// (milliseconds * frequency + 500) / 1000
 }
@@ -90,7 +90,7 @@ void sleep_ms(uint32_t milliseconds) {
 /**
  * @brief Инициализация модуля системного таймера
  * 
- * @param uint32_t - Частота
+ * @param - Частота
  */
 void init_timer(uint32_t f){
 	frequency = f;
@@ -99,15 +99,15 @@ void init_timer(uint32_t f){
 	uint8_t low;
 	uint8_t high;
 
-	register_interrupt_handler(IRQ0, &timer_callback);
-	
-	divisor = 1193180 / frequency;
-	 
+	divisor = BASE_FREQ / f;
+
 	outb(0x43, 0x36);
-	
+
 	low = (uint8_t) (divisor & 0xFF);
 	high = (uint8_t) ((divisor >> 8) & 0xFF);
-	
+
 	outb(0x40, low);
-	outb(0x40, high);	
+	outb(0x40, high);
+
+	register_interrupt_handler(IRQ0, &timer_callback);
 }

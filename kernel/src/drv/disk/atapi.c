@@ -1,11 +1,25 @@
+/**
+ * @brief Драйвер ATAPI PIO
+ * @author NDRAEY >_
+ * @date 2023-07-21
+ * @version 0.3.4
+ * @copyright Copyright SayoriOS Team (c) 2022-2023
+ */
+
 // Super-duper original ATAPI driver by NDRAEY (c) 2023
 // for SayoriOS
 
 #include "drv/atapi.h"
+#include "net/endianess.h"
 #include "debug/hexview.h"
 
 // FIXME: Add REQUEST_SENSE command to handle errors.
 
+/**
+ * @brief Ждёт пока освободится порт ATA
+ * @param bus Шина (PRIMARY или SECONDARY)
+ * @return true - если есть ошибка, false - всё ок
+ */
 bool ata_scsi_status_wait(uint8_t bus) {
 	while (1) {
 		uint8_t status = inb(ATA_PORT(bus) + ATA_REG_COMMAND);
@@ -22,6 +36,14 @@ bool ata_scsi_status_wait(uint8_t bus) {
 	return false;
 }
 
+/**
+ * @brief Отправляет SCSI команду на ATA дисковод
+ * @param bus Шина (PRIMARY или SECONDARY)
+ * @param slave Является ли устройство SLAVE
+ * @param lba_mid_hi Метаданные
+ * @param command Команда размером 12 байт
+ * @return
+ */
 bool ata_scsi_send(uint16_t bus, bool slave, uint16_t lba_mid_hi, uint8_t command[12]) {
 	qemu_log("ATAPI SCSI send [%s %s], LBA (MID AND HI): %d",
 				PRIM_SEC(bus), MAST_SLV(slave), lba_mid_hi);
@@ -51,7 +73,11 @@ bool ata_scsi_send(uint16_t bus, bool slave, uint16_t lba_mid_hi, uint8_t comman
 	return false;
 }
 
-// Read size of transfer
+/**
+ * @brief Считывает размер передачи данных
+ * @param bus Шина (PRIMARY или SECONDARY)
+ * @return Размер передачи в байтах
+ */
 size_t ata_scsi_receive_size_of_transfer(uint16_t bus) {
 	bool error = ata_scsi_status_wait(bus);
 
@@ -64,11 +90,22 @@ size_t ata_scsi_receive_size_of_transfer(uint16_t bus) {
 			| inb(ATA_PORT(bus) + ATA_REG_LBA1);
 }
 
+/**
+ * @brief Считывает данные с ATA дисковода
+ * @param bus Шина (PRIMARY или SECONDARY)
+ * @param size Размер в байтах
+ * @param buffer Буффер для хранения данных
+ */
 void ata_scsi_read_result(uint16_t bus, size_t size, uint16_t* buffer) {
 	insw(ATA_PORT(bus) + ATA_REG_DATA, (uint16_t*)((uint8_t *)buffer), size);
 }
 
-/// 0 if error
+/**
+ * @brief Считывает размер диска
+ * @param bus Шина (PRIMARY или SECONDARY)
+ * @param slave Является ли устройство SLAVE
+ * @return Размер диска в секторах
+ */
 size_t atapi_read_size(uint16_t bus, bool slave) {
 	qemu_log("SIZE REQUEST ON (ints): %d %d", bus, slave);
 	qemu_log("SIZE REQUEST ON: %s %s", PRIM_SEC(bus), MAST_SLV(slave));
@@ -87,7 +124,7 @@ size_t atapi_read_size(uint16_t bus, bool slave) {
 	if(!transf_size)
 		return 0;
 
-    uint16_t* data = (uint16_t*)kcalloc(transf_size, 1);
+    uint16_t* data = kcalloc(transf_size, 1);
 
     ata_scsi_read_result(bus, transf_size, data);
 
@@ -103,9 +140,15 @@ size_t atapi_read_size(uint16_t bus, bool slave) {
 
 	kfree(data);
 
-	return (maxlba + 1) * blocksize;
+	return maxlba;
 }
 
+/**
+ * @brief Считывает размер блока
+ * @param bus Номер привода в системе
+ * @param slave Является ли устрйоство SLAVE
+ * @return Размер блока в байтах
+ */
 size_t atapi_read_block_size(uint16_t bus, bool slave) {
 	uint8_t command[12] = {
         ATAPI_READ_CAPACITY,
@@ -129,6 +172,14 @@ size_t atapi_read_block_size(uint16_t bus, bool slave) {
 	return blocksize;
 }
 
+/**
+ * @brief Читает сектора с диска
+ * @param drive Номер привода в системе
+ * @param buf Буффер
+ * @param lba Номер сектора на диске
+ * @param sector_count Количество секторов которые необходимо прочитать
+ * @return true - если есть ошибка, false - если нет
+ */
 bool atapi_read_sectors(uint16_t drive, uint8_t *buf, uint32_t lba, size_t sector_count) {
 	uint8_t bus = (drive >> 1) & 1;
 	bool slave = (bool)((drive >> 0) & 1);
@@ -164,7 +215,7 @@ bool atapi_read_sectors(uint16_t drive, uint8_t *buf, uint32_t lba, size_t secto
 	}
 
 	for (uint32_t i = 0; i < sector_count; i++) {
-		bool error = ata_scsi_status_wait(bus);
+		error = ata_scsi_status_wait(bus);
 		
 		if(error)
 			return true;
@@ -177,6 +228,12 @@ bool atapi_read_sectors(uint16_t drive, uint8_t *buf, uint32_t lba, size_t secto
 	return false;
 }
 
+/**
+ * @brief Извлекает диск из привода
+ * @param bus Шина (PRIMARY или SECONDARY)
+ * @param slave Является ли диск SLAVE
+ * @return true если есть ошибка, false - если нет
+ */
 bool atapi_eject(uint8_t bus, bool slave) {
 	// Byte 4:
 	//   Bit 0: Start
@@ -212,7 +269,13 @@ bool atapi_eject(uint8_t bus, bool slave) {
 	return error;
 }
 
-// Used for error handling
+/**
+ * @brief Считывает и возвращает ошибку (если таковая имеется)
+ * @param bus Шина (PRIMARY или SECONDARY)
+ * @param slave Является ли дисковод SLAVE
+ * @param out Буффер размером 18 байт
+ * @return Структура с кодом ошибки
+ */
 atapi_error_code atapi_request_sense(uint8_t bus, bool slave, uint8_t out[18]) {
 	uint8_t command[12] = {
         ATAPI_CMD_RQ_SENSE, 0, 0, 0,
@@ -233,6 +296,12 @@ atapi_error_code atapi_request_sense(uint8_t bus, bool slave, uint8_t out[18]) {
 	return (atapi_error_code){(out[0] >> 7) & 1, out[2] & 0b00001111, out[12], out[13]};
 }
 
+/**
+ * @brief Проверяет дисковод на наличие диска внутри
+ * @param bus Шина (PRIMARY или SECONDARY)
+ * @param slave Является ли дисковод SLAVE
+ * @return true если диск вствлен, false если нет
+ */
 bool atapi_check_media_presence(uint8_t bus, bool slave) {
 	uint8_t command[12] = {
         ATAPI_CMD_READY, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -245,7 +314,7 @@ bool atapi_check_media_presence(uint8_t bus, bool slave) {
 		return false;
 	}
 
-	char errorcode[18];
+	uint8_t errorcode[18];
 
 	atapi_error_code error_code = atapi_request_sense(1, 0, errorcode);
 

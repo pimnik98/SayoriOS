@@ -2,42 +2,54 @@
  * @file kernel.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Основная точка входа в ядро
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-11-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 
 #include "kernel.h"
-#include "sys/sse.h"
-#include "gui/parallel_desktop.h"
-#include "sys/msr.h"
-#include "sys/cpuinfo.h"
-#include "sys/cputemp.h"
+
+#include <drv/fpu.h>
+#include <lib/php/explode.h>
+#include <sys/unwind.h>
+
+#include "mem/pmm.h"
+#include "mem/vmm.h"
 #include "drv/audio/ac97.h"
-#include "sys/cpu_intel.h"
-#include "sys/cpuid.h"
-// For SSE
-// #include <immintrin.h>
+#include "sys/mtrr.h"
+#include "net/ipv4.h"
+#include "lib/freeada/ada.h"
+
+#include "fs/natfs.h"
+
+#include <lib/pixel.h>
 
 multiboot_header_t* multiboot;
 uint32_t init_esp = 0;
 bool initRD = false;
 bool autoexec = false;
-bool run_gui_at_startup = false;
 char* cmd_autoexec = "";
-bool test_ac97 = true;
+//bool test_ac97 = true;
 bool test_pcs = true;
 bool test_floppy = true;
 bool test_network = true;
+bool is_rsdp = true;
 size_t kernel_start_time = 0;
+
+void jse_file_getBuff(char* buf);
 
 /**
  * @brief Обработка комманд указаных ядру при загрузке
  *
- * @param char* cmd - Команды
+ * @param cmd - Команды
  */
+
 void kHandlerCMD(char* cmd){
-    qemu_log("[kCMD] '%s'",cmd);
+    qemu_log("Kernel command line at address %x and contains: '%s'", cmd, cmd);
+
+	if(strlen(cmd) == 0)
+		return;
+	
     uint32_t kCMDc = str_cdsp(cmd," ");
     uint32_t kCMDc_c = 0;
     char* out[128] = {0};
@@ -56,11 +68,9 @@ void kHandlerCMD(char* cmd){
                 bootScreenChangeMode(1);
             } else if (strcmpn(out_data[1],"light")){
                 bootScreenChangeTheme(1);
-            } else if (strcmpn(out_data[1],"dark")){
-                bootScreenChangeTheme(0);
-            } else if (strcmpn(out_data[1],"no-logs")){
-                bootScreenLogs(false);
-            } else {
+            } else if (strcmpn(out_data[1],"dark")) {
+				bootScreenChangeTheme(0);
+			} else {
                 qemu_log("\t Sorry, no support bootscreen mode!");
             }
         }
@@ -73,14 +83,12 @@ void kHandlerCMD(char* cmd){
         }
         if (strcmpn(out_data[0],"disable")){
             if (strcmpn(out_data[1],"coms")){
-                __com_setInit(1,0);
-                __com_setInit(2,0);
-                __com_setInit(3,0);
-                __com_setInit(4,0);
+				// FIXME: If uncomment following line of code, it willn't boot
+                __com_setInit(1, 0);
+                __com_setInit(2, 0);
+                __com_setInit(3, 0);
+                __com_setInit(4, 0);
                 qemu_log("\t COM-OUT DISABLED");
-            } else if (strcmpn(out_data[1],"ac97")){
-                test_ac97 = false;
-                qemu_log("\t AC97 DISABLED");
             } else if (strcmpn(out_data[1],"floppy")){
                 test_floppy = false;
                 qemu_log("\t FLOPPY DISABLED");
@@ -90,18 +98,12 @@ void kHandlerCMD(char* cmd){
             } else if (strcmpn(out_data[1],"pc-speaker")){
                 test_pcs = false;
                 qemu_log("\t PC-Speaker DISABLED");
+            } else if (strcmpn(out_data[1],"rdsp")){
+                is_rsdp = false;
+                qemu_log("\t RDSP DISABLED");
             }  else {
                 qemu_log("\t Sorry, no support!");
             }
-        }
-
-        if (strcmpn(out_data[0], "exec")){
-            run_gui_at_startup = false;
-            qemu_log("\t After the kernel has fully started, GUI will be launched");
-        }
-        if (strcmpn(out_data[0], "gui")){
-            run_gui_at_startup = true;
-            qemu_log("\t After the kernel has fully started, GUI will be launched");
         }
         //qemu_log("[kCMD] [%d] %s >\n\tKey: %s\n\tValue:%s",i,out[i],out_data[0],out_data[1]);
      }
@@ -110,8 +112,10 @@ void kHandlerCMD(char* cmd){
 /**
  * @brief Монтирует виртуальный диск с файловой системой Sayori Easy File System
  *
- * @param int irdst - Точка монтирования
+ * @param irdst - Точка монтирования
+ * @param irded - Конец точки монтирования
  */
+
 void initrd_sefs(size_t irdst, size_t irded){
     if (initRD){
         return;
@@ -120,61 +124,68 @@ void initrd_sefs(size_t irdst, size_t irded){
     qemu_log("[InitRD] [SEFS] Initialization of the virtual disk. The SEFS virtual file system is used.");
     qemu_log("[InitRD] [SEFS] The virtual disk space is located at address %x.", irdst);
     qemu_log("[InitRD] [SEFS] The virtual disk space is ends at %x.", irded);
-    
-    vfs_reg(irdst, irded, VFS_TYPE_MOUNT_SEFS);
-    
-    initRD = true;
-}
-
-int get_cpu_mode() {
-    unsigned int cr0, cr4;
-
-    __asm__ volatile("mov %%cr0, %0" : "=r"(cr0));
-    __asm__ volatile("mov %%cr4, %0" : "=r"(cr4));
-
-    if ((cr4 & (1 << 21)) != 0) { // Bit 21 of CR4 is set, indicating long mode
-        return 64;
-    } else if ((cr0 & 1) != 0 && (cr4 & (1 << 21)) == 0) { // Bit 0 of CR0 is set and bit 21 of CR4 is clear, indicating protected mode
-        return 32;
-    } else {
-        return -1; // Unknown mode
-    }
 }
 
 /**
  * @brief Инициализирует модули подключенные к ОС
  *
  */
+
+size_t last_module_end = 0;
+
+void scan_kmodules() {
+	uint32_t	mods_count = multiboot->mods_count;
+
+	for (size_t i = 0; i < mods_count; i++){
+		multiboot_module_t *mod = (multiboot_module_t *) (uint32_t*)(multiboot->mods_addr + 8*i);
+
+		last_module_end = mod->mod_end;
+	}
+
+	qemu_log("Last module ends at: %x", last_module_end);
+}
+
 void kModules_Init(){
     qemu_log("[kModules] Loading operating system modules...");
-    uint32_t*	mod_start = 0;
-    uint32_t*	mod_end = 0;
+    uint32_t	mod_start[32] = {0};
+    uint32_t	mod_end[32] = {0};
+    uint32_t	mod_size[32] = {0};
     uint32_t	mods_count = multiboot->mods_count;
-    
-    char* mod_cmd[16];
+
+    char mod_cmd[32][64] = {0};
 
     if (mods_count > 0){
-		mod_start = (uint32_t*) kmalloc(sizeof(uint32_t)*mods_count);
-		mod_end = (uint32_t*) kmalloc(sizeof(uint32_t)*mods_count);
-
-        qemu_log("[kModules] Found '%d' modules",mods_count);
+        qemu_log("[kModules] Found %d modules",mods_count);
 
 		for (size_t i = 0; i < mods_count; i++){
 			mod_start[i] = *(uint32_t*)(multiboot->mods_addr + 8*i);
 			mod_end[i] = *(uint32_t*)(multiboot->mods_addr + 8*i + 4);
 
+			mod_size[i] = mod_end[i] - mod_start[i];
+
             multiboot_module_t *mod = (multiboot_module_t *) (uint32_t*)(multiboot->mods_addr + 8*i);
             
-            mod_cmd[i] = kcalloc(strlen((char*)mod->cmdline) + 1, sizeof(char));
             strcpy(mod_cmd[i], (char*)mod->cmdline);
             
-            qemu_log("[kModules] Found module number `%d`. (Start: %x | End: %x) CMD: %s",i,mod_start[i],mod_end[i],mod_cmd[i]);
-            
+            qemu_log("[kModules] Found module number `%d`. (Start: %x | End: %x | Size: %d) CMD: %s (%s)",
+					 i,
+					 mod_start[i],
+					 mod_end[i],
+					 mod_size[i],
+					 mod_cmd[i],
+					 (char*)mod->cmdline
+					 );
+
             if (strcmpn(mod_cmd[i],"initrd_sefs")){
                 initrd_sefs(mod_start[i], mod_end[i]);
                 continue;
             }
+            if (strcmpn(mod_cmd[i],"initrd_tarfs")){
+                initrd_tarfs(mod_start[i], mod_end[i]);
+            }
 		}
+
+		qemu_log("Memory manager need to be feed with this information: Last module ends at: %x", last_module_end);
 	} else {
         qemu_log("[kModules] No modules were connected to this operating system.");
     }
@@ -184,7 +195,7 @@ void kModules_Init(){
 void draw_raw_fb(multiboot_header_t* mboot, int x, int y, int w, int h, int color) {
     for(uint32_t i = y; i < y + h; i++) {
         for(uint32_t j = x; j < x + w; j++) {
-            uint8_t* a = (framebuffer_addr + (j * ((((svga_mode_info_t*)mboot->vbe_mode_info)->bpp) >> 3)) + i * (((svga_mode_info_t*)mboot->vbe_mode_info)->pitch));
+            uint8_t* a = (framebuffer_addr + (j * ((mboot->framebuffer_bpp) >> 3)) + i * (mboot->framebuffer_pitch));
 
             a[2] = (color >> 16) & 0xff;
             a[1] = (color >> 8) & 0xff;
@@ -192,13 +203,15 @@ void draw_raw_fb(multiboot_header_t* mboot, int x, int y, int w, int h, int colo
         }
     }
 }
+#else
+#define draw_raw_fb(a, b, c, d, e, f)
 #endif
 
 /**
  * @brief Точка входа в ядро
  *
  * @param multiboot_header_t mboot - Информация MultiBoot
- * @param uint32_t initial_esp -  Точка входа
+ * @param initial_esp -  Точка входа
  */
 
 extern size_t CODE_start;
@@ -212,239 +225,191 @@ extern size_t BSS_end;
 extern size_t USER_start;
 extern size_t USER_end;
 
-__attribute__((section(".user"), aligned(4096))) void user_mode() {
-	uint32_t a = 0, b = 4;
-	a += 1;
-
-	uint32_t c = a + b;
-	
-	while(1);
-}
-
 /*
 Спаси да сохрани этот кусок кода
 Да на все твое кодерская воля
 Да прибудет с тобой, священный код
 Я тебя благославляю
 */
-int kernel(multiboot_header_t* mboot, uint32_t initial_esp){
-    __com_setInit(1,1);
-    multiboot = mboot;
+int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
+	__com_setInit(1, 1);
+	multiboot = mboot;
 
-    framebuffer_addr = (uint8_t*)(mboot->framebuffer_addr);
+	__asm__ volatile("movl %%esp, %0" : "=r"(init_esp));
 
-    #ifndef RELEASE
-    draw_raw_fb(mboot, 0, 0, 200, 16, 0x444444);
-    #endif
+	framebuffer_addr = (uint8_t *) (mboot->framebuffer_addr);
 
+	draw_raw_fb(mboot, 0, 0, 200, 16, 0x444444);
 
-    drawASCIILogo(0);
-    qemu_log("SayoriOS v%d.%d.%d\nBuilt: %s",
-        VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH,    // Версия ядра
-        __TIMESTAMP__                                   // Время окончания компиляции ядра
-    );
+	drawASCIILogo(0);
+
+	qemu_log("SayoriOS v%d.%d.%d\nBuilt: %s",
+			 VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH,    // Версия ядра
+			 __TIMESTAMP__                                   // Время окончания компиляции ядра
+	);
 
 	qemu_log("Bootloader header at: %x", mboot);
 
-    qemu_log("SSE check: %d", sse_check());
+	qemu_log("SSE: %s", sse_check() ? "Supported" : "Not supported");
 
-    if(sse_check()) {
-        __wtf_fxsave();
+	if (sse_check()) {
+		__wtf_fxsave();
+	}
 
-        qemu_log("fxsave'd");
-
-        size_t edx, unused;
-
-        __asm__("cpuid": "=a" (unused), \
-                         "=b" (unused), \
-                         "=c" (unused), \
-                         "=d" (edx) : \
-                         "a" (1));
-    
-        if(edx & (1 << 26)) {
-            qemu_log("Supports SSE2!");
-        } else {
-            #if USE_SSE
-            qemu_log("WARNING: SSE2 NEEDS TO BE SUPPORTED BY YOUR PC.");
-            #endif
-        }
-    }
-
-    qemu_log("Current CPU mode: %d", get_cpu_mode());
-
-    kHandlerCMD((char*)mboot->cmdline);
-    qemu_log("Setting `Interrupt Descriptor Table`...");
-    init_descriptor_tables();
-    qemu_log("Setting `RIH`...");
-    isr_init();
-    qemu_log("Initializing FPU...");
+	qemu_log("Setting `Interrupt Descriptor Table`...");
+	init_descriptor_tables();
+	qemu_log("Setting `RIH`...");
+	isr_init();
+	qemu_log("Initializing FPU...");
 	fpu_init();
 
-    #ifndef RELEASE
-    draw_raw_fb(mboot, 0, 0, 400, 16, 0x888888);
-    #endif
+	draw_raw_fb(mboot, 0, 0, 400, 16, 0x888888);
 
-    init_timer(BASE_FREQ);
-    __asm__ volatile("sti");
+	init_timer(CLOCK_FREQ);
+	__asm__ volatile("sti");
 
-    #ifndef RELEASE
-    draw_raw_fb(mboot, 0, 0, 800, 16, 0xffffff);
-    #endif
+	draw_raw_fb(mboot, 0, 0, 800, 16, 0xffffff);
 
-    qemu_log("Checking RAM...");
-    check_memory_map((memory_map_entry_t*)mboot->mmap_addr, mboot->mmap_length);
+	qemu_log("Checking RAM...");
+	check_memory_map((memory_map_entry_t *) mboot->mmap_addr, mboot->mmap_length);
 
 	qemu_log("Memory summary:");
 	qemu_log("    Code: %x - %x", &CODE_start, &CODE_end);
 	qemu_log("    Data: %x - %x", &DATA_start, &DATA_end);
 	qemu_log("    Read-only data: %x - %x", &RODATA_start, &RODATA_end);
 	qemu_log("    BSS: %x - %x", &BSS_start, &BSS_end);
-    qemu_log("Memory manager initialization...");
-    init_memory_manager(initial_esp);
+	qemu_log("Memory manager initialization...");
 
-	// TODO: Read-only memory for .rodata segment
-//	size_t rostart = &RODATA_start;
-//	size_t roend = &RODATA_end;
-//
-//	map_pages(
-//		get_kernel_dir(),
-//		rostart,
-//		rostart,
-//		(ALIGN(roend, PAGE_SIZE) - rostart) / PAGE_SIZE,
-//		PAGE_PRESENT
-//	);
+	scan_kmodules();
 
-    kModules_Init();
+	init_paging();
 
-    qemu_log("NatSuki loading...");
-    vfs_reg(PORT_COM2, 0, VFS_TYPE_MOUNT_NATSUKI);
+	mark_reserved_memory_as_used((memory_map_entry_t *) mboot->mmap_addr, mboot->mmap_length);
 
-    text_init("/Sayori/Fonts/UniCyrX-ibm-8x16.psf");
-    
-    qemu_log("Initializing the virtual video memory manager...");
-    init_vbe(mboot);
+	qemu_ok("PMM Ok!");
 
-    clean_screen();
+	vmm_init();
 
-    qemu_log("Initalizing fonts...");
-    tty_fontConfigurate();
+	qemu_ok("VMM OK!");
 
-    draw_vga_str("Initializing devices...", 23, 0, 0, 0xffffff);
-    punch();
+    switch_qemu_logging();
 
-    keyboardInit();
-    mouse_install();
+	kHandlerCMD((char *) mboot->cmdline);
 
-    ata_init();
-    ac97_init();
+	qemu_log("Registration of file system drivers...");
+	fsm_reg("TARFS", 1, &fs_tarfs_read, &fs_tarfs_write, &fs_tarfs_info, &fs_tarfs_create, &fs_tarfs_delete,
+			&fs_tarfs_dir, &fs_tarfs_label, &fs_tarfs_detect);
+	fsm_reg("FAT32", 1, &fs_fat32_read, &fs_fat32_write, &fs_fat32_info, &fs_fat32_create, &fs_fat32_delete,
+			&fs_fat32_dir, &fs_fat32_label, &fs_fat32_detect);
+    fsm_reg("NatFS", 1, &fs_natfs_read, &fs_natfs_write, &fs_natfs_info, &fs_natfs_create, &fs_natfs_delete,
+            &fs_natfs_dir, &fs_natfs_label, &fs_natfs_detect);
+    fsm_reg("ISO9660", 1, &fs_iso9660_read, &fs_iso9660_write, &fs_iso9660_info, &fs_iso9660_create, &fs_iso9660_delete,
+            &fs_iso9660_dir, &fs_iso9660_label, &fs_iso9660_detect);
 
-    // TESTING ZONE
-    // Use this zone to enter early SayoriOS console.
-    
-    // while(1){}
+    fs_natfs_init();
+	kModules_Init();
 
-    // END TESTING ZONE
+	mtrr_init();
+
+	text_init("R:\\Sayori\\Fonts\\UniCyrX-ibm-8x16.psf");
+
+	qemu_log("Initializing the virtual video memory manager...");
+	init_vbe(mboot);
+
+	qemu_log("Initializing Task Manager...");
+	init_task_manager();
+	clean_screen();
+
+	qemu_log("Initalizing fonts...");
+	tty_fontConfigurate();
+
+	draw_vga_str("Initializing devices...", 23, 0, 0, 0xffffff);
+	punch();
+
+	keyboardInit();
+	mouse_install();
+
+	ata_init();
 
 	cputemp_calibrate();
 
-    bootScreenInit(7);
-    bootScreenLazy(true);
+	bootScreenInit(9);
+	bootScreenLazy(true);
 
-    if (test_pcs){
-        bootScreenPaint("Тестирование пищалки...");
-        beeperInit(0);
-    }
+	bootScreenPaint("Настройка системных вызовов...");
+	qemu_log("Registering System Calls...");
+	init_syscalls();
 
-    bootScreenPaint("Настройка менеджера задач...");
-    qemu_log("Registering a Task Manager...");
-    init_task_manager();
+	kernel_start_time = getTicks();
 
-    bootScreenPaint("Настройка системных вызовов...");
-    qemu_log("Registering System Calls...");
-    init_syscalls();
+	bootScreenPaint("Настройка ENV...");
+	qemu_log("Registering ENV...");
+	configure_env();
 
-    kernel_start_time = getTicks();
-
-    bootScreenPaint("Настройка ENV...");
-    qemu_log("Registering ENV...");
-    confidEnv();
-
-    bootScreenPaint("Определение процессора...");
-    detect_cpu(1);
+	bootScreenPaint("Определение процессора...");
+	detect_cpu(1);
 
 	bootScreenPaint("Конфигурация триггеров...");
 	triggersConfig();
 
+    bootScreenPaint("Инициализация списка сетевых карт...");
     netcards_list_init();
+
+    bootScreenPaint("Инициализация ARP...");
     arp_init();
 
+    bootScreenPaint("Инициализация RTL8139...");
     rtl8139_init();
 
-	drv_vbe_init(mboot);
+    bootScreenPaint("Инициализация DHCP...");
+    dhcp_init_all_cards();
 
-    bootScreenPaint("Готово...");
-    bootScreenClose(0x000000,0xFFFFFF);
-    tty_set_bgcolor(COLOR_BG);
+	bootScreenPaint("Готово...");
+	bootScreenClose(0x000000, 0xFFFFFF);
+	tty_set_bgcolor(COLOR_BG);
 
-	//tga_info("/Temp/wall1.tga"); tga_paint("/Temp/wall1.tga"); while(1){}
+    drv_vbe_init(mboot);
 
-    tty_printf("SayoriOS v%d.%d.%d\nДата компиляции: %s\n",
-        VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH,    // Версия ядра
-        __TIMESTAMP__                                   // Время окончания компиляции ядра
-    );
-    
-    tty_printf("\nВлюбиться можно в красоту, но полюбить - лишь только душу.\n(c) Уильям Шекспир\n");
-    
-    if (__milla_getCode() != 0){
-        tty_error("[ОШИБКА] [NatSuki] Не удалось выполнить инициализацию. Код ошибки: %d",__milla_getCode());
-    }
-    
-    sayori_time_t time = get_time();
-    
-    tty_printf("\nВремя: %d:%d:%d\n", time.hours, time.minutes, time.seconds);
+	tty_printf("SayoriOS v%d.%d.%d\nДата компиляции: %s\n",
+			   VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH,    // Версия ядра
+			   __TIMESTAMP__                                   // Время окончания компиляции ядра
+	);
 
-    // *((uint32_t*)0xa9aba894) = 12345;
+	tty_printf("\nВлюбиться можно в красоту, но полюбить - лишь только душу.\n(c) Уильям Шекспир\n");
 
-    tty_taskInit();
-    qemu_log("Initialized cursor animation...");
+	if (__milla_getCode() != 0) {
+		tty_error("[ОШИБКА] [NatSuki] Не удалось выполнить инициализацию. Код ошибки: %d", __milla_getCode());
+	}
 
-    if (autoexec){
-        // Данное условие сработает, если указан параметр ядра exec
-        FILE* elf_auto = fopen(cmd_autoexec, "r");
-        if (ferror(elf_auto) != 0){
-            qemu_log("Autorun: Программа `%s` не найдена.\n",cmd_autoexec);
-        } else {
-            run_elf_file(cmd_autoexec, 0, 0);
-        }
-    }
+	sayori_time_t time = get_time();
 
-    if(run_gui_at_startup)
-        parallel_desktop_start();
+	tty_printf("\nВремя: %d:%d:%d\n", time.hours, time.minutes, time.seconds);
 
     _tty_printf("Listing ATA disks:\n");
     ata_list();
 
-    // ata_dma_init();
-    // ata_dma_test();
+    tty_taskInit();
 
-    RSDPDescriptor* rsdp = rsdp_find();
+    if (is_rsdp){
+        RSDPDescriptor* rsdp = rsdp_find();
 
-	find_facp(rsdp->RSDTaddress);
+        find_facp(rsdp->RSDTaddress);
+        find_apic(rsdp->RSDTaddress);
+    }
 
-	tty_printf("APIC disabled (Unstable)\n");
-    // find_apic(rsdp->RSDTaddress);
-	
-	if (test_network){
+	tty_printf("Processors: %d\n", system_processors_found);
+
+	if (test_network) {
 		_tty_printf("Listing network cards:\n");
-	
+
 		uint8_t mac_buffer[6] = {0};
-	
-		for(int i = 0; i < netcards_get_count(); i++) {
-			netcard_entry_t* entry = netcard_get(i);
-	
+
+		for (int i = 0; i < netcards_get_count(); i++) {
+			netcard_entry_t *entry = netcard_get(i);
+
 			_tty_printf("\tName: %s\n", entry->name);
 			entry->get_mac_addr(mac_buffer);
-	
+
 			_tty_printf("\tMAC address: %v:%v:%v:%v:%v:%v\n",
 						mac_buffer[0],
 						mac_buffer[1],
@@ -454,87 +419,17 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp){
 						mac_buffer[5]
 			);
 		}
+	}
+	qemu_log("Kernel bootup time: %f seconds.", (double) (getTicks() - kernel_start_time) / getFrequency());
+	ata_dma_init();
+    ac97_init();
 	
-	}
-	qemu_log("Kernel bootup time: %f seconds.", (double)(getTicks() - kernel_start_time) / getFrequency());
-    // NETWORK TEST
+	ahci_init();
 
-    #if 0
+    /// Обновим данные обо всех дисках
+    fsm_dpm_update(-1);
 
-    netcard_entry_t* mycard = netcard_get(0);
+	cli();
 
-    uint8_t destmac[6] = {0, 0, 0, 0, 0, 0};
-
-    tty_printf("Sending packet\n");
-    tty_printf("Packet sent!\n");
-
-    ethernet_send_packet(
-        mycard,
-        destmac,
-        "ABRACADABRA",
-        11,
-        0
-    );
-
-    #endif
-
-    // NETWORK TEST END
-
-	if (test_floppy){
-		initFloppy();
-		fatTest();
-		_smfs_init();
-	}
-
-	tty_printf("Processors found: %d\n", system_processors_found);
-	// _mbr_info();
-
-    // ata_dma_init();
-    // ata_dma_test();
-
-    //////////////////
-
-	// TODO: User mode!
-
-    // scheduler_mode(false);
-
-    // tty_printf("Starting v8086\n");
-    // v8086_enable();
-    // tty_printf("Enabled?\n");
-
-
-	// Tried testing user mode
-
-	// qemu_log("Start: %x", &USER_start);
-	// qemu_log("End: %x", &USER_end);
-// 
-	// map_pages(
-		// get_kernel_dir(),
-		// (virtual_addr_t) &USER_start,
-		// ALIGN((physaddr_t) &USER_end, PAGE_SIZE),
-		// 1,
-		// PAGE_USER | PAGE_WRITEABLE | PAGE_PRESENT
-	// );
-// 
-	// qemu_log("Mapped");
-// 
-	// scheduler_mode(false);
-// 
-	// size_t addr = alloc_phys_pages(16);
-	// map_pages(
-		// get_kernel_dir(),
-		// addr,
-		// addr,
-		// 16,
-		// PAGE_USER | PAGE_WRITEABLE | PAGE_PRESENT
-	// );
-// 
-	// qemu_log("Stack: %x", addr);
-// 
-	// user_mode_switch(user_mode, addr + (16 * PAGE_SIZE));
-// 
-	// qemu_printf("WHAT");
-
-    shell();
     return 0;
 }

@@ -22,6 +22,7 @@ typedef struct __attribute__((packed)) {
     uint8_t charHeight;
 } psf_t;
 
+bool text_init(char* psf);
 void draw_vga_ch(uint16_t c, uint16_t c2, size_t pos_x, size_t pos_y, size_t color);
 void draw_vga_str(const char* text, size_t len, int x, int y, uint32_t color);
 size_t psf1_get_w();

@@ -1,20 +1,29 @@
 /**
  * @file lib/stdio.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru)
+ * @authors Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Функции для работы с файлами
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-11-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
+
 #include "io/ports.h"
-#include <kernel.h>
+#include "mem/vmm.h"
 #include <lib/stdio.h>
+#include <fs/fsm.h>
+#include <fs/nvfs.h>
+#include <io/tty.h>
+
+bool stdio_debug = false;
+
+
 /**
  * @brief Получение режима работы (маски файла)
  *
- * @param const char* mode - Режии
+ * @param mode - Режии
  *
- * @return uint32_t - Режим работы (маска)
+ * @todo Оптимизировать работу с битовыми флагами
+ * @return Режим работы (маска)
  */
 uint32_t fmodecheck(const char* mode){
 	ON_NULLPTR(mode, {
@@ -84,15 +93,16 @@ uint32_t fmodecheck(const char* mode){
 /**
  * @brief Проверка файла на наличие ошибок при работе
  *
- * @param FILE* stream - Поток (файл)
+ * @param stream Поток (файл)
  */
 void fcheckerror(FILE* stream){
 	ON_NULLPTR(stream, {
 		qemu_log("stream is nullptr!");
 		return;
 	});
-
-	if (!vfs_exists(stream->path)){
+	
+	FSM_FILE finfo = nvfs_info(stream->path);
+	if (finfo.Ready == 0){
 		stream->err = STDIO_ERR_NO_FOUND;
 	} else if (stream->fmode == 0){
 		stream->err = STDIO_ERR_MODE_ERROR;
@@ -106,7 +116,7 @@ void fcheckerror(FILE* stream){
 /**
  * @brief Получение кода ошибки
  *
- * @param FILE* stream - Поток (файл)
+ * @param stream Поток (файл)
  *
  * @return Если возращает 0, значит все в порядке
  */
@@ -117,8 +127,8 @@ uint32_t ferror(FILE* stream){
 /**
  * @brief Выводит на экран ошибку с пользовательским сообщением
  *
- * @param FILE* stream - Поток (файл)
- * @param char* s - Пользовательская строка
+ * @param stream - Поток (файл)
+ * @param s - Пользовательская строка
  */
 void perror(FILE* stream,char* s){
 	switch(stream->err){
@@ -146,12 +156,12 @@ void perror(FILE* stream,char* s){
 }
 
 /**
- * @brief Открыть файл для работы с ним
+ * @brief Открывает файл
  *
- * @param char* filename - Путь к файлу
- * @param char* mode - Режим работы
+ * @param filename Путь к файлу
+ * @param mode Режим работы
  *
- * @return FILE* - структура
+ * @return Структура FILE*
  */
 FILE* fopen(const char* filename, const char* _mode){
 	ON_NULLPTR(filename, {
@@ -164,35 +174,38 @@ FILE* fopen(const char* filename, const char* _mode){
 		return NULL;
 	});
 
-	qemu_log("Open file");
-	qemu_log("|- Name: '%s'", filename);
-	qemu_log("|- Mode: '%s'", _mode);
+    qemu_log("Open file");
+    qemu_log("|- Name: '%s'", filename);
+    qemu_log("|- Mode: '%s'", _mode);
 
-	FILE* file = (FILE*)kcalloc(sizeof(FILE), 1);
+	FILE* file = kcalloc(sizeof(FILE), 1);
 	// Получаем тип открытого файла
 	uint32_t freal_mode = fmodecheck(_mode);
-	if (!vfs_exists(filename) || freal_mode == 0) {
-		qemu_log("Failed to open file: %s (Exists: %d; FMODE: %d)",
+	FSM_FILE finfo = nvfs_info(filename);
+	if (finfo.Ready == 0 || freal_mode == 0) {
+        //kfree(file);
+        qemu_err("Failed to open file: %s (Exists: %d; FMODE: %d)",
 			filename,
-			vfs_exists(filename),
+			finfo.Ready,
 			freal_mode);
 		return 0;
 	}
 
 	file->open = 1;										// Файл успешно открыт
 	file->fmode = freal_mode;								// Режим работы с файлом
-	file->size = vfs_getLengthFilePath(filename);		// Размер файла
+	file->size = finfo.Size;		// Размер файла
 	file->path = (char*)filename;						// Полный путь к файлу
 	file->pos = 0;										// Установка указателя в самое начало
 	file->err = 0;										// Ошибок в работе нет
-	
+
+    qemu_ok("File opened!");
 	return file;
 }
 
 /**
  * @brief Закончить работу с файлом
  *
- * @param FILE* stream - Поток (файл)
+ * @param stream Поток (файл)
  */
 void fclose(FILE* stream){
 	if(stream)
@@ -202,9 +215,9 @@ void fclose(FILE* stream){
 /**
  * @brief Получение размера файла в байтах
  *
- * @param FILE* stream - Поток (файл)
+ * @param stream Поток (файл)
  *
- * @return Размер файла в противном случаи -1
+ * @return Размер файла, в противном случае -1
  */
 int fsize(FILE* stream){
 	ON_NULLPTR(stream, {
@@ -220,14 +233,14 @@ int fsize(FILE* stream){
 }
 
 /**
- * @brief Получение содержимого файла (детальная настройка)
+ * @brief Чтение файла
  *
- * @param FILE* stream - Поток (файл)
- * @param size_t count - Количество элементов размера size
- * @param size_t size - Сколько читаем таких элементов?
- * @param void* buffer - Буфер
+ * @param stream - Поток (файл)
+ * @param count - Количество элементов размера size
+ * @param size - Сколько читаем таких элементов?
+ * @param buffer - Буфер
  *
- * @return int - Размер прочитаных байтов или -1 при ошибке
+ * @return Размер прочитаных байтов или -1 при ошибке
  */
 int fread(FILE* stream, size_t count, size_t size, void* buffer){
 	ON_NULLPTR(stream, {
@@ -238,18 +251,18 @@ int fread(FILE* stream, size_t count, size_t size, void* buffer){
 		return -1;
 	});
 
-	if (!stream->open || !vfs_exists(stream->path) || stream->size <= 0 || stream->fmode == 0){
+	FSM_FILE finfo = nvfs_info(stream->path);
+	if (!stream->open || finfo.Ready == 0 || stream->size <= 0 || stream->fmode == 0){
 		// Удалось ли открыть файл, существует ли файл, размер файла больше нуля и указан правильный режим для работы с файлом
 		fcheckerror(stream);
 		return -1;
 	}
 
-	qemu_log("Params: count=%d, size=%d, toread=%d, seek=%d", count, size, count*size, stream->pos);
-	
-	int node = vfs_foundMount(stream->path);
-    int elem = vfs_findFile(stream->path);
+    if (stdio_debug) qemu_log("Params: count=%d, size=%d, toread=%d, seek=%d", count, size, count*size, stream->pos);
 
-	ssize_t res = vfs_read(node, elem, stream->pos, size*count, buffer);
+	size_t res = nvfs_read(stream->path, stream->pos, size*count, buffer);
+
+// 	ssize_t res = vfs_read(node, elem, stream->pos, size*count, buffer);
 
 	if(res > 0)
 		stream->pos += size*count;
@@ -260,7 +273,7 @@ int fread(FILE* stream, size_t count, size_t size, void* buffer){
 /**
  * @brief Текущая позиция считывания в файле
  *
- * @param FILE* stream - Поток (файл)
+ * @param stream - Поток (файл)
  *
  * @return Возращает позицию или отрицательное значение при ошибке
  */
@@ -283,9 +296,9 @@ int ftell(FILE* stream) {
 /**
  * @brief Установка позиции в потоке данных относительно текущей позиции
  *
- * @param FILE* stream - Поток (файл)
- * @param size_t offset - Смещение позиции
- * @param uint32_t whence - Точка отсчета смещения
+ * @param stream - Поток (файл)
+ * @param offset - Смещение позиции
+ * @param whence - Точка отсчета смещения
  *
  * @return Если возращает 0, значит все в порядке
  */
@@ -321,7 +334,7 @@ ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence){
 /**
  * @brief Установка позиции потока в самое начало
  *
- * @param FILE* stream - Поток (файл)
+ * @param stream - Поток (файл)
  */
 void rewind(FILE* stream){
 	ON_NULLPTR(stream, {
@@ -335,32 +348,22 @@ void rewind(FILE* stream){
 }
 
 /**
- * @brief Печатает на экран откладочную информацию
- *
- * @param FILE* stream - Поток (файл)
- */
-void fdebuginfo(FILE* stream){
-	ON_NULLPTR(stream, {
-		qemu_printf("fdebuginfo failed: nullptr");
-		return;
-	});
-
-	qemu_log("[fDebugInfo] Path: %s\n\tIsOpen: %d\n\tMode: %d\n\tSize: %d\n\tBuffer: %d\n\tPosition: %d\n\tError code: %d\n",stream->path,stream->open,stream->fmode,stream->size, stream->pos,stream->err);
-}
-
-/**
- * @brief Установка позиции в потоке данных
- *
- * @return Количество записаных байт или отрицательное число при ошибке
+ * @brief Запись файла
+ * @param stream Объект файла
+ * @param size Размер в байтах
+ * @param count Количество объектов размера 'size'
+ * @param ptr Буфер
+ * @return Количество записаных байт
  */
 size_t fwrite(FILE *stream, size_t size, size_t count, const void *ptr) {
-	// Реализуем как будет готовы ATA-драйвера и FS
-	// NDRAEY: Да и не нужно, просто в VFS добавил и все (ток мне лень)
-
-	int node = vfs_foundMount(stream->path);
-	int elem = vfs_findFile(stream->path);
-
-	ssize_t res = vfs_write(node, elem, stream->pos, size*count, ptr);
+	ON_NULLPTR(stream, {
+		qemu_log("stream is nullptr!");
+		return 0;
+	});
+	
+//	FSM_FILE finfo = nvfs_info(stream->path);
+	
+	size_t res = nvfs_write(stream->path, stream->pos, size*count, ptr);
 
 	if(res > 0)
 		stream->pos += size*count;

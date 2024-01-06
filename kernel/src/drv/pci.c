@@ -1,29 +1,29 @@
 /**
  * @defgroup pci Драйвер PCI (Peripheral Component Interconnect)
  * @file drv/pci.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru), Арен Елчинян (SynapseOS)
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru), Арен Елчинян (SynapseOS), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Драйвер PCI (Peripheral Component Interconnect)
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2023-01-14
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
-#include <kernel.h>
+
 #include <lib/stdio.h>
 #include <io/ports.h>
 #include <drv/pci.h>
-
+#include "io/tty.h"
 
 /**
  * @brief [PCI] Чтение 16-битных полей из пространства механизма конфигураций 1
  *
- * @param uint8_t bus  Шина
- * @param uint8_t slot  Слот
- * @param uint8_t function  Функция
- * @param uint8_t offset Отступ
+ * @param bus  Шина
+ * @param slot  Слот
+ * @param function  Функция
+ * @param offset Отступ
  *
  * @warning Когда доступ к конфигурации пытается выбрать несуществующее устройство, хост-мост завершает доступ без ошибок, удаляя все данные при записи и возвращая все данные при чтении.
  *
- * @return uint16_t
+ * @return Значение поля
  */
 uint16_t pci_read_confspc_word(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset) {
     uint32_t addr;
@@ -36,9 +36,17 @@ uint16_t pci_read_confspc_word(uint8_t bus, uint8_t slot, uint8_t function, uint
 
     outl(PCI_ADDRESS_PORT, addr);
 
-    return (uint16_t)((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffff); //this too... I'm too lazy to write them
+    return inl(PCI_DATA_PORT) >> ((offset & 2) * 8);
 }
 
+/**
+ * @brief Чтение данных из шины PCI
+ * @param bus Шина
+ * @param slot Слот
+ * @param function Функция
+ * @param offset Отступ
+ * @return Значение поля
+ */
 uint32_t pci_read32(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset) {
     uint32_t addr;
     uint32_t bus32 = bus;
@@ -47,7 +55,7 @@ uint32_t pci_read32(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)
     addr = (uint32_t)((bus32 << 16) | (slot32 << 11) |
            (func32 << 8) | (offset & 0xfc) | ((uint32_t)0x80000000)); //yes, this line is copied from osdev
     outl(PCI_ADDRESS_PORT, addr);
-    return ((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffff); //this too... I'm too lazy to write them
+    return ((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffffffff); //this too... I'm too lazy to write them
 }
 
 
@@ -194,13 +202,13 @@ static struct {
 /**
  * @brief [PCI] Получение основной категории устройства
  *
- * @param uint8_t bus  Шина
- * @param uint8_t slot  Слот
- * @param uint8_t function  Функция
+ * @param bus Шина
+ * @param slo  Слот
+ * @param function Функция
  *
- * @return uint8_t Категория устройства
+ * @return Категория устройства
  */
-uint8_t pci_get_class(uint8_t bus, uint8_t slot, uint8_t function) {
+inline uint8_t pci_get_class(uint8_t bus, uint8_t slot, uint8_t function) {
     /* Сдвигаем, чтобы оставить только нужные данные в переменной */
     return (uint8_t) (pci_read_confspc_word(bus, slot, function, 10) >> 8);
 }
@@ -208,12 +216,12 @@ uint8_t pci_get_class(uint8_t bus, uint8_t slot, uint8_t function) {
 /**
  * @brief [PCI] Получение под-категории устройства
  *
- * @param uint8_t bus  Шина
- * @param uint8_t slot  Слот
- * @param uint8_t function  Функция
+ * @param bus  Шина
+ * @param slot  Слот
+ * @param function  Функция
  * @return uint8_t Подкатегория устройства
  */
-uint8_t pci_get_subclass(uint8_t bus, uint8_t slot, uint8_t function) {
+inline uint8_t pci_get_subclass(uint8_t bus, uint8_t slot, uint8_t function) {
     /* Сдвигаем, чтобы оставить только нужные данные в переменной */
     return (uint8_t) pci_read_confspc_word(bus, slot, function, 10);
 }
@@ -221,12 +229,12 @@ uint8_t pci_get_subclass(uint8_t bus, uint8_t slot, uint8_t function) {
 /**
  * @brief [PCI] Получение HDR-тип устройства
  *
- * @param uint8_t bus  Шина
- * @param uint8_t slot  Слот
- * @param uint8_t function  Функция
+ * @param bus  Шина
+ * @param slot  Слот
+ * @param function  Функция
  * @return uint8_t HDR-тип
  */
-uint8_t pci_get_hdr_type(uint8_t bus, uint8_t slot, uint8_t function) {
+inline uint8_t pci_get_hdr_type(uint8_t bus, uint8_t slot, uint8_t function) {
     /* Сдвигаем, чтобы оставить только нужные данные в переменной */
     return (uint8_t) pci_read_confspc_word(bus, slot, function, 7);
 }
@@ -234,12 +242,12 @@ uint8_t pci_get_hdr_type(uint8_t bus, uint8_t slot, uint8_t function) {
 /**
  * @brief [PCI] Получение ID-поставщика
  *
- * @param uint8_t bus  Шина
- * @param uint8_t slot  Слот
- * @param uint8_t function  Функция
- * @return uint16_t ID-поставщика
+ * @param bus  Шина
+ * @param slot  Слот
+ * @param function  Функция
+ * @return ID-поставщика
  */
-uint16_t pci_get_vendor(uint8_t bus, uint8_t slot, uint8_t function) {
+inline uint16_t pci_get_vendor(uint8_t bus, uint8_t slot, uint8_t function) {
     /* Сдвигаем, чтобы оставить только нужные данные в переменной */
     return pci_read_confspc_word(bus, slot, function, 0);
 }
@@ -247,12 +255,12 @@ uint16_t pci_get_vendor(uint8_t bus, uint8_t slot, uint8_t function) {
 /**
  * @brief [PCI] Получение ID-Устройства
  *
- * @param uint8_t bus  Шина
- * @param uint8_t slot  Слот
- * @param uint8_t function  Функция
- * @return uint8_t ID-Устройства
+ * @param bus  Шина
+ * @param slot  Слот
+ * @param function  Функция
+ * @return ID-Устройства
  */
-uint16_t pci_get_device(uint8_t bus, uint8_t slot, uint8_t function) {
+inline uint16_t pci_get_device(uint8_t bus, uint8_t slot, uint8_t function) {
     /* Сдвигаем, чтобы оставить только нужные данные в переменной */
     return pci_read_confspc_word(bus, slot, function, 2);
 }
@@ -260,9 +268,9 @@ uint16_t pci_get_device(uint8_t bus, uint8_t slot, uint8_t function) {
 /**
  * @brief [PCI] Получение классификации устройства
  *
- * @param uint8_t class Группа А
- * @param uint8_t subclass Группа Б
- * @return const char * Возращает классификацию устройства
+ * @param klass Группа А
+ * @param subclass Группа Б
+ * @return Возращает классификацию устройства
  */
 const char *pci_get_device_type(uint8_t klass, uint8_t subclass) {
     for (int i=0; pci_device_type_strings[i].name != nullptr; i++)
@@ -275,7 +283,7 @@ const char *pci_get_device_type(uint8_t klass, uint8_t subclass) {
 /**
  * @brief [PCI] Получение названия поставщика
  *
- * @param uint16_t vendor Поставщик
+ * @param vendor Поставщик
  * @return const char * Возращает имя поставщика
  */
 const char *pci_get_vendor_name(uint16_t vendor) {
@@ -290,12 +298,12 @@ const char *pci_get_vendor_name(uint16_t vendor) {
 /**
  * @brief [PCI] ???
  *
- * @param uint8_t hdrtype ???
- * @param uint8_t bus  Шина
- * @param uint8_t slot  Слот
- * @param uint8_t function  Функция
- * @param uint8_t bar_number Номер BAR от 0 до 5
- * @param uint8_t *bar_type ???
+ * @param hdrtype ???
+ * @param bus  Шина
+ * @param slot  Слот
+ * @param func  Функция
+ * @param bar_number Номер BAR от 0 до 5
+ * @param bar_type Тип BAR
  *
  * @todo Необходимо добавить 64-бит реализацию
  *
@@ -339,11 +347,11 @@ void pci_write(uint8_t bus, uint8_t slot, uint8_t func, uint32_t offset, uint32_
 /**
  * @brief [PCI] Поиск устройства по ID-поставшика и устройства
  *
- * @param uint16_t vendor ID-Поставщика
- * @param uint16_t device ID-Устройства
- * @param uint8_t *bus_ret
- * @param uint8_t *slot_ret
- * @param uint8_t *func_ret
+ * @param vendor ID-Поставщика
+ * @param device ID-Устройства
+ * @param bus_ret
+ * @param slot_ret
+ * @param func_ret
  */
 void pci_find_device(uint16_t vendor, uint16_t device, uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret) {
 //	qemu_log("Checking device: %x:%x\n", vendor, device);
@@ -362,9 +370,43 @@ void pci_find_device(uint16_t vendor, uint16_t device, uint8_t *bus_ret, uint8_t
 		}
 	}
 
-    *bus_ret = *slot_ret = *func_ret = 0xFF;
+	*bus_ret = *slot_ret = *func_ret = 0xFF;
+}
 
-//	qemu_log("Not found");
+void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, uint16_t *vendor_ret, uint16_t *deviceid_ret,
+										   uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret) {
+    uint8_t func = 0;
+
+	for (uint32_t bus = 0; bus < 256; bus++) {
+		for (uint32_t slot = 0; slot < 32; slot++) {
+
+            if (pci_get_class(bus, slot, func) == class
+                && pci_get_subclass(bus, slot, func) == subclass) {
+                *vendor_ret = pci_get_vendor(bus, slot, func);
+                *deviceid_ret = pci_get_device(bus, slot, func);
+                *bus_ret = bus;
+                *slot_ret = slot;
+                *func_ret = func;
+                return;
+            }
+
+            if((pci_get_hdr_type(bus, slot, 0) & 0x80) == 0) {
+                for (func = 1; func < 8; func++) {
+                    if (pci_get_class(bus, slot, func) == class
+                        && pci_get_subclass(bus, slot, func) == subclass) {
+                        *vendor_ret = pci_get_vendor(bus, slot, func);
+                        *deviceid_ret = pci_get_device(bus, slot, func);
+                        *bus_ret = bus;
+                        *slot_ret = slot;
+                        *func_ret = func;
+                        return;
+                    }
+                }
+            }
+		}
+	}
+
+	*bus_ret = *slot_ret = *func_ret = 0xFF;
 }
 
 /**
@@ -379,30 +421,28 @@ void pci_print_list() {
 
     tty_printf("PCI список устройств:\n");
     for (uint32_t bus = 0; bus < 256; bus++) {
-        for (uint32_t slot = 0; slot < 32; slot++) {
+        for (uint8_t slot = 0; slot < 32; slot++) {
             uint32_t func = 0;
 
-            clid = pci_get_class(bus, slot, func);
-            sclid = pci_get_subclass(bus, slot, func);
             vendor = pci_get_vendor(bus, slot, func);
-            hdrtype = pci_get_hdr_type(bus, slot, func);
-            device = pci_get_device(bus, slot, func);
 
-            if (clid != 0xFF && vendor != 0xFFFF) {
-                qemu_log("%u:%u.%u %s: %s (%x), девайс: %x", bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
-                _tty_printf("\t%u:%u.%u %s: %s (%x), девайс: %x\n", bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
-			}
+            if (vendor != 0xFFFF) {
+                clid = pci_get_class(bus, slot, func);
+                sclid = pci_get_subclass(bus, slot, func);
+                hdrtype = pci_get_hdr_type(bus, slot, func);
+                device = pci_get_device(bus, slot, func);
+                _tty_printf("\t%d:%d:%d:%d.%d %s: %s (%x), девайс: %x\n", clid, sclid, bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
+            }
 
             if ((hdrtype & 0x80) == 0) {
                 for (func = 1; func < 8; func++) {
-                    clid = pci_get_class(bus, slot, func);
-                    sclid = pci_get_subclass(bus, slot, func);
                     vendor = pci_get_vendor(bus, slot, func);
-                    device = pci_get_device(bus, slot, func);
 
-                    if (clid != 0xFF && vendor != 0xFFFF) {
-                        qemu_log("%u:%u.%u %s: %s (%x), девайс: %x", bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
-                        _tty_printf("\t%u:%u.%u %s: %s (%x), девайс: %x\n", bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
+                    if (vendor != 0xFFFF) {
+                        clid = pci_get_class(bus, slot, func);
+                        sclid = pci_get_subclass(bus, slot, func);
+                        device = pci_get_device(bus, slot, func);
+                        _tty_printf("\t%d:%d:%d:%d.%d %s: %s (%x), девайс: %x\n", clid, sclid, bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
                     }
                 }
             }

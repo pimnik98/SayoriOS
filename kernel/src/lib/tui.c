@@ -2,13 +2,12 @@
  * @file lib/tui.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Драйвер библиотеки TUI (Text User Interface)
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-20
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
 #include <kernel.h>
 #include <io/ports.h>
-#include <io/duke_image.h>
 #include <io/status_loggers.h>
 #include <lib/stdio.h>
 #include <lib/tui.h>
@@ -73,9 +72,9 @@ int32_t getWorkSpaceHeightTUI(){
 /**
  * @brief Установить режим работы TUI
  *
- * @param int32_t mode - Режим TUI
+ * @param mode - Режим TUI
  */
-int32_t setModeTUI(int32_t mode){
+void setModeTUI(int32_t mode){
     TUIMode = mode;
 }
 
@@ -91,9 +90,9 @@ int32_t getLastUpdateTUI(){
 /**
  * @brief Установить время обновления TUI
  *
- * @param int32_t time - Время (в тиках)
+ * @param time - Время (в тиках)
  */
-int32_t setLastUpdateTUI(int32_t time){
+void setLastUpdateTUI(int32_t time){
     lastUpdate = time;
 }
 
@@ -109,18 +108,18 @@ int32_t getCurrentItemTUI(){
 /**
  * @brief Установить позицию в меню
  *
- * @param int32_t item - Позиция в меню
+ * @param item - Позиция в меню
  */
-int32_t setCurrentItemTUI(int32_t item){
+void setCurrentItemTUI(int32_t item){
     currentList = item;
 }
 
 /**
  * @brief Установить максимальное количество элементов в меню
  *
- * @param int32_t item - Максимальное кол-во элементов
+ * @param item - Максимальное кол-во элементов
  */
-int32_t setMaxItemTUI(int32_t item){
+void setMaxItemTUI(int32_t item){
     maxListMenu = item;
 }
 
@@ -158,7 +157,7 @@ int getMaxStrLineBoxTUI(){
 /**
  * @brief Добавляет позицию в список элементов
  *
- * @param char* name - Название позиции
+ * @param name - Название позиции
  */
 /*
 ItemTUI* addItem(char* name,bool disabled, char* key, char* value){
@@ -186,7 +185,7 @@ ItemTUI* addItem(char* name,bool disabled, char* key, char* value){
 /**
  * @brief Отчистить пользовательское пространство
  *
- * @param int - Цвет для фона
+ * @param - Цвет для фона
  */
 void cleanWorkSpace(int color){
     drawRect(8,16*(3),ww,wh,color);
@@ -204,8 +203,6 @@ void createMenuBox(char* title){
     int padding_h = maxHeightLineTUI/4;
     // Получаем размеры коробки
     int boxWidth = ww-((padding_w*8)*2);
-    int boxHeight = wh-((padding_h*16));
-    int maxListBox = boxHeight;
     // Получаем максимальное количество символов на строку в коробке
     int maxStrLineBox = (boxWidth/8)-4; // 60 - символов при 1024
 
@@ -261,7 +258,6 @@ void createErrorBox(char* title,char* text){
     int padding_h = maxHeightLineTUI/4;
     // Получаем размеры коробки
     int boxWidth = ww-((padding_w*8)*2);
-    int boxHeight = wh-((padding_h));      // ? Реализовал а зачем, забыл :)
     // Получаем максимальное количество символов на строку в коробке
     int maxStrLineBox = (boxWidth/8)-4; // 60 - символов при 1024
     // maxHeightLine
@@ -279,7 +275,6 @@ void createErrorBox(char* title,char* text){
     }
     if (strlen(text) > maxStrLineBox){
         // Объявим переменную для деления текста
-        char strings[lineHeight][maxStrLineBox+1];
         for (int i = 0;i < lineHeight;i++){
             substr(title, title, 0+(i*maxStrLineBox), ((i+1)*maxStrLineBox));
         }

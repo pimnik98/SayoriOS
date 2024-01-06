@@ -1,10 +1,6 @@
 #pragma once
 
 #include <common.h>
-/*
-#define uint8_t unsigned char
-#define uint16_t unsigned short
-*/
 
 typedef struct sayori_time {
 	uint8_t seconds;

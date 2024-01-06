@@ -2,13 +2,14 @@
  * @file drv/disk/mbr.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief MBR Info
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2023-08-03
  * @copyright Copyright SayoriOS Team (c) 2022-2023
 */
 
-#include <kernel.h>
-#include <io/ports.h> 
+#include "common.h"
+#include "io/tty.h"
+#include <io/ports.h>
 
 typedef struct {
 	uint8_t Attr;			///< Атрибуты диска (7 = активный)

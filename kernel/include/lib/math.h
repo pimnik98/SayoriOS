@@ -2,8 +2,6 @@
 
 #include "common.h"
 
-// #define MIN(a, b) (a > b ? b : a)
-// #define MAX(a, b) (a < b ? b : a)
 #define ABS(a) ((a) >= 0 ? (a) : -(a))
 
 #define MIN(a, b) \
@@ -105,7 +103,7 @@ double atan(double x);
 
 double sqrt(double x);
 double cbrt(double x);
-
+double modf(double value, double* intPart);
 // static inline double sqrt(double x) {
 //    return pow(x, 0.5);
 // }

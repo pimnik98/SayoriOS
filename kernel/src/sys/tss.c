@@ -2,7 +2,7 @@
  * @file sys/gdt.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief (GDT) Глобальная таблица дескрипторов
- * @version 0.3.3
+ * @version 0.3.4
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2023
  */
@@ -20,9 +20,9 @@ extern void tss_flush(uint32_t tr_selector);
 /**
  * @brief ???
  *
- * @param int32_t num - ???
- * @param uint32_t ss0 - ???
- * @param uint32_t esp0 - ???
+ * @param num - ???
+ * @param ss0 - ???
+ * @param esp0 - ???
  */
 void write_tss(int32_t num, uint32_t ss0, uint32_t esp0){
 	memset(&tss, 0, sizeof(tss_entry_t));
@@ -52,7 +52,7 @@ void write_tss(int32_t num, uint32_t ss0, uint32_t esp0){
 /**
  * @brief ???
  *
- * @param uint32_t stack - ???
+ * @param stack - ???
  */
 void set_kernel_stack_in_tss(uint32_t stack) {
 	tss.esp0 = stack;
