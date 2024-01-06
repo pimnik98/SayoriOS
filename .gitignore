@@ -9,8 +9,8 @@
 *.sea
 *.vhd
 *.tmp
-.vscode
-.vscode/*
+.vscode/
 *.d
 /rust/target
 /rust/Cargo.lock
+.idea/
