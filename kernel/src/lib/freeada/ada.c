@@ -4,7 +4,7 @@
  * @brief Мини-порт Ada в Sayori
  * @version 0.0.1
  * @date 2023-12-16
- * @copyright Copyright SayoriOS Team (c) 2022-2023 
+ * @copyright Copyright SayoriOS Team (c) 2022-2024 
 */
 
 // TODO: rewrite to codegen to own VM

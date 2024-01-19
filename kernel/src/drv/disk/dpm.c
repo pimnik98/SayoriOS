@@ -2,9 +2,9 @@
  * @file drv/disk/dpm.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Disk Partition Manager - Менеджер разметки дисков
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-10-16
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
 #include <io/ports.h>

@@ -2,9 +2,9 @@
  * @file extra/cli.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief [CLI] Sayori Command Line (SCL -> Shell)
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-10-20
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <io/ports.h>
@@ -29,7 +29,6 @@
 #include "io/rgb_image.h"
 #include <sys/cpuinfo.h>
 
-size_t T_CLI_KYB = 0;				///< Индекс триггера
 int G_CLI_CURINXA = 0;
 int G_CLI_CURINXB = 0;
 int G_CLI_H_KYB = 1;
@@ -372,13 +371,12 @@ uint32_t proc_list(uint32_t argc, char* argv[]) {
     return 0;
 }
 
-uint32_t ndpm_list(uint32_t, char**);
+uint32_t pavi_view(uint32_t, char**);
 uint32_t minesweeper(uint32_t, char**);
 uint32_t shell_diskctl(uint32_t, char**);
 uint32_t calendar(uint32_t, char**);
 
 CLI_CMD_ELEM G_CLI_CMD[] = {
-
 	{"CLS", "cls", CLI_CMD_CLS, "Очистка экрана"},
     {"CAT", "cat", CLI_CMD_CAT, "Выводит содержимое файла на экран"},
 	{"ECHO", "echo", CLI_CMD_ECHO, "Выводит сообщение на экран."},
@@ -392,13 +390,12 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
 	{"MINIPLAY", "miniplay", miniplay, "WAV-проиграватель"},
 	{"DESKTOP", "desktop", parallel_desktop_start, "Рабочий стол"},
 	{"MALA", "mala", mala_draw, "Нарисовать рисунок"},
-//	{"PAVI", "pavi", pavi_view, "Программа для просмотра изображений"},
+	{"PAVI", "pavi", pavi_view, "Программа для просмотра изображений"},
 	{"PCI", "pci", pci_print_list, "Список PCI устройств"},
 	// {"RS", "rs", rust_command, "Rust command"},
 	{"PROC", "proc", proc_list, "Список процессов"},
     {"SYSINFO", "sysinfo", CLI_CMD_SYSINFO, "Информация о системе"},
     {"JSE", "jse", CLI_CMD_JSE, "JavaScript Engine"},
-    {"NDPM", "ndpm", ndpm_list, "Список дисков NDPM"},
     {"MINESWEEPER", "minesweeper", minesweeper, "Сапёр"},
     {"DISKPART", "diskpart", CLI_CMD_DISKPART, "Список дисков Disk Partition Manager"},
     {"DISKCTL", "diskctl", shell_diskctl, "Управление ATA-дисками"},

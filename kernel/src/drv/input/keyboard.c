@@ -2,9 +2,9 @@
  * @file drv/input/keyboard.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Драйвер клавиатуры
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 extern void tty_backspace();
 
@@ -32,10 +32,8 @@ extern void tty_backspace();
 #define		KBD_STATE_REG		0x64
 
 bool    SHIFT = false,          ///< Включен ли SHIFT
-        RU = false,             ///< Печатаем русскими?
-        enabled = true;         ///< Включен ли вывод?
+        RU = false;             ///< Печатаем русскими?
 int     lastKey = 0;            ///< Последний индекс клавишы
-char    kbdbuf[256] = {0};      ///< Буфер клавиатуры
 uint8_t kbdstatus = 0;          ///< Статус клавиатуры
 bool    echo = true;            ///< Включен ли вывод?
 bool    key_ctrl = false;
@@ -56,16 +54,6 @@ uint32_t chartyped = 0;
  */
 char* __getCharKeyboard(char* en_s, char* en_b, char* ru_s, char* ru_b){
     return (RU?(SHIFT?ru_b:ru_s):(SHIFT?en_b:en_s));
-}
-
-/**
- * @brief Смена режима работы библиотеки
- *
- * @param bool s - Вкл/Выкл клавы
- */
-void changeStageKeyboard(bool s){
-    qemu_log("changeStageKeyboard: %d",s);
-    enabled = s;
 }
 
 /**
@@ -243,39 +231,6 @@ void* getCharKeyboardWait(bool ints) {
     }
 }
 
-/**
- * @brief Получение виртуального буфера с клавиатуры
- *
- * @return char* - Или символ или код
- */
-char* getStringBufferKeyboard(){
-    memset(kbdbuf, 0, 256);
-    while(1){
-        if (strlen(kbdbuf) > 254){
-            qemu_log("Buffer FULL! Max 255!!");
-            break;
-        }
-        if (lastKey == 0) continue;
-        int ikey = getIntKeyboardWait();
-        lastKey = 0;
-        char* key = getCharKeyboard(ikey, false);
-        //qemu_log("[LK] %x | %x\n",ikey,getCharKeyboardWait(true));
-        //tty_printf("[LK] %x | %d\n",ikey,key);
-        if (ikey == 0x9C || ikey == 0xE0 || ikey == 0x1C){
-            // Нажат Enter отбрасываем обработку
-            break;
-        }
-
-        if (key != 0 && lastKey < 128){
-            strcat(kbdbuf, key);
-            //tty_printf("\n[%d/256] Buffer: %s; KEY: %s; LK: %x | %x\n", kblen, kbdbuf, key,ikey,lastKey);
-            continue;
-        }
-        lastKey = 0;
-    }
-    return kbdbuf;
-}
-
 void kbd_add_char(char *buf, char* key) {
 	if(kmode == 1 && curbuf != 0) {
 		if (!(lastKey == 0x1C || lastKey == 0x0E)) {
@@ -342,22 +297,18 @@ int gets_max(char *buffer, int length) { // TODO: Backspace
  */
 void keyboardHandler(registers_t regs){
     //qemu_log("%d < %d",timePresed < getTicks());
-    if (!enabled) return;
+//    if (!enabled) return;
 
-    outb(0x20, 0x20);
+//    outb(0x20, 0x20);
 
     kbdstatus = inb(KBD_STATE_REG);
     if (kbdstatus & 0x01) {
         lastKey = inb(KBD_DATA_PORT);
         int cl = 1;
-		
-        //qemu_log("[O-CL] %x | %d",cl,cl);
-		
+
         CallTrigger(
 			0x0001,
-			// (getPressReleaseKeyboard() == 0x80?(lastKey-0x80):lastKey),
 			(void*)(lastKey % 0x80),
-			// (getPressReleaseKeyboard() == 0x80?0:1),
 			(void*)!getPressReleaseKeyboard(),
 			0,
 			0,
@@ -432,14 +383,6 @@ void keyboardInit() {
     outb(KBD_STATE_REG, 0xA7); // 2
 
     // Flush The Output Buffer
-
-	draw_vga_str("Warning: Now, SayoriOS will perform PS/2 buffer flushing. Process is very fast,", 79, 0, 16, 0xffffff);
-    draw_vga_str("         but on real hardware you can encounter system hanging.", 63, 0, 32, 0xffffff);
-	draw_vga_str("         If system hangs, press any key.", 40, 0, 64, 0xffffff);
-    draw_vga_str("         And even better, help us on https://github.com/pimnik98/SayoriOS", 73, 0, 64 + 16, 0xffffff);
-    
-    punch();
-    
     while(inb(KBD_STATE_REG) & 1) {
         inb(KBD_DATA_PORT);
     }
@@ -484,6 +427,7 @@ void keyboardInit() {
 
     if(result == 0x00) {
         qemu_log("Passed test for channel 1!");
+        outb(KBD_STATE_REG, 0xAE);
     } else {
         qemu_log("Channel 1: Test failed! Result: %x", result);
     }
@@ -497,14 +441,11 @@ void keyboardInit() {
 
         if(result == 0x00) {
             qemu_log("Passed test for channel 2!");
+            outb(KBD_STATE_REG, 0xA8);
         } else {
             qemu_log("Channel 2: Test failed! Result: %x", result);
         }
     }
-
-    // Enable channels
-    outb(KBD_STATE_REG, 0xAE);
-    outb(KBD_STATE_REG, 0xA8);
 
     // Enable interrupts
 

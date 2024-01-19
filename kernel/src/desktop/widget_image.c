@@ -14,8 +14,8 @@ void widget_image_renderer(struct Widget* this, struct Window* window) {
     if(this_data->image_data == NULL)
         return;
 
-    size_t real_width = this_data->meta.h;
-    size_t real_height = this_data->meta.w;
+    size_t real_width = this_data->meta.w;
+    size_t real_height = this_data->meta.h;
 
     draw_rgb_image(this_data->image_data, real_width, real_height, 32, this->x, this->y);
 //    drawRect(this->x, this->y, real_width, real_height, 0xff0000);
@@ -54,7 +54,7 @@ Widget_t* new_widget_image(const char *path) {
 
     tga_extract_pixels(path, buffer_image);
 
-    pixfmt_conv(buffer_image, 32, hdr.h, hdr.w, SCREEN_BGR, SCREEN_RGB);
+    pixfmt_conv(buffer_image, 32, hdr.w, hdr.h, SCREEN_BGR, SCREEN_RGB);
 
 //    hexview_advanced(buffer_image, 512, 24, true, new_qemu_printf);
 

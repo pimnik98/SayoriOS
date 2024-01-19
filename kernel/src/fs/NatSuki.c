@@ -2,9 +2,9 @@
  * @file fs/NatSuki.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief [VFS] [Драйвер] NatSuki - Виртуальная файловая система
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-01-27
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
 #include <lib/string.h>

@@ -2,9 +2,9 @@
  * @file drv/cmos.c
  * @brief Драйвер CMOS
  * @author NDRAEY >_ (pikachu_andrey@vk.com)
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include "common.h"

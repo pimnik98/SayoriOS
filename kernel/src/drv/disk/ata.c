@@ -1,7 +1,6 @@
 #include "drv/disk/ata.h"
 #include <io/ports.h>
 #include <drv/atapi.h>
-#include <drv/disk/ndpm.h>
 #include <fs/fsm.h>
 #include <mem/vmm.h>
 #include <io/tty.h>
@@ -9,20 +8,17 @@
 #include "sys/isr.h"
 #include "debug/hexview.h"
 #include "net/endianess.h"
+#include "lib/math.h"
+#include "drv/disk/ata_dma.h"
+#include "drv/disk/ata_pio.h"
+
+// TODO: Move ATA PIO functions into ata_pio.c for code clarity
 
 #define DEFAULT_TIMEOUT (65535 * 2)
 
 const char possible_dpm_letters_for_ata[4] = "CDEF";
-
-// PRIMARY MASTER
-// PRIMARY SLAVE
-// SECONDARY MASTER
-// SECONDARY SLAVE
 ata_drive_t drives[4] = {0};
-
 uint16_t *ide_buf = 0;
-
-extern uint16_t ata_dma_bar4;
 
 void ide_select_drive(uint8_t bus, bool slave) {
 	if(bus == ATA_PRIMARY)
@@ -56,10 +52,10 @@ void ide_soft_reset(size_t io) {
 size_t dpm_ata_pio_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
     /// Функции для чтения
     DPM_Disk dpm = dpm_info(Disk + 65);
-    qemu_note("[ATA] [DPM] [DISK %d] [READ] Off: %d | Size: %d", dpm.Point, Offset, Size);
+//    qemu_note("[ATA] [DPM] [DISK %d] [READ] Off: %d | Size: %d", dpm.Point, Offset, Size);
     // TODO: @ndraey не забудь для своей функции сделать кол-во полученных байт
 	// FIXME: For those who want to see thid piece of code: I literally burned my eyes with this.
-    ata_pio_read((uint8_t)dpm.Point, Buffer, Offset, Size);
+    ata_read((uint8_t) dpm.Point, Buffer, Offset, Size);
     return Size;
 }
 
@@ -70,7 +66,7 @@ size_t dpm_ata_pio_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
     qemu_note("[ATA] [DPM] [DISK %d] [WRITE] Off: %d | Size: %d", dpm.Point, Offset, Size);
     // TODO: @ndraey не забудь для своей функции сделать кол-во записанных байт
 	// FIXME: For those who want to see thid piece of code: I literally burned my eyes with this.
-    ata_pio_write((uint8_t)dpm.Point, Buffer, Offset, Size);
+    ata_write((uint8_t) dpm.Point, Buffer, Offset, Size);
     return Size;
 }
 
@@ -169,8 +165,6 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
             qemu_note("Serial: %s", serial);
             qemu_note("Firmware version: %s", fwver);
             qemu_note("Model name: %s", model_name);
-
-			ndpm_add_drive(&(drives[drive_num]), ata_ndpm_read, ata_ndpm_write);
 
             // (drive_num) is an index (0, 1, 2, 3) of disk
             int disk_inx = dpm_reg(
@@ -300,6 +294,7 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 		drives[drive_num].drive = drive_num;
 		drives[drive_num].block_size = 512;
 		drives[drive_num].capacity = capacity;
+        drives[drive_num].is_dma = (ide_buf[49] & 0x200) ? true : false;
 
 		// (drive_num) is an index (0, 1, 2, 3) of disk
 		int disk_inx = dpm_reg(
@@ -322,8 +317,6 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
             dpm_fnc_write(disk_inx + 65, &dpm_ata_pio_read, &dpm_ata_pio_write);
         }
 
-		ndpm_add_drive(drives + drive_num, ata_ndpm_read, ata_ndpm_write);
-
 		qemu_log("Identify finished");
 	}else{
 		qemu_err("%s %s => No status. Drive may be disconnected!", PRIM_SEC(bus), MAST_SLV(drive));
@@ -339,26 +332,6 @@ void ide_400ns_delay(uint16_t io) {
 	inb(io + ATA_REG_ALTSTATUS);
 	inb(io + ATA_REG_ALTSTATUS);
 }
-
-// void ide_poll(uint16_t io) {
-// 	ide_400ns_delay(io);
-
-// retry:;
-// 	uint8_t status = inb(io + ATA_REG_STATUS);
-
-// 	if(status & ATA_SR_BSY)
-// 		goto retry;
-// retry2:	status = inb(io + ATA_REG_STATUS);
-// 	if(status & ATA_SR_ERR)
-// 	{
-// 		qemu_log("ERR set, device failure!\n");
-// 	}
-	
-// 	if(!(status & ATA_SR_DRQ))
-// 		goto retry2;
-	
-// 	return;
-// }
 
 void ide_poll(uint16_t io) {
 	ide_400ns_delay(io);
@@ -384,127 +357,8 @@ void ide_poll(uint16_t io) {
 	}
 }
 
-uint8_t ata_pio_read_sector(uint8_t drive, uint8_t *buf, uint32_t lba) {
-	ON_NULLPTR(buf, {
-		qemu_log("Buffer is nullptr!");
-		return 0;
-	});
-
-	// Only 28-bit LBA supported!
-	lba &= 0x00FFFFFF;
-
-	uint16_t io = 0;
-	
-	if(!drives[drive].online) {
-		qemu_log("Attempted read from drive that does not exist.");
-		return 0;
-	}
-
-	ata_set_params(drive, &io, &drive);
-	
-	uint8_t cmd = (drive==ATA_MASTER?0xE0:0xF0);
-	uint8_t slavebit = (drive == ATA_MASTER?0x00:0x01);
-
-	outb(io + ATA_REG_HDDEVSEL, (cmd | (slavebit << 4) | (uint8_t)(lba >> 24 & 0x0F)));
-	outb(io + 1, 0x00);	
-	outb(io + ATA_REG_SECCOUNT0, 1);
-	outb(io + ATA_REG_LBA0, (uint8_t)((lba)));
-	outb(io + ATA_REG_LBA1, (uint8_t)((lba) >> 8));
-	outb(io + ATA_REG_LBA2, (uint8_t)((lba) >> 16));
-	outb(io + ATA_REG_COMMAND, ATA_CMD_READ_PIO);
-	
-	ide_poll(io);
-
-	uint16_t ata_data_reg = io + ATA_REG_DATA;
-
-	uint16_t* buf16 = (uint16_t*)buf;
-
-	for(int i = 0; i < 256; i++) {
-		uint16_t data = inw(ata_data_reg);
-		*(buf16 + i) = data;
-	}
-
-	ide_400ns_delay(io);
-	
-	return 1;
-}
-
-/**
- * @brief Полностью перезаписывает сектор на диске
- * @param drive Номер диска
- * @param buf Юуффер с данными
- * @param lba Номер сектора
- * @return 0 - ошибка, 1 - ок
- */
-uint8_t ata_pio_write_raw_sector(uint8_t drive, const uint8_t *buf, uint32_t lba) {
-	ON_NULLPTR(buf, {
-		qemu_log("Buffer is nullptr!");
-		return 0;
-	});
-
-	// Only 28-bit LBA supported!
-	lba &= 0x00FFFFFF;
-
-	uint16_t io = 0;
-	
-	if(!drives[drive].online) {
-		qemu_log("Attempted read from drive that does not exist.");
-		return 0;
-	}
-
-	ata_set_params(drive, &io, &drive);
-	
-	uint8_t cmd = (drive==ATA_MASTER?0xE0:0xF0);
-	uint8_t slavebit = (drive == ATA_MASTER?0x00:0x01);
-
-	outb(io + ATA_REG_HDDEVSEL, (cmd | (slavebit << 4) | (uint8_t)((lba >> 24 & 0x0F))));
-	outb(io + 1, 0x00);
-	outb(io + ATA_REG_SECCOUNT0, 1);
-	outb(io + ATA_REG_LBA0, (uint8_t)((lba)));
-	outb(io + ATA_REG_LBA1, (uint8_t)((lba) >> 8));
-	outb(io + ATA_REG_LBA2, (uint8_t)((lba) >> 16));
-	outb(io + ATA_REG_COMMAND, ATA_CMD_WRITE_PIO);
-	
-	ide_poll(io);
-
-	for(int i = 0; i < 256; i++) {
-		outw(io + ATA_REG_DATA, *(uint16_t*)(buf + i * 2));
-		ide_400ns_delay(io);
-	}
-
-	outb(io + ATA_REG_COMMAND, ATA_CMD_CACHE_FLUSH);
-	
-	return 1;
-}
-
 // UNTESTED
-void ata_pio_write_sectors(uint8_t drive, uint8_t *buf, uint32_t lba, size_t sectors) {
-	ON_NULLPTR(buf, {
-		qemu_log("Buffer is nullptr!");
-		return;
-	});
-
-	for(size_t i = 0; i < sectors; i++) {
-		ata_pio_write_raw_sector(drive, buf + (i * drives[drive].block_size), lba + i);
-	}
-}
-
-void ata_pio_read_sectors(uint8_t drive, uint8_t *buf, uint32_t lba, uint32_t numsects) {
-	ON_NULLPTR(buf, {
-		qemu_log("Buffer is nullptr!");
-		return;
-	});
-
-	uint8_t* rbuf = buf;
-	
-	for(size_t i = 0; i < numsects; i++) {
-		ata_pio_read_sector(drive, rbuf, lba + i);
-		rbuf += drives[drive].block_size;
-	}
-}
-
-// UNTESTED
-void ata_pio_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) {
+void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) {
 	ON_NULLPTR(buf, {
 		qemu_log("Buffer is nullptr!");
 		return;
@@ -521,12 +375,17 @@ void ata_pio_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t lengt
 	
 	size_t real_length = sector_count * drives[drive].block_size;
 
-	qemu_log("Reading %d sectors...", sector_count);
+//	qemu_log("Reading %d sectors...", sector_count);
 
 	uint8_t* real_buf = kmalloc(real_length);
 
+	// Add DMA support
 	if(!drives[drive].is_packet) {
-		ata_pio_read_sectors(drive, real_buf, start_sector, sector_count);
+        if(drives[drive].is_dma) {
+            ata_dma_read(drive, real_buf, start_sector * 512, sector_count * 512);
+        } else {
+            ata_pio_read_sectors(drive, real_buf, start_sector, sector_count);
+        }
 	} else {
 		atapi_read_sectors(drive, real_buf, start_sector, sector_count);
 	}
@@ -536,7 +395,7 @@ void ata_pio_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t lengt
 	kfree(real_buf);
 }
 
-void ata_pio_write(uint8_t drive, const uint8_t* buf, size_t location, size_t length) {
+void ata_write(uint8_t drive, const uint8_t* buf, size_t location, size_t length) {
 	ON_NULLPTR(buf, {
 		qemu_log("Buffer is nullptr!");
 		return;
@@ -561,22 +420,6 @@ void ata_pio_write(uint8_t drive, const uint8_t* buf, size_t location, size_t le
 	ata_pio_write_sectors(drive, temp_buf, start_sector, sector_count);
     
     kfree(temp_buf);
-}
-
-void ata_ndpm_read(const ndpm_drive_t* drive, size_t location, int size, void* buffer) {
-	ata_drive_t* disk = drive->drive_specific_data;
-
-	qemu_note("Reading disk: %d", disk->drive);
-
-	ata_pio_read(disk->drive, buffer, location, size);
-}
-
-void ata_ndpm_write(const ndpm_drive_t* drive, size_t location, int size, void* buffer) {
-	ata_drive_t* disk = drive->drive_specific_data;
-
-	qemu_note("Writing disk: %d", disk->drive);
-
-	ata_pio_write(disk->drive, buffer, location, size);
 }
 
 void ata_list() {
@@ -606,11 +449,14 @@ void ata_list() {
 
 		if(drives[i].is_packet)
 			_tty_printf(" [PACKET DEVICE!!!]");
-		
-		if(drives[i].is_sata)
-			_tty_printf(" [SATA]");
 
-		qemu_note("Drive %d", i);
+        if(drives[i].is_sata)
+            _tty_printf(" [SATA]");
+
+        if(drives[i].is_dma)
+            _tty_printf(" [DMA]");
+
+        qemu_note("Drive %d", i);
 		qemu_note("'%s' '%s' '%s'", drives[i].model_name, drives[i].fwversion, drives[i].serial_number);
 
 		_tty_printf("\n\t|-- Model: \"%s\"; Firmware version: \"%s\";", drives[i].model_name, drives[i].fwversion);
@@ -620,10 +466,6 @@ void ata_list() {
 	}
 	
 	tty_printf("\n");
-}
-
-ata_drive_t* ata_get_drives() {
-	return drives;
 }
 
 void ata_check_all() {

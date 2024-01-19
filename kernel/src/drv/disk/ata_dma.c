@@ -25,6 +25,7 @@ size_t prdt_entry_count = 16;
 
 extern ata_drive_t drives[4];
 
+
 void ata_dma_init() {
     pci_find_device(ATA_PCI_VEN, ATA_PCI_DEV, &ata_busnum, &ata_slot, &ata_func);
 
@@ -393,7 +394,7 @@ status_t ata_dma_read(uint8_t drive, char *buf, uint32_t location, uint32_t leng
 	});
 
 	if(!drives[drive].online) {
-		qemu_log("Attempted read from drive that does not exist.");
+		qemu_err("Attempted read from drive that does not exist.");
 		return E_DEVICE_NOT_ONLINE;
 	}
 

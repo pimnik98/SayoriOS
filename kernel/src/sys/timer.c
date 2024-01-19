@@ -2,9 +2,9 @@
  * @file sys/timer.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Модуль системного таймера
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 #include	"sys/timer.h"
 #include	"sys/isr.h"
@@ -111,3 +111,6 @@ void init_timer(uint32_t f){
 
 	register_interrupt_handler(IRQ0, &timer_callback);
 }
+
+
+size_t timestamp_for_asm() { return tick / (frequency / 1000); }

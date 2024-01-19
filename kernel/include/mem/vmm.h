@@ -33,6 +33,7 @@ bool vmm_is_page_used_by_entries(size_t address);
 void* kmalloc_common(size_t size, size_t align);
 
 SAYORI_INLINE void* kmalloc(size_t size) {
+//	return kmalloc_common(size, sizeof(size_t));  // Alignment, blyad
 	return kmalloc_common(size, 0);
 }
 

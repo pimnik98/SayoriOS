@@ -2,9 +2,9 @@
  * @file io/port_io.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Средства для работы с портами
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-01-07
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <lib/string.h>
@@ -256,7 +256,7 @@ void __com_formatString(int16_t port, char *text, ...) {
 int __com_init(uint16_t port) {
     outb(port + 1, 0x00);    // Disable all interrupts
     outb(port + 3, 0x80);    // Enable DLAB (set baud rate divisor)
-    outb(port + 0, 0x01);    // Set divisor to 1 (lo byte) 115200 / divisor (1) = 115200 baud
+    outb(port + 0, 0x03);    // Set divisor to 1 (lo byte) 115200 / divisor (1) = 115200 baud
     outb(port + 1, 0x00);    //                  (hi byte)
     outb(port + 3, 0x03);    // 8 bits, no parity, one stop bit
     outb(port + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold

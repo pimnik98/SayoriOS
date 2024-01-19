@@ -15,7 +15,7 @@
 
 .extern kernel
 
-.section .mboot
+.section .mboot, "a", @progbits
 
 .int INIT_MBOOT_HEADER_MAGIC
 .int INIT_MBOOT_HEADER_FLAGS

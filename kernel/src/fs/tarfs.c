@@ -2,9 +2,9 @@
  * @file drv/fs/tarfs.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Файловая система TarFS
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-10-14
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
 
@@ -18,8 +18,6 @@
 
 bool tarfs_debug = false;
 
-
-
 int oct2bin(char *str, int size) {
     int n = 0;
     char *c = str;
@@ -31,16 +29,21 @@ int oct2bin(char *str, int size) {
     return n;
 }
 
-size_t fs_tarfs_read(const char Disk,const char* Path,size_t Offset,size_t Size,void* Buffer){
-    if (tarfs_debug) qemu_log("[FSM] [TARFS] [READ] D:%d | N: %s | O:%d | S:%d",Disk,Path,Offset,Size);
-	TarFS_ROOT* initrd = (TarFS_ROOT*) dpm_metadata_read(Disk);
-	for (int i = 1;i < initrd->Count;i++){
+size_t fs_tarfs_read(const char Disk, const char* Path, size_t Offset, size_t Size, void* Buffer){
+    if(tarfs_debug)
+        qemu_log("[FSM] [TARFS] [READ] D:%d | N: %s | O:%d | S:%d",Disk,Path,Offset,Size);
+
+    TarFS_ROOT* initrd = (TarFS_ROOT*) dpm_metadata_read(Disk);
+
+    for (int i = 1; i < initrd->Count; i++){
 		if (!strcmpn(initrd->Files[i].Name,Path))
 			continue;
 
 		return dpm_read(Disk,initrd->Files[i].Addr+Offset, Size, Buffer);
 	}
-    if (tarfs_debug) qemu_log("[FSM] [TARFS] [READ] NO FOUND!!");
+
+    if (tarfs_debug)
+        qemu_log("[FSM] [TARFS] [READ] NO FOUND!!");
 	return 0;
 }
 
@@ -63,7 +66,7 @@ FSM_FILE fs_tarfs_info(const char Disk,const char* Path){
 
 	TarFS_ROOT* initrd = (TarFS_ROOT*) dpm_metadata_read(Disk);
 
-	for (int i = 1; i < initrd->Count; i++){
+	for (int i = 1; i < initrd->Count; i++) {
 		//qemu_log("[%d] '%s' != '%s'",strcmp(initrd->Files[i].Name,Path),initrd->Files[i].Name,Path);
 		if (!strcmpn(initrd->Files[i].Name,Path)) continue;
 //		file->Ready = 1;
@@ -108,6 +111,7 @@ int fs_tarfs_detect(const char Disk){
     if (tarfs_debug) qemu_log("[3] = %x",Buffer[3]);
     if (tarfs_debug) qemu_log("[4] = %x",Buffer[4]);
     if (tarfs_debug) qemu_log("[TarFS] is: %d",isTarFS);
+
 	kfree(Buffer);
 	return (int)isTarFS;
 }

@@ -2,9 +2,9 @@
  * @file kernel.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Основная точка входа в ядро
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include "kernel.h"
@@ -21,6 +21,7 @@
 #include "lib/freeada/ada.h"
 
 #include "fs/natfs.h"
+#include "net/stack.h"
 
 #include <lib/pixel.h>
 
@@ -296,6 +297,20 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
 
 	kHandlerCMD((char *) mboot->cmdline);
 
+
+    drv_vbe_init(mboot);
+
+	// TODO: Read-only memory for .rodata segment
+//	size_t rostart = &RODATA_start;
+//	size_t roend = &RODATA_end;
+//
+//	map_pages(
+//		get_kernel_dir(),
+//		rostart,
+//		rostart,
+//		(ALIGN(roend, PAGE_SIZE) - rostart) / PAGE_SIZE,
+//		PAGE_PRESENT
+//	);
 	qemu_log("Registration of file system drivers...");
 	fsm_reg("TARFS", 1, &fs_tarfs_read, &fs_tarfs_write, &fs_tarfs_info, &fs_tarfs_create, &fs_tarfs_delete,
 			&fs_tarfs_dir, &fs_tarfs_label, &fs_tarfs_detect);
@@ -312,6 +327,7 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
 	mtrr_init();
 
 	text_init("R:\\Sayori\\Fonts\\UniCyrX-ibm-8x16.psf");
+	// /Sayori/Fonts/UniCyrX-ibm-8x16.psf
 
 	qemu_log("Initializing the virtual video memory manager...");
 	init_vbe(mboot);
@@ -331,7 +347,17 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
 
 	ata_init();
 
+
+	// TESTING ZONE
+	// Use this zone to enter early SayoriOS console.
+
+	// while(1){}
+
+	// END TESTING ZONE
+
 	cputemp_calibrate();
+
+    file_descriptors_init();
 
 	bootScreenInit(9);
 	bootScreenLazy(true);
@@ -355,6 +381,9 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     bootScreenPaint("Инициализация списка сетевых карт...");
     netcards_list_init();
 
+    bootScreenPaint("Инициализация сетевого стека...");
+    netstack_init();
+
     bootScreenPaint("Инициализация ARP...");
     arp_init();
 
@@ -368,7 +397,6 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
 	bootScreenClose(0x000000, 0xFFFFFF);
 	tty_set_bgcolor(COLOR_BG);
 
-    drv_vbe_init(mboot);
 
 	tty_printf("SayoriOS v%d.%d.%d\nДата компиляции: %s\n",
 			   VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH,    // Версия ядра
@@ -399,6 +427,10 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
 
 	tty_printf("Processors: %d\n", system_processors_found);
 
+// FIXME: WOW! We can write into 0!
+//	*((volatile int*)0) = 0x12345678;
+//	qemu_log("Data: %x", *((volatile int*)0));
+
 	if (test_network) {
 		_tty_printf("Listing network cards:\n");
 
@@ -421,15 +453,112 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
 		}
 	}
 	qemu_log("Kernel bootup time: %f seconds.", (double) (getTicks() - kernel_start_time) / getFrequency());
+
+//	if (test_floppy){
+//		initFloppy();
+//		fatTest();
+//		_smfs_init();
+//	}
+
+	// tty_printf("Processors found: %d\n", system_processors_found);
+	// _mbr_info();
+
 	ata_dma_init();
+
     ac97_init();
-	
-	ahci_init();
+//	ac97_test();
+
+//	string_t* str = string_from_charptr("There's Pikachu, Eevee, Charmander and even Scyther is there!");
+//	vector_t* vec = string_split(str, " ");
+//
+//	qemu_log("Original string is: '%s'", str->data);
+//
+//	for(int i = 0; i < vec->size; i++) {
+//		char* string = ADDR2STRING(vec->data[i])->data;
+//
+//		qemu_log("%s", string);
+//	}
+//
+//	string_split_free(vec);
+//	string_destroy(str);
+
+//	qemu_log("%x", is_long_mode_supported());
+
+//	char* args[] = {"hello"};
+//	run_elf_file("R:\\Applications\\hello", 1, args);
+
+//	netcard_entry_t* card = netcard_get(0);
+//
+//	uint8_t ip[4] = {192, 168, 2, 2};
+//
+//	udp_send_packet(card, ip, 8888, 9999, "EEVEE\n", 6);
+
+	 ahci_init();
+//     ahci_test();
+
+//    *(int*)(0xAB000ACD) = 3456789;
+    /// Пример закругленных квадратов
+
+    //drawRoundedSquare(32,32, 128, 2, 0xFFFF0000, 0xFF0000FF);
+    //drawRoundedRectangle(32,32,128,16,4,0xFFFF0000, 0xFF0000FF);
+    //punch();
+    //while (1){}
+
+    /// КОНЕЦ ПРИМЕРА
+
+//	ada_t *ada = ada_file("R:\\ada\\test.ada");
+
+	// void* buf = kcalloc(1, 512);
+ //
+ //    int buf_read = dpm_read('C',0,512,buf);
+ //
+ //    qemu_log("Buff (%d|%d) %s",buf_read, strlen(buf),buf);
+ //
+ //    buf_read = dpm_read('E',0,512,buf);
+ //    qemu_log("Buff (%d|%d) %s",buf_read, strlen(buf),buf);
+ //
+	// kfree(buf);
 
     /// Обновим данные обо всех дисках
     fsm_dpm_update(-1);
 
+    // SEEK TEST
+//    char buffer[11] = {0};
+//
+//    FILE* myfile = fopen("C:\\finnish_numerals.txt", "r");
+//
+//    for(int i = 0; i < 15; i++) {
+//        memset(buffer, 0, 10);
+//
+//        fread(myfile, sizeof(char), 10, buffer);
+//
+//        tty_printf("%s", buffer);
+//    }
+
+//    elk_file("R:\\jse\\libs.js");
+//    void k();
+//    create_process(k, "Test process", false, true);
+
+//    extern void rust_main();
+//    rust_main();
+
+
+    // vio_ntw_init();
+
+	extern void intel_hda_init();
+	intel_hda_init();
+
 	cli();
+
 
     return 0;
 }
+
+//void k() {
+//    qemu_log("Focken processez!");
+//
+//    while(1) {
+//        qemu_log("AAA");
+//        sleep_ms(250);
+//    };
+//}

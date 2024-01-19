@@ -39,6 +39,7 @@ DIRECTORIES = objects/kernel/src \
 				objects/kernel/src/drv/audio \
 				objects/kernel/src/drv/video \
 				objects/kernel/src/drv/input \
+				objects/kernel/src/drv/network \
 				objects/kernel/src/fs \
 				objects/kernel/src/lib/math \
 				objects/kernel/src/toys \
@@ -164,10 +165,10 @@ SOURCES=\
 	kernel/src/toys/gfxbench.c \
 	kernel/src/toys/miniplay.c \
 	kernel/src/drv/rtl8139.c \
+	kernel/src/drv/network/virtio_network.c \
 	kernel/src/fmt/tga.c \
 	kernel/src/lib/sprintf.c \
 	kernel/src/debug/ubsan.c \
-	kernel/src/fmt/tga_extract.c \
 	kernel/src/drv/disk/floppy.c \
 	kernel/src/drv/disk/ata_dma.c \
 	kernel/src/drv/audio/ac97.c \
@@ -188,24 +189,25 @@ SOURCES=\
 	kernel/src/toys/mala.c \
 	kernel/src/debug/memmeter.c \
 	kernel/src/drv/disk/ahci.c \
-	kernel/src/drv/disk/ndpm.c \
+	kernel/src/drv/disk/ata_pio.c \
 	kernel/src/toys/minesweeper.c \
 	kernel/src/toys/calendar.c \
 	kernel/src/toys/diskctl.c \
 	kernel/src/lib/utf_conversion.c \
 	kernel/src/lib/base64.c \
-	kernel/src/kernel.c \
+	kernel/src/sys/file_descriptors.c \
+	kernel/src/net/stack.c \
+	kernel/src/toys/pavi.c \
 	$(GAMEBOY) \
-#	kernel/src/toys/pavi.c \
-	kernel/src/lib/duktape.c \
+	kernel/src/kernel.c \
+#	kernel/src/lib/duktape.c \
 	kernel/src/toys/piano.c \
-	$(wildcard kernel/src/compress/zlib/*.c)	\
 	kernel/src/toys/dino.c \
-	kernel/src/lib/tui.c \
 	kernel/src/extra/texplorer.c \
 	kernel/src/drv/disk/mbr.c \
 	kernel/src/fs/fat12.c \
 	kernel/src/fs/smfs.c \
+	kernel/src/lib/base64.c \
 
 RUST_DIR = rust/
 RUST_TARGET = i686-unknown-none
@@ -288,23 +290,26 @@ endif
 
 # NOTE: -d int works only when using tcg accelerator (no KVM)
 QEMU_FLAGS = -cdrom kernel.iso -m $(MEMORY_SIZE) \
-			 -name "SayoriOS v0.3.4 Soul - Scythe" \
+			 -name "SayoriOS Soul v0.3.5 (Dev)" \
 			 -rtc base=localtime \
 			 -d guest_errors,cpu_reset,int \
 			 -audiodev pa,id=pa0 \
 			 -smp 1 \
-			 -netdev user,id=net0,net=192.168.111.0,dhcpstart=192.168.111.128 \
+			 -netdev user,id=net0,net=192.168.111.0,dhcpstart=192.168.111.128,hostfwd=tcp::9999-:8888 \
 			 -device rtl8139,netdev=net0,id=mydev0 \
 			 -M pcspk-audiodev=pa0 \
-			 -device AC97 \
+			 -device ich9-intel-hda \
+			 -trace "hda*" \
 			 -boot d \
 			 -cpu core2duo-v1 \
 			 -object filter-dump,id=dump0,netdev=net0,file=netdump.pcap \
 			 $(KVM_QEMU_FLAGS)
+ 			 # -device AC97 \
+
 
 # NOTE: -d int works only when using tcg accelerator (no KVM)
 QEMU_FLAGS_WSL = -m $(MEMORY_SIZE) \
-			 -name "SayoriOS v0.3.4 Soul - Scythe" \
+			 -name "SayoriOS Soul v0.3.5 (Dev) [WSL]" \
 			 -rtc base=localtime \
 			 -smp 1 \
 			 -netdev user,id=net0,net=192.168.111.0,dhcpstart=192.168.111.128 \

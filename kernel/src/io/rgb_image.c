@@ -53,15 +53,15 @@ void draw_rgb_image(const char *data, size_t width, size_t height, size_t bpp, i
  * @param alpha Имеется ли альфа-канал?
  * @param out Выходной буффер изображения.
  */
-void scale_rgb_image(const char* pixels, unsigned int w1, unsigned int h1, int w2, int h2, char alpha, char* out) {
-	int scr_w = (w1<<16)/w2;
-	int scr_h = (h1<<16)/h2;
+void scale_rgb_image(const char* pixels, unsigned int w1, unsigned int h1, uint32_t w2, uint32_t h2, char alpha, char* out) {
+	uint32_t scr_w = (w1<<16)/w2;
+	uint32_t scr_h = (h1<<16)/h2;
 
-	int x = 0;
+	int x;
 	int y = 0;
 
-	int x2 = 0;
-	int y2 = 0;
+	uint32_t x2;
+	uint32_t y2;
 
 	char mod = alpha?4:3;
 	while(y<h2) {

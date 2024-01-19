@@ -3,9 +3,9 @@
  * @file drv/pci.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), Арен Елчинян (SynapseOS)
  * @brief Драйвер PCI (Peripheral Component Interconnect)
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-01-14
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #pragma once

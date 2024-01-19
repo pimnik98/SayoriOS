@@ -1,9 +1,9 @@
 /**
  * @brief Драйвер сетевой карты RTL8139
  * @author NDRAEY >_
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-04-12
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <drv/rtl8139.h>
@@ -17,6 +17,7 @@
 #include "lib/string.h"
 #include "mem/vmm.h"
 #include "mem/pmm.h"
+#include "net/stack.h"
 
 uint8_t rtl8139_busnum, rtl8139_slot, rtl8139_func;
 uint32_t rtl8139_io_base, rtl8139_mem_base, rtl8139_bar_type;
@@ -226,8 +227,11 @@ void rtl8139_receive_packet() {
 
 //	hexview_advanced((char *) packet_data, packet_length, 10, true, new_qemu_printf);
 
-	if(packet_header == HARDWARE_TYPE_ETHERNET)
-		ethernet_handle_packet(&rtl8139_netcard, (ethernet_frame_t *)packet_data, packet_length);
+	if(packet_header == HARDWARE_TYPE_ETHERNET) {
+//        netstack_push(packet_data, packet_length);
+
+        ethernet_handle_packet(&rtl8139_netcard, (ethernet_frame_t *) packet_data, packet_length);
+    }
 
     rtl8139_current_packet_ptr = (rtl8139_current_packet_ptr + packet_length + 7) & RX_READ_POINTER_MASK;
 

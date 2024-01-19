@@ -1,9 +1,9 @@
 /**
  * @brief Менеджер виртуальной памяти
  * @author NDRAEY >_
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-11-04
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 // Charmander - a new virtual memory manager by NDRAEY (c) 2023
@@ -297,8 +297,8 @@ void* krealloc(void* ptr, size_t memory_size) {
 
 		size_t index = heap_get_block_idx((size_t) ptr);
 
-		if(index == system_heap.allocated_count - 1) {
-			block->length = memory_size;
+		if(index == system_heap.allocated_count - 1) { // Last block?
+//            qemu_log("LAST BLOCK!");
 
 			size_t reg_addr = block->address & ~0xfff;
 
@@ -322,8 +322,12 @@ void* krealloc(void* ptr, size_t memory_size) {
 					qemu_warn("Already mapped: %x", reg_addr);
 				}*/
 
-				reg_addr += PAGE_SIZE;
+                reg_addr += PAGE_SIZE;
 			}
+
+            system_heap.used_memory += memory_size - block->length;
+
+            block->length = memory_size;
 		} else {
 //			qemu_err("CAN USE NEXT!");
 
@@ -359,6 +363,8 @@ void* krealloc(void* ptr, size_t memory_size) {
 					reg_addr += PAGE_SIZE;
 				}
 
+                system_heap.used_memory += memory_size - block->length;
+
 				block->length = memory_size;
 			} else {
 //				qemu_err("No space between blocks! :(");  // IT'S NORMAL
@@ -375,7 +381,9 @@ void* krealloc(void* ptr, size_t memory_size) {
 //			qemu_ok("Next is %x, %d", next.address, next.length);
 		}
 	} else if(memory_size < block->length) {  // Shrink
-//		qemu_warn("SHRINKING FROM %d to %d", block->length, memory_size);
+		qemu_warn("SHRINKING FROM %d to %d", block->length, memory_size);
+
+        system_heap.used_memory -= block->length - memory_size;
 
 		block->length = memory_size;
 	}

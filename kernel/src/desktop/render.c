@@ -4,7 +4,6 @@
 #include "desktop/render.h"
 #include "drv/psf.h"
 #include "io/ports.h"
-#include <mem/vmm.h>
 #include "drv/input/mouse.h"
 
 // getConfigFonts(2) - is height of current font

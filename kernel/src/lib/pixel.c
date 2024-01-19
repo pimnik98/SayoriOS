@@ -2,9 +2,9 @@
  * @file lib/pixel.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Драйвера для работы с пикселями (Пакет Пиксель)
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-10-20
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <io/ports.h>

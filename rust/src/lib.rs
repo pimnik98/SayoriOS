@@ -7,13 +7,15 @@ use core::panic::PanicInfo;
 
 pub mod std;
 pub mod other;
+mod system;
+mod drv;
 
-use std::fs::read_to_string;
+
 use core::ffi::CStr;
 
-use alloc::vec::Vec;
+// use alloc::vec::Vec;
 
-use crate::other::tinyada::{Ada, Token, TokenType};
+// use crate::other::tinyada::{Ada, Token, TokenType};
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {

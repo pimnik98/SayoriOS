@@ -1,9 +1,9 @@
 /**
  * @brief Менеджер физической памяти
  * @author NDRAEY >_
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-11-04
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 // Scyther Physical Memory Manager by NDRAEY (c) 2023

@@ -2,7 +2,7 @@ use alloc::alloc::{GlobalAlloc, Layout};
 use core::ffi::c_void;
 
 extern "C" {
-    fn kmalloc_common(size: usize, align: bool) -> *mut c_void;
+    fn kmalloc_common(size: usize, align: usize) -> *mut c_void;
     fn kfree(ptr: *mut c_void);
 }
 
@@ -13,7 +13,7 @@ pub struct Allocator;
 unsafe impl GlobalAlloc for Allocator {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         let size = layout.size();
-        let ptr = kmalloc_common(size, true);
+        let ptr = kmalloc_common(size, 0);
         
         if ptr.is_null() {
             panic!("Failed to allocate memory");
