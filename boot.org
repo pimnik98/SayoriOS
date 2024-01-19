@@ -296,7 +296,7 @@ KERNEL-цель зависит от:
 - "OBJ_DIRECTORY"
 
 #+NAME: make_asm_src_var
-#+BEGIN_SRC makefile :padline yes
+#+BEGIN_SRC makefile :padline yes :exports none
   ASM_SRC=kernel/asm/init.s \
   kernel/asm/interrupt.s \
   kernel/asm/sys_calls.s \
@@ -341,10 +341,10 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
   OBJS = $(SOURCES:%.c=$(OBJ_DIRECTORY)/%.o)
 #+END_SRC
 
-Так как "OBJ_DIRECTORY" уже определена, остается разобраться с "SOURCES":
+Так как "OBJ_DIRECTORY" уже определена, остается разобраться с "SOURCES"
 
 #+NAME: make_sources_var
-#+BEGIN_SRC makefile :padline yes
+#+BEGIN_SRC makefile :padline yes :exports none
   SOURCES=\
   kernel/src/sys/cpuinfo.c \
   kernel/src/sys/cpu_isr.c \
