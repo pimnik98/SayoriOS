@@ -17,7 +17,6 @@
 2.  [Сборка загрузчика](#orgc205b97)
     1.  [Сборка ассемблерной части](#org6393e02)
     2.  [Сборка сишной части](#org1dea19d)
-3.  [Сборка Makefile](#org23d4735)
 4.  [Граф зависимостей в Makefile](#org87234c7)
 
 
@@ -485,45 +484,6 @@ KERNEL-цель зависит от:
 В файле config.mk определена еще переменная "GAMEBOY_OBJS" которая нигде не используется
 
     GAMEBOY_OBJS = $(GAMEBOY:.c=.o)
-
-
-<a id="org23d4735"></a>
-
-# Сборка Makefile
-
-    all:
-        @-mkdir -p $(OBJ_DIRECTORY) $(DIRECTORIES)
-        @$(MAKE) $(KERNEL)
-
-    <<make_gameboy_var>>
-
-    <<make_sources_var>>
-
-    <<make_objs_var>>
-
-    <<make_obj_directory_var>>
-
-    <<make_obj_directory>>
-
-    <<make_asm_src_var>>
-
-    <<make_asm_var>>
-
-    <<make_ldflags_var>>
-
-    <<make_ld_var>>
-
-    <<make_kernel_need_var>>
-
-    <<make_kernel>>
-
-    <<make_geniso>>
-
-    clean:
-        -rm -f $(KERNEL)
-        -rm -f $(KERNEL_NEED)
-        -rm -f $(DEPS)
-        -rm -f iso/boot/ramdisk
 
 
 <a id="org87234c7"></a>

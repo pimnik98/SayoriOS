@@ -501,7 +501,7 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
   GAMEBOY_OBJS = $(GAMEBOY:.c=.o)
 #+END_SRC
 
-* Сборка Makefile
+* Сборка Makefile                                                  :noexport:
 
 #+BEGIN_SRC makefile :noweb tangle :tangle MyMakefile :padline yes
 all:
