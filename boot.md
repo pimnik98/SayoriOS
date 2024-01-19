@@ -306,7 +306,7 @@ KERNEL-цель зависит от:
     kernel/asm/regs.s \
     kernel/src/lib/setjmp.s \
     kernel/asm/switch_task.s \
-    #	kernel/src/sys/v8086.s \
+    kernel/src/sys/v8086.s \
 
 "OBJ_DIRECTORY":
 
