@@ -2,9 +2,9 @@
  * @file lib/php/pathinfo.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Функция замены строк
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-07-30
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <lib/php/pathinfo.h>
@@ -12,7 +12,7 @@
 
 char* pathinfo(const char* Path, int Mode){
 	int i = 0, length = strlen(Path), dot_index = -1;
-	char* info = kcalloc(length, 1);
+	char* info = kcalloc(length + 1, 1);
 	if (Mode == PATHINFO_DIRNAME) {
 		for (i = length - 1; i >= 0; i--) {
 			if (Path[i] == '/' || Path[i] == '\\') {

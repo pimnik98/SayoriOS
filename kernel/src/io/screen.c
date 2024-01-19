@@ -50,8 +50,23 @@ uint32_t getDisplayBpp(){
 
 void create_back_framebuffer() {
     qemu_log("^---- 1. Allocating");
-    back_framebuffer_addr = (uint8_t*)kcalloc(framebuffer_size, 1);
+    back_framebuffer_addr = (uint8_t*)kmalloc_common(framebuffer_size, PAGE_SIZE);
+    memset(back_framebuffer_addr, 0, framebuffer_size);
 
+	/*
+    size_t phys_bfb = virt2phys(get_kernel_page_directory(), (virtual_addr_t) back_framebuffer_addr);
+
+    qemu_log("Physical is: %x", phys_bfb);
+
+    map_pages(
+            get_kernel_page_directory(),
+            phys_bfb,
+            (virtual_addr_t) back_framebuffer_addr,
+            framebuffer_size,
+            PAGE_WRITEABLE | PAGE_WRITE_THROUGH
+            );
+	*/
+	
     qemu_log("framebuffer_size = %d (%dK) (%dM)", framebuffer_size, framebuffer_size/1024, framebuffer_size/(1024*1024));
     qemu_log("back_framebuffer_addr = %x", back_framebuffer_addr);
 }

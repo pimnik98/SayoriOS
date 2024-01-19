@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ndpm.h"
 #include "../../common.h"
 
 #define ATA_SR_BSY     0x80
@@ -131,14 +130,8 @@ void ide_select_drive(uint8_t bus, bool slave);
 void ide_400ns_delay(uint16_t io);
 void ide_poll(uint16_t io);
 
-uint8_t ata_pio_read_sector(uint8_t drive, uint8_t *buf, uint32_t lba);
-uint8_t ata_pio_write_raw_sector(uint8_t drive, const uint8_t *buf, uint32_t lba);
-
-void ata_pio_write_sectors(uint8_t drive, uint8_t *buf, uint32_t lba, size_t sectors);
-void ata_pio_read_sectors(uint8_t drive, uint8_t *buf, uint32_t lba, uint32_t numsects);
-
-void ata_pio_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) ;
-void ata_pio_write(uint8_t drive, const uint8_t* buf, size_t location, size_t length);
+void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) ;
+void ata_write(uint8_t drive, const uint8_t* buf, size_t location, size_t length);
 
 void ata_list();
 void ata_init();
@@ -159,6 +152,3 @@ static inline void ata_set_params(uint8_t drive, uint16_t* io, uint8_t* real_dri
 
 	*real_drive = _drv;
 }
-
-void ata_ndpm_read(const ndpm_drive_t* drive, size_t location, int size, void* buffer);
-void ata_ndpm_write(const ndpm_drive_t* drive, size_t location, int size, void* buffer);

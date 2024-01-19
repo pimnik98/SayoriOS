@@ -2,9 +2,9 @@
  * @file io/tty.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Средства для работы с видеодрайвером
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <stdarg.h>
@@ -320,7 +320,7 @@ void clean_tty_screen_no_update() {
 	clean_screen();
 
 	tty_pos_x = 0;
-	tty_pos_y = tty_off_pos_h;
+	tty_pos_y = 0;
 }
 
 void clean_tty_screen() {

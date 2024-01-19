@@ -35,7 +35,8 @@ typedef	struct
 	uint32_t			entry_point;
 	uint32_t			id;				/* Thread ID */
 	uint32_t			stack_top;
-
+//    uint32_t time_high;
+//    uint32_t time_low;  // Time accounting
 }__attribute__((packed)) thread_t;
 
 /* Initialization */

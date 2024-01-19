@@ -3,9 +3,9 @@
  * @file drv/pci.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), Арен Елчинян (SynapseOS), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Драйвер PCI (Peripheral Component Interconnect)
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-01-14
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <lib/stdio.h>
@@ -53,9 +53,10 @@ uint32_t pci_read32(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)
     uint32_t slot32 = slot;
     uint32_t func32 = function;
     addr = (uint32_t)((bus32 << 16) | (slot32 << 11) |
-           (func32 << 8) | (offset & 0xfc) | ((uint32_t)0x80000000)); //yes, this line is copied from osdev
+           (func32 << 8) | offset | 0x80000000); //yes, this line is copied from osdev
     outl(PCI_ADDRESS_PORT, addr);
-    return ((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffffffff); //this too... I'm too lazy to write them
+    // return ((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffffffff); //this too... I'm too lazy to write them
+    return inl(PCI_DATA_PORT); //this too... I'm too lazy to write them
 }
 
 
@@ -93,6 +94,7 @@ static struct {
     {0x04, 0x00, "Видео-устройство"},
     {0x04, 0x01, "Аудио-устройство"},
     {0x04, 0x02, "Компьютерное телефонное устройство"},
+    {0x04, 0x03, "Аудио-устройство (4.3)"},
     {0x04, 0x80, "Другое мультимедийное устройство"},
     {0x05, 0x00, "Контроллер оперативной памяти"},
     {0x05, 0x01, "Флэш-контроллер"},
@@ -379,14 +381,15 @@ void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, ui
 
 	for (uint32_t bus = 0; bus < 256; bus++) {
 		for (uint32_t slot = 0; slot < 32; slot++) {
-
-            if (pci_get_class(bus, slot, func) == class
-                && pci_get_subclass(bus, slot, func) == subclass) {
-                *vendor_ret = pci_get_vendor(bus, slot, func);
-                *deviceid_ret = pci_get_device(bus, slot, func);
+            if (pci_get_class(bus, slot, 0) == class
+                && pci_get_subclass(bus, slot, 0) == subclass) {
+                *vendor_ret = pci_get_vendor(bus, slot, 0);
+                *deviceid_ret = pci_get_device(bus, slot, 0);
                 *bus_ret = bus;
                 *slot_ret = slot;
-                *func_ret = func;
+                *func_ret = 0;
+
+				qemu_ok("! FOUND %d.%d.%d", *bus_ret, *slot_ret, *func_ret);
                 return;
             }
 
@@ -399,6 +402,9 @@ void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, ui
                         *bus_ret = bus;
                         *slot_ret = slot;
                         *func_ret = func;
+
+
+						qemu_ok("!! FOUND %d.%d.%d", *bus_ret, *slot_ret, *func_ret);
                         return;
                     }
                 }
@@ -406,6 +412,7 @@ void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, ui
 		}
 	}
 
+	*vendor_ret = *deviceid_ret = 0;
 	*bus_ret = *slot_ret = *func_ret = 0xFF;
 }
 
@@ -442,7 +449,7 @@ void pci_print_list() {
                         clid = pci_get_class(bus, slot, func);
                         sclid = pci_get_subclass(bus, slot, func);
                         device = pci_get_device(bus, slot, func);
-                        _tty_printf("\t%d:%d:%d:%d.%d %s: %s (%x), девайс: %x\n", clid, sclid, bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
+                        _tty_printf("\t%d:%d:%d:%d.%d %s: %s (%x), девайс: %x (multifunc)\n", clid, sclid, bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
                     }
                 }
             }

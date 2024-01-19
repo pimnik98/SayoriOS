@@ -2,9 +2,9 @@
  * @file drv/fs/fat32.c
  * @author Павленко Андрей (pikachu_andrey@vk.com)
  * @brief Файловая система FAT32
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-11-04
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 #pragma once
 
@@ -79,14 +79,18 @@ typedef struct {
     uint32_t fat_size;
     uint32_t reserved_fat_offset;
     uint32_t root_directory_offset;
+
+    uint32_t* fat_table;
 } fat_description_t;  // This structure never used in data parsing and represents all needed data for FAT32 driver.
 
 #define LFN_LAST_ENTRY 0x40
-
-struct fat32_lfn_result {
-    char* filename;
-    size_t encoded_characters_count;
-};
+#define ATTR_READ_ONLY 0x01
+#define ATTR_HIDDEN 0x02
+#define ATTR_SYSTEM 0x04
+#define ATTR_VOLUME_ID 0x08
+#define ATTR_DIRECTORY 0x10
+#define ATTR_ARCHIVE 0x20
+#define ATTR_LONG_FILE_NAME 0x0F
 
 typedef struct {
     char filename[256];
@@ -108,3 +112,11 @@ int fs_fat32_delete(char Disk,const char* Path,int Mode);
 void fs_fat32_label(char Disk, char* Label);
 int fs_fat32_detect(char Disk);
 vector_t* fs_fat32_get_clusters(char Disk, size_t cluster_number);
+size_t fs_fat32_get_cluster_count(char Disk, size_t cluster_number);
+void fs_fat32_read_clusters_to_memory(char Disk, size_t cluster_number, void* buffer);
+fat_file_info_t fs_fat32_read_file_info(char* data);
+void fs_fat32_read_entire_fat(char Disk);
+fat_file_info_t fs_fat32_get_object_info(char Disk, const char* filename, size_t directory_cluster);
+size_t fs_fat32_evaluate(char Disk, const char* path, bool error_on_file);
+void fs_fat32_read_file_from_dir(char Disk, size_t directory_cluster, size_t byte_offset, size_t length, char *filename,
+                                 char *out);

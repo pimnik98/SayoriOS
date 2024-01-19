@@ -2,8 +2,8 @@
  * @brief Драйвер ATAPI PIO
  * @author NDRAEY >_
  * @date 2023-07-21
- * @version 0.3.4
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @version 0.3.5
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 // Super-duper original ATAPI driver by NDRAEY (c) 2023
@@ -45,8 +45,8 @@ bool ata_scsi_status_wait(uint8_t bus) {
  * @return
  */
 bool ata_scsi_send(uint16_t bus, bool slave, uint16_t lba_mid_hi, uint8_t command[12]) {
-	qemu_log("ATAPI SCSI send [%s %s], LBA (MID AND HI): %d",
-				PRIM_SEC(bus), MAST_SLV(slave), lba_mid_hi);
+	// qemu_log("ATAPI SCSI send [%s %s], LBA (MID AND HI): %d",
+				// PRIM_SEC(bus), MAST_SLV(slave), lba_mid_hi);
 
     ide_select_drive(bus, slave);
 	
@@ -107,8 +107,8 @@ void ata_scsi_read_result(uint16_t bus, size_t size, uint16_t* buffer) {
  * @return Размер диска в секторах
  */
 size_t atapi_read_size(uint16_t bus, bool slave) {
-	qemu_log("SIZE REQUEST ON (ints): %d %d", bus, slave);
-	qemu_log("SIZE REQUEST ON: %s %s", PRIM_SEC(bus), MAST_SLV(slave));
+//	qemu_log("SIZE REQUEST ON (ints): %d %d", bus, slave);
+//	qemu_log("SIZE REQUEST ON: %s %s", PRIM_SEC(bus), MAST_SLV(slave));
 
 	uint8_t command[12] = {
         ATAPI_READ_CAPACITY,
@@ -119,7 +119,7 @@ size_t atapi_read_size(uint16_t bus, bool slave) {
     
     size_t transf_size = ata_scsi_receive_size_of_transfer(bus);
 
-	qemu_log("Size of transfer is: %d", transf_size);
+//	qemu_log("Size of transfer is: %d", transf_size);
 
 	if(!transf_size)
 		return 0;
@@ -136,7 +136,7 @@ size_t atapi_read_size(uint16_t bus, bool slave) {
     blocksize = ntohl(blocksize);
     maxlba = ntohl(maxlba);
 
-	qemu_log("Blocks: %x; Block size: %x", maxlba, blocksize);
+//	qemu_log("Blocks: %x; Block size: %x", maxlba, blocksize);
 
 	kfree(data);
 
@@ -165,7 +165,7 @@ size_t atapi_read_block_size(uint16_t bus, bool slave) {
 
     uint32_t blocksize = ntohl(*((uint32_t*)(data) + 1));
 
-	qemu_log("Block size is: %d", blocksize);
+	// qemu_log("Block size is: %d", blocksize);
 
 	kfree(data);
 

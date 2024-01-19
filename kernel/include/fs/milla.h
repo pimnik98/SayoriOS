@@ -3,9 +3,9 @@
  * @file fs/milla.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Проект Милла
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-01-23
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 void __milla_sendcmd(char* msg);

@@ -2,9 +2,9 @@
  * @file lib/stdio.c
  * @authors Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Функции для работы с файлами
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include "io/ports.h"
@@ -14,7 +14,7 @@
 #include <fs/nvfs.h>
 #include <io/tty.h>
 
-bool stdio_debug = false;
+bool stdio_debug = true;
 
 
 /**
@@ -208,6 +208,8 @@ FILE* fopen(const char* filename, const char* _mode){
  * @param stream Поток (файл)
  */
 void fclose(FILE* stream){
+	qemu_log("Closing file: %x", stream);
+	
 	if(stream)
 		kfree(stream);
 }

@@ -18,7 +18,7 @@
 struct ahci_port_descriptor ports[32] = {0};
 
 uint8_t ahci_busnum, ahci_slot, ahci_func;
-uint16_t ahci_vendor, ahci_devid;
+uint16_t ahci_vendor = 0, ahci_devid = 0;
 uint32_t ahci_irq;
 bool ahci_initialized = false;
 
@@ -44,8 +44,10 @@ void ahci_init() {
 
 	pci_find_device_by_class_and_subclass(AHCI_CLASS, AHCI_SUBCLASS, &ahci_vendor, &ahci_devid, &ahci_busnum, &ahci_slot, &ahci_func);
 
+
 	if(ahci_vendor == 0 || ahci_devid == 0) {
 		qemu_err("AHCI contoller not found!");
+
 		return;
 	}
 
@@ -476,8 +478,14 @@ void ahci_read_sectors(size_t port_num, size_t location, size_t sector_count, vo
 	cmdfis->device = 1 << 6;	// LBA mode
 
 	cmdfis->lba3 = (location >> 24) & 0xFF;
-	cmdfis->lba4 = (location >> 32) & 0xFF;
+
+#ifdef SAYORI64
+    cmdfis->lba4 = (location >> 32) & 0xFF;
 	cmdfis->lba5 = (location >> 40) & 0xFF;
+#else
+    cmdfis->lba4 = 0;
+    cmdfis->lba5 = 0;
+#endif
 
 	cmdfis->countl = sector_count & 0xff;
 	cmdfis->counth = (sector_count >> 8) & 0xff;
@@ -563,16 +571,20 @@ void ahci_write_sectors(size_t port_num, size_t location, size_t sector_count, v
 	cmdfis->c = 1;	// Command
 	cmdfis->command = ATA_CMD_WRITE_DMA_EXT;
 
-	size_t locsec = location / 512;
-
-	cmdfis->lba0 = locsec & 0xFF;
-	cmdfis->lba1 = (locsec >> 8) & 0xFF;
-	cmdfis->lba2 = (locsec >> 16) & 0xFF;
+	cmdfis->lba0 = location & 0xFF;
+	cmdfis->lba1 = (location >> 8) & 0xFF;
+	cmdfis->lba2 = (location >> 16) & 0xFF;
 	cmdfis->device = 1 << 6;	// LBA mode
 
-	cmdfis->lba3 = (locsec >> 24) & 0xFF;
-	cmdfis->lba4 = (locsec >> 32) & 0xFF;
-	cmdfis->lba5 = (locsec >> 40) & 0xFF;
+	cmdfis->lba3 = (location >> 24) & 0xFF;
+
+#ifdef SAYORI64
+    cmdfis->lba4 = (location >> 32) & 0xFF;
+	cmdfis->lba5 = (location >> 40) & 0xFF;
+#else
+    cmdfis->lba4 = 0;
+    cmdfis->lba5 = 0;
+#endif
 
 	cmdfis->countl = sector_count & 0xff;
 	cmdfis->counth = (sector_count >> 8) & 0xff;

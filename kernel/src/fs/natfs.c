@@ -4,7 +4,7 @@
  * @brief Файловая система NatFS - NatSuki File System
  * @version 0.3.6
  * @date 2023-12-08
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
 #include <kernel.h>
