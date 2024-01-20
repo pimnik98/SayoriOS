@@ -1,16 +1,16 @@
 .section	.text
-.global		sse_check
+.global	sse_check
 
 sse_check:
     mov $0x1, %eax
 
     cpuid
-    
+
     test $(1 << 25), %edx
     mov $0x1, %eax
-    
+
     jnz good
-    
+
     xor %eax, %eax
 good:
     ret
@@ -24,7 +24,7 @@ sse_enable:
     and $~0x04, %ax
     or $0x2, %ax
     mov %eax, %cr0
-    
+
     mov %cr4, %eax
     or $(3 << 9), %ax
     mov %eax, %cr4
