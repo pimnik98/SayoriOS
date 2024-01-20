@@ -539,7 +539,6 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
                   # objects/kernel/src/compress/zlib \
 #+END_SRC
 
-
 * Сборка Makefile                                                  :noexport:
 
 #+BEGIN_SRC makefile :noweb tangle :tangle MyMakefile :padline yes
@@ -577,9 +576,6 @@ clean:
 	-rm -f $(DEPS)
 	-rm -f iso/boot/ramdisk
 #+END_SRC
-
-
-
 
 * Граф зависимостей в Makefile
 
