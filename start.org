@@ -1047,6 +1047,12 @@ see kernel/src/sys/scheduler.c
 
 #+BEGIN_SRC c :noweb-ref kernel
   ata_dma_init();
+#+END_SRC
+
+
+** AC'97 Init
+
+#+BEGIN_SRC c :noweb-ref kernel
   ac97_init();
   //ac97_test();
 
