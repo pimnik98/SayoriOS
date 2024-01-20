@@ -444,10 +444,10 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
   kernel/src/toys/gfxbench.c \
   kernel/src/toys/miniplay.c \
   kernel/src/drv/rtl8139.c \
+  kernel/src/drv/network/virtio_network.c \
   kernel/src/fmt/tga.c \
   kernel/src/lib/sprintf.c \
   kernel/src/debug/ubsan.c \
-  kernel/src/fmt/tga_extract.c \
   kernel/src/drv/disk/floppy.c \
   kernel/src/drv/disk/ata_dma.c \
   kernel/src/drv/audio/ac97.c \
@@ -468,24 +468,25 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
   kernel/src/toys/mala.c \
   kernel/src/debug/memmeter.c \
   kernel/src/drv/disk/ahci.c \
-  kernel/src/drv/disk/ndpm.c \
+  kernel/src/drv/disk/ata_pio.c \
   kernel/src/toys/minesweeper.c \
   kernel/src/toys/calendar.c \
   kernel/src/toys/diskctl.c \
   kernel/src/lib/utf_conversion.c \
   kernel/src/lib/base64.c \
-  kernel/src/kernel.c \
+  kernel/src/sys/file_descriptors.c \
+  kernel/src/net/stack.c \
+  kernel/src/toys/pavi.c \
   $(GAMEBOY) \
-  #	kernel/src/toys/pavi.c \
-  kernel/src/lib/duktape.c \
+  kernel/src/lib/kernel.c \
+  #	kernel/src/toys/ducktape.c \
   kernel/src/toys/piano.c \
-  $(wildcard kernel/src/compress/zlib/*.c)	\
   kernel/src/toys/dino.c \
-  kernel/src/lib/tui.c \
   kernel/src/extra/texplorer.c \
   kernel/src/drv/disk/mbr.c \
   kernel/src/fs/fat12.c \
   kernel/src/fs/smfs.c \
+  kernel/src/toys/pavi.c \
 #+END_SRC
 
 Теперь нам нужен еще "GAMEBOY" (я не знаю зачем нужна его поддежка в ядре):
@@ -501,12 +502,51 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
   GAMEBOY_OBJS = $(GAMEBOY:.c=.o)
 #+END_SRC
 
+И надо определить DIRECTORIES:
+
+#+NAME: make_dirs_var
+#+BEGIN_SRC makefile :padline yes
+  DIRECTORIES = objects/kernel/src \
+                  objects/kernel/asm \
+                  objects/kernel/src/lib \
+                  objects/kernel/src/lib/libstring/src \
+                  objects/kernel/src/lib/libvector/src \
+                  objects/kernel/src/lib/php \
+                  objects/kernel/src/lib/elk \
+                  objects/kernel/src/lib/elk/ext \
+                  objects/kernel/src/lib/freeada \
+                  objects/kernel/src/extra \
+                  objects/kernel/src/sys \
+                  objects/kernel/src/io \
+                  objects/kernel/src/net \
+                  objects/kernel/src/drv \
+                  objects/kernel/src/drv/disk \
+                  objects/kernel/src/debug \
+                  objects/kernel/src/fmt \
+                  objects/kernel/src/drv/audio \
+                  objects/kernel/src/drv/video \
+                  objects/kernel/src/drv/input \
+                  objects/kernel/src/drv/network \
+                  objects/kernel/src/fs \
+                  objects/kernel/src/lib/math \
+                  objects/kernel/src/toys \
+                  objects/kernel/src/gui \
+                  objects/kernel/src/desktop \
+                  objects/kernel/src/user \
+                  objects/kernel/src/ports/gameboy \
+                  objects/kernel/src/mem \
+                  objects/kernel/src/arch/x86 \
+                  # objects/kernel/src/compress/zlib \
+#+END_SRC
+
 * Сборка Makefile                                                  :noexport:
 
 #+BEGIN_SRC makefile :noweb tangle :tangle MyMakefile :padline yes
 all:
 	@-mkdir -p $(OBJ_DIRECTORY) $(DIRECTORIES)
 	@$(MAKE) $(KERNEL)
+
+<<make_dirs_var>>
 
 <<make_gameboy_var>>
 
