@@ -502,9 +502,9 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
   GAMEBOY_OBJS = $(GAMEBOY:.c=.o)
 #+END_SRC
 
-И надо определить DIRECTORYES:
+И надо определить DIRECTORIES:
 
-#+NAME: make_gameboy_var
+#+NAME: make_dirs_var
 #+BEGIN_SRC makefile :padline yes
   DIRECTORIES = objects/kernel/src \
                   objects/kernel/asm \
@@ -545,6 +545,8 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
 all:
 	@-mkdir -p $(OBJ_DIRECTORY) $(DIRECTORIES)
 	@$(MAKE) $(KERNEL)
+
+<<make_dirs_var>>
 
 <<make_gameboy_var>>
 
