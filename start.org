@@ -1160,7 +1160,7 @@ see kernel/src/sys/scheduler.c
 
 #+END_SRC
 
-** vio_ntw init
+** Инициализация Virtio Network
 
 #+BEGIN_SRC c :noweb-ref kernel
   // vio_ntw_init();
@@ -1175,14 +1175,16 @@ see kernel/src/sys/scheduler.c
 
 #+END_SRC
 
-** Запрещаем прерывания (зачем?)
+** Вызов командной строки
 
 #+BEGIN_SRC c :noweb-ref kernel
   cli();
 
 #+END_SRC
 
-** Выходим из ядра
+** Финал
+
+Выход из ядра никогда не случится, так как в cli() стоит while(1), но возвращаемое значение нужно компилятору
 
 #+BEGIN_SRC c :noweb-ref kernel
   return 0;
