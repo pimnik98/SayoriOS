@@ -404,6 +404,8 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     
     if (is_rsdp){
         RSDPDescriptor* rsdp = rsdp_find();
+		acpi_scan_all_tables(rsdp->RSDTaddress);
+		
         find_facp(rsdp->RSDTaddress);
         find_apic(rsdp->RSDTaddress);
     }
