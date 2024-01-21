@@ -81,4 +81,5 @@ void pci_print_list();
 void pci_write(uint8_t bus, uint8_t slot, uint8_t func, uint32_t offset, uint32_t value);
 void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, uint16_t *vendor_ret, uint16_t *deviceid_ret,
 									  uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret);
+void pci_enable_bus_mastering(uint8_t bus, uint8_t slot, uint8_t func);
 uint32_t pci_read32(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset);
