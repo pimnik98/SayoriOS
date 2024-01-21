@@ -1,5 +1,8 @@
+// Thank you PIMNIK, NOW ~800 lines driver code shrinked to 120 line driver code because you forgot to update private branch
+
 use crate::{qemu_log, qemu_ok};
 use crate::qemu_err;
+use crate::println;
 use crate::std::mm::*;
 use crate::system::pci;
 use crate::system::pci::PCIDevice;
@@ -86,17 +89,23 @@ pub extern "C" fn intel_hda_init() {
         });
     }
 
+	println!("Resetting card...");
+
     unsafe { intel_hda_reset_card(); }
 
+	println!("Init ok!");
+	
     qemu_ok!("Init ok");
 }
 
 unsafe fn intel_hda_read(reg: u32) -> u32 {
-    return *(main_hda_device.as_ref().unwrap().mmio_base as *const u32).offset(reg as isize);
+    return (main_hda_device.as_ref().unwrap().mmio_base as *const u32).offset(reg as isize).read_volatile();
 }
 
 unsafe fn intel_hda_write(reg: u32, value: u32) {
-    *(main_hda_device.as_ref().unwrap().mmio_base as *mut u32).offset(reg as isize) = value;
+    // *(main_hda_device.as_ref().unwrap().mmio_base as *mut u32).offset(reg as isize) = value;
+
+    (main_hda_device.as_ref().unwrap().mmio_base as *mut u32).offset(reg as isize).write_volatile(value);
 }
 
 unsafe fn intel_hda_reset_card() {

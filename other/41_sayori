@@ -6,6 +6,6 @@ exec tail -n +3 $0
 
 menuentry "SayoriOS" {
 	multiboot /boot/sayorios_kernel.elf
- 	module /boot/sayori_sefs.img initrd_sefs
+ 	module /boot/sayori_ramdisk initrd_tarfs
 	boot
 }
