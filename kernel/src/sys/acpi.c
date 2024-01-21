@@ -78,7 +78,6 @@ void acpi_scan_all_tables(uint32_t rsdt_addr) {
         PAGE_PRESENT
     );
 
-
     uint32_t sdt_count = (rsdt->Length - sizeof(ACPISDTHeader));
 
     qemu_log("LEN: %d (// %d)", rsdt->Length, sizeof(ACPISDTHeader));
@@ -96,6 +95,7 @@ void acpi_scan_all_tables(uint32_t rsdt_addr) {
             break;
         }
 
+		tty_printf("[%x] Found table: %.4s", entry, entry->Signature);
 		qemu_log("[%x] Found table: %.4s", entry, entry->Signature);
     }
 
