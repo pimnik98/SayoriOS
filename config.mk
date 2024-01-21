@@ -70,8 +70,6 @@ SOURCES=\
 	kernel/src/sys/cpuinfo.c \
 	kernel/src/sys/cpu_isr.c \
 	kernel/src/sys/gdt.c \
-	kernel/src/sys/tss.c \
-	kernel/src/sys/idt.c \
 	kernel/src/sys/isr.c \
 	kernel/src/io/ports.c \
 	kernel/src/io/serial_port.c \
