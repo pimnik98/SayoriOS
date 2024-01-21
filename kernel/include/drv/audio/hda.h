@@ -5,3 +5,4 @@
 #pragma once
 
 void hda_init();
+void hda_reset();
