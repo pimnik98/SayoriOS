@@ -18,10 +18,8 @@ typedef struct gdt_entry_struct gdt_entry_t;
 
 struct gdt_ptr_struct
 {
-
   uint16_t    limit;
   uint32_t    base;
-
 }__attribute__((packed));
 
 typedef struct gdt_ptr_struct gdt_ptr_t;
@@ -56,7 +54,6 @@ struct    tss_entry
     uint16_t  task_flags;
     uint16_t  iomap_offset;
     uint8_t   iomap;
-
 } __attribute__((packed));
 
 typedef struct tss_entry tss_entry_t;
@@ -75,30 +72,25 @@ struct tss_descriptor
     uint8_t   allways_zero:2;
     uint8_t   gran:1;
     uint8_t   base_31_24;
-
 }__attribute__((packed));
 
 typedef struct tss_descriptor tss_descriptor_t;
 
 struct idt_entry_struct
 {
-
   uint16_t    base_low;
   uint16_t    selector;
   uint8_t     allways0;
   uint8_t     flags;
   uint16_t    base_high;
-
 }__attribute__((packed));
 
 typedef struct idt_entry_struct idt_entry_t;
 
 struct    idt_ptr_struct
 {
-
   uint16_t    limit;
   uint32_t    base;
-
 }__attribute__((packed));
 
 typedef   struct  idt_ptr_struct idt_ptr_t;

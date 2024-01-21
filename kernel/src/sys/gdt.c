@@ -36,34 +36,25 @@ void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, ui
     gdt_entries[num].base_high = (base >> 24) & 0xFF;
     /* Извлекаем нижнюю часть лимита (биты 0-15) */
     gdt_entries[num].limit_low = (limit & 0xFFFF);
-    /* Извлекаем верхнюю часть лимита (биты 16-19 */
-    /* todo - надо ли? В структуре этого поля нет(?) */
-    /* Вычисляем промежуточную гранулярность,
-       почему-то как биты 16-19 (?) */
+    /* Granulary - это байт, который мы получаем,
+       сдвинув limit на два байта вправо, при этом
+       верхний полубайт будет содержать флаги (мы
+       учитываем это, когда формируем передавемый
+       в параметрах limit). На первом этапе мы
+       получам верхнюю часть limit */
     gdt_entries[num].granularity = (limit >> 16) & 0xF;
-    /* Тепер полученную гранулярность объединяем
-       через OR с верхним полубайтом gran (?) */
-    /* С текущими передаваемыми параметрами и если
-       предположить, что granularity оказывается в
-       битах 55-48 дескриптора (предстарший байт
-       дескритора), мы приходим к тому, что
+    /* Тепер полученные биты объединяем с верхним
+       полубайтом gran. С текущими передаваемыми
+       параметрами, мы приходим к тому, что
        устанавливаются флаги G и D/B, что дает нам
        размер страницы в четырехкилобайтовых единицах
-       и 32-двух разрядные смещения при доступе к ней
-    */
+       и 32-двух разрядные смещения при доступе к ней */
     gdt_entries[num].granularity |= gran & 0xF0;
-    /* access переписываем без изменений */
+    /* Access переписываем без изменений */
     gdt_entries[num].access = access;
 }
 
 
-/**
- * @brief ???
- *
- * @param num - ???
- * @param ss0 - ???
- * @param esp0 - ???
- */
 void write_tss(int32_t num, uint32_t ss0, uint32_t esp0){
     memset(&tss, 0, sizeof(tss_entry_t));
     tss.ss0 = ss0;
@@ -89,20 +80,10 @@ void write_tss(int32_t num, uint32_t ss0, uint32_t esp0){
     tss_d->gran = 0;
 }
 
-/**
- * @brief ???
- *
- * @param stack - ???
- */
 void set_kernel_stack_in_tss(uint32_t stack) {
     tss.esp0 = stack;
 }
 
-/**
- * @brief ???
- *
- * @return uint32_t - ???
- */
 uint32_t get_tss_esp0(){
     return tss.esp0;
 }
@@ -156,35 +137,21 @@ void init_gdt(void){
 #include  "lib/string.h"
 #include  "io/ports.h"
 
-extern gdt_entry_t    gdt_entries[6];
-idt_entry_t   idt_entries[256];
-idt_ptr_t idt_ptr;
+extern gdt_entry_t  gdt_entries[6];
+idt_entry_t         idt_entries[256];
+idt_ptr_t           idt_ptr;
 
 extern uint32_t init_esp;
 extern void idt_flush(uint32_t);
 
-
-/**
- * @brief ???
- *
- * @param num - ???
- * @param base - ???
- * @param selector - ???
- * @param flags - ???
- */
 void idt_set_gate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags){
     idt_entries[num].base_low = base & 0xFFFF;
     idt_entries[num].base_high = (base >> 16) & 0xFFFF;
-
     idt_entries[num].selector = selector;
     idt_entries[num].allways0 = 0;
-
-    idt_entries[num].flags = flags;/* - для пользовательского режима */
+    idt_entries[num].flags = flags; /* - для пользовательского режима */
 }
 
-/**
- * @brief Инициализация IDT
- */
 void init_idt(void) {
     idt_ptr.limit = sizeof(idt_entry_t)*256 - 1;
     idt_ptr.base = (uint32_t)idt_entries;
@@ -260,9 +227,6 @@ void init_idt(void) {
 }
 
 
-/**
- * @brief Инициализация GDT и IDT
- */
 void init_descriptor_tables(void){
     init_gdt();
     init_idt();
