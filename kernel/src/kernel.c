@@ -22,6 +22,7 @@
 
 #include "fs/natfs.h"
 #include "net/stack.h"
+#include "drv/audio/hda.h"
 
 #include <lib/pixel.h>
 
@@ -519,8 +520,7 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     
     // vio_ntw_init();
     
-    extern void intel_hda_init();
-    intel_hda_init();
+    hda_init();
     
     cli();
     
