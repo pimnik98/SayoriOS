@@ -108,7 +108,7 @@ unsafe fn intel_hda_reset_card() {
 
     while (intel_hda_read(0x08) & 1) != 1 {};
 
-    qemu_ok!("OK?");
+    qemu_ok!("Reset ok!");
 }
 
 fn intel_hda_generate_command(codec_address: u32, node_index: u32, command: u32, data: u32) -> u32 {
