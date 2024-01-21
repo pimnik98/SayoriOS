@@ -9,6 +9,7 @@
 *.sea
 *.vhd
 *.tmp
+*.pcap
 .vscode/
 *.d
 /rust/target

@@ -67,6 +67,42 @@ ACPISDTHeader* find_table(uint32_t rsdt_addr, uint32_t sdt_count, char signature
     return 0;
 }
 
+void acpi_scan_all_tables(uint32_t rsdt_addr) {
+    ACPISDTHeader* rsdt = (ACPISDTHeader*)rsdt_addr;
+
+    map_pages(
+        get_kernel_page_directory(),
+        rsdt_addr,
+		rsdt_addr,
+        PAGE_SIZE,
+        PAGE_PRESENT
+    );
+
+
+    uint32_t sdt_count = (rsdt->Length - sizeof(ACPISDTHeader));
+
+    qemu_log("LEN: %d (// %d)", rsdt->Length, sizeof(ACPISDTHeader));
+
+    uint32_t* rsdt_end = (uint32_t*)(rsdt_addr + sizeof(ACPISDTHeader));
+
+    qemu_log("RSDT start: %x", rsdt_addr);
+    qemu_log("RSDT end: %x", rsdt_end);
+    qemu_log("RSDT size: %d", sizeof(ACPISDTHeader));
+
+    for(uint32_t i = 0; i < sdt_count; i++) {
+        ACPISDTHeader* entry = (ACPISDTHeader*)(rsdt_end[i]);
+
+        if(entry == 0) {
+            break;
+        }
+
+		qemu_log("[%x] Found table: %.4s", entry, entry->Signature);
+    }
+
+    unmap_single_page(get_kernel_page_directory(), (virtual_addr_t) rsdt_addr);
+}
+
+
 void find_facp(size_t rsdt_addr) {
 	qemu_log("FACP at P%x", rsdt_addr);
 
@@ -77,6 +113,7 @@ void find_facp(size_t rsdt_addr) {
         PAGE_SIZE,
         PAGE_PRESENT
     );
+
 
     ACPISDTHeader* rsdt = (ACPISDTHeader*)rsdt_addr;
 

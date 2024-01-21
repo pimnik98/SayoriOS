@@ -109,11 +109,11 @@ clean:
 	-rm -f rust/target -r
 
 # Линковка файлов
-$(KERNEL): $(KERNEL_NEED) $(RUST_SOURCES) rust/Cargo.toml
-	$(MAKE) build_rust
+$(KERNEL): $(KERNEL_NEED) # $(RUST_SOURCES) rust/Cargo.toml
+	# $(MAKE) build_rust
 	@echo -e '\x1b[32mLINK \x1b[0m' $(KERNEL)
 	@rm -f $(KERNEL)
-	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED) $(RUST_OBJ_RELEASE)
+	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED) # $(RUST_OBJ_RELEASE)
 	@#llvm-strip -s $(KERNEL)   # I know I strip all symbols so making unwind useless. (Fix it later)
 	@bash tools/genmap.sh
 	@bash tools/insertmap.sh
