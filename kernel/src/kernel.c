@@ -472,10 +472,9 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     //
     //	udp_send_packet(card, ip, 8888, 9999, "EEVEE\n", 6);
     
-    ahci_init();
+    // ahci_init();
     // ahci_test();
     
-    //    *(int*)(0xAB000ACD) = 3456789;
     /// Пример закругленных квадратов
     // drawRoundedSquare(32,32, 128, 2, 0xFFFF0000, 0xFF0000FF);
     // drawRoundedRectangle(32,32,128,16,4,0xFFFF0000, 0xFF0000FF);
