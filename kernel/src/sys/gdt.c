@@ -56,15 +56,26 @@ void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, ui
 
 
 void write_tss(int32_t num, uint32_t ss0, uint32_t esp0){
+    /* очищаяем структуру tss */
     memset(&tss, 0, sizeof(tss_entry_t));
+    /* Селектор сегмента стека (Stack Segment Selector)
+       для уровня привилегий 0 (кольцо 0). */
     tss.ss0 = ss0;
+    /* Указатель стека для уровня привилегий 0 */
     tss.esp0 = esp0;
+    /* Селектор сегмента кода */
     tss.cs = 0x08;
+    /* Селектор сегментов DS, ES, FS, GS */
     tss.ss = tss.ds = tss.es = tss.fs = tss.gs = 0x10;
+    /* iomap размером в байт и значением запрещающим все */
     tss.iomap = 0xFF;
+    /* вычисляем адрес iomap */
     tss.iomap_offset = (uint16_t) ( (uint32_t) &tss.iomap - (uint32_t) &tss );
+    /* база tss */
     uint32_t base = (uint32_t) &tss;
+    /* limit tss */
     uint32_t limit = sizeof(tss)-1;
+    /* Теперь заполняем дескриптор TSS в GDT */
     tss_descriptor_t* tss_d = (tss_descriptor_t*) &gdt_entries[num];
     tss_d->base_15_0 = base & 0xFFFF;
     tss_d->base_23_16 = (base >> 16) & 0xFF;
@@ -80,13 +91,15 @@ void write_tss(int32_t num, uint32_t ss0, uint32_t esp0){
     tss_d->gran = 0;
 }
 
-void set_kernel_stack_in_tss(uint32_t stack) {
-    tss.esp0 = stack;
-}
+/* Неиспользуется (пока?) */
 
-uint32_t get_tss_esp0(){
-    return tss.esp0;
-}
+/* void set_kernel_stack_in_tss(uint32_t stack) { */
+/*     tss.esp0 = stack; */
+/* } */
+
+/* uint32_t get_tss_esp0(){ */
+/*     return tss.esp0; */
+/* } */
 
 #define GDT_NUMBER_OF_ELTS 6
 
@@ -118,7 +131,8 @@ void init_gdt(void){
        type:1010(Сегмент кода для выполнения/чтения)
        Пользовательские сегменты */
     gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF);
-
+    /* Мы записываем TSS в последний 5-ый гейт  */
+    /* Почему селектор стека = 0x10 ? */
     write_tss(5, 0x10, init_esp);
 
     gdt_flush( (uint32_t) &gdt_ptr);
