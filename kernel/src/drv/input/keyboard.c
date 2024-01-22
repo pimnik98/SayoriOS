@@ -296,11 +296,6 @@ int gets_max(char *buffer, int length) { // TODO: Backspace
  * @brief Обработчик клавиатуры
  */
 void keyboardHandler(registers_t regs){
-    //qemu_log("%d < %d",timePresed < getTicks());
-//    if (!enabled) return;
-
-//    outb(0x20, 0x20);
-
     kbdstatus = inb(KBD_STATE_REG);
     if (kbdstatus & 0x01) {
         lastKey = inb(KBD_DATA_PORT);

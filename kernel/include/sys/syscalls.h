@@ -7,7 +7,7 @@
 
 typedef size_t syscall_fn_t (size_t, size_t, size_t);
 
-#define		NUM_CALLS	13
+#define		NUM_CALLS	15
 
 /* No params */
 #define		DECL_SYSCALL0(func) int syscall_##func()
