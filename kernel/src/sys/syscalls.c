@@ -22,11 +22,11 @@ syscall_fn_t* calls_table[NUM_CALLS] = {0};
  * 
  * @param regs - Регистр
  */
-void syscall_handler(registers_t regs){
-	qemu_log("syscall: %d", regs.eax);
+void syscall_handler(volatile registers_t regs) {
+//	qemu_log("syscall: %d", regs.eax);
 
 	if (regs.eax >= NUM_CALLS) {
-        qemu_err("Invalid system call!");
+        qemu_err("Invalid system call: %d!", regs.eax);
 
         __asm__ volatile("movl %0, %%eax" :: "r"(0));
         return;
@@ -62,7 +62,7 @@ size_t syscall_memory_free(void* memory) {
 }
 
 size_t syscall_tty_write(char* text) {
-    _tty_puts(text);
+    tty_puts(text);
     return 0;
 }
 
