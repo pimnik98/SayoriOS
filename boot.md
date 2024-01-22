@@ -140,9 +140,9 @@ SayoriOS использует GRUB2 в качестве загрузчика, е
 
 <a id="org025522c"></a>
 
-### Загрузка с отключенным remote desktop
+### Загрузка с отключенным ACPI
 
-    # Загрузка с отключенным remote desktop
+    # Загрузка с отключенным remote desktop (это пимник написал)
     menuentry --hotkey=w "SayoriOS Soul v0.3.4 Alpha [VMWare]" {
         multiboot /boot/kernel.elf disable=rdsp
         module /boot/ramdisk initrd_tarfs;
