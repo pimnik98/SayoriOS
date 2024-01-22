@@ -84,6 +84,10 @@ size_t syscall_trigger_del(int index){
     return 1;
 }
 
+void syscall_getkey(int* out) {
+    *out = getCharRaw();
+}
+
 /**
  * @brief Инициализация системных вызовов
  * 
@@ -106,6 +110,7 @@ void init_syscalls(void){
     calls_table[10] = (syscall_fn_t *)syscall_trigger_on;
     calls_table[11] = (syscall_fn_t *)syscall_trigger_off;
     calls_table[12] = (syscall_fn_t *)syscall_trigger_del;
+    calls_table[13] = (syscall_fn_t *)syscall_getkey;
 
 	qemu_ok("System calls initialized!");
 }
