@@ -74,11 +74,11 @@ void acpi_scan_all_tables(uint32_t rsdt_addr) {
         get_kernel_page_directory(),
         rsdt_addr,
 		rsdt_addr,
-        PAGE_SIZE,
+        PAGE_SIZE * 2,
         PAGE_PRESENT
     );
 
-    uint32_t sdt_count = (rsdt->Length - sizeof(ACPISDTHeader));
+    uint32_t sdt_count = (rsdt->Length - sizeof(ACPISDTHeader)) / sizeof(uint32_t);
 
     qemu_log("LEN: %d (// %d)", rsdt->Length, sizeof(ACPISDTHeader));
 
@@ -95,11 +95,12 @@ void acpi_scan_all_tables(uint32_t rsdt_addr) {
             break;
         }
 
-		tty_printf("[%x] Found table: %.4s", entry, entry->Signature);
+		tty_printf("[%x] Found table: %.4s\n", entry, entry->Signature);
 		qemu_log("[%x] Found table: %.4s", entry, entry->Signature);
     }
 
     unmap_single_page(get_kernel_page_directory(), (virtual_addr_t) rsdt_addr);
+    unmap_single_page(get_kernel_page_directory(), ((virtual_addr_t) rsdt_addr) + PAGE_SIZE);
 }
 
 
@@ -133,7 +134,7 @@ void find_facp(size_t rsdt_addr) {
     qemu_log("OEMID: %s", rsdt->OEMID);
     qemu_log("Length: %d entries", rsdt->Length);
 
-    uint32_t sdt_count = (rsdt->Length - sizeof(ACPISDTHeader));
+    uint32_t sdt_count = (rsdt->Length - sizeof(ACPISDTHeader)) / sizeof(uint32_t);
 
     qemu_log("SDTs available: %d", sdt_count);
 
@@ -193,7 +194,7 @@ void find_apic(size_t rsdt_addr) {
     qemu_log("OEMID: %s", rsdt->OEMID);
     qemu_log("Length: %d entries", rsdt->Length);
 
-    uint32_t sdt_count = (rsdt->Length - sizeof(ACPISDTHeader));
+    uint32_t sdt_count = (rsdt->Length - sizeof(ACPISDTHeader)) / sizeof(uint32_t);
 
     qemu_log("SDTs available: %d", sdt_count);
 
