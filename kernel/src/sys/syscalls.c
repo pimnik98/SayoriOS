@@ -33,6 +33,8 @@ void syscall_handler(registers_t regs){
 	syscall_fn_t* entry_point = (syscall_fn_t*)calls_table[regs.eax];
 
 	regs.eax = entry_point(regs.ebx, regs.ecx, regs.edx);
+
+    // TODO: Just place result into eax, I know how to do it!
 }
 
 size_t syscall_env(struct env* position) {
