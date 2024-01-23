@@ -24,7 +24,7 @@ tss_flush:
     ltr	   %ax
     ret
 
-.global idt_flush
+    .global idt_flush
 idt_flush:
     mov	    4(%esp), %eax
     lidt    (%eax)

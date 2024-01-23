@@ -10,23 +10,16 @@
 #include  "lib/string.h"
 #include  "io/ports.h"
 
-extern void gdt_flush(uint32_t);
-extern void tss_flush(uint32_t tr_selector);
 extern uint32_t init_esp;
 
 tss_entry_t tss;
+
+extern void gdt_flush(uint32_t);
+extern void tss_flush(uint32_t tr_selector);
+
 gdt_entry_t gdt_entries[6];
 gdt_ptr_t   gdt_ptr;
 
-/**
- * @brief Установка сегмента
- *
- * @param num - ???
- * @param base - ???
- * @param limit - ???
- * @param access - ???
- * @param gran - ???
- */
 void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran){
     /* Извлекаем нижнюю часть базы адреса (биты 0-15) */
     gdt_entries[num].base_low = (base & 0xFFFF);
@@ -56,7 +49,7 @@ void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, ui
 
 
 void write_tss(int32_t num, uint32_t ss0, uint32_t esp0){
-    /* очищаяем структуру tss */
+    /* очищяем структуру tss */
     memset(&tss, 0, sizeof(tss_entry_t));
     /* Селектор сегмента стека (Stack Segment Selector)
        для уровня привилегий 0 (кольцо 0). */
@@ -103,9 +96,6 @@ void write_tss(int32_t num, uint32_t ss0, uint32_t esp0){
 
 #define GDT_NUMBER_OF_ELTS 6
 
-/**
- * @brief Инициализация GDT
- */
 void init_gdt(void){
     /* Устанавливается размер GDT в байтах. */
     gdt_ptr.limit = ( sizeof(gdt_entry_t) * GDT_NUMBER_OF_ELTS ) - 1;
@@ -134,29 +124,16 @@ void init_gdt(void){
     /* Мы записываем TSS в последний 5-ый гейт  */
     /* Почему селектор стека = 0x10 ? */
     write_tss(5, 0x10, init_esp);
-
+    /* Загружаем GDT */
     gdt_flush( (uint32_t) &gdt_ptr);
+    /* Загружаем TSS */
     tss_flush(0x28);
 }
 
-/**
- * @file sys/gdt.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru)
- * @brief (GDT) Глобальная таблица дескрипторов
- * @version 0.3.5
- * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022-2024
- */
-#include  "sys/descriptor_tables.h"
-#include  "lib/string.h"
-#include  "io/ports.h"
-
-extern gdt_entry_t  gdt_entries[6];
-idt_entry_t         idt_entries[256];
-idt_ptr_t           idt_ptr;
-
-extern uint32_t init_esp;
 extern void idt_flush(uint32_t);
+
+idt_entry_t  idt_entries[256];
+idt_ptr_t    idt_ptr;
 
 void idt_set_gate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags){
     idt_entries[num].base_low = base & 0xFFFF;
@@ -167,20 +144,34 @@ void idt_set_gate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags){
 }
 
 void init_idt(void) {
+    /* Инициализация структуры указателя размером и адресом IDT */
     idt_ptr.limit = sizeof(idt_entry_t)*256 - 1;
     idt_ptr.base = (uint32_t)idt_entries;
+    /* Очистка памяти */
     memset(idt_entries, 0, sizeof(idt_entry_t)*256);
+    /* Инициализация первого PIC и установка режима ICW1
+       (Initialization Command Word 1). */
     outb(0x20, 0x11);
+    /* Инициализация второго PIC и установка режима ICW1. */
     outb(0xA0, 0x11);
+    /* Установка базового вектора прерывания для первого PIC (ICW2). */
     outb(0x21, 0x20);
+    /* Установка базового вектора прерывания для второго PIC (ICW2). */
     outb(0xA1, 0x28);
+    /* Конфигурация мастер-системы (ICW3 для первого PIC). */
     outb(0x21, 0x04);
+    /* Конфигурация слейв-системы (ICW3 для второго PIC). */
     outb(0xA1, 0x02);
+    /* Установка режима работы (ICW4 для первого PIC). */
     outb(0x21, 0x01);
+    /* Установка режима работы (ICW4 для второго PIC). */
     outb(0xA1, 0x01);
+    /* Окончательная настройка маски прерываний для первого PIC. */
     outb(0x21, 0x0);
+    /* Окончательная настройка маски прерываний для второго PIC. */
     outb(0xA1, 0x0);
 
+    /* Создание записей в таблице прерываний */
     idt_set_gate(0, (uint32_t)isr0, 0x08, 0x8E);
     idt_set_gate(1, (uint32_t)isr1, 0x08, 0x8E);
     idt_set_gate(2, (uint32_t)isr2, 0x08, 0x8E);
@@ -239,7 +230,6 @@ void init_idt(void) {
 
     idt_flush((uint32_t) &idt_ptr);
 }
-
 
 void init_descriptor_tables(void){
     init_gdt();
