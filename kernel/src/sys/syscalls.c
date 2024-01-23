@@ -98,6 +98,12 @@ size_t syscall_get_timer_ticks() {
     return getTicks();
 }
 
+size_t syscall_sleep(uint32_t millis) {
+	sleep_ms(millis);
+	
+    return 0;
+}
+
 /**
  * @brief Инициализация системных вызовов
  * 
@@ -122,6 +128,7 @@ void init_syscalls(void){
     calls_table[12] = (syscall_fn_t *)syscall_trigger_del;
     calls_table[13] = (syscall_fn_t *)syscall_getkey;
     calls_table[14] = (syscall_fn_t *)syscall_get_timer_ticks;
+    calls_table[15] = (syscall_fn_t *)syscall_sleep;
 
 	qemu_ok("System calls initialized!");
 }
