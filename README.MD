@@ -9,7 +9,8 @@
 У проекта есть сайт: https://sayorios.piminoff.ru
 
 * [Группа SayoriOS в VK](https://vk.com/sayorios)
-* [Канал и чат SayoriOS в Telegram](https://t.me/sayorios)
+* [Канал чат SayoriOS в Telegram](https://t.me/sayorios)
+* [Чат SayoriOS в Telegram](https://t.me/sayorios_chat)
 
 Список протестированных устройств и результаты тестирования вы можете посмотреть в нашей группе ВКонтакте или во вкладке Issues.
 
