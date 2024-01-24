@@ -21,6 +21,9 @@
 - [Системные требования](#sysrequirements)
 - [План работ и прогресс](#roadmap)
 - [Сборка](#build)
+- [Запуск](#run)
+  - [Запуск в QEMU](#run_qemu)
+  - [Запуск в VirtualBox](#run_virtualbox)
 - [Вклад в проект](#contibution)
   - [Программирование](#developers)
   - [Тестирование](#testers)
@@ -137,6 +140,25 @@
     make link - Линк файлов ядра
     make bir - Сборка ISO и запуск ядра
     make WSL - Сборка ISO и запуск ядра через WSL
+
+## <a id="run">Запуск</a>
+
+### <a id="run_qemu">Запуск в QEMU</a>
+
+Создайте папку, загрузите туда свежую версию ядра, установите ПО:
+
+    sudo apt-get install libvirt-daemon libvirt-clients bridge-utils virt-manager qemu-kvm qemu virt-manager
+
+Перейдите в папку и запустите эмулятор
+
+    qemu-system-i386 -cdrom kernel.iso -serial file:Qemu.log -accel kvm -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime -soundhw pcspk
+
+### <a id="run_qemu">Запуск в VirtualBox</a>
+
+Скачайте последний стабильный образ ядра
+Запустите Oracle VM Virtual Box и нажмите кнопку Создать
+
+![Создание VM](img/run_vb_1.png)
 
 ## <a id="contibution">Вклад в проект</a>
 

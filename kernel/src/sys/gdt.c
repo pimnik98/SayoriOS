@@ -128,7 +128,7 @@ void init_gdt(void){
     gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF);
 
     /* Мы записываем TSS в последний 5-ый гейт  */
-    /* Так как дескриптор стека ядра (и данных) имеет
+    /* Так как дескриптор стека (и данных) ядра имеет
        индекс 2 в GDT, то его селектор, с учетом
        RPL = 0 в GDT будет равен
        stack_selector = 2*8 | RPL = 16
@@ -194,7 +194,6 @@ void init_idt(void) {
     idt_set_gate(5, (uint32_t)isr5, 0x08, 0x8E);
     idt_set_gate(6, (uint32_t)isr6, 0x08, 0x8E);
     idt_set_gate(7, (uint32_t)isr7, 0x08, 0x8E);
-
     idt_set_gate(8, (uint32_t)isr8, 0x08, 0x8E);
     idt_set_gate(9, (uint32_t)isr9, 0x08, 0x8E);
     idt_set_gate(10, (uint32_t)isr10, 0x08, 0x8E);
@@ -203,7 +202,6 @@ void init_idt(void) {
     idt_set_gate(13, (uint32_t)isr13, 0x08, 0x8E);
     idt_set_gate(14, (uint32_t)isr14, 0x08, 0x8E);
     idt_set_gate(15, (uint32_t)isr15, 0x08, 0x8E);
-
     idt_set_gate(16, (uint32_t)isr16, 0x08, 0x8E);
     idt_set_gate(17, (uint32_t)isr17, 0x08, 0x8E);
     idt_set_gate(18, (uint32_t)isr18, 0x08, 0x8E);
@@ -212,7 +210,6 @@ void init_idt(void) {
     idt_set_gate(21, (uint32_t)isr21, 0x08, 0x8E);
     idt_set_gate(22, (uint32_t)isr22, 0x08, 0x8E);
     idt_set_gate(23, (uint32_t)isr23, 0x08, 0x8E);
-
     idt_set_gate(24, (uint32_t)isr24, 0x08, 0x8E);
     idt_set_gate(25, (uint32_t)isr25, 0x08, 0x8E);
     idt_set_gate(26, (uint32_t)isr26, 0x08, 0x8E);
@@ -221,7 +218,7 @@ void init_idt(void) {
     idt_set_gate(29, (uint32_t)isr29, 0x08, 0x8E);
     idt_set_gate(30, (uint32_t)isr30, 0x08, 0x8E);
     idt_set_gate(31, (uint32_t)isr31, 0x08, 0x8E);
-
+    /* IRQs */
     idt_set_gate(32, (uint32_t)irq0, 0x08, 0x8E);
     idt_set_gate(33, (uint32_t)irq1, 0x08, 0x8E);
     idt_set_gate(34, (uint32_t)irq2, 0x08, 0x8E);
@@ -238,10 +235,9 @@ void init_idt(void) {
     idt_set_gate(45, (uint32_t)irq13, 0x08, 0x8E);
     idt_set_gate(46, (uint32_t)irq14, 0x08, 0x8E);
     idt_set_gate(47, (uint32_t)irq15, 0x08, 0x8E);
-
     /* System calls */
     idt_set_gate(0x50, (uint32_t)isr80, 0x08, 0xEF);
-
+    /* Загружаем */
     idt_flush((uint32_t) &idt_ptr);
 }
 

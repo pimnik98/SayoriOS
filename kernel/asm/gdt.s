@@ -3,6 +3,7 @@ gdt_flush:
     /* Load GDT */
     mov    4(%esp), %eax
     lgdt   (%eax)
+    /* Это бит PG (Paging) */
     /*
     mov %cr0, %eax
     or $1, %al
