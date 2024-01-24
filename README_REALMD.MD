@@ -43,10 +43,11 @@
 
 ## <a id="screenshots">Скриншоты</a>
 
-![Загрузочный экран](https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/1.png)
-![Консоль](https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/2.png)
-![Графический интерфейс](https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/3.png)
-![Приложение](https://raw.githubusercontent.com/NDRAEY/SayoriOS/screens/screens/v0.3.2/4.png)
+![Загрузочный экран](img/scr_1.png)
+![Консоль](img/scr_2.png)
+![Перечисление устройств](img/scr_3.png)
+![Графический интерфейс](img/scr_4.png)
+![Файловая система](img/scr_6.png)
 
 ## <a id="sysrequirements">Системные требования</a>
 
