@@ -22,17 +22,23 @@ syscall_fn_t* calls_table[NUM_CALLS] = {0};
  * 
  * @param regs - Регистр
  */
-void syscall_handler(registers_t regs){
-	qemu_log("syscall: %d", regs.eax);
+void syscall_handler(volatile registers_t regs) {
+//	qemu_log("syscall: %d", regs.eax);
 
 	if (regs.eax >= NUM_CALLS) {
-        qemu_err("Invalid system call!");
+        qemu_err("Invalid system call: %d!", regs.eax);
+
+        __asm__ volatile("movl %0, %%eax" :: "r"(0));
         return;
     }
 
 	syscall_fn_t* entry_point = (syscall_fn_t*)calls_table[regs.eax];
 
 	regs.eax = entry_point(regs.ebx, regs.ecx, regs.edx);
+
+    // TODO: Just place result into eax, I know how to do it!
+
+    __asm__ volatile("movl %0, %%eax" :: "r"(regs.eax));
 }
 
 size_t syscall_env(struct env* position) {
@@ -56,7 +62,7 @@ size_t syscall_memory_free(void* memory) {
 }
 
 size_t syscall_tty_write(char* text) {
-    _tty_puts(text);
+    tty_puts(text);
     return 0;
 }
 
@@ -84,6 +90,20 @@ size_t syscall_trigger_del(int index){
     return 1;
 }
 
+size_t syscall_getkey() {
+    return getCharRaw();
+}
+
+size_t syscall_get_timer_ticks() {
+    return getTicks();
+}
+
+size_t syscall_sleep(uint32_t millis) {
+	sleep_ms(millis);
+	
+    return 0;
+}
+
 /**
  * @brief Инициализация системных вызовов
  * 
@@ -106,6 +126,9 @@ void init_syscalls(void){
     calls_table[10] = (syscall_fn_t *)syscall_trigger_on;
     calls_table[11] = (syscall_fn_t *)syscall_trigger_off;
     calls_table[12] = (syscall_fn_t *)syscall_trigger_del;
+    calls_table[13] = (syscall_fn_t *)syscall_getkey;
+    calls_table[14] = (syscall_fn_t *)syscall_get_timer_ticks;
+    calls_table[15] = (syscall_fn_t *)syscall_sleep;
 
 	qemu_ok("System calls initialized!");
 }

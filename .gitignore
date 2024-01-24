@@ -9,8 +9,10 @@
 *.sea
 *.vhd
 *.tmp
-.vscode
-.vscode/*
+*.pcap
+.vscode/
 *.d
 /rust/target
 /rust/Cargo.lock
+.idea/
+iso/boot/ramdisk

@@ -196,6 +196,7 @@ SOURCES=\
 	kernel/src/sys/file_descriptors.c \
 	kernel/src/net/stack.c \
 	kernel/src/toys/pavi.c \
+	kernel/src/drv/audio/hda.c \
 	$(GAMEBOY) \
 	kernel/src/kernel.c \
 #	kernel/src/lib/duktape.c \
@@ -292,7 +293,7 @@ QEMU_FLAGS = -cdrom kernel.iso -m $(MEMORY_SIZE) \
 			 -rtc base=localtime \
 			 -d guest_errors,cpu_reset,int \
 			 -audiodev pa,id=pa0 \
-			 -smp 1 \
+			 -smp 2 \
 			 -netdev user,id=net0,net=192.168.111.0,dhcpstart=192.168.111.128,hostfwd=tcp::9999-:8888 \
 			 -device rtl8139,netdev=net0,id=mydev0 \
 			 -M pcspk-audiodev=pa0 \

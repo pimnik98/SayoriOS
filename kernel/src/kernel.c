@@ -22,6 +22,7 @@
 
 #include "fs/natfs.h"
 #include "net/stack.h"
+#include "drv/audio/hda.h"
 
 #include <lib/pixel.h>
 
@@ -403,6 +404,8 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     
     if (is_rsdp){
         RSDPDescriptor* rsdp = rsdp_find();
+		acpi_scan_all_tables(rsdp->RSDTaddress);
+		
         find_facp(rsdp->RSDTaddress);
         find_apic(rsdp->RSDTaddress);
     }
@@ -472,10 +475,9 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     //
     //	udp_send_packet(card, ip, 8888, 9999, "EEVEE\n", 6);
     
-    ahci_init();
+    // ahci_init();
     // ahci_test();
     
-    //    *(int*)(0xAB000ACD) = 3456789;
     /// Пример закругленных квадратов
     // drawRoundedSquare(32,32, 128, 2, 0xFFFF0000, 0xFF0000FF);
     // drawRoundedRectangle(32,32,128,16,4,0xFFFF0000, 0xFF0000FF);
@@ -520,8 +522,7 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     
     // vio_ntw_init();
     
-    extern void intel_hda_init();
-    intel_hda_init();
+    hda_init();
     
     cli();
     

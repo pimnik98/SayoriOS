@@ -416,6 +416,14 @@ void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, ui
 	*bus_ret = *slot_ret = *func_ret = 0xFF;
 }
 
+void pci_enable_bus_mastering(uint8_t bus, uint8_t slot, uint8_t func) {
+    uint16_t command_register = pci_read_confspc_word(bus, slot, func, 4);
+
+    command_register |= 0x05;
+
+    pci_write(bus, slot, func, 4, command_register);
+}
+
 /**
  * @brief [PCI] Ищет все устройства и выводит на экран
  */
