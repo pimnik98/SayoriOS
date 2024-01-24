@@ -18,7 +18,7 @@ gdt_flush:
 flush:
     ret
 
-.global tss_flush
+    .global tss_flush
 tss_flush:
     mov    4(%esp), %eax
     ltr	   %ax

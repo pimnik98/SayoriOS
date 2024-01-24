@@ -49,7 +49,7 @@ void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access, ui
 
 
 void write_tss(int32_t num, uint32_t ss0, uint32_t esp0){
-    /* очищяем структуру tss */
+    /* очищaем структуру tss */
     memset(&tss, 0, sizeof(tss_entry_t));
     /* Селектор сегмента стека (Stack Segment Selector)
        для уровня привилегий 0 (кольцо 0). */
@@ -68,20 +68,24 @@ void write_tss(int32_t num, uint32_t ss0, uint32_t esp0){
     uint32_t base = (uint32_t) &tss;
     /* limit tss */
     uint32_t limit = sizeof(tss)-1;
-    /* Теперь заполняем дескриптор TSS в GDT */
+    /* Заполняем дескриптор TSS в GDT:
+       Создаем указатель на соответствующую запись в GDT для доступа и
+       инициализации отдельных полей дескриптора TSS */
     tss_descriptor_t* tss_d = (tss_descriptor_t*) &gdt_entries[num];
+    /* Устанавливаем базу и лимит */
     tss_d->base_15_0 = base & 0xFFFF;
     tss_d->base_23_16 = (base >> 16) & 0xFF;
     tss_d->base_31_24 = (base >> 24) & 0xFF;
     tss_d->limit_15_0 = limit & 0xFFFF;
     tss_d->limit_19_16 = (limit >> 16) & 0xF;
-    tss_d->present = 1;
-    tss_d->sys = 0;
-    tss_d->DPL = 0;
-    tss_d->type = 9;
-    tss_d->AVL = 0;
-    tss_d->allways_zero = 0;
-    tss_d->gran = 0;
+    /* Заполняем другие биты */
+    tss_d->present = 1; /* Взводим бит присутствия сегмента */
+    tss_d->sys = 0;     /* Это не системный сегмент */
+    tss_d->DPL = 0;     /* Уровень привилегий сегмента - уровень ядра */
+    tss_d->type = 9;    /* Тип сегмента - свободный 32-битный TSS */
+    tss_d->AVL = 0;     /* Всегда ноль */
+    tss_d->allways_zero = 0; /* Всегда ноль */
+    tss_d->gran = 0;    /* Бит гранулярности - ноль */
 }
 
 /* Неиспользуется (пока?) */
@@ -101,32 +105,42 @@ void init_gdt(void){
     gdt_ptr.limit = ( sizeof(gdt_entry_t) * GDT_NUMBER_OF_ELTS ) - 1;
     /* Устанавливается базовый адрес GDT */
     gdt_ptr.base = (uint32_t)gdt_entries;
-    /* Устанавливается нулевой дескриптор в GDT.
-       p:0 dpl:0 s:0(sys)
-       type:0(Запрещенное значение) */
+
+    /* p:0 dpl:0 s:0(sys)
+       type:0(Запрещенное значение)
+       Нулевой сегмент*/
     gdt_set_gate(0, 0, 0, 0, 0);
-    /* p:1 dpl:3 s:1(user)
+    /* p:1 dpl:0 s:1(user)
        type:1010(Сегмент кода для выполнения/чтения)
-       Нулевой сегмент */
+       Сегмент кода нулевого кольца */
     gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF);
     /* p:1 dpl:0 s:1(user)
        type:0010(Сегмент данных для чтения/записи)
-       Сегменты с информацией */
+       Сегмент данных нулевого кольца */
     gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF);
     /* p:1 dpl:3 s:1(user)
        type:1010(Сегмент кода для выполнения/чтения)
-       Пользовательские сегменты */
+       Сегмент кода третьего кольца */
     gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF);
     /* p:1 dpl:3 s:1(user)
-       type:1010(Сегмент кода для выполнения/чтения)
-       Пользовательские сегменты */
+       type:10(Сегмент данных для чтения/записи)
+       Сегмент данных третьего кольца */
     gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF);
+
     /* Мы записываем TSS в последний 5-ый гейт  */
-    /* Почему селектор стека = 0x10 ? */
+    /* Так как дескриптор стека ядра (и данных) имеет
+       индекс 2 в GDT, то его селектор, с учетом
+       RPL = 0 в GDT будет равен
+       stack_selector = 2*8 | RPL = 16
+       или 0x10 в hex */
     write_tss(5, 0x10, init_esp);
     /* Загружаем GDT */
     gdt_flush( (uint32_t) &gdt_ptr);
-    /* Загружаем TSS */
+    /* Загружаем TSS
+       Поскольку дескриптор TSS имеет индекс 5 в GDT,
+       то его селектор, с учетом RPL = 0, будет равен
+       tss_selector = 5*8 | RPL = 40, или 0x28 в hes.
+       Именно это значение мы загружаем в TR */
     tss_flush(0x28);
 }
 
