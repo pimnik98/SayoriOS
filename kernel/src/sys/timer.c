@@ -23,7 +23,11 @@ void microseconds_delay(size_t microseconds) {
         inb(0x80);
 }
 
-/* @return size_t - Количество тиков с момента старта */
+/**
+ * @brief Получить количество тиков
+ *
+ * @return size_t - Количество тиков с момента старта
+ */
 size_t getTicks(){
     return tick;
 }
@@ -36,11 +40,20 @@ double getUptime() {
     }
 }
 
+/**
+ * @brief Получить частоту таймера
+ *
+ * @return uint32_t - Частота таймера
+ */
 size_t getFrequency(){
     return frequency;
 }
 
-/* @param delay - Тики */
+/**
+ * @brief Ожидание по тикам
+ *
+ * @param delay - Тики
+ */
 void sleep_ticks(uint32_t delay){
     size_t current_ticks = getTicks();
     while (1){
@@ -50,6 +63,11 @@ void sleep_ticks(uint32_t delay){
     }
 }
 
+/**
+ * @brief Ожидание по милисекундам
+ *
+ * @param milliseconds - Милисекунды
+ */
 void sleep_ms(uint32_t milliseconds) {
     uint32_t needticks = milliseconds * frequency;
     sleep_ticks(needticks / 1000);
@@ -57,7 +75,11 @@ void sleep_ms(uint32_t milliseconds) {
     /* (milliseconds * frequency + 500) / 1000 */
 }
 
-
+/**
+ * @brief Таймер Callback
+ *
+ * @param regs - Регистр
+ */
 static void timer_callback(__attribute__((unused)) registers_t regs){
     tick++;
 
@@ -65,7 +87,11 @@ static void timer_callback(__attribute__((unused)) registers_t regs){
         task_switch();
 }
 
-/* @param - Частота */
+/**
+ * @brief Инициализация модуля системного таймера
+ *
+ * @param - Частота
+ */
 void init_timer(uint32_t f){
     frequency = f;
 

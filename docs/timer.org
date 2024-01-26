@@ -4,7 +4,7 @@
 
 * Таймер
 
-#+BEGIN_SRC c :noweb yes :tangle kernel/include/sys/timer.h
+#+BEGIN_SRC c :noweb yes :tangle ../kernel/include/sys/timer.h
   #pragma once
 
   #define BASE_FREQ 1193180
@@ -23,7 +23,7 @@
   <<init_timer_h>>
 #+END_SRC
 
-#+BEGIN_SRC c :noweb yes :tangle kernel/src/sys/timer.c
+#+BEGIN_SRC c :noweb yes :tangle ../kernel/src/sys/timer.c
   /**
    ,* @file sys/timer.c
    ,* @author Пиминов Никита (nikita.piminoff@yandex.ru)
@@ -76,7 +76,11 @@
 
 #+NAME: get_ticks
 #+BEGIN_SRC c
-  /* @return size_t - Количество тиков с момента старта */
+  /**
+   ,* @brief Получить количество тиков
+   ,*
+   ,* @return size_t - Количество тиков с момента старта
+   ,*/
   size_t getTicks(){
       return tick;
   }
@@ -86,6 +90,11 @@
 
 #+NAME: get_uptime_h
 #+BEGIN_SRC c
+  /**
+   ,* @brief Получить количество тиков
+   ,*
+   ,* @return size_t - Количество тиков с момента старта
+   ,*/
   double getUptime();
 #+END_SRC
 
@@ -109,6 +118,11 @@
 
 #+NAME: get_frequency
 #+BEGIN_SRC c
+  /**
+   ,* @brief Получить частоту таймера
+   ,*
+   ,* @return uint32_t - Частота таймера
+   ,*/
   size_t getFrequency(){
       return frequency;
   }
@@ -124,7 +138,11 @@
 
 #+NAME: sleep_ticks
 #+BEGIN_SRC c
-  /* @param delay - Тики */
+  /**
+   ,* @brief Ожидание по тикам
+   ,*
+   ,* @param delay - Тики
+   ,*/
   void sleep_ticks(uint32_t delay){
       size_t current_ticks = getTicks();
       while (1){
@@ -144,13 +162,17 @@
 
 #+NAME: sleep_ms
 #+BEGIN_SRC c
+  /**
+   ,* @brief Ожидание по милисекундам
+   ,*
+   ,* @param milliseconds - Милисекунды
+   ,*/
   void sleep_ms(uint32_t milliseconds) {
       uint32_t needticks = milliseconds * frequency;
       sleep_ticks(needticks / 1000);
 
       /* (milliseconds * frequency + 500) / 1000 */
   }
-
 #+END_SRC
 
 ** init timer
@@ -166,7 +188,11 @@
 #+BEGIN_SRC c :noweb yes
   <<timer_callback>>
 
-  /* @param - Частота */
+  /**
+   ,* @brief Инициализация модуля системного таймера
+   ,*
+   ,* @param - Частота
+   ,*/
   void init_timer(uint32_t f){
       frequency = f;
 
@@ -190,6 +216,11 @@
 
 #+NAME: timer_callback
 #+BEGIN_SRC c
+  /**
+   ,* @brief Таймер Callback
+   ,*
+   ,* @param regs - Регистр
+   ,*/
   static void timer_callback(__attribute__((unused)) registers_t regs){
       tick++;
 

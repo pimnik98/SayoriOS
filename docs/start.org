@@ -9,7 +9,7 @@
 
 Рассмотрим этот конфиг подробнее.
 
-#+BEGIN_SRC conf :noweb tangle :tangle kernel/asm/link.ld :exports none
+#+BEGIN_SRC conf :noweb tangle :tangle ../kernel/asm/link.ld :exports none
   <<ld_entry_point>>
 
   <<ld_sections>>
@@ -111,7 +111,7 @@
 - Очищаем EBP
 - Вызываем kernel
 
-#+BEGIN_SRC asm :noweb tangle :tangle kernel/asm/init.s
+#+BEGIN_SRC asm :noweb tangle :tangle ../kernel/asm/init.s
   /*
    ,* SayoriOS
    ,* Старт инициализации ядра
@@ -179,7 +179,7 @@
 
 sse-check вызывается из сишного кода в kernel.c
 
-#+BEGIN_SRC asm :noweb tangle :tangle kernel/asm/sse.s
+#+BEGIN_SRC asm :noweb tangle :tangle ../kernel/asm/sse.s
   .section	.text
   .global	sse_check
 
@@ -218,7 +218,7 @@ sse-check вызывается из сишного кода в kernel.c
 
 лежит в kernel/src/kernel.c
 
-#+BEGIN_SRC c :noweb tangle :tangle kernel/src/kernel.c :exports none
+#+BEGIN_SRC c :noweb tangle :tangle ../kernel/src/kernel.c :exports none
   /**
    ,* @file kernel.c
    ,* @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
