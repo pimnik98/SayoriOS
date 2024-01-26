@@ -90,11 +90,6 @@
 
 #+NAME: get_uptime_h
 #+BEGIN_SRC c
-  /**
-   ,* @brief Получить количество тиков
-   ,*
-   ,* @return size_t - Количество тиков с момента старта
-   ,*/
   double getUptime();
 #+END_SRC
 

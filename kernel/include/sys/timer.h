@@ -9,11 +9,6 @@
 #define timestamp() (getTicks() / (getFrequency() / 1000))
 
 size_t getTicks();
-/**
- * @brief Получить количество тиков
- *
- * @return size_t - Количество тиков с момента старта
- */
 double getUptime();
 size_t getFrequency();
 void sleep_ticks(uint32_t delay);
