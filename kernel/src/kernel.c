@@ -236,6 +236,7 @@ extern size_t USER_end;
 */
 int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     __com_setInit(1, 1);
+    __com_init(PORT_COM1);
     
     multiboot = mboot;
     
