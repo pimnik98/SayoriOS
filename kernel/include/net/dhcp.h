@@ -26,3 +26,4 @@ typedef struct dhcp_packet {
 void dhcp_discover(netcard_entry_t* card);
 void dhcp_handle_packet(netcard_entry_t* card, dhcp_packet_t* packet);
 void dhcp_request(netcard_entry_t* card, const uint8_t req_ip[4]);
+void dhcp_init_all_cards();

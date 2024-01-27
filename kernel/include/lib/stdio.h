@@ -19,7 +19,7 @@
  */
 typedef struct FILE {
 	char* path;
-    int32_t size;
+    uint32_t size;
     uint32_t fmode;
 	bool open;
 	size_t pos;

@@ -18,7 +18,11 @@ void ttf_init(ttf_font_t* font, const char* path) {
         return;
     }
 
-    size_t filesize = fp->size;
+    fseek(fp, 0, SEEK_END);
+
+    size_t filesize = ftell(fp);
+
+    fseek(fp, 0, SEEK_SET);
 
     font->data = kcalloc(filesize, 1);
     fread(fp, filesize, 1, font->data);

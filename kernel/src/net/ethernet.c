@@ -67,15 +67,15 @@ void ethernet_dump(void* data, size_t size, uint16_t type){
 		ipv6->Destination[7] = htons(ipv6->Destination[7]);
 
 		qemu_log("  |--- HopLimit: %x",ipv6->HopLimit);
-		qemu_log("  |--- Source: %v:%v:%v:%v:%v:%v:%v:%v", ipv6->Source[0], ipv6->Source[1], ipv6->Source[2], ipv6->Source[3], ipv6->Source[4], ipv6->Source[5], ipv6->Source[6], ipv6->Source[7]);
-		qemu_log("  |--- Destination: %v:%v:%v:%v:%v:%v:%v:%v", ipv6->Destination[0], ipv6->Destination[1], ipv6->Destination[2], ipv6->Destination[3], ipv6->Destination[4], ipv6->Destination[5], ipv6->Destination[6], ipv6->Destination[7]);
+		qemu_log("  |--- Source: %x:%x:%x:%x:%x:%x:%x:%x", ipv6->Source[0], ipv6->Source[1], ipv6->Source[2], ipv6->Source[3], ipv6->Source[4], ipv6->Source[5], ipv6->Source[6], ipv6->Source[7]);
+		qemu_log("  |--- Destination: %x:%x:%x:%x:%x:%x:%x:%x", ipv6->Destination[0], ipv6->Destination[1], ipv6->Destination[2], ipv6->Destination[3], ipv6->Destination[4], ipv6->Destination[5], ipv6->Destination[6], ipv6->Destination[7]);
 		/*
 		qemu_log("  |--- Дополнительная информация");
 		qemu_log("    |--- Type: %d",ipv6->Opt.Type);
 		qemu_log("    |--- Size: %d",ipv6->Opt.Size);
 
 		// First two bytes may indicate a checksum according to Wireshark
-		qemu_log("    |--- Data: %v:%v:%v:%v:%v:%v", ipv6->Opt.MAC[0], ipv6->Opt.MAC[1], ipv6->Opt.MAC[2], ipv6->Opt.MAC[3], ipv6->Opt.MAC[4], ipv6->Opt.MAC[5]);
+		qemu_log("    |--- Data: %x:%x:%x:%x:%x:%x", ipv6->Opt.MAC[0], ipv6->Opt.MAC[1], ipv6->Opt.MAC[2], ipv6->Opt.MAC[3], ipv6->Opt.MAC[4], ipv6->Opt.MAC[5]);
 		*/
 	} else {
 		qemu_log("UNKNOWN ETHERNET PACKET TYPE");
@@ -107,7 +107,7 @@ void ethernet_handle_packet(netcard_entry_t *card, ethernet_frame_t *packet, siz
     size_t data_len = len - sizeof(ethernet_frame_t);  // Get length of data
     
     qemu_log("Received Ethernet Packet!");
-    qemu_log("=> SRC[%v:%v:%v:%v:%v:%v]; DEST[%v:%v:%v:%v:%v:%v]; TYPE: %x",
+    qemu_log("=> SRC[%x:%x:%x:%x:%x:%x]; DEST[%x:%x:%x:%x:%x:%x]; TYPE: %x",
 			 packet->src_mac[0],
 			 packet->src_mac[1],
 			 packet->src_mac[2],

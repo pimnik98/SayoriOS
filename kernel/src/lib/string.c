@@ -8,6 +8,7 @@
  */
 #include "common.h"
 #include "lib/string.h"
+#include "lib/math.h"
 #include <emmintrin.h>  // SSE functions and types
 
 bool isalnum(char c){
@@ -582,7 +583,7 @@ uint32_t atoi(const char s[]){
  * @param  str - строка символов, которая должна быть обращена
  */
 void strver(char *str) {
-    int32_t j = strlen(str) - 1;
+    size_t j = strlen(str) - 1;
 
     for (int32_t i = 0; i < j; i++) {
         char c = str[i];
@@ -760,7 +761,7 @@ char* strstr(const char* haystack, const char* needle) {
 
 double strtod(const char* str, char** endptr) {
     double result = 0.0;
-    bool negative = false;
+//    bool negative = false;
     int exponent = 0;
     int sign = 1;
 

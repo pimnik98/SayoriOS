@@ -34,7 +34,7 @@ int dpm_searchFreeIndex(int Index){
 	return -1;
 }
 
-void dpm_fnc_write(char Letter, dpm_disk_rw_cmd Read, dpm_disk_rw_cmd Write){
+void dpm_fnc_write(char Letter, dpm_disk_rw_cmd Read, dpm_disk_rw_cmd Write) {
 	int Index = Letter - 65;
 
 	Index = (Index > 32 ? Index - 32 : Index);

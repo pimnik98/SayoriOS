@@ -93,7 +93,7 @@ void ipv4_send_packet(netcard_entry_t *card, uint8_t dest_ip[4], const void *dat
 	}
 
 	if(spin == 0) {
-		qemu_err("%d.%d.%d.%d is unreachable", dest_ip[0], dest_ip[1], dest_ip[2], dest_ip[3]);
+		qemu_err("%u.%u.%u.%u is unreachable", dest_ip[0], dest_ip[1], dest_ip[2], dest_ip[3]);
 
 		goto end;
 	}
