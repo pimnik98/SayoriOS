@@ -16,14 +16,14 @@
 heap_t system_heap;
 bool vmm_debug = false;
 
-size_t pmm_alloc_and_map(size_t* page_dir, size_t virtual_addr, size_t bytes) {
-	size_t count = (bytes + 1) / PAGE_SIZE;
-	size_t pages = phys_alloc_multi_pages(count);
-
-	map_pages(page_dir, pages, virtual_addr, bytes, PAGE_WRITEABLE);
-
-	return pages;
-}
+//size_t pmm_alloc_and_map(size_t* page_dir, size_t virtual_addr, size_t bytes) {
+//	size_t count = (bytes + 1) / PAGE_SIZE;
+//	size_t pages = phys_alloc_multi_pages(count);
+//
+//	map_pages(page_dir, pages, virtual_addr, bytes, PAGE_WRITEABLE);
+//
+//	return pages;
+//}
 
 size_t pmm_alloc_and_map_self(size_t* page_dir, size_t bytes) {
 	size_t count = (bytes + 1) / PAGE_SIZE;

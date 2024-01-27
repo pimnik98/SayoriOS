@@ -1,13 +1,10 @@
 #include "desktop/widget.h"
 #include "desktop/widget_progress.h"
 #include "gui/basics.h"
-#include "lib/string.h"
-#include "drv/psf.h"
-#include "io/ports.h"
 #include "mem/vmm.h"
 
 void widget_progress_renderer(struct Widget* this, __attribute__((unused)) struct Window* container) {
-    Widget_Progress_t* this_object = (Widget_Progress_t*)(this->custom_widget_data);
+//    Widget_Progress_t* this_object = (Widget_Progress_t*)(this->custom_widget_data);
 
     size_t cost = this->width / 100;
 

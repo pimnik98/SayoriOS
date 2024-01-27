@@ -30,7 +30,9 @@ typedef struct {
 void* dpm_metadata_read(char Letter);
 void dpm_metadata_write(char Letter, uint32_t Addr);
 size_t dpm_read(char Letter, size_t Offset, size_t Size, void *Buffer);
+size_t dpm_write(char Letter, size_t Offset, size_t Size, char* Buffer);
 int dpm_reg(char Letter, char* Name, char* FS, int Status, size_t Size, size_t Sectors, size_t SectorSize, int AddrMode, char* Serial, void *Point);
 DPM_Disk dpm_info(char Letter);
 int dpm_unmount(char Letter, bool FreeReserved);
 void dpm_LabelUpdate(char Letter, char* Label);
+void dpm_fnc_write(char Letter, dpm_disk_rw_cmd Read, dpm_disk_rw_cmd Write);

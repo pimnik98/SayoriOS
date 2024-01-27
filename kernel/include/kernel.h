@@ -10,7 +10,6 @@
 
 #include "common.h"
 #include "config.h"
-#include "rust_headers.h"
 
 #include "lib/string.h"
 #include "lib/stdlib.h"
@@ -78,3 +77,5 @@
 
 #include "debug/hexview.h"
 #include "debug/ubsan.h"
+
+#include "sys/cputemp.h"

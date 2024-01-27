@@ -309,12 +309,15 @@ ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence){
 		return -1;
 	});
 
-	if (!stream->open || stream->size <= 0 || stream->fmode == 0){
+    qemu_err("fseek() call");
+	if (!stream->open || stream->size == 0 || stream->fmode == 0){
 		fcheckerror(stream);
 		return -1;
 	}
+
 	size_t lsk = 0;
-	if (whence == SEEK_CUR) {
+
+    if (whence == SEEK_CUR) {
 		lsk = stream->pos;
 	} else if (whence == SEEK_END) {
 		lsk = stream->size;
@@ -327,8 +330,10 @@ ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence){
 	} else {
 		return -1;
 	}
-	if (lsk+offset > 0 && stream->size >=lsk+offset){
-		stream->pos = lsk+offset;
+
+	    qemu_warn("Offset: %d; Shifting by: %d", offset, lsk);
+	if (lsk + offset > 0 && stream->size >= lsk+offset){
+		stream->pos = lsk + offset;
 	}
 	return 0;
 }

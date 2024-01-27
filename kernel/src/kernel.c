@@ -18,11 +18,11 @@
 #include "drv/audio/ac97.h"
 #include "sys/mtrr.h"
 #include "net/ipv4.h"
-#include "lib/freeada/ada.h"
 
 #include "fs/natfs.h"
 #include "net/stack.h"
 #include "drv/audio/hda.h"
+#include "lib/ttf_font.h"
 
 #include <lib/pixel.h>
 
@@ -82,7 +82,7 @@ void scan_kmodules() {
  */
 
 void kHandlerCMD(char* cmd){
-    qemu_log("Kernel command line at address %x and contains: '%s'", cmd, cmd);
+    qemu_log("Kernel command line at address %x and contains: '%s'", (size_t)cmd, cmd);
 
     if(strlen(cmd) == 0)
         return;
@@ -253,7 +253,7 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
              __TIMESTAMP__                                   // Время окончания компиляции ядра
         );
     
-    qemu_log("Bootloader header at: %x", mboot);
+    qemu_log("Bootloader header at: %x", (size_t)mboot);
     
     qemu_log("SSE: %s", sse_check() ? "Supported" : "Not supported");
     
@@ -280,10 +280,10 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     qemu_log("Checking RAM...");
     check_memory_map((memory_map_entry_t *) mboot->mmap_addr, mboot->mmap_length);
     qemu_log("Memory summary:");
-    qemu_log("    Code: %x - %x", &CODE_start, &CODE_end);
-    qemu_log("    Data: %x - %x", &DATA_start, &DATA_end);
-    qemu_log("    Read-only data: %x - %x", &RODATA_start, &RODATA_end);
-    qemu_log("    BSS: %x - %x", &BSS_start, &BSS_end);
+    qemu_log("    Code: %x - %x", (size_t)&CODE_start, (size_t)&CODE_end);
+    qemu_log("    Data: %x - %x", (size_t)&DATA_start, (size_t)&DATA_end);
+    qemu_log("    Read-only data: %x - %x", (size_t)&RODATA_start, (size_t)&RODATA_end);
+    qemu_log("    BSS: %x - %x", (size_t)&BSS_start, (size_t)&BSS_end);
     qemu_log("Memory manager initialization...");
     
     scan_kmodules();
@@ -524,7 +524,17 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     // vio_ntw_init();
     
     hda_init();
-    
+
+//     {
+//         ttf_font_t hah = {};
+// 
+//         ttf_init(&hah, "R:\\font.ttf");
+// 
+//         ttf_draw_string(&hah, (char *) getFrameBufferAddr(), getScreenWidth(), getScreenHeight(), 0, 0, "Cattiva");
+// 
+//         ttf_destroy(&hah);
+//     }
+
     cli();
     
     return 0;

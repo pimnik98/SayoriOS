@@ -27,7 +27,6 @@ DIRECTORIES = objects/kernel/src \
 				objects/kernel/src/lib/php \
 				objects/kernel/src/lib/elk \
 				objects/kernel/src/lib/elk/ext \
-				objects/kernel/src/lib/freeada \
 				objects/kernel/src/extra \
 				objects/kernel/src/sys \
 				objects/kernel/src/io \
@@ -100,7 +99,6 @@ SOURCES=\
 	kernel/src/lib/elk/elk_libs.c \
 	kernel/src/lib/elk/jse_func.c \
 	$(wildcard kernel/src/lib/elk/ext/*.c) \
-	kernel/src/lib/freeada/ada.c \
 	kernel/src/drv/psf.c \
 	kernel/src/sys/unwind.c \
 	kernel/src/fs/NatSuki.c \
@@ -197,6 +195,7 @@ SOURCES=\
 	kernel/src/net/stack.c \
 	kernel/src/toys/pavi.c \
 	kernel/src/drv/audio/hda.c \
+	kernel/src/lib/ttf_font.c \
 	$(GAMEBOY) \
 	kernel/src/kernel.c \
 #	kernel/src/lib/duktape.c \

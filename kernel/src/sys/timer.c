@@ -17,12 +17,6 @@ extern bool scheduler_working;
 size_t tick = 0;                /* Количество тиков */
 size_t frequency = CLOCK_FREQ;  /* Частота */
 
-// FIXME: Invalid and deprecated implementation.
-void microseconds_delay(size_t microseconds) {
-    for (size_t i = 0; i < microseconds; ++i)
-        inb(0x80);
-}
-
 /**
  * @brief Получить количество тиков
  *
@@ -109,7 +103,5 @@ void init_timer(uint32_t f){
     outb(0x40, low);
     outb(0x40, high);
 
-    register_interrupt_handler(IRQ0, &timer_callback);
+	register_interrupt_handler(IRQ0, &timer_callback);
 }
-
-size_t timestamp_for_asm() { return tick / (frequency / 1000); }

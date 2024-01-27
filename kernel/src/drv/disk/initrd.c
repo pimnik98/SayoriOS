@@ -15,7 +15,7 @@
 
 #define INITRD_RW_SIZE (2*1024*1024) ///< Размер виртуального диска 2mb
 
-int initrd_tarfs(uint32_t start,uint32_t end){
+int initrd_tarfs(uint32_t start, uint32_t end) {
 	qemu_log("[TarFS] Init...\n * Start: %x\n * End: %x\n * Size: %d",start,end,end-start);
 
 	size_t initrd_size = end - start;
