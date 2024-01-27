@@ -30,7 +30,8 @@ void ide_select_drive(uint8_t bus, bool slave) {
 void ide_primary_irq(__attribute__((unused)) registers_t regs) {
 //	qemu_log("=================== Got ATA interrupt. PRIMARY");
 
-	uint8_t status = inb(ATA_PRIMARY_IO + ATA_REG_STATUS);
+//	uint8_t status = inb(ATA_PRIMARY_IO + ATA_REG_STATUS);
+	inb(ATA_PRIMARY_IO + ATA_REG_STATUS);
 
 //	qemu_log("Status: %d (%x); Altstatus: %x", status, status, altstatus);
 }
@@ -38,7 +39,8 @@ void ide_primary_irq(__attribute__((unused)) registers_t regs) {
 void ide_secondary_irq(__attribute__((unused)) registers_t regs) {
 //	qemu_log("=================== Got ATA interrupt. SECONDARY");
 
-	size_t status = inb(ATA_SECONDARY_IO + ATA_REG_STATUS);
+//	size_t status = inb(ATA_SECONDARY_IO + ATA_REG_STATUS);
+	inb(ATA_SECONDARY_IO + ATA_REG_STATUS);
 
 //	qemu_log("Status: %d (%x); Altstatus: %x", status, status, altstatus);
 }

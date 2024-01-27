@@ -13,7 +13,7 @@ typedef struct Widget {
     renderer_func_t renderer;
     destroyer_func_t destroyer;
 
-    ssize_t x, y;
+    size_t x, y;
     size_t width, height;
 
     void (*on_click)(struct Widget* this, Coordinates_t* coords);

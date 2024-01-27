@@ -131,9 +131,8 @@ size_t atapi_read_size(uint16_t bus, bool slave) {
     uint32_t* data2 = (uint32_t*)data;
 
     uint32_t maxlba = data2[0];
-    uint32_t blocksize = data2[1];
+//    uint32_t blocksize = ntohl(data2[1]);
 
-    blocksize = ntohl(blocksize);
     maxlba = ntohl(maxlba);
 
 //	qemu_log("Blocks: %x; Block size: %x", maxlba, blocksize);

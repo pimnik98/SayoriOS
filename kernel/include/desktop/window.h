@@ -27,7 +27,7 @@ typedef struct Window {
     char* title;
 
     size_t width, height;
-    ssize_t x, y;
+    size_t x, y;
 
     bool with_title_bar;
     WindowState_t state;
