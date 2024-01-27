@@ -26,6 +26,13 @@
 
 #include <lib/pixel.h>
 
+
+
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "3rdparty/stb_truetype.h"
+
+
+
 multiboot_header_t* multiboot;
 uint32_t init_esp = 0;
 bool test_pcs = true;
@@ -523,7 +530,7 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     // vio_ntw_init();
     
     hda_init();
-    
+
     cli();
     
     return 0;

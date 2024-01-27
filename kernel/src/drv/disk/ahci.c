@@ -22,7 +22,7 @@ uint16_t ahci_vendor = 0, ahci_devid = 0;
 uint32_t ahci_irq;
 bool ahci_initialized = false;
 
-AHCI_HBA_MEM* abar;
+volatile AHCI_HBA_MEM* abar;
 
 #undef qemu_log
 #undef qemu_err
@@ -133,10 +133,6 @@ void ahci_init() {
 				continue;
 			}
 
-//            qemu_log("%x", port->command_and_status);
-
-			// from nakst/essence
-
 			/*
 Ensure that the controller is not in the running state by reading and examining each
 implemented port’s PxCMD register. If PxCMD.ST, PxCMD.CR, PxCMD.FRE and
@@ -148,11 +144,7 @@ this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0�
 500 milliseconds for PxCMD.FR to return ‘0’ when read. 
 			*/
 
-//			uint32_t norm = (1 << 0) | (1 << 4) | (1 << 15) | (1 << 14);  // ST, FRE, CR and FR
-
 			port->command_and_status &= ~(1);
-			
-			uint32_t st = port->command_and_status;
 
 			while(true) {
 				uint32_t cr = (port->command_and_status >> 15) & 1;
@@ -185,25 +177,6 @@ this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0�
             port->interrupt_enable = (1 << 5) | (1 << 0) | (1 << 30) | (1 << 29) | (1 << 28) | (1 << 27) | (1 << 26) | (1 << 24) | (1 << 23);
 
             port->command_and_status |= 1;
-            /////////////
-
-//            volatile size_t x = port->interrupt_status;
-//            port->interrupt_status = x;
-//
-//            port->sata_control |= (3 << 8);
-//            port->command_and_status = (port->command_and_status & 0x0FFFFFFF) | (1 << 1) | (1 << 2) | (1 << 4) | (1 << 28);
-//
-//            while((port->sata_status & 0x0f) != 3);
-//
-//            x = port->sata_error;
-//            port->sata_error = x;
-//
-//            while(port->task_file_data & 0x88);
-//
-//            port->command_and_status |= 1;
-//
-//            port->interrupt_enable |= (1 << 5) | (1 << 0) | (1 << 30) | (1 << 29) | (1 << 28) | (1 << 27) | (1 << 26) | (1 << 24) | (1 << 23);
-            
         }
 	}
 
