@@ -14,7 +14,7 @@
 
 #define LOG_WITH_TIME 0
 
-extern void (*default_qemu_printf)(const char *text, ...);
+extern void (*default_qemu_printf)(const char *text, ...) __attribute__((format(printf, 1, 2)));
 
 #ifndef RELEASE
 	#if LOG_WITH_TIME == 0

@@ -23,15 +23,9 @@
 #include "fs/natfs.h"
 #include "net/stack.h"
 #include "drv/audio/hda.h"
+#include "lib/ttf_font.h"
 
 #include <lib/pixel.h>
-
-
-
-#define STB_TRUETYPE_IMPLEMENTATION
-#include "3rdparty/stb_truetype.h"
-
-
 
 multiboot_header_t* multiboot;
 uint32_t init_esp = 0;
@@ -530,6 +524,16 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     // vio_ntw_init();
     
     hda_init();
+
+    {
+        ttf_font_t hah = {};
+
+        ttf_init(&hah, "R:\\font.ttf");
+
+        ttf_draw_char(&hah, (char *) getFrameBufferAddr(), getScreenWidth(), getScreenHeight(), 'A');
+
+        ttf_destroy(&hah);
+    }
 
     cli();
     

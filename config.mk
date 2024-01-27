@@ -197,6 +197,7 @@ SOURCES=\
 	kernel/src/net/stack.c \
 	kernel/src/toys/pavi.c \
 	kernel/src/drv/audio/hda.c \
+	kernel/src/lib/ttf_font.c \
 	$(GAMEBOY) \
 	kernel/src/kernel.c \
 #	kernel/src/lib/duktape.c \

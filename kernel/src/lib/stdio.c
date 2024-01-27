@@ -327,8 +327,8 @@ ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence){
 	} else {
 		return -1;
 	}
-	if (lsk+offset > 0 && stream->size >=lsk+offset){
-		stream->pos = lsk+offset;
+	if (lsk + offset > 0 && stream->size >= lsk+offset){
+		stream->pos = lsk + offset;
 	}
 	return 0;
 }
