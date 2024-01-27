@@ -1,9 +1,9 @@
 #pragma once
 
-#define		BASE_FREQ	1193180
-#define     CLOCK_FREQ  1000
+#define BASE_FREQ 1193180
+#define CLOCK_FREQ  1000
 
-#include	"common.h"
+#include "common.h"
 
 #define sleep(_d) sleep_ms((_d) * CLOCK_FREQ);
 #define timestamp() (getTicks() / (getFrequency() / 1000))
