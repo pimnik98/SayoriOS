@@ -73,11 +73,13 @@ void rtl8139_init() {
 
     // Enable Bus Mastering
 
-    uint16_t command_register = pci_read_confspc_word(rtl8139_busnum, rtl8139_slot, rtl8139_func, 4);
+//    uint16_t command_register = pci_read_confspc_word(rtl8139_busnum, rtl8139_slot, rtl8139_func, 4);
+//
+//    command_register |= 0x05;
+//
+//    pci_write(rtl8139_busnum, rtl8139_slot, rtl8139_func, 4, command_register);
 
-    command_register |= 0x05;
-
-    pci_write(rtl8139_busnum, rtl8139_slot, rtl8139_func, 4, command_register);
+    pci_enable_bus_mastering(rtl8139_busnum, rtl8139_slot, rtl8139_func);
 
     qemu_log("Enabled Bus Mastering for RTL8139!");
 
@@ -126,7 +128,7 @@ void rtl8139_read_mac() {
     rtl8139_mac[4] = mac_part2 >> 0;
     rtl8139_mac[5] = mac_part2 >> 8;
 
-    qemu_log("Mac is: %v:%v:%v:%v:%v:%v", rtl8139_mac[0], rtl8139_mac[1], rtl8139_mac[2], rtl8139_mac[3], rtl8139_mac[4], rtl8139_mac[5]);
+    qemu_log("Mac is: %x:%x:%x:%x:%x:%x", rtl8139_mac[0], rtl8139_mac[1], rtl8139_mac[2], rtl8139_mac[3], rtl8139_mac[4], rtl8139_mac[5]);
 }
 
 void rtl8139_enable_rx_tx() {
@@ -184,7 +186,7 @@ void rtl8139_send_packet(void *data, size_t length) {
 
 	memcpy(rtl8139_transfer_buffer, data, length);
 
-	qemu_log("Send packet: Virtual memory at %x", rtl8139_transfer_buffer);
+	qemu_log("Send packet: Virtual memory at %x", (size_t)rtl8139_transfer_buffer);
 	qemu_log("Send packet: Physical memory at %x", rtl8139_transfer_buffer_phys);
 
 	// Second, fill in physical address of data, and length

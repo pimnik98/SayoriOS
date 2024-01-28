@@ -48,7 +48,6 @@
 #include <drv/disk/ata_dma.h>
 
 #include <drv/cmos.h>
-#include <drv/sb16.h>
 #include <drv/pci.h>
 #include <drv/beeper.h>
 #include <drv/psf.h>

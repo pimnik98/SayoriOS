@@ -63,7 +63,7 @@ void ahci_init() {
 
 	// Get ABAR
 
-	abar = (AHCI_HBA_MEM*)pci_read32(ahci_busnum, ahci_slot, ahci_func, 0x24);
+	abar = (volatile AHCI_HBA_MEM*)pci_read32(ahci_busnum, ahci_slot, ahci_func, 0x24);
 
 	qemu_log("AHCI ABAR is: %x", abar);
 
@@ -126,7 +126,7 @@ void ahci_init() {
 
 	for(int i = 0; i < 32; i++) {
 		if (implemented_ports & (1 << i)) {
-			AHCI_HBA_PORT* port = AHCI_PORT(i);
+//			AHCI_HBA_PORT* port = AHCI_PORT(i);
 
 			if (!ahci_is_drive_attached(i)) {
 				continue;
@@ -294,7 +294,7 @@ void ahci_start_cmd(size_t port_num) {
 	if(port_num > 31)
 		return;
 
-	AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+	volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
 
 	while (port->command_and_status & AHCI_HBA_CR);
 
@@ -306,7 +306,7 @@ void ahci_stop_cmd(size_t port_num) {
 	if(port_num > 31)
 		return;
 
-	AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+	volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
 
 	port->command_and_status &= ~AHCI_HBA_ST;
 	port->command_and_status &= ~AHCI_HBA_FRE;
@@ -329,7 +329,7 @@ void ahci_irq_handler() {
 
     for(int i = 0; i < 32; i++) {
         if(status & (1 << i)) {
-            AHCI_HBA_PORT* port = AHCI_PORT(i);
+            volatile AHCI_HBA_PORT* port = AHCI_PORT(i);
 
             uint32_t port_interrupt_status = port->interrupt_status;
 
@@ -342,7 +342,7 @@ void ahci_irq_handler() {
     }
 }
 
-void ahci_send_cmd(AHCI_HBA_PORT* port, size_t slot) {
+void ahci_send_cmd(volatile AHCI_HBA_PORT *port, size_t slot) {
     int spin = 0;
     while ((port->task_file_data & (ATA_SR_BSY | ATA_SR_DRQ)) && spin < 1000000) {
         spin++;
@@ -393,7 +393,7 @@ void ahci_read_sectors(size_t port_num, size_t location, size_t sector_count, vo
 
 	size_t buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) buffer_mem);
 
-	AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+	volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
 
 	port->interrupt_status = (uint32_t)-1;
 
@@ -492,7 +492,7 @@ void ahci_write_sectors(size_t port_num, size_t location, size_t sector_count, v
 
 	size_t buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) buffer_mem);
 
-	AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+	volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
 
 	port->interrupt_status = (uint32_t)-1;
 
@@ -573,7 +573,7 @@ void ahci_write_sectors(size_t port_num, size_t location, size_t sector_count, v
 void ahci_eject_cdrom(size_t port_num) {
 	qemu_log("Trying to eject %d", port_num);
 
-	AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+	volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
 
 	port->interrupt_status = (uint32_t)-1;
 
@@ -614,7 +614,7 @@ void ahci_eject_cdrom(size_t port_num) {
     table->prdt_entry[0].dbc = 0x1ff;  // 512 bytes - 1
     table->prdt_entry[0].i = 1;
 
-	AHCI_FIS_REG_HOST_TO_DEVICE *cmdfis = (AHCI_FIS_REG_HOST_TO_DEVICE*)&(table->cfis);
+	volatile AHCI_FIS_REG_HOST_TO_DEVICE *cmdfis = (volatile AHCI_FIS_REG_HOST_TO_DEVICE*)&(table->cfis);
 
 	cmdfis->fis_type = FIS_TYPE_REG_HOST_TO_DEVICE;
 	cmdfis->c = 1;	// Command
