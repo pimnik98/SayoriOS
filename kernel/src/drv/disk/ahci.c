@@ -9,7 +9,6 @@
 #include "mem/vmm.h"
 #include "sys/isr.h"
 #include "drv/disk/ata.h"
-#include "debug/hexview.h"
 #include "drv/atapi.h"
 
 #define AHCI_CLASS 1
@@ -99,9 +98,9 @@ void ahci_init() {
     }
 
 	// Reset
- 	abar->global_host_control |= (1 << 0);
-
- 	while(abar->global_host_control & (1 << 0));
+// 	abar->global_host_control |= (1 << 0);
+//
+// 	while(abar->global_host_control & (1 << 0));
 
  	qemu_ok("Controller reset ok");
 
@@ -144,39 +143,39 @@ this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0�
 500 milliseconds for PxCMD.FR to return ‘0’ when read. 
 			*/
 
-			port->command_and_status &= ~(1);
-
-			while(true) {
-				uint32_t cr = (port->command_and_status >> 15) & 1;
-				
-				if(cr == 0) {
-					break;
-				}
-			}
-
-			uint32_t fre = (port->command_and_status >> 4) & 1;
-
-			if(fre == 1) {
-				port->command_and_status &= ~(1 << 4);
-			}
-
-			while(true) {
-				uint32_t fr = (port->command_and_status >> 14) & 1;
-				
-				if(fr == 0) {
-					break;
-				}
-			}
+// 			port->command_and_status &= ~(1);
+// 
+// 			while(true) {
+// 				uint32_t cr = (port->command_and_status >> 15) & 1;
+// 				
+// 				if(cr == 0) {
+// 					break;
+// 				}
+// 			}
+// 
+// 			uint32_t fre = (port->command_and_status >> 4) & 1;
+// 
+// 			if(fre == 1) {
+// 				port->command_and_status &= ~(1 << 4);
+// 			}
+// 
+// 			while(true) {
+// 				uint32_t fr = (port->command_and_status >> 14) & 1;
+// 				
+// 				if(fr == 0) {
+// 					break;
+// 				}
+// 			}
 
             ahci_rebase_memory_for(i);
 
-			port->command_and_status |= (1 << 4);
-
-			port->sata_error = (1 << i);
-
-            port->interrupt_enable = (1 << 5) | (1 << 0) | (1 << 30) | (1 << 29) | (1 << 28) | (1 << 27) | (1 << 26) | (1 << 24) | (1 << 23);
-
-            port->command_and_status |= 1;
+// 			port->command_and_status |= (1 << 4);
+// 
+// 			port->sata_error = (1 << i);
+// 
+//             port->interrupt_enable = (1 << 5) | (1 << 0) | (1 << 30) | (1 << 29) | (1 << 28) | (1 << 27) | (1 << 26) | (1 << 24) | (1 << 23);
+// 
+//             port->command_and_status |= 1;
         }
 	}
 
@@ -193,7 +192,7 @@ this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0�
 
 			if(port->signature == AHCI_SIGNATURE_SATAPI) { // SATAPI
 				qemu_log("\tSATAPI drive");
-				ahci_identify(i);
+                ahci_eject_cdrom(i);
 			} else if(port->signature == AHCI_SIGNATURE_SATA) { // SATA
 				qemu_log("\tSATA drive");
 			} else {
@@ -571,7 +570,7 @@ void ahci_write_sectors(size_t port_num, size_t location, size_t sector_count, v
 
 
 // Call SCSI START_STOP command to eject a disc
-void ahci_identify(size_t port_num) {
+void ahci_eject_cdrom(size_t port_num) {
 	qemu_log("Trying to eject %d", port_num);
 
 	AHCI_HBA_PORT* port = AHCI_PORT(port_num);

@@ -476,7 +476,7 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     //
     //	udp_send_packet(card, ip, 8888, 9999, "EEVEE\n", 6);
     
-    // ahci_init();
+    ahci_init();
     // ahci_test();
     
     /// Пример закругленных квадратов
@@ -517,9 +517,6 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     //    elk_file("R:\\jse\\libs.js");
     //    void k();
     //    create_process(k, "Test process", false, true);
-    
-    //    extern void rust_main();
-    //    rust_main();
     
     // vio_ntw_init();
     
