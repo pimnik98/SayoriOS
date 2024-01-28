@@ -16,3 +16,4 @@
 /rust/Cargo.lock
 .idea/
 iso/boot/ramdisk
+disk*.img
