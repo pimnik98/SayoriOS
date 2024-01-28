@@ -530,6 +530,8 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
 
         ttf_init(&hah, "R:\\font.ttf");
 
+        hah.user_size = 96;
+
         ttf_draw_string(&hah, (char *) getFrameBufferAddr(), getScreenWidth(), getScreenHeight(), 0, 0, "Cattiva");
 
         ttf_destroy(&hah);

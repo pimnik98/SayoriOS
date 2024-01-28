@@ -12,6 +12,8 @@ typedef struct {
     stbtt_fontinfo info;
 
     int ascent, descent, linegap;
+
+    int user_size;
 } ttf_font_t;
 
 void ttf_init(ttf_font_t* font, const char* path);
