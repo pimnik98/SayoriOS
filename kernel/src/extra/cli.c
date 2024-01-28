@@ -23,7 +23,6 @@
 #include "sys/scheduler.h"
 #include "sys/timer.h"
 #include "drv/disk/dpm.h"
-#include <sys/cpuinfo.h>
 #include <fmt/tga.h>
 #include "sys/pixfmt.h"
 #include "io/rgb_image.h"
@@ -86,8 +85,15 @@ uint32_t CLI_CMD_SYSINFO(uint32_t c, char* v[]){
     tty_printf("\tДата сборки:             %s\n", __TIMESTAMP__);
     tty_printf("\tАрхитектура:             %s\n", ARCH_TYPE);
     tty_printf("\tПроцессор:               %s\n", getNameBrand());
+
+    if(is_temperature_module_present()) {
+        tty_printf("\tТемпература:             %d *C\n", get_cpu_temperature());
+    } else {
+        tty_printf("\tТемпература:             -- *C\n");
+    }
+
     tty_printf("\tОЗУ:                     %d kb\n", getInstalledRam()/1024);
-    tty_printf("\tВидеоадаптер:            %s\n","Basic video adapter (Unknown)");
+    tty_printf("\tВидеоадаптер:            %s\n", "Legacy framebuffer (Unknown)");
     tty_printf("\tДисплей:                 %s (%dx%d)\n", "(\?\?\?)", getScreenWidth(), getScreenHeight());
     tty_printf("\tТики:                    %d\n", getTicks());
     tty_printf("\tЧастота таймера:         %d Гц\n", getFrequency());
