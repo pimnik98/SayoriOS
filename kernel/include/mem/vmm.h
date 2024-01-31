@@ -32,7 +32,7 @@ void free_no_map(void* ptr);
 bool vmm_is_page_used_by_entries(size_t address);
 void* kmalloc_common(size_t size, size_t align);
 
-SAYORI_INLINE void* kmalloc(size_t size) {
+SAYORI_INLINE void* kmalloc(size_t size) __attribute__((__malloc__, __alloc_size__(1))) {
 //	return kmalloc_common(size, sizeof(size_t));  // Alignment, blyad
 	return kmalloc_common(size, 0);
 }
@@ -43,7 +43,7 @@ void* clone_kernel_page_directory();
 
 void vmm_debug_switch(bool enable);
 
-SAYORI_INLINE void* kcalloc(size_t size, size_t amount) {
+SAYORI_INLINE void* kcalloc(size_t size, size_t amount) __attribute__((__malloc__, __alloc_size__(1, 2))) {
 	void* x = kmalloc(size * amount);
 
 	memset(x, 0, size * amount);
