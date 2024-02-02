@@ -6,6 +6,7 @@ typedef struct env {
     int OS_VERSION_MINOR;                 ///< Пре-Релиз
     int OS_VERSION_PATCH;                  ///< Патч
     size_t DisplayFrameBuffer_Address;                ///< Ссылка на виртуальный экран
+    size_t DisplayAddress;                 // Адрес реального экрана
     size_t Link_Time;                   ///< Ссылка на время
     size_t Display_W;                        ///< Длина экрана
     size_t Display_H;                        ///< Высота экрана

@@ -309,7 +309,6 @@ ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence){
 		return -1;
 	});
 
-    qemu_err("fseek() call");
 	if (!stream->open || stream->size == 0 || stream->fmode == 0){
 		fcheckerror(stream);
 		return -1;

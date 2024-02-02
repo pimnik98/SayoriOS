@@ -299,6 +299,6 @@ int ahci_free_cmd_slot(size_t port_num);
 void ahci_start_cmd(size_t port_num);
 void ahci_stop_cmd(size_t port_num);
 void ahci_rebase_memory_for(size_t port_num);
-void ahci_identify(size_t port_num);
+void ahci_eject_cdrom(size_t port_num);
 void ahci_read_sectors(size_t port_num, size_t location, size_t sector_count, void* buffer);
 void ahci_write_sectors(size_t port_num, size_t location, size_t sector_count, void* buffer);

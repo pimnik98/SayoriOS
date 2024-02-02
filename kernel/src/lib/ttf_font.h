@@ -18,4 +18,5 @@ typedef struct {
 
 void ttf_init(ttf_font_t* font, const char* path);
 void ttf_draw_char(ttf_font_t *font, char *buffer, int bwidth, int bheight, int sx, int sy, int character);
+void ttf_draw_string(ttf_font_t* font, char* buffer, int bwidth, int bheight, int sx, int sy, const char* string);
 void ttf_destroy(ttf_font_t* font);

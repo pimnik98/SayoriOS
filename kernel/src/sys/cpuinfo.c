@@ -6,6 +6,7 @@
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
+
 #include "common.h"
 #include "lib/string.h"
 #include "portability.h"
@@ -153,7 +154,7 @@ int do_intel(bool silent) {
         qemu_log("Detected Intel CPU.\nIntel-specific features:\n");
     }
 
-    uint32_t dtc1, dtc2, dtc3, dtc4, dtc5;
+//    uint32_t dtc1, dtc2, dtc3, dtc4, dtc5;
     uint32_t eax, ebx, max_eax, signature, unused;
     uint32_t model, family, type, brand;//, stepping, reserved;
 //    uint32_t extended_family;
