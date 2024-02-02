@@ -6,6 +6,7 @@
  * @date 2022-10-01
  * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
+
 #include "common.h"
 #include "lib/string.h"
 #include "portability.h"

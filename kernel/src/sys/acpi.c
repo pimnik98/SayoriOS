@@ -1,5 +1,6 @@
 #include "sys/acpi.h"
 #include "sys/apic_table.h"
+#include "sys/fadt.h"
 #include "lib/string.h"
 #include "io/ports.h"
 #include "io/tty.h"
@@ -30,7 +31,7 @@ RSDPDescriptor* rsdp_find() {
     //
     // RSD PTR 
 
-    qemu_log("RSDP sig: %s", rsdp->signature);
+    qemu_log("RSDP sig: %.8s", rsdp->signature);
     qemu_log("RSDP checksum: %d", rsdp->checksum);
     qemu_log("RSDP OEMID: %s", rsdp->OEMID);
     qemu_log("RSDP revision: %d", rsdp->revision);
@@ -140,15 +141,25 @@ void find_facp(size_t rsdt_addr) {
 
     // Find FACP here
 
-    ACPISDTHeader* fadt = find_table((uint32_t) rsdt_addr, sdt_count, "FACP");
+    ACPISDTHeader* pre_fadt = find_table((uint32_t) rsdt_addr, sdt_count, "FACP");
 
-    if(!fadt) {
+    if(!pre_fadt) {
         qemu_log("FADT not found...");
         return;
     }
 
+    struct FADT* fadt = (struct FADT*)(pre_fadt + 1);  // It skips SDT header
+
+//    map_single_page(get_kernel_page_directory(), (virtual_addr_t) fadt, (virtual_addr_t) fadt, PAGE_WRITEABLE);
+
+    qemu_log("Century: %d", fadt->Century);
+    qemu_log("SMI port: %x", fadt->SMI_CommandPort);
+    qemu_log("Enable Command: %x", fadt->AcpiEnable);
+    qemu_log("TODO: Write 'Enable Command' to 'SMI Port' using `outb()` func");
+
     qemu_log("Found FADT!");
 
+//    unmap_single_page(get_kernel_page_directory(), (virtual_addr_t) fadt);
     unmap_single_page(get_kernel_page_directory(), (virtual_addr_t) rsdt_addr);
 }
 
