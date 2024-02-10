@@ -46,8 +46,6 @@ void grub_modules_init(multiboot_header_t* hdr) {
 
         if (strcmp((const char *) mod->cmdline, "initrd_tarfs") == 0) {
             initrd_tarfs(mod->mod_start, mod->mod_end);
-        } else if(strcmp((const char *) mod->cmdline, "test") == 0) {
-            qemu_log("%s", (char*)mod->mod_start);
         }
     }
 }
