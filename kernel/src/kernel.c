@@ -405,10 +405,16 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     
     if (is_rsdp){
         RSDPDescriptor* rsdp = rsdp_find();
-		acpi_scan_all_tables(rsdp->RSDTaddress);
-		
-        find_facp(rsdp->RSDTaddress);
-        find_apic(rsdp->RSDTaddress);
+        qemu_log("RSDP at: %x", rsdp);
+
+        if(rsdp) {
+			acpi_scan_all_tables(rsdp->RSDTaddress);
+			
+	        find_facp(rsdp->RSDTaddress);
+	        find_apic(rsdp->RSDTaddress);
+        } else {
+        	qemu_err("ACPI not supported! (Are you running in UEFI mode?)");
+        }
     }
     
     tty_printf("Processors: %d\n", system_processors_found);

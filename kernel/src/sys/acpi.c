@@ -37,6 +37,10 @@ RSDPDescriptor* rsdp_find() {
     qemu_log("RSDP revision: %d", rsdp->revision);
     qemu_log("RSDT address: %x", rsdp->RSDTaddress);
 
+	if(rsdp->RSDTaddress == 0) {
+		return 0;
+	}
+
     return rsdp;
 }
 

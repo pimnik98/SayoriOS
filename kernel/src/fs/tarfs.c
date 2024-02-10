@@ -123,7 +123,7 @@ FSM_DIR* fs_tarfs_dir(const char Disk,const char* Path){
     FSM_FILE *Files = kcalloc(sizeof(FSM_FILE), initrd->Count);
 
 	size_t CA = 0, CF = 0, CD = 0, CO = 0;
-	for (int i = 1;i < initrd->Count;i++){
+	for (int i = 1; i < initrd->Count; i++){
 		//////////////////////////
 		//// Обращаю внимание, для за путь принимается сейчас R:\\Sayori\\
 		//// Если вам искать только файлы, то вот вариант
@@ -146,7 +146,7 @@ FSM_DIR* fs_tarfs_dir(const char Disk,const char* Path){
 		Files[CA].Ready = 1;
 
 		memcpy(Files[CA].Path, zpath, strlen(zpath));
-		
+
 		substr(Files[CA].Name, 
 			initrd->Files[i].Name, 
 			strlen(Path), 

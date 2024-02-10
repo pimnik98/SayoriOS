@@ -444,6 +444,7 @@ void check_memory_map(memory_map_entry_t* mmap_addr, uint32_t length){
 
 		phys_memory_size += entry.len_low;
 	}
+
 	qemu_log("RAM: %d MB | %d KB | %d B", phys_memory_size/(1024*1024), phys_memory_size/1024, phys_memory_size);
 }
 

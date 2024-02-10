@@ -92,7 +92,7 @@ uint32_t CLI_CMD_SYSINFO(uint32_t c, char* v[]){
         tty_printf("\tТемпература:             -- *C\n");
     }
 
-    tty_printf("\tОЗУ:                     %d kb\n", getInstalledRam()/1024);
+    tty_printf("\tОЗУ:                     %u kb\n", getInstalledRam()/1024);
     tty_printf("\tВидеоадаптер:            %s\n", "Legacy framebuffer (Unknown)");
     tty_printf("\tДисплей:                 %s (%dx%d)\n", "(\?\?\?)", getScreenWidth(), getScreenHeight());
     tty_printf("\tТики:                    %d\n", getTicks());

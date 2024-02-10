@@ -208,8 +208,6 @@ FILE* fopen(const char* filename, const char* _mode){
  * @param stream Поток (файл)
  */
 void fclose(FILE* stream){
-	qemu_log("Closing file: %x", stream);
-	
 	if(stream)
 		kfree(stream);
 }
