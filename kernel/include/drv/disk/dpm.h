@@ -7,7 +7,8 @@
 #define DPM_ERROR_NO_READ (-3)		///< Не удалось прочитать файл
 
 // disk, offset, size, buffer
-typedef int (*dpm_disk_rw_cmd)(size_t,size_t,size_t,void*);
+// typedef int (*dpm_disk_rw_cmd)(size_t,size_t,size_t,void*);
+typedef size_t (*dpm_disk_rw_cmd)(size_t,size_t,size_t,void*);
 
 typedef struct {
 	bool Ready;				///< Устройство подключено? (1 - да | 0 - нет)

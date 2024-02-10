@@ -214,31 +214,6 @@ RUST_OBJ_RELEASE = rust/target/$(RUST_TARGET)/release/librust.a
 RUST_SOURCES = $(shell find rust/src/ -type f -name '*.rs')
 
 OBJS = $(SOURCES:%.c=$(OBJ_DIRECTORY)/%.o)
-
-# NDRAEY: No one except me knows C++, so no one can develop C++ API for kernel.
-# NDRAEY: Uncomment it if you want
-
-#CPP_CODE = kernel/cpp/src/start.o \
-#		   kernel/cpp/src/lib/tty.o \
-#		   kernel/cpp/src/lib/math.o \
-#		   kernel/cpp/src/lib/memory.o \
-#		   kernel/cpp/src/lib/string.o \
-#		   kernel/cpp/src/lib/file.o \
-#		   kernel/cpp/src/lib/conv.o \
-#		   kernel/cpp/src/lib/log.o \
-#		   kernel/cpp/src/lib/display.o \
-#		   kernel/cpp/src/audio/machinist.o \
-#		   kernel/cpp/src/audio/machinist_server.o \
-#		   kernel/cpp/src/audio/machinist_client.o \
-#		   kernel/cpp/src/audio/machinist_ac97.o \
-#		   kernel/cpp/src/inteleon_ui/rectangle.o \
-#		   kernel/cpp/src/inteleon_ui/vertical_layer.o \
-#		   kernel/cpp/src/inteleon_ui/horizontal_layer.o \
-#		   kernel/cpp/src/inteleon_ui/margin.o \
-#		   kernel/cpp/src/inteleon_ui/border.o \
-#		   kernel/cpp/src/inteleon_ui/widget.o \
-#		   kernel/cpp/src/test.o
-
 DEPS = $(OBJS:%.o=%.d)
 
 KERNEL_NEED = $(ASM) $(OBJS) $(CPP_CODE)
