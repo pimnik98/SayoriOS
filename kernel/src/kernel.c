@@ -55,12 +55,6 @@ void draw_raw_fb(multiboot_header_t* mboot, int x, int y, int w, int h, int colo
 #endif
 
 /**
- * @brief Инициализирует модули подключенные к ОС
- *
- */
-
-
-/**
  * @brief Обработка команд указаных ядру при загрузке
  *
  * @param cmd - Команды
@@ -147,7 +141,6 @@ void initrd_sefs(size_t irdst, size_t irded){
     qemu_log("[InitRD] [SEFS] The virtual disk space is located at address %x.", irdst);
     qemu_log("[InitRD] [SEFS] The virtual disk space is ends at %x.", irded);
 }
-
 
 /**
  * @brief Точка входа в ядро
