@@ -27,7 +27,6 @@
 
 #include <lib/pixel.h>
 
-multiboot_header_t* multiboot;
 uint32_t init_esp = 0;
 bool test_pcs = true;
 bool test_floppy = true;
@@ -38,8 +37,6 @@ size_t kernel_start_time = 0;
 
 void jse_file_getBuff(char* buf);
 void kHandlerCMD(char*);
-void kModules_Init();
-void initrd_sefs(size_t, size_t);
 
 #ifndef RELEASE
 void draw_raw_fb(multiboot_header_t* mboot, int x, int y, int w, int h, int color) {
@@ -177,8 +174,6 @@ extern size_t BSS_end;
 void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initial_esp) {
     __com_setInit(1, 1);
     __com_init(PORT_COM1);
-    
-    multiboot = mboot;
     
     __asm__ volatile("movl %%esp, %0" : "=r"(init_esp));
     
