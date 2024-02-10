@@ -147,8 +147,6 @@ FSM_DIR* fs_tarfs_dir(const char Disk,const char* Path){
 
 		memcpy(Files[CA].Path, zpath, strlen(zpath));
 
-        qemu_log("Path: %s => %s", initrd->Files[i].Name, Files[CA].Path);
-
 		substr(Files[CA].Name, 
 			initrd->Files[i].Name, 
 			strlen(Path), 
