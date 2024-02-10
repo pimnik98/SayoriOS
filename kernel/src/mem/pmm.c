@@ -17,7 +17,6 @@
 
 extern size_t KERNEL_BASE_pos;
 extern size_t KERNEL_END_pos;
-extern size_t last_module_end;
 
 size_t kernel_start;
 size_t kernel_end;
@@ -484,19 +483,18 @@ uint32_t* get_kernel_page_directory() {
 }
 
 void init_paging() {
+    extern size_t grub_last_module_end;
+
 	kernel_start = (size_t)&KERNEL_BASE_pos;
 	kernel_end = (size_t)&KERNEL_END_pos;
 
-	qemu_log("Kenrel end: %x", kernel_end);
-	qemu_log("Last module end: %x", last_module_end);
-
-	size_t real_end = MAX(kernel_end, last_module_end);
+	size_t real_end = grub_last_module_end;
 
 	size_t kernel_size = real_end - kernel_start;
 
 	qemu_log("Kernel starts at: %x", kernel_start);
-	qemu_log("Kernel ends   at: %x", real_end);
-	qemu_log("Kernel ends (aligned) at: %x", ALIGN(real_end, PAGE_SIZE));
+	qemu_log("Kernel ends   at: %x (only kernel)", kernel_end);
+	qemu_log("Kernel ends   at: %x (everything)", real_end);
 
 	qemu_log("Kernel size is: %d (%d kB) (%d MB)", (kernel_end - kernel_start), (kernel_end - kernel_start) >> 10, (kernel_end - kernel_start) >> 20);
 	qemu_log("Kernel size (initrd included) is: %d (%d kB) (%d MB)", kernel_size, kernel_size >> 10, kernel_size >> 20);
