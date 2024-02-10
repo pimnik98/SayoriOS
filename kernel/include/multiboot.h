@@ -74,15 +74,13 @@ struct	multiboot_header
 
 typedef	struct	multiboot_header multiboot_header_t;
 
-struct multiboot_mod_list
-{
-  /* the memory used goes from bytes ’mod_start’ to ’mod_end-1’ inclusive */
-  uint32_t mod_start;
-  uint32_t mod_end;
+struct multiboot_mod_list {
+    uint32_t mod_start;
+    uint32_t mod_end;
+    uint32_t cmdline;
+    uint32_t reserved;
+} __attribute__((packed));
 
-  /* Module command line */
-  uint32_t cmdline;
-};
 typedef struct multiboot_mod_list multiboot_module_t;
 
 

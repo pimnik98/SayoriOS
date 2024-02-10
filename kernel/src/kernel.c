@@ -23,6 +23,7 @@
 #include "net/stack.h"
 #include "drv/audio/hda.h"
 #include "lib/ttf_font.h"
+#include "sys/grub_modules.h"
 
 #include <lib/pixel.h>
 
@@ -61,19 +62,6 @@ void draw_raw_fb(multiboot_header_t* mboot, int x, int y, int w, int h, int colo
  *
  */
 
-size_t last_module_end = 0;
-
-void scan_kmodules() {
-    uint32_t	mods_count = multiboot->mods_count;
-
-    for (size_t i = 0; i < mods_count; i++){
-        multiboot_module_t *mod = (multiboot_module_t *) (uint32_t*)(multiboot->mods_addr + 8*i);
-
-        last_module_end = mod->mod_end;
-    }
-
-    qemu_log("Last module ends at: %x", last_module_end);
-}
 
 /**
  * @brief Обработка команд указаных ядру при загрузке
@@ -143,52 +131,6 @@ void kHandlerCMD(char* cmd){
             }
         }
         //qemu_log("[kCMD] [%d] %s >\n\tKey: %s\n\tValue:%s",i,out[i],out_data[0],out_data[1]);
-    }
-}
-
-void kModules_Init(){
-    qemu_log("[kModules] Loading operating system modules...");
-    uint32_t	mod_start[32] = {0};
-    uint32_t	mod_end[32] = {0};
-    uint32_t	mod_size[32] = {0};
-    uint32_t	mods_count = multiboot->mods_count;
-
-    char mod_cmd[32][64] = {0};
-
-    if (mods_count > 0){
-        qemu_log("[kModules] Found %d modules",mods_count);
-
-        for (size_t i = 0; i < mods_count; i++){
-            mod_start[i] = *(uint32_t*)(multiboot->mods_addr + 8*i);
-            mod_end[i] = *(uint32_t*)(multiboot->mods_addr + 8*i + 4);
-
-            mod_size[i] = mod_end[i] - mod_start[i];
-
-            multiboot_module_t *mod = (multiboot_module_t *) (uint32_t*)(multiboot->mods_addr + 8*i);
-
-            strcpy(mod_cmd[i], (char*)mod->cmdline);
-
-            qemu_log("[kModules] Found module number `%d`. (Start: %x | End: %x | Size: %d) CMD: %s (%s)",
-                     i,
-                     mod_start[i],
-                     mod_end[i],
-                     mod_size[i],
-                     mod_cmd[i],
-                     (char*)mod->cmdline
-                );
-
-            if (strcmpn(mod_cmd[i],"initrd_sefs")){
-                initrd_sefs(mod_start[i], mod_end[i]);
-                continue;
-            }
-            if (strcmpn(mod_cmd[i],"initrd_tarfs")){
-                initrd_tarfs(mod_start[i], mod_end[i]);
-            }
-        }
-
-        qemu_log("Memory manager need to be feed with this information: Last module ends at: %x", last_module_end);
-    } else {
-        qemu_log("[kModules] No modules were connected to this operating system.");
     }
 }
 
@@ -286,7 +228,7 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     qemu_log("    BSS: %x - %x", (size_t)&BSS_start, (size_t)&BSS_end);
     qemu_log("Memory manager initialization...");
     
-    scan_kmodules();
+    grub_modules_prescan(mboot);
     
     init_paging();
     
@@ -325,7 +267,9 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
     fsm_reg("ISO9660", 1, &fs_iso9660_read, &fs_iso9660_write, &fs_iso9660_info, &fs_iso9660_create, &fs_iso9660_delete,
             &fs_iso9660_dir, &fs_iso9660_label, &fs_iso9660_detect);
     fs_natfs_init();
-    kModules_Init();
+
+    grub_modules_init(mboot);
+
     mtrr_init();
     text_init("R:\\Sayori\\Fonts\\UniCyrX-ibm-8x16.psf");
     // /Sayori/Fonts/UniCyrX-ibm-8x16.psf
