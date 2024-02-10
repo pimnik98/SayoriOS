@@ -167,8 +167,6 @@ extern size_t RODATA_start;
 extern size_t RODATA_end;
 extern size_t BSS_start;
 extern size_t BSS_end;
-extern size_t USER_start;
-extern size_t USER_end;
 
 /*
   Спаси да сохрани этот кусок кода
@@ -176,7 +174,7 @@ extern size_t USER_end;
   Да прибудет с тобой, священный код
   Я тебя благославляю
 */
-int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
+void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initial_esp) {
     __com_setInit(1, 1);
     __com_init(PORT_COM1);
     
@@ -483,8 +481,8 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
 //     }
 
     cli();
-    
-    return 0;
+
+    while(1);
 }
 
 //void k() {

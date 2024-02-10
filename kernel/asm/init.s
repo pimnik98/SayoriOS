@@ -13,7 +13,7 @@
 
 .set STACK_SIZE, 1024 * 64  # 64 KB
 
-.extern kernel
+.extern kmain
 
 .section .mboot, "a", @progbits
 
@@ -50,7 +50,7 @@ __pre_init:
 
         xor %ebp, %ebp
 
-        call	kernel
+        call	kmain
 
         hlt
 
