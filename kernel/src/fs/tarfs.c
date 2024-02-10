@@ -147,6 +147,8 @@ FSM_DIR* fs_tarfs_dir(const char Disk,const char* Path){
 
 		memcpy(Files[CA].Path, zpath, strlen(zpath));
 
+        qemu_log("Path: %s => %s", initrd->Files[i].Name, Files[CA].Path);
+
 		substr(Files[CA].Name, 
 			initrd->Files[i].Name, 
 			strlen(Path), 
@@ -212,8 +214,9 @@ TarFS_ROOT* fs_tarfs_init(uint32_t in, uint32_t size, int Mode){
 
 	size_t currentInx = 0;
 	ssize_t sizeDir = -1;
-	TarFS_File* tffs = kmalloc((count+1) * sizeof(TarFS_File));
-	TarFS_ROOT* root = kmalloc(sizeof(TarFS_ROOT));
+    
+	TarFS_File* tffs = kcalloc(count + 1, sizeof(TarFS_File));
+	TarFS_ROOT* root = kcalloc(sizeof(TarFS_ROOT), 1);
 
 	size_t pos = 0;
 
