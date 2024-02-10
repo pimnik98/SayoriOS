@@ -27,7 +27,6 @@
 
 #include <lib/pixel.h>
 
-multiboot_header_t* multiboot;
 uint32_t init_esp = 0;
 bool test_pcs = true;
 bool test_floppy = true;
@@ -38,8 +37,6 @@ size_t kernel_start_time = 0;
 
 void jse_file_getBuff(char* buf);
 void kHandlerCMD(char*);
-void kModules_Init();
-void initrd_sefs(size_t, size_t);
 
 #ifndef RELEASE
 void draw_raw_fb(multiboot_header_t* mboot, int x, int y, int w, int h, int color) {
@@ -56,12 +53,6 @@ void draw_raw_fb(multiboot_header_t* mboot, int x, int y, int w, int h, int colo
 #else
 #define draw_raw_fb(a, b, c, d, e, f)
 #endif
-
-/**
- * @brief Инициализирует модули подключенные к ОС
- *
- */
-
 
 /**
  * @brief Обработка команд указаных ядру при загрузке
@@ -151,7 +142,6 @@ void initrd_sefs(size_t irdst, size_t irded){
     qemu_log("[InitRD] [SEFS] The virtual disk space is ends at %x.", irded);
 }
 
-
 /**
  * @brief Точка входа в ядро
  *
@@ -167,8 +157,6 @@ extern size_t RODATA_start;
 extern size_t RODATA_end;
 extern size_t BSS_start;
 extern size_t BSS_end;
-extern size_t USER_start;
-extern size_t USER_end;
 
 /*
   Спаси да сохрани этот кусок кода
@@ -176,11 +164,9 @@ extern size_t USER_end;
   Да прибудет с тобой, священный код
   Я тебя благославляю
 */
-int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
+void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initial_esp) {
     __com_setInit(1, 1);
     __com_init(PORT_COM1);
-    
-    multiboot = mboot;
     
     __asm__ volatile("movl %%esp, %0" : "=r"(init_esp));
     
@@ -483,8 +469,8 @@ int kernel(multiboot_header_t* mboot, uint32_t initial_esp) {
 //     }
 
     cli();
-    
-    return 0;
+
+    while(1);
 }
 
 //void k() {
