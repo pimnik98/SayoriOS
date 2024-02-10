@@ -2,7 +2,7 @@ ENTRY (__pre_init)
 
 SECTIONS
 {
-    . = 0x00200000;
+    . = 0x00100000;
 
     KERNEL_BASE_pos = .;
 

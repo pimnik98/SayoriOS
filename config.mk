@@ -195,12 +195,12 @@ SOURCES=\
 	kernel/src/net/stack.c \
 	kernel/src/toys/pavi.c \
 	kernel/src/drv/audio/hda.c \
-	kernel/src/lib/ttf_font.c \
 	$(GAMEBOY) \
 	kernel/src/kernel.c \
 #	kernel/src/lib/duktape.c \
 	kernel/src/toys/piano.c \
 	kernel/src/toys/dino.c \
+	kernel/src/lib/ttf_font.c \
 	kernel/src/extra/texplorer.c \
 	kernel/src/drv/disk/mbr.c \
 	kernel/src/fs/fat12.c \
