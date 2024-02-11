@@ -21,6 +21,8 @@ FSM G_FSM[255] = {0};
 int C_FSM = 0;
 bool fsm_debug = false;
 
+
+
 void fsm_convertUnix(uint32_t unix_time, FSM_TIME* time) {
 	if (fsm_debug) qemu_log("[FSM] Convert unix: %d",unix_time);
     uint32_t seconds_per_day = 24 * 60 * 60;
@@ -101,7 +103,6 @@ int fsm_isPathToFile(const char* Path,const char* Name){
 	qemu_log(" |--- %d == %d",c3,c4);*/
 	bool isPassed = ((isCheck1 && !isCheck2 && isCheck3) || (!isCheck1 && isCheck2 && isCheck3 && (isCheck4 || isCheck5)));
 
-	// pimnik98, ставь kfree если есть kmalloc!!!!!!!!!!!!!!!!!!!!!!1111
 	kfree(zpath);
 	kfree(bpath);
 

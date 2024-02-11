@@ -475,12 +475,12 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 
     qemu_log("%d", x);
 
-    qemu_log("filesize(R:\\test.txt): %d" , filesize("R:\\test.txt"));
-    qemu_log("filesize(R:\\Sayori\\): %d" , filesize("R:\\Sayori\\"));
-    qemu_log("filesize(R:\\): %d" , filesize("R:\\"));
-    qemu_log("filesize(T:\\): %d" , filesize("T:\\"));
-    qemu_log("filesize(R:\\prog): %d" , filesize("R:\\prog"));
-    qemu_log("filesize(Z:\\): %d" , filesize("Z:\\"));
+    qemu_log("filemtime(R:\\test.txt): %d" , filemtime("R:\\test.txt"));
+    qemu_log("filemtime(R:\\Sayori\\): %d" , filemtime("R:\\Sayori\\"));
+    qemu_log("filemtime(R:\\): %d" , filemtime("R:\\"));
+    qemu_log("filemtime(T:\\): %d" , filemtime("T:\\"));
+    qemu_log("filemtime(R:\\prog): %d" , filemtime("R:\\prog"));
+    qemu_log("filemtime(Z:\\): %d" , filemtime("Z:\\"));
 
     cli();
 

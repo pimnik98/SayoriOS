@@ -88,3 +88,4 @@ void fsm_convertUnix(uint32_t unix_time, FSM_TIME* time);
 int fsm_isPathToFile(const char* Path,const char* Name);
 char* fsm_timePrintable(FSM_TIME time);
 void fsm_dpm_update(char Letter);
+size_t fsm_DateConvertToUnix(FSM_TIME time);

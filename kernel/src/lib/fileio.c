@@ -62,7 +62,7 @@ bool file_exists(const char* Path){
  *
  * @param Path - Путь
  *
- * @return bool - true - если успешно, в противном случае false
+ * @return size_t - Размер в байтах
  */
 size_t filesize(const char* Path){
     FSM_FILE file = nvfs_info(Path);
@@ -71,4 +71,26 @@ size_t filesize(const char* Path){
     return file.Size;
 }
 
+/**
+ * @brief [FileIO] Возвращает время последнего изменения файла
+ *
+ * @param Path - Путь
+ *
+ * @todo НЕРАБОТАЕТ!!! ПРОБЛЕМА #PF ПОСТАВИЛ ПОКА ЗАГЛУШКУ
+ *
+ * @return size_t - Время формата Unix
+ */
+size_t filemtime(const char* Path){
+    qemu_log("filemtime: %s", Path);
+    FSM_FILE file = nvfs_info(Path);
+    if (file.Ready != 1) return 0;
+    if (file.Type != 0) return 0;
+    if (file.LastTime == 0x0) return 0;
+    size_t unix = 1234567;
+    return unix;
+   // qemu_log(" |--- Query: %x", &file.LastTime);
+    //size_t unix = fsm_DateConvertToUnix(file.LastTime);
 
+    //qemu_log(" |--- Return: %d", unix);
+    return unix;
+}
