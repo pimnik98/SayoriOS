@@ -42,3 +42,18 @@ bool is_dir(const char* Path){
     if (file.Type != 5) return false;
     return true;
 }
+
+
+/**
+ * @brief [FileIO] Проверяет существует ли сущность
+ *
+ * @param Path - Путь
+ *
+ * @return bool - true - если успешно, в противном случае false
+ */
+bool file_exists(const char* Path){
+    FSM_FILE file = nvfs_info(Path);
+    if (file.Ready != 1) return false;
+    return true;
+}
+
