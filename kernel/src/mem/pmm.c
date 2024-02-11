@@ -399,6 +399,22 @@ uint32_t virt2phys(uint32_t* page_dir, virtual_addr_t virtual) {
 	return pt[PT_INDEX(virtual)] & ~0x3ff;
 }
 
+void phys_set_flags(uint32_t* page_dir, virtual_addr_t virtual, uint32_t flags) {
+    virtual &= ~0xfff;
+
+    uint32_t* pt = 0;
+
+    // Check if page table not present.
+    if((page_dir[PD_INDEX(virtual)] & 1) == 0) {
+        return;
+    } else {
+        pt = get_page_table_by_vaddr(page_dir, virtual);
+    }
+
+    pt[PT_INDEX(virtual)] = (pt[PT_INDEX(virtual)] & ~0x3ff) | flags | PAGE_PRESENT;
+}
+
+
 /**
  * @brief Map pages
  *

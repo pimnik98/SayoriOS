@@ -256,7 +256,7 @@ typedef struct {
 	uint32_t dbc:22;		// Byte count, 4M max
 	uint32_t rsv1:9;		// Reserved
 	uint32_t i:1;		// Interrupt on completion
-} AHCI_HBA_PRDT_ENTRY;
+} __attribute__((packed)) AHCI_HBA_PRDT_ENTRY;
 
 #define COMMAND_TABLE_PRDT_ENTRY_COUNT 8
 
@@ -274,7 +274,6 @@ typedef struct {
 #define FIS_SIZE sizeof(AHCI_HBA_FIS)
 
 #define COMMAND_TABLE_ENTRY_SIZE sizeof(HBA_CMD_TBL)
-#define COMMAND_TABLE_ENTRY_COUNT 32
 #define COMMAND_TABLE_SIZE (COMMAND_TABLE_ENTRY_SIZE * COMMAND_LIST_ENTRY_COUNT)
 
 #define MEMORY_PER_AHCI_PORT (COMMAND_LIST_SIZE + FIS_SIZE + COMMAND_TABLE_SIZE)
@@ -302,3 +301,4 @@ void ahci_rebase_memory_for(size_t port_num);
 void ahci_eject_cdrom(size_t port_num);
 void ahci_read_sectors(size_t port_num, size_t location, size_t sector_count, void* buffer);
 void ahci_write_sectors(size_t port_num, size_t location, size_t sector_count, void* buffer);
+void ahci_identify(size_t port_num);

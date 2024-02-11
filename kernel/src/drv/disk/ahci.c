@@ -10,6 +10,8 @@
 #include "sys/isr.h"
 #include "drv/disk/ata.h"
 #include "drv/atapi.h"
+#include "net/endianess.h"
+#include "drv/disk/dpm.h"
 
 #define AHCI_CLASS 1
 #define AHCI_SUBCLASS 6
@@ -181,7 +183,7 @@ this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0�
 
 	for(int i = 0; i < 32; i++) {
 		if(abar->port_implemented & (1 << i)) {
-			AHCI_HBA_PORT* port = abar->ports + i;
+			volatile AHCI_HBA_PORT* port = abar->ports + i;
 
 			qemu_log("[%x: Port %d]", port, i);
 
@@ -195,6 +197,7 @@ this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0�
                 ahci_eject_cdrom(i);
 			} else if(port->signature == AHCI_SIGNATURE_SATA) { // SATA
 				qemu_log("\tSATA drive");
+                ahci_identify(i);
 			} else {
 				qemu_log("Other device: %x", port->signature);
 			}
@@ -211,10 +214,14 @@ void ahci_rebase_memory_for(size_t port_num) {
 	ahci_stop_cmd(port_num);
 
 	// Memory rebase
-	AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+	volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
 
     void* virt = kmalloc_common(MEMORY_PER_AHCI_PORT, PAGE_SIZE);
     memset(virt, 0, MEMORY_PER_AHCI_PORT);
+
+    // If gets laggy, comment it.
+    phys_set_flags(get_kernel_page_directory(), (virtual_addr_t) virt, PAGE_WRITEABLE | PAGE_CACHE_DISABLE);
+
     size_t phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) virt);
 
     ports[port_num].command_list_addr_virt = virt;
@@ -259,7 +266,7 @@ bool ahci_is_drive_attached(size_t port_num) {
 	uint32_t implemented_ports = abar->port_implemented;
 
 	if(implemented_ports & (1 << port_num)) {
-		AHCI_HBA_PORT* port = abar->ports + port_num;
+		volatile AHCI_HBA_PORT* port = abar->ports + port_num;
 
 		uint32_t status = port->sata_status;
 
@@ -278,7 +285,7 @@ int ahci_free_cmd_slot(size_t port_num) {
 	if(port_num > 31)
 		return -1;
 
-	AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+	volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
 
 	uint32_t slots = port->sata_active | port->command_issue;
 
@@ -577,50 +584,131 @@ void ahci_eject_cdrom(size_t port_num) {
 
 	port->interrupt_status = (uint32_t)-1;
 
-	int slot = 0;
-
-//    qemu_log("Slot is: %d", slot);
-
 	AHCI_HBA_CMD_HEADER* hdr = ports[port_num].command_list_addr_virt;
-	hdr += slot;
-
-//    qemu_log("CMDHEADER AT: %x", hdr);
 
 	hdr->cfl = sizeof(AHCI_FIS_REG_DEVICE_TO_HOST) / sizeof(uint32_t);  // Should be 5
 	hdr->a = 1;  // ATAPI
 	hdr->w = 0;  // Read
 	hdr->p = 0;  // No prefetch
-	hdr->prdtl = 1;  // One entry only
-
-    void* memory = kmalloc_common(512, PAGE_SIZE);
-    size_t buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) memory);
+	hdr->prdtl = 0;  // No entries
 
 	HBA_CMD_TBL* table = (HBA_CMD_TBL*)AHCI_COMMAND_TABLE(ports[port_num].command_list_addr_virt, 0);
 	memset(table, 0, sizeof(HBA_CMD_TBL));
 
-    qemu_log("Table at: %x", table);
-
     uint8_t command[12] = {
         ATAPI_CMD_START_STOP,  // Command
         0, 0, 0,  // Reserved
-        1 << 1, // Eject disc
+        1 << 1, // Eject the disc
         0, 0, 0, 0, 0, 0, 0  // Reserved
     };
 
     memcpy(table->acmd, command, 12);
 
-	// Set only first PRDT for testing
-    table->prdt_entry[0].dba = buffer_phys;
-    table->prdt_entry[0].dbc = 0x1ff;  // 512 bytes - 1
-    table->prdt_entry[0].i = 1;
-
 	volatile AHCI_FIS_REG_HOST_TO_DEVICE *cmdfis = (volatile AHCI_FIS_REG_HOST_TO_DEVICE*)&(table->cfis);
+    memset((void*)cmdfis, 0, sizeof(AHCI_FIS_REG_HOST_TO_DEVICE));
 
 	cmdfis->fis_type = FIS_TYPE_REG_HOST_TO_DEVICE;
 	cmdfis->c = 1;	// Command
 	cmdfis->command = ATA_CMD_PACKET;
 
-	cmdfis->lba1 = 0;
+    ahci_send_cmd(port, 0);
+}
+
+size_t ahci_dpm_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+    qemu_err("TODO: SATA DPM READ");
+
+    DPM_Disk dpm = dpm_info(Disk + 65);
+
+    return 0;
+}
+
+size_t ahci_dpm_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+    qemu_err("TODO: SATA DPM WRITE");
+
+    DPM_Disk dpm = dpm_info(Disk + 65);
+
+    return 0;
+}
+
+
+void ahci_identify(size_t port_num) {
+    qemu_log("Identifying %d", port_num);
+
+    volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+
+    port->interrupt_status = (uint32_t)-1;
+
+    int slot = 0;
+
+    AHCI_HBA_CMD_HEADER* hdr = ports[port_num].command_list_addr_virt;
+    hdr += slot;
+
+    hdr->cfl = sizeof(AHCI_FIS_REG_DEVICE_TO_HOST) / sizeof(uint32_t);  // Should be 5
+    hdr->a = 0;  // NOT ATAPI
+    hdr->w = 0;  // Read
+    hdr->p = 0;  // No prefetch
+    hdr->prdtl = 1;  // One entry only
+
+    void* memory = kmalloc_common(512, PAGE_SIZE);
+    size_t buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) memory);
+    memset(memory, 0, 512);
+
+    HBA_CMD_TBL* table = (HBA_CMD_TBL*)AHCI_COMMAND_TABLE(ports[port_num].command_list_addr_virt, 0);
+    memset(table, 0, sizeof(HBA_CMD_TBL));
+
+    qemu_log("Table at: %x", table);
+
+    // Set only first PRDT for testing
+    table->prdt_entry[0].dba = buffer_phys;
+    table->prdt_entry[0].dbc = 0x1ff;  // 512 bytes - 1
+    table->prdt_entry[0].i = 0;
+
+    volatile AHCI_FIS_REG_HOST_TO_DEVICE *cmdfis = (volatile AHCI_FIS_REG_HOST_TO_DEVICE*)&(table->cfis);
+
+    cmdfis->fis_type = FIS_TYPE_REG_HOST_TO_DEVICE;
+    cmdfis->c = 1;	// Command
+    cmdfis->command = ATA_CMD_IDENTIFY;
+
+    cmdfis->lba1 = 0;
 
     ahci_send_cmd(port, slot);
+
+    uint16_t* memory16 = (uint16_t*)memory;
+
+    uint16_t* model = kcalloc(20, 2);
+
+    for(int i = 0; i < 20; i++) {
+        model[i] = bit_flip_short(memory16[0x1b + i]);
+    }
+
+    *(((uint8_t*)model) + 39) = 0;
+
+
+    size_t capacity = (memory16[61] << 16) | memory16[60];
+
+    tty_printf("[SATA] MODEL: '%s'\n", model);
+
+    int disk_inx = dpm_reg(
+            (char)dpm_searchFreeIndex(0),
+            "SATA Disk",
+            "Unknown",
+            1,
+            capacity * 512,
+            capacity,
+            512,
+            3, // Ставим 3ку, так как будем юзать функции для чтения и записи
+            "DISK1234567890",
+            (void*)0 // Оставим тут индекс диска
+    );
+
+    if (disk_inx < 0){
+        qemu_err("[SATA/DPM] [ERROR] An error occurred during disk registration, error code: %d", disk_inx);
+    } else {
+        qemu_ok("[SATA/DPM] [Successful] Registering OK");
+        dpm_fnc_write(disk_inx + 65, &ahci_dpm_read, &ahci_dpm_write);
+    }
+
+
+    kfree(memory);
+    kfree(model);
 }

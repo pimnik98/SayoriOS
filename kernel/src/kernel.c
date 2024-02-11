@@ -468,6 +468,10 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 //         ttf_destroy(&hah);
 //     }
 
+    int x = dpm_searchFreeIndex(0);
+
+    qemu_log("%d", x);
+
     cli();
 
     while(1);

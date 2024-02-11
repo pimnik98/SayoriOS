@@ -17,13 +17,6 @@ uint16_t hda_vendor = 0,
 
 uint32_t hda_addr = 0;
 
-#define WRITE32(reg, value) *(volatile uint32_t*)(hda_addr + (reg)) = (value)
-#define READ32(reg) (*(volatile uint32_t*)(hda_addr + (reg)))
-#define WRITE16(reg, value) *(volatile uint16_t*)(hda_addr + (reg)) = (value)
-#define READ16(reg) (*(volatile uint16_t*)(hda_addr + (reg)))
-#define WRITE8(reg, value) *(volatile uint8_t*)(hda_addr + (reg)) = (value)
-#define READ8(reg) (*(volatile uint8_t*)(hda_addr + (reg)))
-
 void hda_init() {
     pci_find_device_by_class_and_subclass(4, 3, &hda_vendor, &hda_device, &hda_bus, &hda_slot, &hda_func);
 
@@ -33,7 +26,7 @@ void hda_init() {
         return;
     }
 
-    hda_addr = pci_read32(hda_bus, hda_slot, hda_func, 0x10) & ~0x10;
+    hda_addr = pci_read32(hda_bus, hda_slot, hda_func, 0x10) & ~0x1;
 
     qemu_ok("HDA address: %x", hda_addr);
     tty_printf("HDA address: %x\n", hda_addr);
@@ -55,7 +48,7 @@ void hda_reset() {
     if(!hda_vendor)
         return;
 
-    WRITE32(0x08, 0);
+    WRITE32(0x8, 0);
 
     while((READ32(0x08) & 1) != 0);
 
