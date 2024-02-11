@@ -11,6 +11,7 @@
 #include "drv/disk/ata.h"
 #include "drv/atapi.h"
 #include "net/endianess.h"
+#include "drv/disk/dpm.h"
 
 #define AHCI_CLASS 1
 #define AHCI_SUBCLASS 6
@@ -613,6 +614,23 @@ void ahci_eject_cdrom(size_t port_num) {
     ahci_send_cmd(port, 0);
 }
 
+size_t ahci_dpm_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+    qemu_err("TODO: SATA DPM READ");
+
+    DPM_Disk dpm = dpm_info(Disk + 65);
+
+    return 0;
+}
+
+size_t ahci_dpm_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+    qemu_err("TODO: SATA DPM WRITE");
+
+    DPM_Disk dpm = dpm_info(Disk + 65);
+
+    return 0;
+}
+
+
 void ahci_identify(size_t port_num) {
     qemu_log("Identifying %d", port_num);
 
@@ -665,7 +683,31 @@ void ahci_identify(size_t port_num) {
 
     *(((uint8_t*)model) + 39) = 0;
 
+
+    size_t capacity = (memory16[61] << 16) | memory16[60];
+
     tty_printf("[SATA] MODEL: '%s'\n", model);
+
+    int disk_inx = dpm_reg(
+            (char)dpm_searchFreeIndex(0),
+            "SATA Disk",
+            "Unknown",
+            1,
+            capacity * 512,
+            capacity,
+            512,
+            3, // Ставим 3ку, так как будем юзать функции для чтения и записи
+            "DISK1234567890",
+            (void*)0 // Оставим тут индекс диска
+    );
+
+    if (disk_inx < 0){
+        qemu_err("[SATA/DPM] [ERROR] An error occurred during disk registration, error code: %d", disk_inx);
+    } else {
+        qemu_ok("[ATA] [DPM] [Successful] Registering OK");
+        dpm_fnc_write(disk_inx + 65, &ahci_dpm_read, &ahci_dpm_write);
+    }
+
 
     kfree(memory);
     kfree(model);

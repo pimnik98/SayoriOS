@@ -37,3 +37,4 @@ DPM_Disk dpm_info(char Letter);
 int dpm_unmount(char Letter, bool FreeReserved);
 void dpm_LabelUpdate(char Letter, char* Label);
 void dpm_fnc_write(char Letter, dpm_disk_rw_cmd Read, dpm_disk_rw_cmd Write);
+int dpm_searchFreeIndex(int Index);

@@ -14,7 +14,7 @@ bool dpm_debug = false;
 
 DPM_Disk DPM_Disks[32] = {0};
 
-int dpm_searchFreeIndex(int Index){
+int dpm_searchFreeIndex(int Index) {
 	Index = (Index < 0 || Index > 25 ? 0 : Index);
 
 	for (int i = Index; i < 32; i++){
