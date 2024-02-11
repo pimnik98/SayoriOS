@@ -57,3 +57,18 @@ bool file_exists(const char* Path){
     return true;
 }
 
+/**
+ * @brief [FileIO] Возвращает размер указанного файла
+ *
+ * @param Path - Путь
+ *
+ * @return bool - true - если успешно, в противном случае false
+ */
+size_t filesize(const char* Path){
+    FSM_FILE file = nvfs_info(Path);
+    if (file.Ready != 1) return 0;
+    if (file.Type != 0) return 0;
+    return file.Size;
+}
+
+

@@ -475,12 +475,12 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 
     qemu_log("%d", x);
 
-    qemu_log("file_exists(R:\\test.txt): %d" , file_exists("R:\\test.txt"));
-    qemu_log("file_exists(R:\\Sayori\\): %d" , file_exists("R:\\Sayori\\"));
-    qemu_log("file_exists(R:\\): %d" , file_exists("R:\\"));
-    qemu_log("file_exists(T:\\): %d" , file_exists("T:\\"));
-    qemu_log("file_exists(R:\\prog): %d" , file_exists("R:\\prog"));
-    qemu_log("file_exists(Z:\\): %d" , file_exists("Z:\\"));
+    qemu_log("filesize(R:\\test.txt): %d" , filesize("R:\\test.txt"));
+    qemu_log("filesize(R:\\Sayori\\): %d" , filesize("R:\\Sayori\\"));
+    qemu_log("filesize(R:\\): %d" , filesize("R:\\"));
+    qemu_log("filesize(T:\\): %d" , filesize("T:\\"));
+    qemu_log("filesize(R:\\prog): %d" , filesize("R:\\prog"));
+    qemu_log("filesize(Z:\\): %d" , filesize("Z:\\"));
 
     cli();
 
