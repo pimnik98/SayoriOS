@@ -77,3 +77,10 @@ typedef	struct	registers	registers_t;
 #else
 #define ON_NULLPTR(ptr, code)
 #endif
+
+#define WRITE32(reg, value) *(volatile uint32_t*)(hda_addr + (reg)) = (value)
+#define READ32(reg) (*(volatile uint32_t*)(hda_addr + (reg)))
+#define WRITE16(reg, value) *(volatile uint16_t*)(hda_addr + (reg)) = (value)
+#define READ16(reg) (*(volatile uint16_t*)(hda_addr + (reg)))
+#define WRITE8(reg, value) *(volatile uint8_t*)(hda_addr + (reg)) = (value)
+#define READ8(reg) (*(volatile uint8_t*)(hda_addr + (reg)))

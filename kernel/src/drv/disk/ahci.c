@@ -10,6 +10,8 @@
 #include "sys/isr.h"
 #include "drv/disk/ata.h"
 #include "drv/atapi.h"
+#include "net/endianess.h"
+#include "debug/hexview.h"
 
 #define AHCI_CLASS 1
 #define AHCI_SUBCLASS 6
@@ -195,6 +197,7 @@ this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0�
                 ahci_eject_cdrom(i);
 			} else if(port->signature == AHCI_SIGNATURE_SATA) { // SATA
 				qemu_log("\tSATA drive");
+                ahci_identify(i);
 			} else {
 				qemu_log("Other device: %x", port->signature);
 			}
@@ -623,4 +626,66 @@ void ahci_eject_cdrom(size_t port_num) {
 	cmdfis->lba1 = 0;
 
     ahci_send_cmd(port, slot);
+
+    kfree(memory);
+}
+
+void ahci_identify(size_t port_num) {
+    qemu_log("Identifying %d", port_num);
+
+    volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+
+    port->interrupt_status = (uint32_t)-1;
+
+    int slot = 0;
+
+    AHCI_HBA_CMD_HEADER* hdr = ports[port_num].command_list_addr_virt;
+    hdr += slot;
+
+    hdr->cfl = sizeof(AHCI_FIS_REG_DEVICE_TO_HOST) / sizeof(uint32_t);  // Should be 5
+    hdr->a = 0;  // NOT ATAPI
+    hdr->w = 0;  // Read
+    hdr->p = 0;  // No prefetch
+    hdr->prdtl = 1;  // One entry only
+
+    void* memory = kmalloc_common(512, PAGE_SIZE);
+    size_t buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) memory);
+    memset(memory, 0, 512);
+
+    HBA_CMD_TBL* table = (HBA_CMD_TBL*)AHCI_COMMAND_TABLE(ports[port_num].command_list_addr_virt, 0);
+    memset(table, 0, sizeof(HBA_CMD_TBL));
+
+    qemu_log("Table at: %x", table);
+
+    // Set only first PRDT for testing
+    table->prdt_entry[0].dba = buffer_phys;
+    table->prdt_entry[0].dbc = 0x1ff;  // 512 bytes - 1
+    table->prdt_entry[0].i = 0;
+
+    volatile AHCI_FIS_REG_HOST_TO_DEVICE *cmdfis = (volatile AHCI_FIS_REG_HOST_TO_DEVICE*)&(table->cfis);
+
+    cmdfis->fis_type = FIS_TYPE_REG_HOST_TO_DEVICE;
+    cmdfis->c = 1;	// Command
+    cmdfis->command = ATA_CMD_IDENTIFY;
+
+    cmdfis->lba1 = 0;
+
+    ahci_send_cmd(port, slot);
+
+    uint16_t* memory16 = (uint16_t*)memory;
+
+    uint16_t* model = kcalloc(20, 2);
+
+    for(int i = 0; i < 20; i++) {
+        model[i] = bit_flip_short(memory16[0x1b + i]);
+    }
+
+    *(((uint8_t*)model) + 39) = 0;
+
+    hexview_advanced(memory, 0x200, 16, true, new_qemu_printf);
+
+    tty_printf("[SATA] MODEL: '%s'\n", model);
+
+    kfree(memory);
+    kfree(model);
 }
