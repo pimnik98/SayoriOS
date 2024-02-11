@@ -13,7 +13,7 @@
 #include "drv/disk/dpm.h"
 #include "mem/vmm.h"
 
-#define INITRD_RW_SIZE (2*1024*1024) ///< Размер виртуального диска 2mb
+#define INITRD_RW_SIZE (1474560) ///< Размер виртуального диска 1.44mb floppy
 
 int initrd_tarfs(uint32_t start, uint32_t end) {
 	qemu_log("[TarFS] Init...\n * Start: %x\n * End: %x\n * Size: %d",start,end,end-start);
