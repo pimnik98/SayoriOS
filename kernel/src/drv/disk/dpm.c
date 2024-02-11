@@ -249,6 +249,16 @@ void dpm_LabelUpdate(char Letter, char* Label){
     memcpy(DPM_Disks[index].Name, Label, (c > 128 || c == 0?128:c));/// Пишем данные
 }
 
+size_t dpm_disk_size(char Letter){
+    Letter -= 65;
+
+    size_t index = (Letter > 32 ? Letter - 32 : Letter);
+    index = (Letter < 0 || Letter > 25 ? 0 : Letter);
+
+    return (DPM_Disks[index].Size > 0?DPM_Disks[index].Size:0);
+
+}
+
 DPM_Disk dpm_info(char Letter){
 	Letter -= 65;
 

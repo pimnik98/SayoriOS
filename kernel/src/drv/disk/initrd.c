@@ -45,7 +45,8 @@ int initrd_tarfs(uint32_t start, uint32_t end) {
 	qemu_log("[INITRD] Temp disk is (%d bytes) created to %x", INITRD_RW_SIZE, disk_t);
 
 	
- 	dpm_reg('T',"TempDisk","SMFS",2,INITRD_RW_SIZE,0,0,2,"TEMP-DISK",disk_t);
+ 	dpm_reg('T',"TempDisk","TEMPFS",2,INITRD_RW_SIZE,0,0,2,"TEMP-DISK",disk_t);
+    fs_tempfs_format('T');
 	//dpm_metadata_write('R',l_initrd);
 
 	//fs_smfs_format('T');

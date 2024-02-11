@@ -62,6 +62,7 @@
 #include <fs/fat32.h>
 #include <fs/iso9660.h>
 #include <fs/nvfs.h>
+#include <fs/tempfs.h>
 
 #include <gui/pointutils.h>
 #include <gui/line.h>

@@ -20,6 +20,7 @@ typedef struct {
     size_t Size;			///< Размер файла в байтах (oсt2bin)
     FSM_TIME LastTime;		///< Время последнего изменения файла
     int Type;				///< Тип элемента
+    uint8_t CHMOD;			///< CHMOD файла
 } __attribute__((packed)) FSM_FILE;
 
 typedef struct {

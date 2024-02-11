@@ -89,6 +89,7 @@ SOURCES=\
 	kernel/src/fs/fsm.c \
 	kernel/src/fs/nvfs.c \
 	kernel/src/fs/natfs.c \
+	kernel/src/fs/tempfs.c \
 	kernel/src/fs/iso9660.c \
 	kernel/src/lib/php/str_replace.c \
 	kernel/src/sys/scheduler.c \
