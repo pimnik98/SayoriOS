@@ -26,7 +26,7 @@ void hda_init() {
         return;
     }
 
-    hda_addr = pci_read32(hda_bus, hda_slot, hda_func, 0x10) & ~0x10;
+    hda_addr = pci_read32(hda_bus, hda_slot, hda_func, 0x10) & ~0x1;
 
     qemu_ok("HDA address: %x", hda_addr);
     tty_printf("HDA address: %x\n", hda_addr);

@@ -67,3 +67,4 @@ uint32_t* get_kernel_page_directory();
 
 void map_pages_overlapping(physical_addr_t* page_directory, size_t physical_start, size_t virtual_start, size_t size, uint32_t flags);
 void unmap_pages_overlapping(physical_addr_t* page_directory, size_t virtual, size_t size);
+void phys_set_flags(uint32_t* page_dir, virtual_addr_t virtual, uint32_t flags);

@@ -11,7 +11,6 @@
 #include "drv/disk/ata.h"
 #include "drv/atapi.h"
 #include "net/endianess.h"
-#include "debug/hexview.h"
 
 #define AHCI_CLASS 1
 #define AHCI_SUBCLASS 6
@@ -183,7 +182,7 @@ this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0�
 
 	for(int i = 0; i < 32; i++) {
 		if(abar->port_implemented & (1 << i)) {
-			AHCI_HBA_PORT* port = abar->ports + i;
+			volatile AHCI_HBA_PORT* port = abar->ports + i;
 
 			qemu_log("[%x: Port %d]", port, i);
 
@@ -214,10 +213,14 @@ void ahci_rebase_memory_for(size_t port_num) {
 	ahci_stop_cmd(port_num);
 
 	// Memory rebase
-	AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+	volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
 
     void* virt = kmalloc_common(MEMORY_PER_AHCI_PORT, PAGE_SIZE);
     memset(virt, 0, MEMORY_PER_AHCI_PORT);
+
+    // If gets laggy, comment it.
+    phys_set_flags(get_kernel_page_directory(), (virtual_addr_t) virt, PAGE_WRITEABLE | PAGE_CACHE_DISABLE);
+
     size_t phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) virt);
 
     ports[port_num].command_list_addr_virt = virt;
@@ -262,7 +265,7 @@ bool ahci_is_drive_attached(size_t port_num) {
 	uint32_t implemented_ports = abar->port_implemented;
 
 	if(implemented_ports & (1 << port_num)) {
-		AHCI_HBA_PORT* port = abar->ports + port_num;
+		volatile AHCI_HBA_PORT* port = abar->ports + port_num;
 
 		uint32_t status = port->sata_status;
 
@@ -281,7 +284,7 @@ int ahci_free_cmd_slot(size_t port_num) {
 	if(port_num > 31)
 		return -1;
 
-	AHCI_HBA_PORT* port = AHCI_PORT(port_num);
+	volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
 
 	uint32_t slots = port->sata_active | port->command_issue;
 
@@ -586,10 +589,7 @@ void ahci_eject_cdrom(size_t port_num) {
 	hdr->a = 1;  // ATAPI
 	hdr->w = 0;  // Read
 	hdr->p = 0;  // No prefetch
-	hdr->prdtl = 0;  // One entry only
-
-    void* memory = kmalloc_common(512, PAGE_SIZE);
-    size_t buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) memory);
+	hdr->prdtl = 0;  // No entries
 
 	HBA_CMD_TBL* table = (HBA_CMD_TBL*)AHCI_COMMAND_TABLE(ports[port_num].command_list_addr_virt, 0);
 	memset(table, 0, sizeof(HBA_CMD_TBL));
@@ -603,11 +603,6 @@ void ahci_eject_cdrom(size_t port_num) {
 
     memcpy(table->acmd, command, 12);
 
-	// Set only first PRDT for testing
-    table->prdt_entry[0].dba = buffer_phys;
-    table->prdt_entry[0].dbc = 0x1ff;  // 512 bytes - 1
-    table->prdt_entry[0].i = 0;
-
 	volatile AHCI_FIS_REG_HOST_TO_DEVICE *cmdfis = (volatile AHCI_FIS_REG_HOST_TO_DEVICE*)&(table->cfis);
     memset((void*)cmdfis, 0, sizeof(AHCI_FIS_REG_HOST_TO_DEVICE));
 
@@ -616,8 +611,6 @@ void ahci_eject_cdrom(size_t port_num) {
 	cmdfis->command = ATA_CMD_PACKET;
 
     ahci_send_cmd(port, 0);
-
-    kfree(memory);
 }
 
 void ahci_identify(size_t port_num) {
