@@ -580,20 +580,13 @@ void ahci_eject_cdrom(size_t port_num) {
 
 	port->interrupt_status = (uint32_t)-1;
 
-	int slot = 0;
-
-//    qemu_log("Slot is: %d", slot);
-
 	AHCI_HBA_CMD_HEADER* hdr = ports[port_num].command_list_addr_virt;
-	hdr += slot;
-
-//    qemu_log("CMDHEADER AT: %x", hdr);
 
 	hdr->cfl = sizeof(AHCI_FIS_REG_DEVICE_TO_HOST) / sizeof(uint32_t);  // Should be 5
 	hdr->a = 1;  // ATAPI
 	hdr->w = 0;  // Read
 	hdr->p = 0;  // No prefetch
-	hdr->prdtl = 1;  // One entry only
+	hdr->prdtl = 0;  // One entry only
 
     void* memory = kmalloc_common(512, PAGE_SIZE);
     size_t buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) memory);
@@ -601,12 +594,10 @@ void ahci_eject_cdrom(size_t port_num) {
 	HBA_CMD_TBL* table = (HBA_CMD_TBL*)AHCI_COMMAND_TABLE(ports[port_num].command_list_addr_virt, 0);
 	memset(table, 0, sizeof(HBA_CMD_TBL));
 
-    qemu_log("Table at: %x", table);
-
     uint8_t command[12] = {
         ATAPI_CMD_START_STOP,  // Command
         0, 0, 0,  // Reserved
-        1 << 1, // Eject disc
+        1 << 1, // Eject the disc
         0, 0, 0, 0, 0, 0, 0  // Reserved
     };
 
@@ -615,17 +606,16 @@ void ahci_eject_cdrom(size_t port_num) {
 	// Set only first PRDT for testing
     table->prdt_entry[0].dba = buffer_phys;
     table->prdt_entry[0].dbc = 0x1ff;  // 512 bytes - 1
-    table->prdt_entry[0].i = 1;
+    table->prdt_entry[0].i = 0;
 
 	volatile AHCI_FIS_REG_HOST_TO_DEVICE *cmdfis = (volatile AHCI_FIS_REG_HOST_TO_DEVICE*)&(table->cfis);
+    memset((void*)cmdfis, 0, sizeof(AHCI_FIS_REG_HOST_TO_DEVICE));
 
 	cmdfis->fis_type = FIS_TYPE_REG_HOST_TO_DEVICE;
 	cmdfis->c = 1;	// Command
 	cmdfis->command = ATA_CMD_PACKET;
 
-	cmdfis->lba1 = 0;
-
-    ahci_send_cmd(port, slot);
+    ahci_send_cmd(port, 0);
 
     kfree(memory);
 }
@@ -681,8 +671,6 @@ void ahci_identify(size_t port_num) {
     }
 
     *(((uint8_t*)model) + 39) = 0;
-
-    hexview_advanced(memory, 0x200, 16, true, new_qemu_printf);
 
     tty_printf("[SATA] MODEL: '%s'\n", model);
 
