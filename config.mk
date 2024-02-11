@@ -106,6 +106,7 @@ SOURCES=\
 	kernel/src/drv/disk/initrd.c \
 	kernel/src/drv/disk/dpm.c \
 	kernel/src/lib/list.c \
+	kernel/src/lib/fileio.c \
 	kernel/src/sys/sync.c \
 	kernel/src/gui/basics.c \
 	kernel/src/lib/pixel.c \

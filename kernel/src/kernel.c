@@ -475,6 +475,12 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 
     qemu_log("%d", x);
 
+    qemu_log("is_file(R:\\\\test.txt): %d" , is_file("R:\\test.txt"));
+    qemu_log("is_file(R:\\): %d" , is_file("R:\\"));
+    qemu_log("is_file(T:\\\\): %d" , is_file("T:\\"));
+    qemu_log("is_file(R:\\prog): %d" , is_file("R:\\prog"));
+    qemu_log("is_file(Z:\\\\): %d" , is_file("Z:\\"));
+
     cli();
 
     while(1);

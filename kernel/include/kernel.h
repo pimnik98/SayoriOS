@@ -18,6 +18,7 @@
 #include "lib/split.h"
 #include "lib/math.h"
 #include "lib/setjmp.h"
+#include "lib/fileio.h"
 
 #include "mem/pmm.h"
 #include "mem/vmm.h"
