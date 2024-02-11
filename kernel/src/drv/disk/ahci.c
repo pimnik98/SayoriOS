@@ -704,7 +704,7 @@ void ahci_identify(size_t port_num) {
     if (disk_inx < 0){
         qemu_err("[SATA/DPM] [ERROR] An error occurred during disk registration, error code: %d", disk_inx);
     } else {
-        qemu_ok("[ATA] [DPM] [Successful] Registering OK");
+        qemu_ok("[SATA/DPM] [Successful] Registering OK");
         dpm_fnc_write(disk_inx + 65, &ahci_dpm_read, &ahci_dpm_write);
     }
 
