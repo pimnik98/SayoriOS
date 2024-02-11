@@ -160,13 +160,13 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 
             qemu_log("Size is: %d", drives[drive_num].capacity);
 
-			memset(ide_buf, 0, 512);
-
             qemu_note("DRIVE: %d", drive_num);
 
             qemu_note("Serial: %s", serial);
             qemu_note("Firmware version: %s", fwver);
             qemu_note("Model name: %s", model_name);
+
+			memset(ide_buf, 0, 512);
 
             // (drive_num) is an index (0, 1, 2, 3) of disk
             int disk_inx = dpm_reg(
@@ -278,20 +278,9 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 		((uint8_t*)fwver)[7] = 0;
 		((uint8_t*)model_name)[39] = 0;
 
-		size_t capacity = capacity_lba;
+        size_t capacity = (ide_buf[61] << 16) | ide_buf[60];
 
-		if(!capacity_lba) {
-			if(!capacity_lba_ext) {
-				// capacity = (cyl * hds * scs) + 128;
-				drives[drive_num].is_chs_addressing = true;
-
-				drives[drive_num].cylinders = cyl;
-				drives[drive_num].heads = hds;
-				drives[drive_num].sectors = scs;
-			} else {
-				capacity = capacity_lba_ext;
-			}
-		}
+        qemu_log("CAP: %u", capacity);
 
 		drives[drive_num].drive = drive_num;
 		drives[drive_num].block_size = 512;
@@ -438,15 +427,11 @@ void ata_list() {
 		}
 
 		if(!drives[i].is_chs_addressing) {
-			_tty_printf("(%d bytes | %d KB | %d MB)",
-					(drives[i].capacity * drives[i].block_size),
-					(drives[i].capacity * drives[i].block_size) >> 10,
-					(drives[i].capacity * drives[i].block_size) >> 20);
-		} else {
-			_tty_printf("(C:H:S => %d:%d:%d)",
-					drives[i].cylinders,
-					drives[i].heads,
-					drives[i].sectors);
+			_tty_printf("%u sectors = ", drives[i].capacity);
+
+			size_t megabytes = (drives[i].capacity >> 5) / 64;
+
+			_tty_printf("%u MB = %u GB", megabytes, megabytes >> 10);
 		}
 
 		if(drives[i].is_packet)
