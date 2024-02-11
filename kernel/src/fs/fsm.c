@@ -21,6 +21,34 @@ FSM G_FSM[255] = {0};
 int C_FSM = 0;
 bool fsm_debug = false;
 
+size_t fsm_DateConvertToUnix(FSM_TIME time) {
+    uint32_t seconds_per_day = 24 * 60 * 60;
+    size_t unix_time = 0;
+
+    // Подсчет количества дней с начала Unix эпохи
+    for (uint32_t year = 1970; year < time.year; year++) {
+        uint32_t days_in_year = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) ? 366 : 365;
+        unix_time += days_in_year * seconds_per_day;
+    }
+
+    int8_t month_days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (time.year % 4 == 0 && (time.year % 100 != 0 || time.year % 400 == 0)) {
+        month_days[1] = 29;
+    }
+
+    // Добавление количества дней в текущем году
+    for (uint32_t month = 0; month < time.month - 1; month++) {
+        unix_time += month_days[month] * seconds_per_day;
+    }
+
+    // Добавление количества дней в текущем месяце
+    unix_time += (time.day - 1) * seconds_per_day;
+
+    // Добавление компонентов времени
+    unix_time += time.hour * 3600 + time.minute * 60 + time.second;
+
+    return unix_time;
+}
 
 
 void fsm_convertUnix(uint32_t unix_time, FSM_TIME* time) {
