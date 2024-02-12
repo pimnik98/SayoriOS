@@ -475,23 +475,6 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 
     qemu_log("%d", x);
 
-    qemu_log("mkdir(R:\\test.txt): %d" , mkdir("R:\\test.txt"));
-    qemu_log("mkdir(R:\\Sayori\\): %d" , mkdir("R:\\Sayori\\"));
-    qemu_log("mkdir(R:\\): %d" , mkdir("R:\\"));
-    qemu_log("mkdir(T:\\): %d" , mkdir("T:\\"));
-    qemu_log("mkdir(T:\\temp.log\\): %d" , mkdir("T:\\temp.log\\"));
-    qemu_log("mkdir(R:\\prog): %d" , mkdir("R:\\prog"));
-    qemu_log("mkdir(Z:\\): %d" , mkdir("Z:\\"));
-
-
-    qemu_log("mkdir(R:\\test.txt): %d" , mkdir("R:\\test.txt"));
-    qemu_log("mkdir(R:\\Sayori\\): %d" , mkdir("R:\\Sayori\\"));
-    qemu_log("mkdir(R:\\): %d" , mkdir("R:\\"));
-    qemu_log("mkdir(T:\\): %d" , mkdir("T:\\"));
-    qemu_log("mkdir(T:\\temp.log\\): %d" , mkdir("T:\\temp.log\\"));
-    qemu_log("mkdir(R:\\prog): %d" , mkdir("R:\\prog"));
-    qemu_log("mkdir(Z:\\): %d" , mkdir("Z:\\"));
-
     cli();
 
     while(1);
