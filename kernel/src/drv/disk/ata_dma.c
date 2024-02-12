@@ -424,6 +424,8 @@ status_t ata_dma_read(uint8_t drive, char *buf, uint32_t location, uint32_t leng
 			ata_dma_read_sectors(drive, real_buf + (i * (65536 * 2)), start_sector + (i * 256), remaining_count);
 	}
 
+//    hexview_advanced(real_buf, 512, 32, true, new_qemu_printf);
+
 	memcpy(buf, real_buf + (location % drives[drive].block_size), length);
 
 	kfree(real_buf);

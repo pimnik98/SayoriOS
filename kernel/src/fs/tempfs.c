@@ -122,7 +122,7 @@ int fs_tempfs_tcache_update(const char Disk){
     __TCache__->FreeAll = (__TCache__->BlocksAll - __TCache__->Boot->CountBlocks - __TCache__->Boot->CountFiles);
     __TCache__->Status = 1;
 
-    dpm_metadata_write(Disk, (void*) __TCache__);
+    dpm_metadata_write(Disk, (uint32_t)__TCache__);
     return 0x7246;
 }
 
@@ -134,7 +134,7 @@ TEMPFS_PACKAGE* fs_tempfs_func_readPackage(const char Disk, size_t Address){
     }
     memset(pack, 0, sizeof(TEMPFS_PACKAGE));
 
-    int read = dpm_read(Disk, Address, sizeof(TEMPFS_PACKAGE), pack);
+    /* size_t read = */dpm_read(Disk, Address, sizeof(TEMPFS_PACKAGE), pack);
     return pack;
 }
 
@@ -262,7 +262,7 @@ int fs_tempfs_func_findFreePackage(const char Disk, int Skip){
         return -1;
     }
 
-    int adr = 0;
+    size_t adr = 0;
     for (int i = 0; i < allcount; i++){
         adr = (boot->EndDisk - sizeof(TEMPFS_PACKAGE) - (i * sizeof(TEMPFS_PACKAGE)));
         TEMPFS_PACKAGE* pack = fs_tempfs_func_readPackage(Disk, adr);
@@ -888,7 +888,7 @@ void fs_tempfs_format(const char Disk){
 
     /// Затираем все данные с диска
     for (size_t abx = 0; abx < all_blocks; abx++){
-        tfs_log(" |-- [>] [%d | %d] Clearing the hard drive of old data\n",abx + 1,all_blocks);
+//        tfs_log(" |-- [>] [%d | %d] Clearing the hard drive of old data\n",abx + 1,all_blocks);
         int wr_entity = fs_tempfs_func_writeEntity(Disk, abx, tmp);
         if (wr_entity != 1){
             tfs_log(" |-- [WARN] There was a problem when erasing data on the 0x%x section\n", 512 + (abx * sizeof(TEMPFS_ENTITY)));
