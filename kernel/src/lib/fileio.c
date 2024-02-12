@@ -191,6 +191,16 @@ bool touch(const char* Path){
  * @return bool - true - если успешно, в противном случае false
  */
 bool mkdir(const char* Path){
-    FSM_FILE file = nvfs_info(Path);
     return nvfs_create(Path, 1);
+}
+
+/**
+ * @brief [FileIO] Удаляет файл
+ *
+ * @param Path - Путь
+ *
+ * @return bool - true - если успешно, в противном случае false
+ */
+bool unlink(const char* Path){
+    return nvfs_delete(Path, 0);
 }

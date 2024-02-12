@@ -649,6 +649,7 @@ FSM_DIR* fs_tempfs_dir(const char Disk, const char* Path){
             CZ++;
             continue;
         }
+        memset(&Files[count], 0, sizeof(FSM_FILE));
         Files[count].Ready = 1;
         Files[count].CHMOD = entity->CHMOD;
         Files[count].Size = entity->Size;
