@@ -432,16 +432,20 @@ void ata_list() {
 			continue;
 		}
 
-		if(!drives[i].is_chs_addressing) {
-			_tty_printf("%u sectors = ", drives[i].capacity);
+        _tty_printf("%u sectors = ", drives[i].capacity);
 
-			size_t megabytes = (drives[i].capacity >> 5) / (1 << 6);
+        size_t megabytes = 0;
 
-			_tty_printf("%u MB = %u GB", megabytes, megabytes >> 10);
-		}
+        if(drives[i].is_packet) {
+            megabytes = (drives[i].capacity * 2048) >> 20;
+        } else {
+            megabytes = (drives[i].capacity >> 5) / (1 << 6);
+        }
 
-		if(drives[i].is_packet)
-			_tty_printf(" [PACKET DEVICE!!!]");
+        _tty_printf("%u MB = %u GB", megabytes, megabytes >> 10);
+
+        if(drives[i].is_packet)
+            _tty_printf(" [PACKET DEVICE!!!]");
 
         if(drives[i].is_sata)
             _tty_printf(" [SATA]");
