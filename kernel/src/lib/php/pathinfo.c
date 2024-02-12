@@ -12,7 +12,7 @@
 
 char* pathinfo(const char* Path, int Mode){
     int i = 0, length = strlen(Path), dot_index = -1;
-    char* info = malloc(length + 1);
+    char* info = kmalloc(length + 1);
     memset(info, 0, length + 1);
     if (Mode == PATHINFO_DIRNAME) {
         if (Path[(length - 1)] == '/' || Path[(length - 1)] == '\\'){
