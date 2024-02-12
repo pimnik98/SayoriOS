@@ -399,6 +399,8 @@ status_t ata_dma_read(uint8_t drive, char *buf, uint32_t location, uint32_t leng
 		return E_DEVICE_NOT_ONLINE;
 	}
 
+    qemu_log("DRIVE: %d; Buffer: %x, Location: %x, len: %d", drive, buf, location, length);
+
 	size_t start_sector = location / drives[drive].block_size;
 	size_t end_sector = (location + length - 1) / drives[drive].block_size;
 	size_t sector_count = end_sector - start_sector + 1;

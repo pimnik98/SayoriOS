@@ -229,7 +229,7 @@ int dpm_reg(char Letter, char* Name, char* FS, int Status, size_t Size, size_t S
 void dpm_FileSystemUpdate(char Letter, char* FileSystem){
     Letter -= 65;
 
-    size_t index = (Letter > 32 ? Letter - 32 : Letter);
+    size_t index;// = (Letter > 32 ? Letter - 32 : Letter);
     index = (Letter < 0 || Letter > 25 ? 0 : Letter);
 
     size_t c = strlen(FileSystem);
@@ -241,7 +241,7 @@ void dpm_FileSystemUpdate(char Letter, char* FileSystem){
 void dpm_LabelUpdate(char Letter, char* Label){
     Letter -= 65;
 
-    size_t index = (Letter > 32 ? Letter - 32 : Letter);
+    size_t index;// = (Letter > 32 ? Letter - 32 : Letter);
     index = (Letter < 0 || Letter > 25 ? 0 : Letter);
 
     size_t c = strlen(Label);
@@ -252,7 +252,7 @@ void dpm_LabelUpdate(char Letter, char* Label){
 DPM_Disk dpm_info(char Letter){
 	Letter -= 65;
 
-	size_t index = (Letter > 32 ? Letter - 32 : Letter);
+	size_t index;// = (Letter > 32 ? Letter - 32 : Letter);
 	index = (Letter < 0 || Letter > 25 ? 0 : Letter);
 
 	return DPM_Disks[index];
