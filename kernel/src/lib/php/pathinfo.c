@@ -11,7 +11,7 @@
 #include "mem/vmm.h"
 
 char* pathinfo(const char* Path, int Mode){
-	int i = 0, length = strlen(Path), dot_index = -1;
+	int i, length = strlen(Path), dot_index = -1;
 	char* info = kcalloc(length + 1, 1);
 	if (Mode == PATHINFO_DIRNAME) {
 		for (i = length - 1; i >= 0; i--) {

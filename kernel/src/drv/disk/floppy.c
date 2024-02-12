@@ -34,7 +34,7 @@ static const char * drive_types[8] = {
 };
 static const char FLOPPY_DMABUFA[floppy_dmalen] __attribute__((aligned(0x8000)));	///< Буфер дискеты 1
 //static const char FLOPPY_DMABUFB[floppy_dmalen] __attribute__((aligned(0x8000)));	///< Буфер дискеты 2
-bool interrupted = false;
+volatile bool interrupted = false;
 
 floppy_t Floppy(int device){
 	return floppy_data[device];
@@ -46,7 +46,7 @@ void irq_waitFloppy() {
 	}
 }
 
-static void irqFloppy(registers_t regs){
+static void irqFloppy(__attribute__((unused)) registers_t regs){
 	interrupted = 0;
 }
 
