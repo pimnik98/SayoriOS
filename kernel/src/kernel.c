@@ -475,12 +475,12 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 
     qemu_log("%d", x);
 
-    qemu_log("filemtime(R:\\test.txt): %d" , filemtime("R:\\test.txt"));
-    qemu_log("filemtime(R:\\Sayori\\): %d" , filemtime("R:\\Sayori\\"));
-    qemu_log("filemtime(R:\\): %d" , filemtime("R:\\"));
-    qemu_log("filemtime(T:\\): %d" , filemtime("T:\\"));
-    qemu_log("filemtime(R:\\prog): %d" , filemtime("R:\\prog"));
-    qemu_log("filemtime(Z:\\): %d" , filemtime("Z:\\"));
+    qemu_log("is_readable(R:\\test.txt): %d" , is_readable("R:\\test.txt"));
+    qemu_log("is_readable(R:\\Sayori\\): %d" , is_readable("R:\\Sayori\\"));
+    qemu_log("is_readable(R:\\): %d" , is_readable("R:\\"));
+    qemu_log("is_readable(T:\\): %d" , is_readable("T:\\"));
+    qemu_log("is_readable(R:\\prog): %d" , is_readable("R:\\prog"));
+    qemu_log("is_readable(Z:\\): %d" , is_readable("Z:\\"));
 
     cli();
 

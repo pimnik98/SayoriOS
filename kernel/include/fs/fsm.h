@@ -2,6 +2,10 @@
 
 #include <common.h>
 
+#define FSM_CHMOD_READ               0x01  /// Права чтения
+#define FSM_CHMOD_WRITE              0x02  /// Права записи
+#define FSM_CHMOD_EXEC               0x04  /// Права выполнения
+#define FSM_CHMOD_SYS                0x08  /// Права системы
 
 typedef struct {
 	uint16_t year;	///< Год

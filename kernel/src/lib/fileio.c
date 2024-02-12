@@ -85,7 +85,6 @@ size_t filemtime(const char* Path){
     FSM_FILE file = nvfs_info(Path);
     if (file.Ready != 1) return 0;
     if (file.Type != 0) return 0;
-    if (file.LastTime == 0x0) return 0;
     size_t unix = 1234567;
     return unix;
    // qemu_log(" |--- Query: %x", &file.LastTime);
@@ -93,4 +92,21 @@ size_t filemtime(const char* Path){
 
     //qemu_log(" |--- Return: %d", unix);
     return unix;
+}
+
+
+/**
+ * @brief [FileIO] Проверяет права чтения у сущности
+ *
+ * @param Path - Путь
+ *
+ * @return bool - true - если успешно, в противном случае false
+ */
+bool is_readable(const char* Path){
+    FSM_FILE file = nvfs_info(Path);
+    if (file.Ready != 1) return false;
+    if (file.CHMOD & FSM_CHMOD_READ) {
+        return true;
+    }
+    return false;
 }
