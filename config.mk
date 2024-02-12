@@ -278,7 +278,8 @@ QEMU_FLAGS = -cdrom kernel.iso -m $(MEMORY_SIZE) \
 			 -cpu core2duo-v1 \
 			 -usb \
 			 -object filter-dump,id=dump0,netdev=net0,file=netdump.pcap \
-			 $(KVM_QEMU_FLAGS)
+			 $(KVM_QEMU_FLAGS) \
+			 $(ADDITIONAL_QEMU_FLAGS)
  			 # -device AC97 \
 
 
