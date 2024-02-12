@@ -428,6 +428,60 @@ status_t ata_dma_read(uint8_t drive, char *buf, uint32_t location, uint32_t leng
 	return OK;
 }
 
+status_t ata_dma_read_new(uint8_t drive, char *buf, uint32_t location, uint32_t length) {
+    ON_NULLPTR(buf, {
+        qemu_err("Buffer is nullptr!");
+        return E_INVALID_BUFFER;
+    });
+
+    if(!drives[drive].online) {
+        qemu_err("Attempted read from drive that does not exist.");
+        return E_DEVICE_NOT_ONLINE;
+    }
+
+    size_t start_sector = location / drives[drive].block_size;
+    size_t end_sector = (location + length - 1) / drives[drive].block_size;
+    size_t sector_count = end_sector - start_sector + 1;
+
+    size_t real_length = sector_count * drives[drive].block_size;
+
+    qemu_note("SECTOR[START: %u; END: %u; COUNT: %u]; LENGTH: %u",
+                start_sector,
+                end_sector,
+                sector_count,
+                real_length);
+
+    // TODO: Optimize to read without kmalloc
+    uint8_t* real_buf = kmalloc_common(real_length, PAGE_SIZE);
+
+    if(!drives[drive].is_packet) {
+        // Okay, ATA can only read 256 sectors (128 KB of memory) at one request, so subdivide our data to clusters to manage.
+        int i = 0;
+        size_t cluster_count = sector_count / 256;
+        size_t remaining_count = sector_count % 256;
+
+        qemu_log("CLUSTERS: %u", cluster_count);
+
+        for(; i < cluster_count; i++) {
+            ata_dma_read_sectors(drive, real_buf + (i * (65536 * 2)), start_sector + (i * 256), 0);
+        }
+
+        if(remaining_count != 0) {
+            qemu_log("REMAINING: %u", remaining_count);
+            ata_dma_read_sectors(drive, real_buf + (i * (65536 * 2)), start_sector + (i * 256), remaining_count);
+        }
+    }
+
+    qemu_ok("OK (LEN: %u)", length);
+
+    memcpy(buf, real_buf + (location % drives[drive].block_size), length);
+
+    qemu_ok("OK x2");
+    kfree(real_buf);
+
+    return OK;
+}
+
 status_t ata_dma_write(uint8_t drive, const char *buf, uint32_t location, uint32_t length) {
 	ON_NULLPTR(buf, {
 		qemu_err("Buffer is nullptr!");

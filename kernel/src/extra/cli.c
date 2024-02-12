@@ -133,7 +133,7 @@ uint32_t CLI_CMD_CAT(uint32_t c, char* v[]){
 
     size_t filesize = fsize(cat_file);
 
-    uint8_t* buffer = kcalloc(1,filesize);
+    uint8_t* buffer = kcalloc(1,filesize + 1);
 
     fread(cat_file, 1, filesize, buffer);
 

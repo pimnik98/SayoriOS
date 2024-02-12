@@ -51,7 +51,7 @@ void ide_soft_reset(size_t io) {
 	outb(io + ATA_REG_CONTROL, 0);
 }
 
-size_t dpm_ata_pio_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+size_t dpm_ata_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
     /// Функции для чтения
     DPM_Disk dpm = dpm_info(Disk + 65);
 //    qemu_note("[ATA] [DPM] [DISK %d] [READ] Off: %d | Size: %d", dpm.Point, Offset, Size);
@@ -62,7 +62,7 @@ size_t dpm_ata_pio_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
 }
 
 
-size_t dpm_ata_pio_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+size_t dpm_ata_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
     /// Функции для записи
     DPM_Disk dpm = dpm_info(Disk + 65);
     qemu_note("[ATA] [DPM] [DISK %d] [WRITE] Off: %d | Size: %d", dpm.Point, Offset, Size);
@@ -187,7 +187,7 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 
             } else {
                 qemu_ok("[ATA] [DPM] [Successful] [is_packet: %d] Your disk index: %d",drives[drive_num].is_packet, disk_inx);
-                dpm_fnc_write(disk_inx + 65, &dpm_ata_pio_read, &dpm_ata_pio_write);
+                dpm_fnc_write(disk_inx + 65, &dpm_ata_read, &dpm_ata_write);
             }
 
 			return 0;
@@ -306,7 +306,7 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
             qemu_err("[ATA] [DPM] [ERROR] An error occurred during disk registration, error code: %d",disk_inx);
         } else {
             qemu_ok("[ATA] [DPM] [Successful] [is_packet: %d] Your disk index: %d",drives[drive_num].is_packet, disk_inx);
-            dpm_fnc_write(disk_inx + 65, &dpm_ata_pio_read, &dpm_ata_pio_write);
+            dpm_fnc_write(disk_inx + 65, &dpm_ata_read, &dpm_ata_write);
         }
 
 		qemu_log("Identify finished");
@@ -360,11 +360,16 @@ void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) {
 		qemu_log("Attempted read from drive that does not exist.");
 		return;
 	}
-	
+
+    if((!drives[drive].is_packet) && drives[drive].is_dma) {
+        ata_dma_read_new(drive, buf, location, length);
+        return;
+    }
+
 	size_t start_sector = location / drives[drive].block_size;
 	size_t end_sector = (location + length - 1) / drives[drive].block_size;
 	size_t sector_count = end_sector - start_sector + 1;
-	
+
 	size_t real_length = sector_count * drives[drive].block_size;
 
 //	qemu_log("Reading %d sectors...", sector_count);
@@ -374,7 +379,7 @@ void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) {
 	// Add DMA support
 	if(!drives[drive].is_packet) {
         if(drives[drive].is_dma) {
-            ata_dma_read(drive, real_buf, start_sector * 512, sector_count * 512);
+            ata_dma_read_new(drive, real_buf, start_sector * 512, sector_count * 512);
         } else {
             ata_pio_read_sectors(drive, real_buf, start_sector, sector_count);
         }
