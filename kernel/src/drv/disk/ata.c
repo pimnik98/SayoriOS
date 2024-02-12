@@ -278,7 +278,8 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 		((uint8_t*)fwver)[7] = 0;
 		((uint8_t*)model_name)[39] = 0;
 
-        size_t capacity = (ide_buf[61] << 16) | ide_buf[60];
+        // size_t capacity = (ide_buf[61] << 16) | ide_buf[60];  // 28-bit value
+        size_t capacity = (ide_buf[101] << 16) | ide_buf[100];  // 64-bit value
 
         qemu_log("CAP: %u", capacity);
 
@@ -429,7 +430,7 @@ void ata_list() {
 		if(!drives[i].is_chs_addressing) {
 			_tty_printf("%u sectors = ", drives[i].capacity);
 
-			size_t megabytes = (drives[i].capacity >> 5) / 64;
+			size_t megabytes = (drives[i].capacity >> 5) / (1 << 6);
 
 			_tty_printf("%u MB = %u GB", megabytes, megabytes >> 10);
 		}
