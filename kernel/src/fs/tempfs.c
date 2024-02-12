@@ -689,6 +689,8 @@ FSM_DIR* fs_tempfs_dir(const char Disk, const char* Path){
 
 int fs_tempfs_create(const char Disk,const char* Path,int Mode){
     tfs_log("[>] Creating a new entity\n");
+    size_t lenp = strlen(Path);
+    if (lenp <= 0 || lenp >= (Mode == 0?128:256)) return 0;
     TEMPFS_ENTITY* entity = malloc(sizeof(TEMPFS_ENTITY));
     memset(entity, 0, sizeof(TEMPFS_ENTITY));
     int find_dir = fs_tempfs_func_findDIR(Disk, Path);
