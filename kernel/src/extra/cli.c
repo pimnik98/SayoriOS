@@ -27,6 +27,7 @@
 #include "sys/pixfmt.h"
 #include "io/rgb_image.h"
 #include <sys/cpuinfo.h>
+#include "../../include/lib/fileio.h"
 
 int G_CLI_CURINXA = 0;
 int G_CLI_CURINXB = 0;
@@ -143,6 +144,79 @@ uint32_t CLI_CMD_CAT(uint32_t c, char* v[]){
 
 	kfree(buffer);
     return 1;
+}
+
+uint32_t CLI_CMD_DEL(uint32_t c, char* v[]){
+    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
+        _tty_printf("Удаление файла\n");
+        _tty_printf("Пример:\"DEL T:\\Sayori\\tmp.log\".\n");
+        _tty_printf("\n");
+        return 1;
+    }
+
+    bool res = unlink(v[1]);
+
+    if (!res) {
+        tty_setcolor(COLOR_ERROR);
+        tty_printf("Не удалось удалить файл, возможно файл не найден или у вас недостаточно прав для его удаления.\n");
+        return 1;
+    }
+    return 0;
+}
+
+
+uint32_t CLI_CMD_RMDIR(uint32_t c, char* v[]){
+    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
+        _tty_printf("Удаление папки\n");
+        _tty_printf("Пример:\"RMDIR T:\\Sayori\\\".\n");
+        _tty_printf("\n");
+        return 1;
+    }
+
+    bool res = rmdir(v[1]);
+
+    if (!res) {
+        tty_setcolor(COLOR_ERROR);
+        tty_printf("Не удалось удалить папку, возможно папка не найдена или у вас недостаточно прав для её удаления.\n");
+        return 1;
+    }
+    return 0;
+}
+
+uint32_t CLI_CMD_TOUCH(uint32_t c, char* v[]){
+    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
+        _tty_printf("Создание файла\n");
+        _tty_printf("Пример:\"TOUCH T:\\Sayori\\tmp.log\".\n");
+        _tty_printf("\n");
+        return 1;
+    }
+
+    bool res = touch(v[1]);
+
+    if (!res) {
+        tty_setcolor(COLOR_ERROR);
+        tty_printf("Не удалось создать файл, возможно файл уже существует или у вас недостаточно прав для её создания в этой папке.\n");
+        return 1;
+    }
+    return 0;
+}
+
+uint32_t CLI_CMD_MKDIR(uint32_t c, char* v[]){
+    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
+        _tty_printf("Создание папки\n");
+        _tty_printf("Пример:\"TOUCH T:\\Sayori\\\".\n");
+        _tty_printf("\n");
+        return 1;
+    }
+
+    bool res = mkdir(v[1]);
+
+    if (!res) {
+        tty_setcolor(COLOR_ERROR);
+        tty_printf("Не удалось создать папка, возможно папка уже существует или у вас недостаточно прав для её создания в этой папке.\n");
+        return 1;
+    }
+    return 0;
 }
 
 uint32_t CLI_CMD_JSE(uint32_t c, char* v[]){
@@ -384,28 +458,32 @@ uint32_t calendar(uint32_t, char**);
 
 CLI_CMD_ELEM G_CLI_CMD[] = {
 	{"CLS", "cls", CLI_CMD_CLS, "Очистка экрана"},
+    {"CALENDAR", "calendar", calendar, "Календарь"},
     {"CAT", "cat", CLI_CMD_CAT, "Выводит содержимое файла на экран"},
 	{"ECHO", "echo", CLI_CMD_ECHO, "Выводит сообщение на экран."},
 	{"DIR", "dir", CLI_CMD_DIR, "Выводит список файлов и папок."},
+    {"DISKCTL", "diskctl", shell_diskctl, "Управление ATA-дисками"},
+    {"DISKPART", "diskpart", CLI_CMD_DISKPART, "Список дисков Disk Partition Manager"},
     {"GBA", "gba", CLI_CMD_GBA, "GameBoy Emulator"},
 	{"HELP", "help", CLI_CMD_HELP, "Выводит справочную информацию о командах SayoriOS (CLI)."},
 	{"SET", "set", CLI_CMD_SET, "Показывает, указывает и удаляет переменные среды SayoriOS"},
-	{"NET", "net", CLI_CMD_NET, "Net info"},
+	{"NET", "net", CLI_CMD_NET, "Информация об сетевых устройствах"},
 	{"GFXBENCH", "gfxbench", gfxbench, "Тестирование скорости фреймбуфера"},
 	{"MEMINFO", "meminfo", CLI_MEMINFO, "Информация об оперативной памяти"},
 	{"MINIPLAY", "miniplay", miniplay, "WAV-проиграватель"},
 	{"DESKTOP", "desktop", parallel_desktop_start, "Рабочий стол"},
 	{"MALA", "mala", mala_draw, "Нарисовать рисунок"},
+    {"MINESWEEPER", "minesweeper", minesweeper, "Сапёр"},
 	{"PAVI", "pavi", pavi_view, "Программа для просмотра изображений"},
 	{"PCI", "pci", pci_print_list, "Список PCI устройств"},
 	// {"RS", "rs", rust_command, "Rust command"},
 	{"PROC", "proc", proc_list, "Список процессов"},
     {"SYSINFO", "sysinfo", CLI_CMD_SYSINFO, "Информация о системе"},
     {"JSE", "jse", CLI_CMD_JSE, "JavaScript Engine"},
-    {"MINESWEEPER", "minesweeper", minesweeper, "Сапёр"},
-    {"DISKPART", "diskpart", CLI_CMD_DISKPART, "Список дисков Disk Partition Manager"},
-    {"DISKCTL", "diskctl", shell_diskctl, "Управление ATA-дисками"},
-    {"CALENDAR", "calendar", calendar, "Календарь"},
+    {"TOUCH", "touch", CLI_CMD_TOUCH, "Создать файл"},
+    {"DEL", "DEL", CLI_CMD_DEL, "Удалить файл"},
+    {"MKDIR", "mkdir", CLI_CMD_MKDIR, "Создать папку"},
+    {"RMDIR", "rmdir", CLI_CMD_RMDIR, "Удалить папку"},
 	{nullptr, nullptr, nullptr}
 };
 
