@@ -82,7 +82,7 @@ FSM_FILE fs_tarfs_info(const char Disk,const char* Path){
 
         memcpy(file.Path,zpath,strlen(zpath));
         memcpy(file.Name,initrd->Files[i].Name,strlen(initrd->Files[i].Name));
-        file.CHMOD = FSM_CHMOD_READ;
+        file.CHMOD = (initrd->Files[i].Type == 48?FSM_CHMOD_READ | FSM_CHMOD_EXEC:FSM_CHMOD_READ);
         file.Mode = 'r';
         file.Size = initrd->Files[i].Size;
         file.Type = initrd->Files[i].Type - 48;

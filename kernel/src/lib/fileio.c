@@ -127,3 +127,20 @@ bool is_writable(const char* Path){
     }
     return false;
 }
+
+
+/**
+ * @brief [FileIO] Проверяет права выполнения у сущности
+ *
+ * @param Path - Путь
+ *
+ * @return bool - true - если успешно, в противном случае false
+ */
+bool is_executable(const char* Path){
+    FSM_FILE file = nvfs_info(Path);
+    if (file.Ready != 1) return false;
+    if (file.CHMOD & FSM_CHMOD_EXEC) {
+        return true;
+    }
+    return false;
+}
