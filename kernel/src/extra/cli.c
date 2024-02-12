@@ -471,6 +471,11 @@ void cli(){
             continue;
         }
 
+        size_t len_cmd = strlen(input_buffer);
+        if (len_cmd == 0) {
+            continue;
+        }
+
         size_t current_time = timestamp();
 		qemu_log("cmd: %s", input_buffer);
 
