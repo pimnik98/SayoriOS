@@ -362,7 +362,11 @@ void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) {
 	}
 
     if((!drives[drive].is_packet) && drives[drive].is_dma) {
+#if ATA_DMA_USE_OPTIMIZED==1
         ata_dma_read_new(drive, buf, location, length);
+#else
+        ata_dma_read(drive, buf, location, length);
+#endif
         return;
     }
 
@@ -378,11 +382,7 @@ void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) {
 
 	// Add DMA support
 	if(!drives[drive].is_packet) {
-        if(drives[drive].is_dma) {
-            ata_dma_read_new(drive, real_buf, start_sector * 512, sector_count * 512);
-        } else {
-            ata_pio_read_sectors(drive, real_buf, start_sector, sector_count);
-        }
+        ata_pio_read_sectors(drive, real_buf, start_sector, sector_count);
 	} else {
 		atapi_read_sectors(drive, real_buf, start_sector, sector_count);
 	}
@@ -434,7 +434,7 @@ void ata_list() {
 
         _tty_printf("%u sectors = ", drives[i].capacity);
 
-        size_t megabytes = 0;
+        size_t megabytes;
 
         if(drives[i].is_packet) {
             megabytes = (drives[i].capacity * 2048) >> 20;
