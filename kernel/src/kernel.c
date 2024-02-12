@@ -475,12 +475,13 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 
     qemu_log("%d", x);
 
-    qemu_log("fileperms(R:\\test.txt): %d" , fileperms("R:\\test.txt"));
-    qemu_log("fileperms(R:\\Sayori\\): %d" , fileperms("R:\\Sayori\\"));
-    qemu_log("fileperms(R:\\): %d" , fileperms("R:\\"));
-    qemu_log("fileperms(T:\\): %d" , fileperms("T:\\"));
-    qemu_log("fileperms(R:\\prog): %d" , fileperms("R:\\prog"));
-    qemu_log("fileperms(Z:\\): %d" , fileperms("Z:\\"));
+    qemu_log("touch(R:\\test.txt): %d" , touch("R:\\test.txt"));
+    qemu_log("touch(R:\\Sayori\\): %d" , touch("R:\\Sayori\\"));
+    qemu_log("touch(R:\\): %d" , touch("R:\\"));
+    qemu_log("touch(T:\\): %d" , touch("T:\\"));
+    qemu_log("touch(T:\\temp.log): %d" , touch("T:\\temp.log"));
+    qemu_log("touch(R:\\prog): %d" , touch("R:\\prog"));
+    qemu_log("touch(Z:\\): %d" , touch("Z:\\"));
 
     cli();
 

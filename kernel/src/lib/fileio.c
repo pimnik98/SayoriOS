@@ -168,3 +168,16 @@ uint32_t fileperms(const char* Path){
     }
     return (ret * 100) + (ret * 10) + ret;
 }
+
+
+/**
+ * @brief [FileIO] Создает файл
+ *
+ * @param Path - Путь
+ *
+ * @return bool - true - если успешно, в противном случае false
+ */
+bool touch(const char* Path){
+    FSM_FILE file = nvfs_info(Path);
+    return nvfs_create(Path, 0);
+}
