@@ -12,6 +12,7 @@
 #include "drv/atapi.h"
 #include "net/endianess.h"
 #include "drv/disk/dpm.h"
+#include "debug/hexview.h"
 
 #define AHCI_CLASS 1
 #define AHCI_SUBCLASS 6
@@ -194,10 +195,11 @@ this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0�
 
 			if(port->signature == AHCI_SIGNATURE_SATAPI) { // SATAPI
 				qemu_log("\tSATAPI drive");
+                ahci_identify(i, true);
                 ahci_eject_cdrom(i);
 			} else if(port->signature == AHCI_SIGNATURE_SATA) { // SATA
 				qemu_log("\tSATA drive");
-                ahci_identify(i);
+                ahci_identify(i, false);
 			} else {
 				qemu_log("Other device: %x", port->signature);
 			}
@@ -631,7 +633,7 @@ size_t ahci_dpm_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
 }
 
 
-void ahci_identify(size_t port_num) {
+void ahci_identify(size_t port_num, bool is_atapi) {
     qemu_log("Identifying %d", port_num);
 
     volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
@@ -644,7 +646,7 @@ void ahci_identify(size_t port_num) {
     hdr += slot;
 
     hdr->cfl = sizeof(AHCI_FIS_REG_DEVICE_TO_HOST) / sizeof(uint32_t);  // Should be 5
-    hdr->a = 0;  // NOT ATAPI
+    hdr->a = 0;  // IDENTIFY COMMANDS DOES NOT NEED TO SET ATAPI FLAG
     hdr->w = 0;  // Read
     hdr->p = 0;  // No prefetch
     hdr->prdtl = 1;  // One entry only
@@ -656,8 +658,6 @@ void ahci_identify(size_t port_num) {
     HBA_CMD_TBL* table = (HBA_CMD_TBL*)AHCI_COMMAND_TABLE(ports[port_num].command_list_addr_virt, 0);
     memset(table, 0, sizeof(HBA_CMD_TBL));
 
-    qemu_log("Table at: %x", table);
-
     // Set only first PRDT for testing
     table->prdt_entry[0].dba = buffer_phys;
     table->prdt_entry[0].dbc = 0x1ff;  // 512 bytes - 1
@@ -667,7 +667,11 @@ void ahci_identify(size_t port_num) {
 
     cmdfis->fis_type = FIS_TYPE_REG_HOST_TO_DEVICE;
     cmdfis->c = 1;	// Command
-    cmdfis->command = ATA_CMD_IDENTIFY;
+    if(is_atapi) {
+        cmdfis->command = ATA_CMD_IDENTIFY_PACKET;
+    } else {
+        cmdfis->command = ATA_CMD_IDENTIFY;
+    }
 
     cmdfis->lba1 = 0;
 
@@ -683,32 +687,27 @@ void ahci_identify(size_t port_num) {
 
     *(((uint8_t*)model) + 39) = 0;
 
-
-    size_t capacity = (memory16[101] << 16) | memory16[100];
-
     tty_printf("[SATA] MODEL: '%s';\n", model);
-    tty_printf("[SATA] CAPACITY: %u sectors by 512 bytes;\n", capacity);
 
-    int disk_inx = dpm_reg(
-            (char)dpm_searchFreeIndex(0),
-            "SATA Disk",
-            "Unknown",
-            1,
-            capacity * 512,
-            capacity,
-            512,
-            3, // Ставим 3ку, так как будем юзать функции для чтения и записи
-            "DISK1234567890",
-            (void*)0 // Оставим тут индекс диска
-    );
-
-    if (disk_inx < 0){
-        qemu_err("[SATA/DPM] [ERROR] An error occurred during disk registration, error code: %d", disk_inx);
-    } else {
-        qemu_ok("[SATA/DPM] [Successful] Registering OK");
-        dpm_fnc_write(disk_inx + 65, &ahci_dpm_read, &ahci_dpm_write);
-    }
-
+//    int disk_inx = dpm_reg(
+//            (char)dpm_searchFreeIndex(0),
+//            "SATA Disk",
+//            "Unknown",
+//            1,
+//            capacity * 512,
+//            capacity,
+//            512,
+//            3, // Ставим 3ку, так как будем юзать функции для чтения и записи
+//            "DISK1234567890",
+//            (void*)0 // Оставим тут индекс диска
+//    );
+//
+//    if (disk_inx < 0){
+//        qemu_err("[SATA/DPM] [ERROR] An error occurred during disk registration, error code: %d", disk_inx);
+//    } else {
+//        qemu_ok("[SATA/DPM] [Successful] Registering OK");
+//        dpm_fnc_write(disk_inx + 65, &ahci_dpm_read, &ahci_dpm_write);
+//    }
 
     kfree(memory);
     kfree(model);

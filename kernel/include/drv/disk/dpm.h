@@ -26,7 +26,19 @@ typedef struct {
 	dpm_disk_rw_cmd Write;	///< Команда для записи данных
 } __attribute__((packed)) DPM_Disk;
 
+// TODO: Save model, manufacturer, serial number, firmware version in that dpm structure.
+enum dpm_disk_type {
+    NONE,
+    MEMORY,
+    IDE_ATA,
+    IDE_ATAPI,
+    AHCI_SATA,
+    AHCI_SATAPI
+};
 
+struct dpm_disk_info {
+    enum dpm_disk_type type;
+};
 
 void* dpm_metadata_read(char Letter);
 void dpm_metadata_write(char Letter, uint32_t Addr);

@@ -308,9 +308,9 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     bootScreenPaint("Инициализация ATA...");
     ata_init();
     ata_dma_init();
-    bootScreenPaint("Инициализация AHCI (SATA)...");
-    ahci_init();
-    
+//    bootScreenPaint("Инициализация AHCI (SATA)...");
+//    ahci_init();
+
     bootScreenPaint("Калибрировка датчика температуры процессора...");
     cputemp_calibrate();
 
@@ -447,7 +447,10 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     //    qemu_log("Buff (%d|%d) %s",buf_read, strlen(buf),buf);
     //
     // kfree(buf);
-    
+
+    ahci_init();
+
+
     /// Обновим данные обо всех дисках
     fsm_dpm_update(-1);    
     
