@@ -24,6 +24,7 @@ bool nvfs_debug = false;
 
 NVFS_DECINFO nvfs_decode(const char* Name){
 	NVFS_DECINFO info = {};
+    memset(&info, 0, sizeof(NVFS_DECINFO));
 	info.Ready = 0;
 	info.DriverFS = -1;
 	uint32_t pc = str_cdsp2(Name, ':');
