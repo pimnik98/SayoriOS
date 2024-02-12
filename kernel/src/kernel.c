@@ -475,13 +475,13 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 
     qemu_log("%d", x);
 
-    qemu_log("touch(R:\\test.txt): %d" , touch("R:\\test.txt"));
-    qemu_log("touch(R:\\Sayori\\): %d" , touch("R:\\Sayori\\"));
-    qemu_log("touch(R:\\): %d" , touch("R:\\"));
-    qemu_log("touch(T:\\): %d" , touch("T:\\"));
-    qemu_log("touch(T:\\temp.log): %d" , touch("T:\\temp.log"));
-    qemu_log("touch(R:\\prog): %d" , touch("R:\\prog"));
-    qemu_log("touch(Z:\\): %d" , touch("Z:\\"));
+    qemu_log("mkdir(R:\\test.txt): %d" , mkdir("R:\\test.txt"));
+    qemu_log("mkdir(R:\\Sayori\\): %d" , mkdir("R:\\Sayori\\"));
+    qemu_log("mkdir(R:\\): %d" , mkdir("R:\\"));
+    qemu_log("mkdir(T:\\): %d" , mkdir("T:\\"));
+    qemu_log("mkdir(T:\\temp.log\\): %d" , mkdir("T:\\temp.log\\"));
+    qemu_log("mkdir(R:\\prog): %d" , mkdir("R:\\prog"));
+    qemu_log("mkdir(Z:\\): %d" , mkdir("Z:\\"));
 
     cli();
 

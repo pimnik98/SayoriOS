@@ -181,3 +181,16 @@ bool touch(const char* Path){
     FSM_FILE file = nvfs_info(Path);
     return nvfs_create(Path, 0);
 }
+
+
+/**
+ * @brief [FileIO] Создает папку
+ *
+ * @param Path - Путь
+ *
+ * @return bool - true - если успешно, в противном случае false
+ */
+bool mkdir(const char* Path){
+    FSM_FILE file = nvfs_info(Path);
+    return nvfs_create(Path, 1);
+}
