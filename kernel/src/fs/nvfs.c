@@ -36,7 +36,7 @@ NVFS_DECINFO nvfs_decode(const char* Name){
 
 	info.Disk = ADDR2STRING(out->data[0])->data[0];
 
-	substr(info.Path, ADDR2STRING(out->data[1])->data, 1 , ADDR2STRING(out->data[1])->length - 1);
+	substr(info.Path, ADDR2STRING(out->data[1])->data, 0 , ADDR2STRING(out->data[1])->length - 0);
 
 	DPM_Disk disk = dpm_info(info.Disk);
 

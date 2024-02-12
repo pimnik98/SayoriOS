@@ -225,11 +225,11 @@ TarFS_ROOT* fs_tarfs_init(uint32_t in, uint32_t size, int Mode){
 		int filesize = oct2bin(file->Size, 11);
 
 		if (sizeDir == -1 && Mode == 1){
-			//qemu_log("Mode:1 | s:%d | m:%d",sizeDir,Mode);
-			sizeDir = strlen(file->Name);
+			qemu_log("Mode:1 | s:%d | m:%d",sizeDir,Mode);
+			sizeDir = strlen(file->Name) - 1;
 		} else if (sizeDir == -1) {
-			//qemu_log("Mode:0");
-			sizeDir = 2;
+			qemu_log("Mode:0");
+			sizeDir = 1;
 		}
 
 		tffs[currentInx].Ready = (currentInx==0?0:1);
@@ -242,7 +242,7 @@ TarFS_ROOT* fs_tarfs_init(uint32_t in, uint32_t size, int Mode){
 		memcpy(tffs[currentInx].Mode,file->Mode, 8);
 		memcpy(tffs[currentInx].LastTime,file->LastTime,12);
 		substr(tffs[currentInx].Name,file->Name,sizeDir,100-sizeDir);
-		//qemu_log("[%d] fix name:%s",strlen(tffs[currentInx].Name),tffs[currentInx].Name);
+		qemu_log("[%d] fix name:%s",strlen(tffs[currentInx].Name),tffs[currentInx].Name);
 		currentInx++;
 
         if (tarfs_debug) qemu_log("[%x] Name: %s; Size: %d", file, file->Name, filesize);
@@ -252,7 +252,7 @@ TarFS_ROOT* fs_tarfs_init(uint32_t in, uint32_t size, int Mode){
 		//        ptr += (((filesize + 511) / 512) + 1) * 512;
     }
 
-//	while(1);
+	//while(1);
 	
 	root->Ready = 1;
 	root->Count = count;

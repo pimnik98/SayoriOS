@@ -596,7 +596,7 @@ FSM_FILE fs_tempfs_info(const char Disk, const char* Path){
 FSM_DIR* fs_tempfs_dir(const char Disk, const char* Path){
     FSM_DIR* Dir = malloc(sizeof(FSM_DIR));
     memset(Dir, 0, sizeof(FSM_DIR));
-    tfs_log("[>] Get DIR\n");
+    tfs_log("[>] Get DIR: %s\n", Path);
     TEMPFS_BOOT* boot = fs_tempfs_func_getBootInfo(Disk);
     if (boot == NULL || fs_tempfs_func_checkSign(boot->Sign1, boot->Sign2) != 1) {
         tfs_log(" |--- Error sign 0x%x %d %d\n",boot , boot->Sign1, boot->Sign2);
@@ -637,6 +637,13 @@ FSM_DIR* fs_tempfs_dir(const char Disk, const char* Path){
             free(entity);
             continue;
         }
+        tfs_log(" |           |--- Name: %s\n", entity->Path);
+        tfs_log(" |           |--- Path: %s\n", entity->Name);
+        tfs_log(" |           |--- (%d == 0 && %d == 0) || %d\n",
+                strcmp(entity->Path, "/") == 0,
+                strcmp(entity->Name, "/") == 0,
+                strcmp(entity->Path, Path) != 0
+        );
         if ((strcmp(entity->Path, "/") == 0 && strcmp(entity->Name, "/") == 0) || strcmp(entity->Path, Path) != 0){
             free(entity);
             CZ++;
