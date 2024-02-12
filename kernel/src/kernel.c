@@ -27,6 +27,8 @@
 
 #include <lib/pixel.h>
 
+#define INITRD_RW_SIZE (1474560) ///< Размер виртуального диска 1.44mb floppy
+
 uint32_t init_esp = 0;
 bool test_pcs = true;
 bool test_floppy = true;
@@ -34,9 +36,23 @@ bool test_network = true;
 bool is_rsdp = true;
 bool initRD = false;
 size_t kernel_start_time = 0;
+size_t ramdisk_size = INITRD_RW_SIZE;
 
 void jse_file_getBuff(char* buf);
 void kHandlerCMD(char*);
+
+void __createRamDisk(){
+    qemu_note("[INITRD] Create virtual read-write disk...");
+    void* disk_t = kmalloc(INITRD_RW_SIZE+1);
+    if (disk_t == NULL){
+        qemu_err("[INITRD] Fatal create virtual disk");
+        return;
+    }
+    qemu_log("[INITRD] Temp disk is (%d bytes) created to %x", ramdisk_size, disk_t);
+    dpm_reg('T',"TempDisk","TEMPFS", 2, ramdisk_size, 0, 0, 2, "TEMP-DISK", disk_t);
+    fs_tempfs_format('T');
+    qemu_ok("[INITRD] The virtual hard disk has been successfully created.");
+}
 
 #ifndef RELEASE
 void draw_raw_fb(multiboot_header_t* mboot, int x, int y, int w, int h, int color) {
@@ -96,6 +112,9 @@ void kHandlerCMD(char* cmd){
         }
         if (strcmpn(out_data[0],"NatSuki-Password")){
             __milla_setPasswd(out_data[1]);
+        }
+        if (strcmpn(out_data[0],"ramdisk")){
+            ramdisk_size = atoi(out_data[1]);
         }
         if (strcmpn(out_data[0],"disable")){
             if (strcmpn(out_data[1],"coms")){
@@ -276,16 +295,32 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     
     draw_vga_str("Initializing devices...", 23, 0, 0, 0xffffff);
     punch();
+
+    bootScreenInit(15);
+    bootScreenLazy(true);
+
+    bootScreenPaint("Настройка PS/2 Клавиатуры...");
     keyboardInit();
+    bootScreenPaint("Настройка PS/2 Мыши...");
     mouse_install();
+    bootScreenPaint("Инициализация ATA...");
     ata_init();
-    
+
+    bootScreenPaint("Калибрировка датчика температуры процессора...");
     cputemp_calibrate();
-    
+
+    bootScreenPaint("Настройка FDT...");
     file_descriptors_init();
     
-    bootScreenInit(9);
-    bootScreenLazy(true);
+
+
+    char* btitle = 0;
+
+    asprintf(&btitle, "Создание виртуального диска (%u kb.)...", ramdisk_size/1024);
+
+    bootScreenPaint(btitle);
+    kfree(btitle);
+    __createRamDisk();
     
     bootScreenPaint("Настройка системных вызовов...");
     qemu_log("Registering System Calls...");

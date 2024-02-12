@@ -13,7 +13,7 @@
 #include "drv/disk/dpm.h"
 #include "mem/vmm.h"
 
-#define INITRD_RW_SIZE (1474560) ///< Размер виртуального диска 1.44mb floppy
+
 
 int initrd_tarfs(uint32_t start, uint32_t end) {
 	qemu_log("[TarFS] Init...\n * Start: %x\n * End: %x\n * Size: %d",start,end,end-start);
@@ -36,17 +36,7 @@ int initrd_tarfs(uint32_t start, uint32_t end) {
  	dpm_reg('R', "RamDisk", "TARFS", 2, initrd_size, 0, 0, 2, "TAR0-FSV1", initrd_data);
 	dpm_metadata_write('R', (uint32_t) l_initrd);
 
-	qemu_log("[INITRD] Create virtual read-write disk...");
-	void* disk_t = kmalloc(INITRD_RW_SIZE+1);
-	if (disk_t == NULL){
-		qemu_log("[INITRD] Fatal create virtual disk");
-		return 0;
-	}
-	qemu_log("[INITRD] Temp disk is (%d bytes) created to %x", INITRD_RW_SIZE, disk_t);
 
-	
- 	dpm_reg('T',"TempDisk","TEMPFS",2,INITRD_RW_SIZE,0,0,2,"TEMP-DISK",disk_t);
-    fs_tempfs_format('T');
 	//dpm_metadata_write('R',l_initrd);
 
 	//fs_smfs_format('T');
