@@ -6,9 +6,9 @@
 
 #define tfs_log(M,...); printf(M,##__VA_ARGS__);
 
-#define TEMPFS_CHMOD_READ               0x01  /// Права чтения
+#define TEMPFS_CHMOD_EXEC               0x01  /// Права выполнения
 #define TEMPFS_CHMOD_WRITE              0x02  /// Права записи
-#define TEMPFS_CHMOD_EXEC               0x04  /// Права выполнения
+#define TEMPFS_CHMOD_READ               0x04  /// Права чтения
 #define TEMPFS_CHMOD_SYS                0x08  /// Права системы
 
 

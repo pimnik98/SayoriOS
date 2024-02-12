@@ -475,12 +475,12 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 
     qemu_log("%d", x);
 
-    qemu_log("is_executable(R:\\test.txt): %d" , is_executable("R:\\test.txt"));
-    qemu_log("is_executable(R:\\Sayori\\): %d" , is_executable("R:\\Sayori\\"));
-    qemu_log("is_executable(R:\\): %d" , is_executable("R:\\"));
-    qemu_log("is_executable(T:\\): %d" , is_executable("T:\\"));
-    qemu_log("is_executable(R:\\prog): %d" , is_executable("R:\\prog"));
-    qemu_log("is_executable(Z:\\): %d" , is_executable("Z:\\"));
+    qemu_log("fileperms(R:\\test.txt): %d" , fileperms("R:\\test.txt"));
+    qemu_log("fileperms(R:\\Sayori\\): %d" , fileperms("R:\\Sayori\\"));
+    qemu_log("fileperms(R:\\): %d" , fileperms("R:\\"));
+    qemu_log("fileperms(T:\\): %d" , fileperms("T:\\"));
+    qemu_log("fileperms(R:\\prog): %d" , fileperms("R:\\prog"));
+    qemu_log("fileperms(Z:\\): %d" , fileperms("Z:\\"));
 
     cli();
 

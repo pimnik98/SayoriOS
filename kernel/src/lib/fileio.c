@@ -144,3 +144,27 @@ bool is_executable(const char* Path){
     }
     return false;
 }
+
+
+/**
+ * @brief [FileIO] Возвращает информацию о правах доступа на сущность
+ *
+ * @param Path - Путь
+ *
+ * @return uint32_t Возвращает права доступа
+ */
+uint32_t fileperms(const char* Path){
+    FSM_FILE file = nvfs_info(Path);
+    if (file.Ready != 1) return false;
+    uint32_t ret = 0;
+    if (file.CHMOD & FSM_CHMOD_READ) {
+        ret |= FSM_CHMOD_READ;
+    }
+    if (file.CHMOD & FSM_CHMOD_EXEC) {
+        ret |= FSM_CHMOD_EXEC;
+    }
+    if (file.CHMOD & FSM_CHMOD_WRITE) {
+        ret |= FSM_CHMOD_WRITE;
+    }
+    return (ret * 100) + (ret * 10) + ret;
+}
