@@ -13,7 +13,7 @@
 #include 	<io/ports.h>
 #include 	<io/status_loggers.h>
 
-void sod_screen_legacy(registers_t regs, char* title, char* msg, uint32_t code) {
+_Noreturn void sod_screen_legacy(registers_t regs, char* title, char* msg, uint32_t code) {
     qemu_err("=== ЯДРО УПАЛО =======================================\n");
     qemu_err("| ");
     qemu_err("| Наименование: %s",title);
@@ -48,7 +48,7 @@ void sod_screen_legacy(registers_t regs, char* title, char* msg, uint32_t code) 
     }
 }
 
-void bsod_screen(registers_t regs, char* title, char* msg, uint32_t code){
+_Noreturn void bsod_screen(registers_t regs, char* title, char* msg, uint32_t code){
     qemu_log("=== ЯДРО УПАЛО =======================================\n");
     qemu_log("| ");
     qemu_log("| Наименование: %s",title);

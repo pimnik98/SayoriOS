@@ -684,9 +684,10 @@ void ahci_identify(size_t port_num) {
     *(((uint8_t*)model) + 39) = 0;
 
 
-    size_t capacity = (memory16[61] << 16) | memory16[60];
+    size_t capacity = (memory16[101] << 16) | memory16[100];
 
-    tty_printf("[SATA] MODEL: '%s'\n", model);
+    tty_printf("[SATA] MODEL: '%s';\n", model);
+    tty_printf("[SATA] CAPACITY: %u sectors by 512 bytes;\n", capacity);
 
     int disk_inx = dpm_reg(
             (char)dpm_searchFreeIndex(0),

@@ -238,7 +238,8 @@ bool is_multitask(void){
  * @param entry_point - Точка входа
  * @param stack_size - Размер стека
  */
-void init_user_mode(void* entry_point, size_t stack_size){
-    void* user_stack = (void*) kmalloc(stack_size);
-    user_mode_switch(entry_point, (uint32_t) user_stack + stack_size);
-}
+//void init_user_mode(void* entry_point, size_t stack_size){
+//    void* user_stack = (void*) kmalloc(stack_size);
+//
+//    user_mode_switch(entry_point, (uint32_t) user_stack + stack_size);
+//}

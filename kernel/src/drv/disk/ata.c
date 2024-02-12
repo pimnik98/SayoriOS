@@ -1,16 +1,15 @@
 #include "drv/disk/ata.h"
 #include <io/ports.h>
 #include <drv/atapi.h>
-#include <fs/fsm.h>
 #include <mem/vmm.h>
 #include <io/tty.h>
 #include "drv/disk/dpm.h"
 #include "sys/isr.h"
-#include "debug/hexview.h"
 #include "net/endianess.h"
-#include "lib/math.h"
 #include "drv/disk/ata_dma.h"
 #include "drv/disk/ata_pio.h"
+#include "drv/disk/mbr.h"
+#include "debug/hexview.h"
 
 // TODO: Move ATA PIO functions into ata_pio.c for code clarity
 
@@ -18,7 +17,6 @@
 
 const char possible_dpm_letters_for_ata[4] = "CDEF";
 ata_drive_t drives[4] = {0};
-uint16_t *ide_buf = 0;
 
 void ide_select_drive(uint8_t bus, bool slave) {
 	if(bus == ATA_PRIMARY)
@@ -51,7 +49,7 @@ void ide_soft_reset(size_t io) {
 	outb(io + ATA_REG_CONTROL, 0);
 }
 
-size_t dpm_ata_pio_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+size_t dpm_ata_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
     /// Функции для чтения
     DPM_Disk dpm = dpm_info(Disk + 65);
 //    qemu_note("[ATA] [DPM] [DISK %d] [READ] Off: %d | Size: %d", dpm.Point, Offset, Size);
@@ -62,7 +60,7 @@ size_t dpm_ata_pio_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
 }
 
 
-size_t dpm_ata_pio_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+size_t dpm_ata_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
     /// Функции для записи
     DPM_Disk dpm = dpm_info(Disk + 65);
     qemu_note("[ATA] [DPM] [DISK %d] [WRITE] Off: %d | Size: %d", dpm.Point, Offset, Size);
@@ -97,7 +95,9 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 
 	size_t timeout = DEFAULT_TIMEOUT;
 
-	if(status) {
+    uint16_t *ide_buf = kcalloc(512, 1);
+
+    if(status) {
 		// In ATAPI, IDENTIFY command has ERROR bit set.
 		
 		uint8_t seccount = inb(io + ATA_REG_SECCOUNT0);
@@ -119,9 +119,9 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 		
 			outb(io + ATA_REG_COMMAND, ATA_CMD_IDENTIFY_PACKET);
 			 
-			 for(int i = 0; i < 256; i++) {
-			 	*(uint16_t *)(ide_buf + i) = inw(io + ATA_REG_DATA);
-			 }
+            for(int i = 0; i < 256; i++) {
+                *(uint16_t *)(ide_buf + i) = inw(io + ATA_REG_DATA);
+            }
 
 			uint16_t* fwver = kcalloc(8, 1);
 			uint16_t* model_name = kcalloc(40, 1);
@@ -166,8 +166,6 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
             qemu_note("Firmware version: %s", fwver);
             qemu_note("Model name: %s", model_name);
 
-			memset(ide_buf, 0, 512);
-
             // (drive_num) is an index (0, 1, 2, 3) of disk
             int disk_inx = dpm_reg(
                     possible_dpm_letters_for_ata[drive_num],
@@ -187,13 +185,16 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 
             } else {
                 qemu_ok("[ATA] [DPM] [Successful] [is_packet: %d] Your disk index: %d",drives[drive_num].is_packet, disk_inx);
-                dpm_fnc_write(disk_inx + 65, &dpm_ata_pio_read, &dpm_ata_pio_write);
+                dpm_fnc_write(disk_inx + 65, &dpm_ata_read, &dpm_ata_write);
             }
 
-			return 0;
+            kfree(ide_buf);
+
+            return 0;
 		} else if(seccount == 0x7F && lba_l == 0x7F && lba_m == 0x7F && lba_h == 0x7F) {
 			qemu_err("Error possible (Virtualbox returns 0x7f 0x7f 0x7f 0x7f for non-existent drives)");
-			return 1;
+            kfree(ide_buf);
+            return 1;
 		}
 
 		/* Now, poll until BSY is clear. */
@@ -201,12 +202,14 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 			qemu_log("Got status %x", status);
 			if(status & ATA_SR_ERR) {
 				qemu_log("%s %s has ERR set. Disabled.", PRIM_SEC(bus), MAST_SLV(drive));
-				return 1;
+                kfree(ide_buf);
+                return 1;
 			}
 
 			if(!timeout) {
 				qemu_log("ATA Timeout expired!");
-				return 1;
+                kfree(ide_buf);
+                return 1;
 			} else {
 				timeout--;
 			}
@@ -220,12 +223,14 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 			qemu_log("Got status %x", status);
 			if(status & ATA_SR_ERR) {
 				qemu_log("%s %s has ERR set. Disabled.", PRIM_SEC(bus), MAST_SLV(drive));
-				return 1;
+                kfree(ide_buf);
+                return 1;
 			}
 
 			if(!timeout) {
 				qemu_log("ATA Timeout expired!");
-				return 1;
+                kfree(ide_buf);
+                return 1;
 			}
 
 			timeout--;
@@ -240,13 +245,6 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 		for(int i = 0; i < 256; i++) {
 			*(uint16_t *)(ide_buf + i) = inw(io + ATA_REG_DATA);
 		}
-
-		uint16_t capacity_lba = ide_buf[ATA_IDENT_MAX_LBA];
-		uint16_t capacity_lba_ext = ide_buf[ATA_IDENT_MAX_LBA_EXT];
-
-		uint16_t cyl = ide_buf[ATA_IDENT_CYLINDERS];
-		uint16_t hds = ide_buf[ATA_IDENT_HEADS];
-		uint16_t scs = ide_buf[ATA_IDENT_SECTORS];
 
 		// Dump model and firmware version
 		drives[drive_num].fwversion = kcalloc(8, 1);
@@ -278,7 +276,8 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 		((uint8_t*)fwver)[7] = 0;
 		((uint8_t*)model_name)[39] = 0;
 
-        size_t capacity = (ide_buf[61] << 16) | ide_buf[60];
+        // size_t capacity = (ide_buf[61] << 16) | ide_buf[60];  // 28-bit value
+        size_t capacity = (ide_buf[101] << 16) | ide_buf[100];  // 64-bit value
 
         qemu_log("CAP: %u", capacity);
 
@@ -305,15 +304,19 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
             qemu_err("[ATA] [DPM] [ERROR] An error occurred during disk registration, error code: %d",disk_inx);
         } else {
             qemu_ok("[ATA] [DPM] [Successful] [is_packet: %d] Your disk index: %d",drives[drive_num].is_packet, disk_inx);
-            dpm_fnc_write(disk_inx + 65, &dpm_ata_pio_read, &dpm_ata_pio_write);
+            dpm_fnc_write(possible_dpm_letters_for_ata[drive_num], &dpm_ata_read, &dpm_ata_write);
         }
+
 
 		qemu_log("Identify finished");
 	}else{
 		qemu_err("%s %s => No status. Drive may be disconnected!", PRIM_SEC(bus), MAST_SLV(drive));
+
+        kfree(ide_buf);
 		return 1;
 	}
 
+    kfree(ide_buf);
 	return 0;
 }
 
@@ -359,11 +362,20 @@ void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) {
 		qemu_log("Attempted read from drive that does not exist.");
 		return;
 	}
-	
+
+    if((!drives[drive].is_packet) && drives[drive].is_dma) {
+#if ATA_DMA_USE_OPTIMIZED==1
+        ata_dma_read_new(drive, buf, location, length);
+#else
+        ata_dma_read(drive, (char*)buf, location, length);
+#endif
+        return;
+    }
+
 	size_t start_sector = location / drives[drive].block_size;
 	size_t end_sector = (location + length - 1) / drives[drive].block_size;
 	size_t sector_count = end_sector - start_sector + 1;
-	
+
 	size_t real_length = sector_count * drives[drive].block_size;
 
 //	qemu_log("Reading %d sectors...", sector_count);
@@ -372,11 +384,7 @@ void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) {
 
 	// Add DMA support
 	if(!drives[drive].is_packet) {
-        if(drives[drive].is_dma) {
-            ata_dma_read(drive, real_buf, start_sector * 512, sector_count * 512);
-        } else {
-            ata_pio_read_sectors(drive, real_buf, start_sector, sector_count);
-        }
+        ata_pio_read_sectors(drive, real_buf, start_sector, sector_count);
 	} else {
 		atapi_read_sectors(drive, real_buf, start_sector, sector_count);
 	}
@@ -426,16 +434,20 @@ void ata_list() {
 			continue;
 		}
 
-		if(!drives[i].is_chs_addressing) {
-			_tty_printf("%u sectors = ", drives[i].capacity);
+        _tty_printf("%u sectors = ", drives[i].capacity);
 
-			size_t megabytes = (drives[i].capacity >> 5) / 64;
+        size_t megabytes;
 
-			_tty_printf("%u MB = %u GB", megabytes, megabytes >> 10);
-		}
+        if(drives[i].is_packet) {
+            megabytes = (drives[i].capacity * 2048) >> 20;
+        } else {
+            megabytes = (drives[i].capacity >> 5) / (1 << 6);
+        }
 
-		if(drives[i].is_packet)
-			_tty_printf(" [PACKET DEVICE!!!]");
+        _tty_printf("%u MB = %u GB", megabytes, megabytes >> 10);
+
+        if(drives[i].is_packet)
+            _tty_printf(" [PACKET DEVICE!!!]");
 
         if(drives[i].is_sata)
             _tty_printf(" [SATA]");
@@ -465,12 +477,8 @@ void ata_check_all() {
 void ata_init() {
 	qemu_log("Checking for ATA drives");
 
-	ide_buf = (uint16_t*)kcalloc(512, 1);
-	
 	register_interrupt_handler(32 + ATA_PRIMARY_IRQ, ide_primary_irq); // Fuck IRQs
 	register_interrupt_handler(32 + ATA_SECONDARY_IRQ, ide_secondary_irq);
 
 	ata_check_all();
-
-	kfree(ide_buf);
 }

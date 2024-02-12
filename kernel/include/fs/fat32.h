@@ -13,6 +13,8 @@
 #include <fs/fsm.h>
 #include "../../src/lib/libvector/include/vector.h"
 
+#define FAT32_LINEAR_OPTIMIZATION 1
+
 typedef struct {
     char bootcode[3];
     char OEM[8];

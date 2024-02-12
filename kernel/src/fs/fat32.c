@@ -235,12 +235,53 @@ void fs_fat32_read_clusters_to_memory(char Disk, size_t cluster_number, void* bu
     vector_destroy(cluster_list);
 }
 
+vector_t* fs_fat32_optimize(vector_t* cluster_list) {
+    vector_t* lists = vector_new();
+
+    size_t old = vector_get(cluster_list, 0).element;
+    size_t start = vector_get(cluster_list, 0).element;
+
+    for(int i = 1; i < cluster_list->size; i++) {
+        size_t current = vector_get(cluster_list, i).element;
+
+        if (current - 1 != old) {
+            vector_push_back(lists, start);
+            vector_push_back(lists, old);
+
+            start = current;
+        }
+
+        old = current;
+    }
+
+    vector_push_back(lists, start);
+    vector_push_back(lists, old);
+
+    return lists;
+}
+
 void fs_fat32_read_clusters_to_memory_precise(char Disk, size_t cluster_number, void *buffer, size_t byte_offset,
                                               size_t len) {
     fat_description_t* desc = dpm_metadata_read(Disk);
 
     qemu_log("Reading cluster chain...");
     vector_t* cluster_list = fs_fat32_get_clusters(Disk, cluster_number);
+
+#if FAT32_LINEAR_OPTIMIZATION==1
+    vector_t* optimized = fs_fat32_optimize(cluster_list);
+
+    qemu_printf("Optimized: ");
+
+    for(int i = 0; i < optimized->size; i++) {
+        qemu_printf("%u ", vector_get(optimized, i).element);
+    }
+
+    qemu_printf("\n");
+
+    vector_destroy(cluster_list);
+
+    cluster_list = optimized;
+#endif
 
     qemu_log("Byte offset: %d; Size of read: %d; Cluster size: %d", byte_offset, len, desc->cluster_size);
 
@@ -252,9 +293,43 @@ void fs_fat32_read_clusters_to_memory_precise(char Disk, size_t cluster_number, 
     }
 
     qemu_log("Calculated: Starting cluster: %d; Cluster count: %d", starting_cluster, read_clutser_count);
-
     qemu_log("Reading file data...");
-//    for(int i = 0; i < cluster_list->size; i++) {
+
+#if FAT32_LINEAR_OPTIMIZATION==1
+    size_t buffer_index = 0;
+
+    for(int i = 0; i < cluster_list->size; i+=2) {
+        size_t start_cluster = vector_get(cluster_list, i).element;
+        size_t end_cluster = vector_get(cluster_list, i + 1).element;
+        size_t count = end_cluster - start_cluster + 1;
+
+        qemu_note("START: %u; END: %u; COUNT: %u", start_cluster, end_cluster, count);
+
+
+        qemu_note("BUFFER INDEX: %u", buffer_index);
+        qemu_note("STARTING_CLUSTER: %u", starting_cluster);
+
+        size_t addr = ((desc->info.reserved_sectors + (desc->info.fat_size_in_sectors * 2)) \
+ 						+ ((start_cluster - 2) * desc->info.sectors_per_cluster)) * desc->info.bytes_per_sector;
+
+         // TODO: byte_offset support
+
+        qemu_note("LEN: %u", MIN(desc->cluster_size * count, len));
+        qemu_note("LOAD TO: %x", (size_t)buffer);
+
+        dpm_read(
+                Disk,
+                addr,
+                MIN(desc->cluster_size * count, len),
+                (void*)(((size_t)buffer) + (buffer_index * desc->cluster_size))
+        );
+
+        len -= MIN(desc->cluster_size * count, len);
+        buffer_index += count;
+    }
+
+    qemu_log("Remaining: %u", len);
+#else
     for(size_t i = starting_cluster; i < starting_cluster + read_clutser_count; i++) {
         size_t buffer_index = i - starting_cluster;
 
@@ -272,6 +347,7 @@ void fs_fat32_read_clusters_to_memory_precise(char Disk, size_t cluster_number, 
 
         len -= desc->cluster_size;
     }
+#endif
 
     vector_destroy(cluster_list);
 }

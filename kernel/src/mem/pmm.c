@@ -312,7 +312,7 @@ void map_single_page(physical_addr_t* page_dir, physical_addr_t physical, virtua
 	uint32_t pdi = PD_INDEX(virtual);
 	uint32_t pti = PT_INDEX(virtual);
 
-	uint32_t* pt = 0;
+	uint32_t* pt;
 
 	// Check if page table not present.
 	if((page_dir[pdi] & 1) == 0) {
@@ -350,7 +350,7 @@ void map_single_page(physical_addr_t* page_dir, physical_addr_t physical, virtua
 void unmap_single_page(uint32_t* page_dir, virtual_addr_t virtual) {
 	virtual &= ~0xfff;
 	
-	uint32_t* pt = 0;
+	uint32_t* pt;
 	
 	// Check if page table not present.
 	if((page_dir[PD_INDEX(virtual)] & 1) == 0) {
@@ -371,7 +371,7 @@ void unmap_single_page(uint32_t* page_dir, virtual_addr_t virtual) {
 uint32_t phys_get_page_data(uint32_t* page_dir, virtual_addr_t virtual) {
 	virtual &= ~0x3ff;
 	
-	uint32_t* pt = 0;
+	uint32_t* pt;
 	
 	// Check if page table not present.
 	if((page_dir[PD_INDEX(virtual)] & 1) == 0) {
@@ -387,7 +387,7 @@ uint32_t virt2phys(uint32_t* page_dir, virtual_addr_t virtual) {
 //	virtual &= ~0x3ff;
 	virtual &= ~0xfff;
 
-	uint32_t* pt = 0;
+	uint32_t* pt;
 	
 	// Check if page table not present.
 	if((page_dir[PD_INDEX(virtual)] & 1) == 0) {
@@ -402,7 +402,7 @@ uint32_t virt2phys(uint32_t* page_dir, virtual_addr_t virtual) {
 void phys_set_flags(uint32_t* page_dir, virtual_addr_t virtual, uint32_t flags) {
     virtual &= ~0xfff;
 
-    uint32_t* pt = 0;
+    uint32_t* pt;
 
     // Check if page table not present.
     if((page_dir[PD_INDEX(virtual)] & 1) == 0) {
@@ -442,7 +442,7 @@ void map_pages(uint32_t* page_dir, physical_addr_t physical, virtual_addr_t virt
 }
 
 void check_memory_map(memory_map_entry_t* mmap_addr, uint32_t length){
-	int i = 0;
+	int i;
 	/* Entries number in memory map structure */
 	mmap_length = length;
 	size_t n = length / sizeof(memory_map_entry_t);
@@ -468,7 +468,7 @@ size_t getInstalledRam(){
 }
 
 void mark_reserved_memory_as_used(memory_map_entry_t* mmap_addr, uint32_t length){
-	int i = 0;
+	int i;
 	/* Entries number in memory map structure */
 	mmap_length = length;
 	size_t n = length / sizeof(memory_map_entry_t);

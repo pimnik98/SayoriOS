@@ -36,7 +36,9 @@ int tga_extract_pixels(const char* path, uint32_t* pixel_buf) {
 
 	uint8_t* file_data = kcalloc(filesize, 1);
 
-	fread(file, filesize, 1, file_data);
+//    qemu_note("FILE SIZE: %u", filesize);
+
+    fread(file, filesize, 1, file_data);
 
 	tga_header_t* targa_header = (tga_header_t*)file_data;
 

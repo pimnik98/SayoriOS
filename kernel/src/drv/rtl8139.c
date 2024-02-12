@@ -160,7 +160,7 @@ void rtl8139_init_buffer() {
     outl(rtl8139_io_base + RBSTART, rtl8139_phys_buffer);
 }
 
-void rtl8139_handler(registers_t regs) {
+void rtl8139_handler(__attribute__((unused)) registers_t regs) {
     qemu_log("Received RTL8139 interrupt!");
 
     uint16_t status = inw(rtl8139_io_base + 0x3e);

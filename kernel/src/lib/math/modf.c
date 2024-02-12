@@ -3,8 +3,9 @@
 double modf(double value, double* intPart) {
     if (intPart != NULL) {
         *intPart = (value >= 0) ? floor(value) : ceil(value);
+        return value - (*intPart);
     }
-    return value - (*intPart);
+    return 0.0f;
 }
 
 double fmod(double dividend, double divisor) {
