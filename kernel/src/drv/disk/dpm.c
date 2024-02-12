@@ -140,7 +140,7 @@ size_t dpm_write(char Letter, size_t Offset, size_t Size, char* Buffer){
 		// Режим 3, предполагает что вы указали функцию для чтения и записи с диска
         if (dpm_debug)qemu_log("[DPM] [3] An attempt to write data in 'Disk %c' from position %x to the number of %d bytes.", Index+65, DPM_Disks[Index].Point+Offset, Size);
         if (DPM_Disks[Index].Write == 0){
-            qemu_err("[DPM] [3] Function 404");
+            qemu_err("[DPM] [3] No function");
             return 0;
         }
 		return DPM_Disks[Index].Write(Index,Offset,Size,Buffer);
@@ -217,7 +217,7 @@ int dpm_reg(char Letter, char* Name, char* FS, int Status, size_t Size, size_t S
 	qemu_log("  |-- Serial: %s",DPM_Disks[Index].Serial);
 	qemu_log("  |-- FileSystem: %s",DPM_Disks[Index].FileSystem);
 	qemu_log("  |-- Status: %d",DPM_Disks[Index].Status);
-	qemu_log("  |-- Size: %d",DPM_Disks[Index].Size);
+	// qemu_log("  |-- Size: %d", DPM_Disks[Index].Size);  // Most disks have capacity is greater than 4GB (32-bit space), so every disk with capacity greater than 4GB will give a bug. (We need to impelement BigInt?)
 	qemu_log("  |-- Sectors: %d",DPM_Disks[Index].Sectors);
 	qemu_log("  |-- SectorSize: %d",DPM_Disks[Index].SectorSize);
 	qemu_log("  |-- AddrMode: %d",DPM_Disks[Index].AddrMode);
@@ -229,7 +229,7 @@ int dpm_reg(char Letter, char* Name, char* FS, int Status, size_t Size, size_t S
 void dpm_FileSystemUpdate(char Letter, char* FileSystem){
     Letter -= 65;
 
-    size_t index = (Letter > 32 ? Letter - 32 : Letter);
+    size_t index;// = (Letter > 32 ? Letter - 32 : Letter);
     index = (Letter < 0 || Letter > 25 ? 0 : Letter);
 
     size_t c = strlen(FileSystem);
@@ -241,7 +241,7 @@ void dpm_FileSystemUpdate(char Letter, char* FileSystem){
 void dpm_LabelUpdate(char Letter, char* Label){
     Letter -= 65;
 
-    size_t index = (Letter > 32 ? Letter - 32 : Letter);
+    size_t index;// = (Letter > 32 ? Letter - 32 : Letter);
     index = (Letter < 0 || Letter > 25 ? 0 : Letter);
 
     size_t c = strlen(Label);
@@ -262,7 +262,7 @@ size_t dpm_disk_size(char Letter){
 DPM_Disk dpm_info(char Letter){
 	Letter -= 65;
 
-	size_t index = (Letter > 32 ? Letter - 32 : Letter);
+	size_t index;// = (Letter > 32 ? Letter - 32 : Letter);
 	index = (Letter < 0 || Letter > 25 ? 0 : Letter);
 
 	return DPM_Disks[index];

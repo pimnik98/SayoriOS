@@ -377,7 +377,7 @@ void pci_find_device(uint16_t vendor, uint16_t device, uint8_t *bus_ret, uint8_t
 
 void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, uint16_t *vendor_ret, uint16_t *deviceid_ret,
 										   uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret) {
-    uint8_t func = 0;
+    uint8_t func;
 
 	for (uint32_t bus = 0; bus < 256; bus++) {
 		for (uint32_t slot = 0; slot < 32; slot++) {

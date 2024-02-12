@@ -22,6 +22,8 @@ uint32_t pavi_view(uint32_t argc, char* argv[]) {
 		return 1;
 	}
 
+    size_t start_load = timestamp();
+
 	FILE* file = fopen(argv[1], "rb");
 
 	if(!file) {
@@ -64,8 +66,10 @@ uint32_t pavi_view(uint32_t argc, char* argv[]) {
 
     qemu_note("Ended scaling");
 
+    size_t end_load = timestamp();
+
     clean_tty_screen();
-    tty_printf("Pavi - '%s' [%dx%d] => [%dx%d] (Press ESC to exit)", argv[1], pavi_tga_header.w, pavi_tga_header.h, nw, nh);
+    tty_printf("Pavi - '%s' [%dx%d] => [%dx%d] (Loaded in: %u ms) (Press ESC to exit)", argv[1], pavi_tga_header.w, pavi_tga_header.h, nw, nh, end_load - start_load);
 
     keyboardctl(KEYBOARD_ECHO, 0);
 

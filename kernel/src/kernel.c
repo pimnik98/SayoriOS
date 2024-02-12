@@ -24,6 +24,7 @@
 #include "drv/audio/hda.h"
 #include "lib/ttf_font.h"
 #include "sys/grub_modules.h"
+#include "drv/disk/mbr.h"
 
 #include <lib/pixel.h>
 
@@ -505,10 +506,6 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 // 
 //         ttf_destroy(&hah);
 //     }
-
-    int x = dpm_searchFreeIndex(0);
-
-    qemu_log("%d", x);
 
     cli();
 

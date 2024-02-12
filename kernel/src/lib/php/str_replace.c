@@ -40,6 +40,6 @@ uint32_t char_replace(char search, char replace, char* subject){
  *
  * @return uint32_t - Количество произведенных замен
  */
-uint32_t str_replace(char* search, char* replace, char* subject){
-    return 0;
-}
+//uint32_t str_replace(char* search, char* replace, char* subject){
+//    return 0;
+//}
