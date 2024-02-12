@@ -204,3 +204,14 @@ bool mkdir(const char* Path){
 bool unlink(const char* Path){
     return nvfs_delete(Path, 0);
 }
+
+/**
+ * @brief [FileIO] Удаляет папку
+ *
+ * @param Path - Путь
+ *
+ * @return bool - true - если успешно, в противном случае false
+ */
+bool rmdir(const char* Path){
+    return nvfs_delete(Path, 1);
+}
