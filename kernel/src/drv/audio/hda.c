@@ -17,6 +17,13 @@ uint16_t hda_vendor = 0,
 
 uint32_t hda_addr = 0;
 
+#define WRITE32(reg, value) *(volatile uint32_t*)(hda_addr + (reg)) = (value)
+#define READ32(reg) (*(volatile uint32_t*)(hda_addr + (reg)))
+#define WRITE16(reg, value) *(volatile uint16_t*)(hda_addr + (reg)) = (value)
+#define READ16(reg) (*(volatile uint16_t*)(hda_addr + (reg)))
+#define WRITE8(reg, value) *(volatile uint8_t*)(hda_addr + (reg)) = (value)
+#define READ8(reg) (*(volatile uint8_t*)(hda_addr + (reg)))
+
 void hda_init() {
     pci_find_device_by_class_and_subclass(4, 3, &hda_vendor, &hda_device, &hda_bus, &hda_slot, &hda_func);
 
@@ -41,6 +48,27 @@ void hda_init() {
 
     hda_reset();
 
+    size_t data = READ16(0x00);
+
+    size_t input_streams = (data >> 8) & 0b1111;
+    size_t output_streams = (data >> 12) & 0b1111;
+
+    hda_disable_interrupts();
+
+    //turn off dma position transfer
+    WRITE32(0x70, 0);
+    WRITE32(0x74, 0);
+
+    //disable synchronization
+    WRITE32(0x34, 0);
+    WRITE32(0x38, 0);
+
+    //stop CORB and RIRB
+    WRITE8(0x4C, 0x0);
+    WRITE8(0x5C, 0x0);
+
+    qemu_note("HDA: I: %d; O: %d;", input_streams, output_streams);
+
     tty_printf("HDA RESET OKAY!\n");
 }
 
@@ -57,4 +85,8 @@ void hda_reset() {
     while ((READ32(0x08) & 1) != 1);
 
     qemu_ok("Reset ok!");
+}
+
+void hda_disable_interrupts() {
+    WRITE32(0x20, 0);
 }
