@@ -26,6 +26,7 @@
 #include "sys/grub_modules.h"
 #include "drv/disk/mbr.h"
 #include "sys/file_descriptors.h"
+#include "sys/lapic.h"
 
 #include <lib/pixel.h>
 
@@ -382,7 +383,8 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 			acpi_scan_all_tables(rsdp->RSDTaddress);
 			
 	        find_facp(rsdp->RSDTaddress);
-	        find_apic(rsdp->RSDTaddress);
+
+            lapic_init(rsdp);
         } else {
         	qemu_err("ACPI not supported! (Are you running in UEFI mode?)");
         }

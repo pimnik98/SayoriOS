@@ -5,7 +5,6 @@
 #include "io/ports.h"
 #include "io/tty.h"
 #include "mem/pmm.h"
-#include "mem/vmm.h"
 
 uint32_t system_processors_found = 0;
 
@@ -167,21 +166,7 @@ void find_facp(size_t rsdt_addr) {
     unmap_single_page(get_kernel_page_directory(), (virtual_addr_t) rsdt_addr);
 }
 
-void find_apic(size_t rsdt_addr) {
-// We have apic fail on real hardware, so I would to see logs on the screen
-// #undef qemu_log
-// #define qemu_log(M, ...) do { tty_printf(M, ##__VA_ARGS__); tty_puts("\n"); } while(0)
-
-	qemu_log("!!! Starting RSDT: %x", rsdt_addr);
-
-    // map_pages(
-        // get_kernel_page_directory(),
-        // rsdt_addr,
-        // rsdt_addr,
-        // PAGE_SIZE,
-        // PAGE_PRESENT
-    // );
-
+void find_apic(size_t rsdt_addr, size_t *lapic_addr) {
 	size_t start = rsdt_addr & ~0xfff;
 	size_t end = ALIGN(rsdt_addr + PAGE_SIZE, PAGE_SIZE);
 
@@ -232,6 +217,8 @@ void find_apic(size_t rsdt_addr) {
 
     qemu_log("LAPIC at: %x", apic_base->lapic_addr);
     qemu_log("Flags: %x", apic_base->flags);
+
+    *lapic_addr = apic_base->lapic_addr;
 
     size_t base_table_end = table_end + sizeof(struct APIC_Base_Table);
 
