@@ -81,29 +81,35 @@ void ahci_init() {
 
 	qemu_log("Version: %x", abar->version);
 
-    abar->global_host_control |= (1 << 31);  // AHCI Enable
-
-    if(abar->host_capabilities_extended & 1) {
-        for(int i = 0; i < 5; i++) {
-            qemu_warn("PERFORMING BIOS HANDOFF!!!");
-        }
-
-        abar->handoff_control_and_status = abar->handoff_control_and_status | (1 << 1);
-
-        while(1) {
-            size_t status = abar->handoff_control_and_status;
-
-            if (~status & (1 << 0))
-                break;
-        }
-    } else {
-        qemu_ok("No BIOS Handoff");
-    }
+    // if(abar->host_capabilities_extended & 1) {
+        // for(int i = 0; i < 5; i++) {
+            // qemu_warn("PERFORMING BIOS HANDOFF!!!");
+        // }
+// 
+        // abar->handoff_control_and_status = abar->handoff_control_and_status | (1 << 1);
+// 
+        // while(1) {
+            // size_t status = abar->handoff_control_and_status;
+// 
+            // if (~status & (1 << 0))
+                // break;
+        // }
+    // } else {
+        // qemu_ok("No BIOS Handoff");
+    // }
 
 	// Reset
-// 	abar->global_host_control |= (1 << 0);
-//
-// 	while(abar->global_host_control & (1 << 0));
+    abar->global_host_control = (1 << 31);  // AHCI Enable
+
+	abar->global_host_control = (1 << 31) | (1 << 0); // AHCI Reset
+
+	while(true) {
+		if((abar->global_host_control & 1) == 0) {
+			break;
+		}
+	}
+
+    abar->global_host_control |= (1 << 31);  // AHCI Enable (again)
 
  	qemu_ok("Controller reset ok");
 
@@ -597,14 +603,14 @@ void ahci_eject_cdrom(size_t port_num) {
 	HBA_CMD_TBL* table = (HBA_CMD_TBL*)AHCI_COMMAND_TABLE(ports[port_num].command_list_addr_virt, 0);
 	memset(table, 0, sizeof(HBA_CMD_TBL));
 
-    uint8_t command[12] = {
+    uint8_t command[10] = {
         ATAPI_CMD_START_STOP,  // Command
         0, 0, 0,  // Reserved
         1 << 1, // Eject the disc
-        0, 0, 0, 0, 0, 0, 0  // Reserved
+        0, 0, 0, 0,   // Reserved
     };
 
-    memcpy(table->acmd, command, 12);
+    memcpy(table->acmd, command, 10);
 
 	volatile AHCI_FIS_REG_HOST_TO_DEVICE *cmdfis = (volatile AHCI_FIS_REG_HOST_TO_DEVICE*)&(table->cfis);
     memset((void*)cmdfis, 0, sizeof(AHCI_FIS_REG_HOST_TO_DEVICE));

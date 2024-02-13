@@ -46,9 +46,6 @@
 #define ATA_IDENT_COMMANDSETS  82
 #define ATA_IDENT_MAX_LBA_EXT  100
 
-#define IDE_ATA        0x00
-#define IDE_ATAPI      0x01
- 
 #define ATA_MASTER     0x00
 #define ATA_SLAVE      0x01
 

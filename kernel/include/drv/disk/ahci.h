@@ -66,15 +66,21 @@ typedef enum {
 } AHCI_FIS_TYPE;
 
 typedef struct {
+    // 0
 	uint8_t  fis_type;	// FIS_TYPE_REG_H2D
 
+    // 1
 	uint8_t  pmport:4;	// Port multiplier
 	uint8_t  rsv0:3;		// Reserved
 	uint8_t  c:1;		// 1: Command, 0: Control
 
+    // 2
 	uint8_t  command;	// Command register
-	uint8_t  featurel;	// Feature register, 7:0
 
+    // 3
+    uint8_t  featurel;	// Feature register, 7:0
+
+    // 4 - 8
 	uint8_t  lba0;		// LBA low register, 7:0
 	uint8_t  lba1;		// LBA mid register, 15:8
 	uint8_t  lba2;		// LBA high register, 23:16
