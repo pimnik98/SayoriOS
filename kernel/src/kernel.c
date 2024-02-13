@@ -386,12 +386,13 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 
             lapic_init(rsdp);
         } else {
-        	qemu_err("ACPI not supported! (Are you running in UEFI mode?)");
+            tty_printf("ACPI not supported! (Are you running in UEFI mode?)\n");
+            qemu_err("ACPI not supported! (Are you running in UEFI mode?)");
         }
     }
     
     tty_printf("Processors: %d\n", system_processors_found);
-    
+
     // FIXME: WOW! We can write into 0!
     //	*((volatile int*)0) = 0x12345678;
     //	qemu_log("Data: %x", *((volatile int*)0));

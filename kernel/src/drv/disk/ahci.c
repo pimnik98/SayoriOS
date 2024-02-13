@@ -95,19 +95,19 @@ void ahci_init() {
     // }
 
 	// Reset
-    abar->global_host_control = (1 << 31);  // AHCI Enable
+    // abar->global_host_control = (1 << 31);  // AHCI Enable
 
-	abar->global_host_control = (1 << 31) | (1 << 0); // AHCI Reset
+	// abar->global_host_control = (1 << 31) | (1 << 0); // AHCI Reset
+// 
+	// while(true) {
+		// if((abar->global_host_control & 1) == 0) {
+			// break;
+		// }
+	// }
+// 
+    // abar->global_host_control |= (1 << 31);  // AHCI Enable (again)
 
-	while(true) {
-		if((abar->global_host_control & 1) == 0) {
-			break;
-		}
-	}
-
-    abar->global_host_control |= (1 << 31);  // AHCI Enable (again)
-
- 	qemu_ok("Controller reset ok");
+ 	// qemu_ok("Controller reset ok");
 
 	// Interrupts
 	ahci_irq = pci_read_confspc_word(ahci_busnum, ahci_slot, ahci_func, 0x3C) & 0xFF; // All 0xF PCI register
@@ -131,7 +131,7 @@ void ahci_init() {
 
 	for(int i = 0; i < 32; i++) {
 		if (implemented_ports & (1 << i)) {
-//			AHCI_HBA_PORT* port = AHCI_PORT(i);
+AHCI_HBA_PORT* port = AHCI_PORT(i);
 
 			if (!ahci_is_drive_attached(i)) {
 				continue;
@@ -148,29 +148,29 @@ this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0�
 500 milliseconds for PxCMD.FR to return ‘0’ when read. 
 			*/
 
-// 			port->command_and_status &= ~(1);
-// 
-// 			while(true) {
-// 				uint32_t cr = (port->command_and_status >> 15) & 1;
-// 				
-// 				if(cr == 0) {
-// 					break;
-// 				}
-// 			}
-// 
-// 			uint32_t fre = (port->command_and_status >> 4) & 1;
-// 
-// 			if(fre == 1) {
-// 				port->command_and_status &= ~(1 << 4);
-// 			}
-// 
-// 			while(true) {
-// 				uint32_t fr = (port->command_and_status >> 14) & 1;
-// 				
-// 				if(fr == 0) {
-// 					break;
-// 				}
-// 			}
+port->command_and_status &= ~(1);
+
+while(true) {
+uint32_t cr = (port->command_and_status >> 15) & 1;
+
+if(cr == 0) {
+break;
+}
+}
+
+uint32_t fre = (port->command_and_status >> 4) & 1;
+
+if(fre == 1) {
+port->command_and_status &= ~(1 << 4);
+}
+
+while(true) {
+uint32_t fr = (port->command_and_status >> 14) & 1;
+
+if(fr == 0) {
+break;
+}
+}
 
             ahci_rebase_memory_for(i);
 

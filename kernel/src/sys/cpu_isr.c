@@ -207,6 +207,25 @@ void page_fault(registers_t regs){
     }
     qemu_log("at address (virtual) %x",fault_addr);
 
+    tty_printf("Page fault: ");
+    if (present){
+        tty_printf("NOT PRESENT, ");
+    }
+    if (rw){
+        tty_printf("READ ONLY, ");
+    }
+    if (user){
+        tty_printf("USER MODE,  ");
+    }
+    if (reserved){
+        tty_printf("WRITING TO RESERVED BITS, ");
+    }
+    if (id){
+        tty_printf("EIP error ");
+    }
+    tty_printf("at address (virtual) %x",fault_addr);
+
+
     // Prevent kmallocs (in bsod_screen()) in Page Fault
     sod_screen_legacy(regs, "CRITICAL_ERROR_PF_PAGE_FAULT", msg, fault_addr);
 }
