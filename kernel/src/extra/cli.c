@@ -28,6 +28,7 @@
 #include "io/rgb_image.h"
 #include <sys/cpuinfo.h>
 #include "../../include/lib/fileio.h"
+#include "sys/system.h"
 
 int G_CLI_CURINXA = 0;
 int G_CLI_CURINXB = 0;
@@ -451,6 +452,12 @@ uint32_t proc_list(uint32_t argc, char* argv[]) {
     return 0;
 }
 
+uint32_t CLI_CMD_REBOOT(uint32_t argc, char* argv[]) {
+    reboot();
+
+    return 0;
+}
+
 uint32_t pavi_view(uint32_t, char**);
 uint32_t minesweeper(uint32_t, char**);
 uint32_t shell_diskctl(uint32_t, char**);
@@ -484,6 +491,7 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
     {"DEL", "DEL", CLI_CMD_DEL, "Удалить файл"},
     {"MKDIR", "mkdir", CLI_CMD_MKDIR, "Создать папку"},
     {"RMDIR", "rmdir", CLI_CMD_RMDIR, "Удалить папку"},
+    {"REBOOT", "reboot", CLI_CMD_REBOOT, "Перезагрузка"},
 	{nullptr, nullptr, nullptr}
 };
 

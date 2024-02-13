@@ -56,11 +56,7 @@ void ahci_init() {
 	qemu_ok("Found VEN: %x DEV: %x", ahci_vendor, ahci_devid);
 
 	// Enable Bus Mastering
-	uint16_t command_register = pci_read_confspc_word(ahci_busnum, ahci_slot, ahci_func, 4);
-
-	command_register |= 0x05;
-
-	pci_write(ahci_busnum, ahci_slot, ahci_func, 4, command_register);
+    pci_enable_bus_mastering(ahci_busnum, ahci_slot, ahci_func);
 
 //	qemu_ok("Enabled Bus Mastering");
 
@@ -625,7 +621,7 @@ void ahci_eject_cdrom(size_t port_num) {
 size_t ahci_dpm_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
     qemu_err("TODO: SATA DPM READ");
 
-    DPM_Disk dpm = dpm_info(Disk + 65);
+//    DPM_Disk dpm = dpm_info(Disk + 65);
 
     return 0;
 }
@@ -633,7 +629,7 @@ size_t ahci_dpm_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
 size_t ahci_dpm_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
     qemu_err("TODO: SATA DPM WRITE");
 
-    DPM_Disk dpm = dpm_info(Disk + 65);
+//    DPM_Disk dpm = dpm_info(Disk + 65);
 
     return 0;
 }
