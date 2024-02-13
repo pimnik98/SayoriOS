@@ -25,6 +25,8 @@
 #include "lib/ttf_font.h"
 #include "sys/grub_modules.h"
 #include "drv/disk/mbr.h"
+#include "sys/file_descriptors.h"
+#include "sys/lapic.h"
 
 #include <lib/pixel.h>
 
@@ -306,14 +308,15 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     mouse_install();
     bootScreenPaint("Инициализация ATA...");
     ata_init();
+    ata_dma_init();
+//    bootScreenPaint("Инициализация AHCI (SATA)...");
+//    ahci_init();
 
     bootScreenPaint("Калибрировка датчика температуры процессора...");
     cputemp_calibrate();
 
     bootScreenPaint("Настройка FDT...");
     file_descriptors_init();
-    
-
 
     char* btitle = 0;
 
@@ -380,14 +383,16 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 			acpi_scan_all_tables(rsdp->RSDTaddress);
 			
 	        find_facp(rsdp->RSDTaddress);
-	        find_apic(rsdp->RSDTaddress);
+
+            lapic_init(rsdp);
         } else {
-        	qemu_err("ACPI not supported! (Are you running in UEFI mode?)");
+            tty_printf("ACPI not supported! (Are you running in UEFI mode?)\n");
+            qemu_err("ACPI not supported! (Are you running in UEFI mode?)");
         }
     }
     
     tty_printf("Processors: %d\n", system_processors_found);
-    
+
     // FIXME: WOW! We can write into 0!
     //	*((volatile int*)0) = 0x12345678;
     //	qemu_log("Data: %x", *((volatile int*)0));
@@ -421,39 +426,12 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     //		_smfs_init();
     //	}
     
-    // tty_printf("Processors found: %d\n", system_processors_found);
-    
-    // _mbr_info();
-    
-    ata_dma_init();
     ac97_init();
-    //ac97_test();
     
-    //	string_t* str = string_from_charptr("There's Pikachu, Eevee, Charmander and even Scyther is there!");
-    //	vector_t* vec = string_split(str, " ");
-    //
-    //	qemu_log("Original string is: '%s'", str->data);
-    //
-    //	for(int i = 0; i < vec->size; i++) {
-    //		char* string = ADDR2STRING(vec->data[i])->data;
-    //
-    //		qemu_log("%s", string);
-    //	}
-    //
-    //	string_split_free(vec);
-    //	string_destroy(str);
-    //	qemu_log("%x", is_long_mode_supported());
-    //	char* args[] = {"hello"};
-    //	run_elf_file("R:\\Applications\\hello", 1, args);
-    //	netcard_entry_t* card = netcard_get(0);
-    //
     //	uint8_t ip[4] = {192, 168, 2, 2};
     //
     //	udp_send_packet(card, ip, 8888, 9999, "EEVEE\n", 6);
-    
-    ahci_init();
-    // ahci_test();
-    
+
     /// Пример закругленных квадратов
     // drawRoundedSquare(32,32, 128, 2, 0xFFFF0000, 0xFF0000FF);
     // drawRoundedRectangle(32,32,128,16,4,0xFFFF0000, 0xFF0000FF);
@@ -472,40 +450,16 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     //    qemu_log("Buff (%d|%d) %s",buf_read, strlen(buf),buf);
     //
     // kfree(buf);
-    
+
+    ahci_init();
+
+
     /// Обновим данные обо всех дисках
-    fsm_dpm_update(-1);
-    
-    // SEEK TEST
-    //    char buffer[11] = {0};
-    //
-    //    FILE* myfile = fopen("C:\\finnish_numerals.txt", "r");
-    //
-    //    for(int i = 0; i < 15; i++) {
-    //        memset(buffer, 0, 10);
-    //
-    //        fread(myfile, sizeof(char), 10, buffer);
-    //
-    //        tty_printf("%s", buffer);
-    //    }
-    
-    //    elk_file("R:\\jse\\libs.js");
-    //    void k();
-    //    create_process(k, "Test process", false, true);
+    fsm_dpm_update(-1);    
     
     // vio_ntw_init();
     
     hda_init();
-
-//     {
-//         ttf_font_t hah = {};
-// 
-//         ttf_init(&hah, "R:\\font.ttf");
-// 
-//         ttf_draw_string(&hah, (char *) getFrameBufferAddr(), getScreenWidth(), getScreenHeight(), 0, 0, "Cattiva");
-// 
-//         ttf_destroy(&hah);
-//     }
 
     cli();
 

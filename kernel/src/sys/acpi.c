@@ -5,7 +5,8 @@
 #include "io/ports.h"
 #include "io/tty.h"
 #include "mem/pmm.h"
-#include "mem/vmm.h"
+
+#define ACPI_PAGE_COUNT 32
 
 uint32_t system_processors_found = 0;
 
@@ -57,6 +58,14 @@ bool acpi_checksum_sdt(ACPISDTHeader *tableHeader) {
 ACPISDTHeader* find_table(uint32_t rsdt_addr, uint32_t sdt_count, char signature[4]) {
     uint32_t* rsdt_end = (uint32_t*)(rsdt_addr + sizeof(ACPISDTHeader));
 
+    map_pages_overlapping(
+            get_kernel_page_directory(),
+            rsdt_addr,
+            rsdt_addr,
+            PAGE_SIZE * ACPI_PAGE_COUNT,
+            PAGE_PRESENT
+    );
+
     qemu_log("RSDT start: %x", rsdt_addr);
     qemu_log("RSDT end: %x", rsdt_end);
     qemu_log("RSDT size: %d", sizeof(ACPISDTHeader));
@@ -69,17 +78,23 @@ ACPISDTHeader* find_table(uint32_t rsdt_addr, uint32_t sdt_count, char signature
         }
     }
 
+    unmap_pages_overlapping(
+            get_kernel_page_directory(),
+            rsdt_addr,
+            PAGE_SIZE * ACPI_PAGE_COUNT
+    );
+
     return 0;
 }
 
 void acpi_scan_all_tables(uint32_t rsdt_addr) {
     ACPISDTHeader* rsdt = (ACPISDTHeader*)rsdt_addr;
 
-    map_pages(
+    map_pages_overlapping(
         get_kernel_page_directory(),
         rsdt_addr,
 		rsdt_addr,
-        PAGE_SIZE * 2,
+        PAGE_SIZE * ACPI_PAGE_COUNT,
         PAGE_PRESENT
     );
 
@@ -93,33 +108,40 @@ void acpi_scan_all_tables(uint32_t rsdt_addr) {
     qemu_log("RSDT end: %x", rsdt_end);
     qemu_log("RSDT size: %d", sizeof(ACPISDTHeader));
 
+    tty_printf("RSDT start: %x\n", rsdt_addr);
+    tty_printf("RSDT end: %x\n", rsdt_end);
+    tty_printf("SDT COUNT: %u\n", sdt_count);
+
     for(uint32_t i = 0; i < sdt_count; i++) {
         ACPISDTHeader* entry = (ACPISDTHeader*)(rsdt_end[i]);
 
-        if(entry == 0) {
-            break;
-        }
-
-		tty_printf("[%x] Found table: %.4s\n", entry, entry->Signature);
-		qemu_log("[%x] Found table: %.4s", entry, entry->Signature);
+		tty_printf("[%d/%d] [%x] Found table: %.4s\n", i, sdt_count, entry, entry->Signature);
+		qemu_log("[%x] Found table: %.4s", (size_t)entry, entry->Signature);
     }
 
-    unmap_single_page(get_kernel_page_directory(), (virtual_addr_t) rsdt_addr);
-    unmap_single_page(get_kernel_page_directory(), ((virtual_addr_t) rsdt_addr) + PAGE_SIZE);
+    tty_printf("UNMAP!\n");
+
+    unmap_pages_overlapping(
+            get_kernel_page_directory(),
+            rsdt_addr,
+            PAGE_SIZE * ACPI_PAGE_COUNT
+    );
+
+    tty_printf("Ok!\n");
 }
 
 
 void find_facp(size_t rsdt_addr) {
+    tty_printf("SEARCHING FACP!");
 	qemu_log("FACP at P%x", rsdt_addr);
 
-    map_pages(
+    map_pages_overlapping(
         get_kernel_page_directory(),
         rsdt_addr,
 		rsdt_addr,
-        PAGE_SIZE,
+        PAGE_SIZE * 2,
         PAGE_PRESENT
     );
-
 
     ACPISDTHeader* rsdt = (ACPISDTHeader*)rsdt_addr;
 
@@ -164,24 +186,10 @@ void find_facp(size_t rsdt_addr) {
     qemu_log("Found FADT!");
 
 //    unmap_single_page(get_kernel_page_directory(), (virtual_addr_t) fadt);
-    unmap_single_page(get_kernel_page_directory(), (virtual_addr_t) rsdt_addr);
+    unmap_pages_overlapping(get_kernel_page_directory(), (virtual_addr_t) rsdt_addr, PAGE_SIZE * 2);
 }
 
-void find_apic(size_t rsdt_addr) {
-// We have apic fail on real hardware, so I would to see logs on the screen
-// #undef qemu_log
-// #define qemu_log(M, ...) do { tty_printf(M, ##__VA_ARGS__); tty_puts("\n"); } while(0)
-
-	qemu_log("!!! Starting RSDT: %x", rsdt_addr);
-
-    // map_pages(
-        // get_kernel_page_directory(),
-        // rsdt_addr,
-        // rsdt_addr,
-        // PAGE_SIZE,
-        // PAGE_PRESENT
-    // );
-
+void find_apic(size_t rsdt_addr, size_t *lapic_addr) {
 	size_t start = rsdt_addr & ~0xfff;
 	size_t end = ALIGN(rsdt_addr + PAGE_SIZE, PAGE_SIZE);
 
@@ -232,6 +240,8 @@ void find_apic(size_t rsdt_addr) {
 
     qemu_log("LAPIC at: %x", apic_base->lapic_addr);
     qemu_log("Flags: %x", apic_base->flags);
+
+    *lapic_addr = apic_base->lapic_addr;
 
     size_t base_table_end = table_end + sizeof(struct APIC_Base_Table);
 
