@@ -1,5 +1,9 @@
 set -e
 
+if [ -z $PREFIX ]; then
+	PREFIX=/usr
+fi
+
 CLANG=$(ls $PREFIX/bin/clang-1* 2> /dev/null | grep -o '[0-9]\+' | sort | head -n 1)
 GCC=$(ls $PREFIX/bin/gcc-* 2> /dev/null | grep -o '[0-9]\+' | sort | head -n 1)
 
