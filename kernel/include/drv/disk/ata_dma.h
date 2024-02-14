@@ -5,8 +5,6 @@
 
 #define ATA_DMA_MARK_END 0x8000
 
-#define ATA_DMA_USE_OPTIMIZED 0
-
 typedef struct prdt {
 	uint32_t buffer_phys;
 	uint16_t transfer_size;

@@ -364,11 +364,7 @@ void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) {
 	}
 
     if((!drives[drive].is_packet) && drives[drive].is_dma) {
-#if ATA_DMA_USE_OPTIMIZED==1
-        ata_dma_read_new(drive, buf, location, length);
-#else
         ata_dma_read(drive, (char*)buf, location, length);
-#endif
         return;
     }
 
