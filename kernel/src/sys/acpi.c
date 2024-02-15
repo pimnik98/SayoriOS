@@ -119,20 +119,15 @@ void acpi_scan_all_tables(uint32_t rsdt_addr) {
 		qemu_log("[%x] Found table: %.4s", (size_t)entry, entry->Signature);
     }
 
-    tty_printf("UNMAP!\n");
-
     unmap_pages_overlapping(
             get_kernel_page_directory(),
             rsdt_addr,
             PAGE_SIZE * ACPI_PAGE_COUNT
     );
-
-    tty_printf("Ok!\n");
 }
 
 
 void find_facp(size_t rsdt_addr) {
-    tty_printf("SEARCHING FACP!");
 	qemu_log("FACP at P%x", rsdt_addr);
 
     map_pages_overlapping(

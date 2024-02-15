@@ -27,10 +27,14 @@
 #include "drv/disk/mbr.h"
 #include "sys/file_descriptors.h"
 #include "sys/lapic.h"
+#include "drv/ps2.h"
 
 #include <lib/pixel.h>
 
 #define INITRD_RW_SIZE (1474560) ///< Размер виртуального диска 1.44mb floppy
+
+extern bool ps2_channel1_okay;
+extern bool ps2_channel2_okay;
 
 uint32_t init_esp = 0;
 bool test_pcs = true;
@@ -302,10 +306,20 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     bootScreenInit(15);
     bootScreenLazy(true);
 
+    bootScreenPaint("Настройка PS/2...");
+    ps2_init();
     bootScreenPaint("Настройка PS/2 Клавиатуры...");
     keyboardInit();
-    bootScreenPaint("Настройка PS/2 Мыши...");
-    mouse_install();
+
+	if(ps2_channel2_okay) {
+	    bootScreenPaint("Настройка PS/2 Мыши...");
+	    mouse_install();		
+	}
+
+    bootScreenPaint("Пост-настройка PS/2...");
+    ps2_keyboard_install_irq();
+    ps2_mouse_install_irq();
+
     bootScreenPaint("Инициализация ATA...");
     ata_init();
     ata_dma_init();
@@ -460,6 +474,8 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     // vio_ntw_init();
     
     hda_init();
+
+	tty_printf("PS2: [%d, %d]\n", ps2_channel1_okay, ps2_channel2_okay);
 
     cli();
 
