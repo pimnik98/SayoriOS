@@ -433,99 +433,6 @@ status_t ata_dma_read(uint8_t drive, char *buf, uint32_t location, uint32_t leng
 	return OK;
 }
 
-status_t ata_dma_read_new(uint8_t drive, char *buf, uint32_t location, uint32_t length) {
-    ON_NULLPTR(buf, {
-        qemu_err("Buffer is nullptr!");
-        return E_INVALID_BUFFER;
-    });
-
-    if(!drives[drive].online) {
-        qemu_err("Attempted read from drive that does not exist.");
-        return E_DEVICE_NOT_ONLINE;
-    }
-
-    qemu_log("LEN: %u", length);
-
-    if(!drives[drive].is_packet) {
-        size_t start_sector = location / drives[drive].block_size;
-
-        size_t redundancy = location % drives[drive].block_size;
-
-        if(redundancy != 0) {
-            qemu_note("Redundancy: %u", redundancy);
-            // We need to allocate 1 block, read block, copy to buffer, add length of piece to buffer and go on.
-
-            uint8_t* rry = kmalloc_common(redundancy, PAGE_SIZE);
-
-            ata_dma_read_sectors(drive, rry, start_sector, 1);
-
-            memcpy(buf, rry + redundancy, MIN(512 - redundancy, length));
-
-            redundancy = MIN(512 - redundancy, length);
-
-            buf += redundancy;
-            location += redundancy;
-
-            qemu_note("LENGTH BEFORE: %d", length);
-            length -= redundancy;
-            qemu_note("LENGTH AFTER: %d", length);
-
-            kfree(rry);
-        }
-
-        if(length == 0) {
-            qemu_warn("LENGTH IS ZERO");
-            return OK;
-        }
-
-        size_t end_sector = (location + length - 1) / drives[drive].block_size;
-        size_t sector_count = end_sector - start_sector + 1;
-
-        size_t real_length = sector_count * drives[drive].block_size;
-
-        // TODO: Optimize to read without kmalloc
-        uint8_t* real_buf = kmalloc_common(real_length, PAGE_SIZE);
-
-        qemu_note("SECTOR[START: %u; END: %u; COUNT: %u]; LENGTH: %u (%u)",
-                  start_sector,
-                  end_sector,
-                  sector_count,
-                  length,
-                  real_length);
-
-        // Okay, ATA can only read 256 sectors (128 KB of memory) at one request, so subdivide our data to clusters to manage.
-        int i = 0;
-        size_t cluster_count = sector_count / 256;
-        size_t remaining_count = sector_count % 256;
-
-        qemu_log("CLUSTERS: %u", cluster_count);
-
-        size_t rem = length;
-        qemu_log("REMAINING/1: %u", rem);
-
-        for(; i < cluster_count; i++) {
-            ata_dma_read_sectors(drive, real_buf + (i * (65536 * 2)), start_sector + (i * 256), 0);
-
-            rem -= 65536 * 2;
-        }
-
-        if(remaining_count != 0) {
-            ata_dma_read_sectors(drive, real_buf + (i * (65536 * 2)), start_sector + (i * 256), remaining_count);
-
-            rem -= MIN(512 * remaining_count, length);
-        }
-
-        qemu_log("REMAINING/2: %u", remaining_count);
-
-        memcpy(buf, real_buf + (location % drives[drive].block_size), length);
-
-        kfree(real_buf);
-    }
-
-
-    return OK;
-}
-
 status_t ata_dma_write(uint8_t drive, const char *buf, uint32_t location, uint32_t length) {
 	ON_NULLPTR(buf, {
 		qemu_err("Buffer is nullptr!");
@@ -569,3 +476,4 @@ status_t ata_dma_write(uint8_t drive, const char *buf, uint32_t location, uint32
 
 	return OK;
 }
+

@@ -200,6 +200,7 @@ SOURCES=\
 	kernel/src/sys/grub_modules.c \
 	kernel/src/drv/disk/mbr.c \
 	kernel/src/sys/lapic.c \
+	kernel/src/drv/ps2.c \
 	$(GAMEBOY) \
 	kernel/src/kernel.c \
 #	kernel/src/lib/duktape.c \

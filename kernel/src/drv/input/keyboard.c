@@ -17,6 +17,7 @@ extern void tty_backspace();
 #include "io/tty.h"
 #include "drv/psf.h"
 #include "sys/isr.h"
+#include "drv/ps2.h"
 
 #define		KEY_BUFFER_SIZE		16
 #define		KBD_IS_READDATA			(1 << 0)
@@ -27,9 +28,7 @@ extern void tty_backspace();
 #define		KBD_IS_MOUSEDATA		(1 << 5)
 #define		KBD_IS_TIMEOUT			(1 << 6)
 #define		KBD_IS_ODDERROR			(1 << 7)
-#define		KBD_DATA_PORT		0x60
 #define		KBD_CTRL_REG		0x61
-#define		KBD_STATE_REG		0x64
 
 bool    SHIFT = false,          ///< Включен ли SHIFT
         RU = false;             ///< Печатаем русскими?
@@ -296,9 +295,10 @@ int gets_max(char *buffer, int length) { // TODO: Backspace
  * @brief Обработчик клавиатуры
  */
 void keyboardHandler(registers_t regs){
-    kbdstatus = inb(KBD_STATE_REG);
+    kbdstatus = inb(PS2_STATE_REG);
+
     if (kbdstatus & 0x01) {
-        lastKey = inb(KBD_DATA_PORT);
+        lastKey = inb(PS2_DATA_PORT);
         int cl = 1;
 
         CallTrigger(
@@ -336,119 +336,77 @@ void keyboardHandler(registers_t regs){
             }
 			kbd_add_char(curbuf, key);
         }
-
-        /*        
-        if(lastKey & 0x80) {
-            qemu_log("[KBD] Release on key: %d", lastKey);
-        }else{
-            qemu_log("[KBD] Press on key: %d", lastKey);
-        }
-        */
-
-        return;
     }
-}
-
-uint8_t ps2_read_configuration_byte() {
-    outb(KBD_STATE_REG, 0x20);
-
-    return inb(KBD_DATA_PORT);
-}
-
-void ps2_write_configuration_byte(uint8_t byte) {
-    outb(KBD_STATE_REG, 0x60);
-    outb(KBD_DATA_PORT, byte);
-}
-
-// false - error; true - ok
-bool ps2_test() {
-    outb(KBD_STATE_REG, 0xAA); // Test
-
-    uint8_t reply = inb(KBD_DATA_PORT);
-
-    return reply == 0x55;
 }
 
 /**
  * @brief Выполняет инициализацию клавиатуры
  */
 void keyboardInit() {
-    // Disable keyboard 
-    outb(KBD_STATE_REG, 0xAD); // 1
-    outb(KBD_STATE_REG, 0xA7); // 2
+    uint8_t stat;
 
-    // Flush The Output Buffer
-    while(inb(KBD_STATE_REG) & 1) {
-        inb(KBD_DATA_PORT);
+    ps2_in_wait_until_empty();
+
+    outb(PS2_DATA_PORT, 0xf4);
+    stat = ps2_read();
+
+    if(stat != 0xfa) {
+        qemu_err("Keyboard error: Enable fail");
+        return;
     }
 
-    uint8_t byte = ps2_read_configuration_byte();
+    ps2_in_wait_until_empty();
 
-    if((byte >> 5) & 1) {
-        qemu_log("Dual channel PS/2 controller!");
-    } else {
-        qemu_log("Not a dual channel PS/2 controller!");
+    outb(PS2_DATA_PORT, 0xf0);
+    stat = ps2_read();
+
+    if(stat != 0xfa) {
+        qemu_err("Keyboard error: Scancode set fail");
+        return;
     }
 
-    byte &= 0b10111100;
+    ps2_in_wait_until_empty();
 
-    ps2_write_configuration_byte(byte);
+    outb(PS2_DATA_PORT, 0);
+    stat = ps2_read();
 
-    bool test_ok = ps2_test();
-
-    if(test_ok) {
-        qemu_log("PS/2 test ok!");
+    if(stat != 0xfa) {
+        qemu_err("Keyboard error: Zero fail");
+        return;
     }
 
-    if((byte >> 5) & 1) { // If it's dual channel...
-        outb(KBD_STATE_REG, 0xA8); // Enable second port
+    size_t scancode = ps2_read() & 0b11;
 
-        byte = ps2_read_configuration_byte();
+    qemu_note("SCANCODE SET: %d", scancode);
 
-        if((byte >> 5) & 1) {
-            qemu_log("Bit 5 is set, can't be dual channel PS/2 controller...");
-        } else {
-            qemu_log("Dual channel! Disabling second port...");
+    ps2_in_wait_until_empty();
 
-            outb(KBD_STATE_REG, 0xA7); // Disable second port
-        }
+    outb(PS2_DATA_PORT, 0xf3);
+    stat = ps2_read();
+
+    if(stat != 0xfa) {
+        qemu_err("Keyboard error: Repeat fail");
+        return;
     }
 
-    qemu_log("Testing first port...");
+    ps2_in_wait_until_empty();
 
-    outb(KBD_STATE_REG, 0xAB); // Test first port
+    outb(PS2_DATA_PORT, 0);
+    stat = ps2_read();
 
-    uint8_t result = inb(KBD_DATA_PORT);
-
-    if(result == 0x00) {
-        qemu_log("Passed test for channel 1!");
-        outb(KBD_STATE_REG, 0xAE);
-    } else {
-        qemu_log("Channel 1: Test failed! Result: %x", result);
+    if(stat != 0xfa) {
+        qemu_err("Keyboard error: Zero fail (phase 2)");
+        return;
     }
 
-    if(!((byte >> 5) & 1)) {
-        // Dual channel?
+    uint8_t conf = ps2_read_configuration_byte();
 
-        outb(KBD_STATE_REG, 0xA9); // Test second port
+    qemu_log("%d%d%d%d%d%d%d%d", (conf >> 0) & 1, (conf >> 1) & 1, (conf >> 2) & 1, (conf >> 3) & 1, (conf >> 4) & 1, (conf >> 5) & 1, (conf >> 6) & 1, (conf >> 7) & 1);
 
-        result = inb(KBD_DATA_PORT);
+    ps2_write_configuration_byte(conf | 0b1000001);
+}
 
-        if(result == 0x00) {
-            qemu_log("Passed test for channel 2!");
-            outb(KBD_STATE_REG, 0xA8);
-        } else {
-            qemu_log("Channel 2: Test failed! Result: %x", result);
-        }
-    }
-
-    // Enable interrupts
-
-    byte = ps2_read_configuration_byte();
-    byte |= 0b01000011;
-
-    ps2_write_configuration_byte(byte);
-
+void ps2_keyboard_install_irq() {
     // Register interrupts
     register_interrupt_handler(IRQ1, &keyboardHandler);
     qemu_log("Keyboard installed");

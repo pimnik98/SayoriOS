@@ -104,6 +104,12 @@ size_t syscall_sleep(uint32_t millis) {
     return 0;
 }
 
+size_t syscall_datetime(sayori_time_t* out_time) {
+	*out_time = get_time();	
+	
+    return 0;
+}
+
 /**
  * @brief Инициализация системных вызовов
  * 
@@ -129,6 +135,7 @@ void init_syscalls(void){
     calls_table[13] = (syscall_fn_t *)syscall_getkey;
     calls_table[14] = (syscall_fn_t *)syscall_get_timer_ticks;
     calls_table[15] = (syscall_fn_t *)syscall_sleep;
+    calls_table[16] = (syscall_fn_t *)syscall_datetime;
 
 	qemu_ok("System calls initialized!");
 }

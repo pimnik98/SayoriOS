@@ -1,3 +1,7 @@
+if [ -z $PREFIX ]; then
+	PREFIX=/usr
+fi
+
 GRUB=$(ls $PREFIX/bin/grub-mkrescue 2> /dev/null)
 GRUB2=$(ls $PREFIX/bin/grub2-mkrescue 2> /dev/null)
 
