@@ -490,3 +490,6 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 //        sleep_ms(250);
 //    };
 //}
+
+// TODO: Check if page directory copying works well.
+// FIXME: Same THING.
