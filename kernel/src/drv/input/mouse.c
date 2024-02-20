@@ -16,8 +16,8 @@
 
 uint8_t mouse_ready = 0;        ///< Готова ли мышь к работе
 
-int32_t mouse_x  = 0;           ///< Позиция мыши по X
-int32_t mouse_y  = 0;           ///< Позиция мыши по Y
+uint32_t mouse_x  = 0;           ///< Позиция мыши по X
+uint32_t mouse_y  = 0;           ///< Позиция мыши по Y
 
 
 int32_t mouse_ox  = 0;           ///< Позиция мыши по X (старое значение)
@@ -200,31 +200,8 @@ uint8_t mouse_read() {
  *
  * @warning Не нужно вызывать самостоятельно, только для обработчика мыши!
  */
-// IF WE ENABLE MOUSE HERE, KEYBOARD WILL NOT WORK ON REAL HW
 void mouse_install() {
-    uint8_t _status;  //unsigned char
-
-    // // Включить вспомогательное устройство мыши
-	// ENABLE MOUSE
-    // mouse_wait(1);
-    // outb(0x64, 0xA8);
-
-    // Включить прерывания
-	// Read config byte
-    // mouse_wait(1);
-    // outb(0x64, 0x20);
-
-	// Enable second port IRQ.
-//    mouse_wait(0);
-//    _status = (inb(0x60) | 2);
-//    mouse_wait(1);
-//    outb(0x64, 0x60);
-//    mouse_wait(1);
-//    outb(0x60, _status);
-
     uint8_t status = ps2_read_configuration_byte();
-
-    qemu_log("%d%d%d%d%d%d%d%d", (status >> 0) & 1, (status >> 1) & 1, (status >> 2) & 1, (status >> 3) & 1, (status >> 4) & 1, (status >> 5) & 1, (status >> 6) & 1, (status >> 7) & 1);
 
     ps2_write_configuration_byte(status | 2);
 
