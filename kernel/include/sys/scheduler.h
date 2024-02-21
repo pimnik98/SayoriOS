@@ -60,6 +60,9 @@ void init_task_manager(void);
 
 extern void task_switch(registers_t regs);
 
+thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t stack_size,
+                                   bool kernel, bool suspend);
+
 /* Create new thread */
 thread_t* thread_create(process_t* proc,
 	               	    void* entry_point,

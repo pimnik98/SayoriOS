@@ -61,7 +61,7 @@ void blank_page_directory(uint32_t* pagedir_addr);
 bool phys_is_used_page(physical_addr_t addr);
 void phys_mark_page_entry(physical_addr_t addr, uint8_t used);
 uint32_t phys_get_page_data(uint32_t* page_dir, virtual_addr_t virtual);
-uint32_t virt2phys(uint32_t* page_dir, virtual_addr_t virtual);
+uint32_t virt2phys(const uint32_t *page_dir, virtual_addr_t virtual);
 void init_paging();
 uint32_t* get_kernel_page_directory();
 

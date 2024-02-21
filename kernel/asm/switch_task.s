@@ -79,17 +79,9 @@ task_switch:
 
 			# Load our page directory address
 			mov 12(%edx), %eax
-			mov %cr3, %ecx
-
-			cmp %eax, %ecx
-			je	.no_addr_switch
-
 			mov %eax, %cr3
 
-            .no_addr_switch:
-
     		popf
-			# sti
 
             pop %ebp
             # pop %edi
