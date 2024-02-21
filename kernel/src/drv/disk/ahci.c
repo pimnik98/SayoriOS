@@ -62,7 +62,7 @@ void ahci_init() {
 
 	// Get ABAR
 
-	abar = (volatile AHCI_HBA_MEM*)pci_read32(ahci_busnum, ahci_slot, ahci_func, 0x24);
+	abar = (volatile AHCI_HBA_MEM*)(pci_read32(ahci_busnum, ahci_slot, ahci_func, 0x24) & ~0b1111);
 
 	qemu_log("AHCI ABAR is: %x", abar);
 
@@ -95,7 +95,7 @@ void ahci_init() {
      }
 
 	// Reset
-	 abar->global_host_control = (1 << 0); // AHCI Reset
+	 abar->global_host_control = (1 << 31) | (1 << 0); // AHCI Reset
 
 	 while(true) {
 		 if((abar->global_host_control & 1) == 0) {
@@ -137,31 +137,11 @@ void ahci_init() {
 				continue;
 			}
 
+			port->command_and_status = port->command_and_status & 0xfffffffe;
+
+			while(port->command_and_status & (1 << 15));
+
             ahci_rebase_memory_for(i);
-
-            while(true) {
-                if(!(port->command_and_status & ((1 << 0) | (1 << 4) | (1 << 15) | (1 << 14)))) {
-                    break;
-                }
-
-                port->command_and_status &= ~((1 << 0) | (1 << 4));
-            }
-
-            port->interrupt_enable &= 0x0E3FFF00;
-
-            volatile uint32_t x = port->interrupt_status;
-            port->interrupt_status = x;
-
-            port->sata_control |= (3 << 8);
-
-            port->command_and_status = (port->command_and_status & 0x0fffffff) | (1 << 1) | (1 << 2) | (1 << 4) | (1 << 28);
-
-            x = port->sata_error;
-            port->sata_error = x;
-
-            port->command_and_status |= 1;
-
-            port->interrupt_enable |= 0x7d800021;
         }
 	}
 

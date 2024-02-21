@@ -427,6 +427,40 @@ void pci_enable_bus_mastering(uint8_t bus, uint8_t slot, uint8_t func) {
 /**
  * @brief [PCI] Ищет все устройства и выводит на экран
  */
+void pci_print_nth(uint8_t class, uint8_t subclass, uint8_t bus, uint8_t slot, uint8_t hdr, uint16_t vendor, uint16_t device, uint8_t func) {
+    _tty_printf("%d:%d:%d:%d.%d %s: %s (%x), девайс: %x ",
+                class,
+                subclass,
+                bus,
+                slot,
+                func,
+                pci_get_device_type(class, subclass),
+                pci_get_vendor_name(vendor),
+                vendor,
+                device);
+
+    if((hdr & 0x80) == 0) {
+        _tty_printf("[Multifunc]");
+    }
+
+    uint32_t bar0 = pci_read32(bus, slot, func, 0x10 + (0 * 4));
+    uint32_t bar1 = pci_read32(bus, slot, func, 0x10 + (1 * 4));
+    uint32_t bar2 = pci_read32(bus, slot, func, 0x10 + (2 * 4));
+    uint32_t bar3 = pci_read32(bus, slot, func, 0x10 + (3 * 4));
+    uint32_t bar4 = pci_read32(bus, slot, func, 0x10 + (4 * 4));
+    uint32_t bar5 = pci_read32(bus, slot, func, 0x10 + (5 * 4));
+
+    tty_printf("\nAddresses: [%-10x, %-10x, %-10x, %-10x, %-10x, %-10x]",
+                bar0,
+                bar1,
+                bar2,
+                bar3,
+                bar4,
+                bar5);
+
+    _tty_printf("\n");
+}
+
 void pci_print_list() {
     uint8_t clid;
     uint8_t sclid;
@@ -446,7 +480,8 @@ void pci_print_list() {
                 sclid = pci_get_subclass(bus, slot, func);
                 hdrtype = pci_get_hdr_type(bus, slot, func);
                 device = pci_get_device(bus, slot, func);
-                _tty_printf("\t%d:%d:%d:%d.%d %s: %s (%x), девайс: %x\n", clid, sclid, bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
+
+                pci_print_nth(clid, sclid, bus, slot, hdrtype | 0x80, vendor, device, func);
             }
 
             if ((hdrtype & 0x80) == 0) {
@@ -457,7 +492,8 @@ void pci_print_list() {
                         clid = pci_get_class(bus, slot, func);
                         sclid = pci_get_subclass(bus, slot, func);
                         device = pci_get_device(bus, slot, func);
-                        _tty_printf("\t%d:%d:%d:%d.%d %s: %s (%x), девайс: %x (multifunc)\n", clid, sclid, bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
+
+                        pci_print_nth(clid, sclid, bus, slot, hdrtype, vendor, device, func);
                     }
                 }
             }

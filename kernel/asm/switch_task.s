@@ -15,8 +15,34 @@ task_switch:
 			# push %edi
 			push %ebp
 
+            # DO WE NEED TO SAVE AND RESTORE REGISTERS?
+
+            # IN
+			# EAX at [EBP + 32]
+            # EBX at [EBP + 20]
+            # ECX at [EBP + 28]
+            # EDX at [EBP + 24]
+            # EBP at [EBP + 12]
+            # ESI at [EBP + 8]
+            # EDI at [EBP + 4]
+
+            # OUT
+			# EAX at [44]
+			# EBX at [48]
+			# ECX at [52]
+			# EDX at [56]
+			# ESI at [60]
+            # EDI at [64]
+            # EBP at [68]
+
 			pushf
 			cli
+
+			#mov	32(%esp), %ebx
+			#mov	32(%esp), %ecx
+			#mov	32(%esp), %edx
+			#mov	32(%esp), %esi
+			#mov	32(%esp), %edi
 
 			# Save current thread
 			mov	current_thread, %edx

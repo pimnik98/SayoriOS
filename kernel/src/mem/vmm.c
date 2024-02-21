@@ -398,16 +398,18 @@ void* krealloc(void* ptr, size_t memory_size) {
 void* clone_kernel_page_directory() {
 	uint32_t* page_dir = kmalloc_common(PAGE_SIZE, PAGE_SIZE);
     uint32_t physaddr = virt2phys(get_kernel_page_directory(), (virtual_addr_t) page_dir);
-	const uint32_t* kern_dir = get_kernel_page_directory();
+
+    const uint32_t* kern_dir = get_kernel_page_directory();
+    const uint32_t linaddr = (const uint32_t)(page_directory_start);
 
     for(int i = 0; i < 1024; i++) {
         if (kern_dir[i]) {
             uint32_t* page_table = kmalloc_common(PAGE_SIZE, PAGE_SIZE);
             uint32_t physaddr_pt = virt2phys(kern_dir, (virtual_addr_t) page_table);
 
-            qemu_log("Copying from %x to %x", page_directory_start + (i * 1024), page_table);
+            qemu_log("Copying from %x to %x", linaddr + (i * PAGE_SIZE), page_table);
 
-            memcpy(page_table, page_directory_start + (i * 1024), PAGE_SIZE);
+            memcpy(page_table, (void*)(linaddr + (i * PAGE_SIZE)), PAGE_SIZE);
 
             page_dir[i] = physaddr_pt | 3;
         }
@@ -415,9 +417,9 @@ void* clone_kernel_page_directory() {
 
     page_dir[1023] = physaddr | 3;
 
-	for(int i = 0; i < 1024; i++)
-		if(kern_dir[i])
-			qemu_log("[%d] %x = %x", i, kern_dir[i], page_dir[i]);
+    for(int i = 0; i < 1024; i++)
+        if(kern_dir[i])
+            qemu_log("[%d] %x = %x", i, kern_dir[i], page_dir[i]);
 
     qemu_log("Page directory at: V%x (P%x); Here you are!", page_dir, physaddr);
 

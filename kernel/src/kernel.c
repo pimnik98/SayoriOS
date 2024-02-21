@@ -475,18 +475,19 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     
     hda_init();
 
-	tty_printf("PS2: [%d, %d]\n", ps2_channel1_okay, ps2_channel2_okay);
+    void k();
+    create_process(k, "test process", false, true);
 
     cli();
 
     while(1);
 }
 
-//void k() {
-//    qemu_log("Focken processez!");
-//
-//    while(1) {
-//        qemu_log("AAA");
-//        sleep_ms(250);
-//    };
-//}
+void k() {
+    qemu_log("Focken processez!");
+
+    while(1) {
+        qemu_log("AAA");
+        sleep_ms(250);
+    };
+}
