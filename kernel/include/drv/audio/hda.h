@@ -4,6 +4,7 @@
 
 #pragma once
 
-void hda_disable_interrupts();
 void hda_init();
 void hda_reset();
+size_t hda_calculate_entries(size_t word);
+void hda_disable_interrupts();

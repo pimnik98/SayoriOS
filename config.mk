@@ -278,6 +278,7 @@ QEMU_FLAGS = -cdrom kernel.iso -m $(MEMORY_SIZE) \
 			 -device rtl8139,netdev=net0,id=mydev0 \
 			 -M pcspk-audiodev=pa0 \
 			 -device ich9-intel-hda \
+			 -device hda-output \
 			 -trace "hda*" \
 			 -boot d \
 			 -cpu core2duo-v1 \

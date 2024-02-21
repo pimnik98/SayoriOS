@@ -19,7 +19,12 @@ uint16_t hda_vendor = 0,
 uint32_t hda_addr = 0;
 
 void* hda_corb = 0;
+size_t hda_corb_phys = 0;
 void* hda_rirb = 0;
+size_t hda_rirb_phys = 0;
+
+size_t hda_corb_entry_count = 0;
+size_t hda_rirb_entry_count = 0;
 
 #define WRITE32(reg, value) *(volatile uint32_t*)(hda_addr + (reg)) = (value)
 #define READ32(reg) (*(volatile uint32_t*)(hda_addr + (reg)))
@@ -74,28 +79,66 @@ void hda_init() {
     //stop CORB and RIRB
     WRITE8(0x4C, 0x0);
     WRITE8(0x5C, 0x0);
-    
+
     hda_corb = kmalloc_common(1024, PAGE_SIZE);
     hda_rirb = kmalloc_common(1024, PAGE_SIZE);
+    hda_corb_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) hda_corb);
+    hda_rirb_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) hda_rirb);
 
     memset(hda_corb, 0, 1024);
     memset(hda_rirb, 0, 1024);
 
-	WRITE32(0x40, (uint32_t)hda_corb); // First 32 bits
+    qemu_ok("Allocated memory for CORB and RIRB!");
+
+	WRITE32(0x40, (uint32_t)hda_corb_phys); // First 32 bits
 	WRITE32(0x44, 0); // Last 32 bits (we are 32-bit, so we don't need it)
 
-	size_t entries = READ8(0x4E);
+	hda_corb_entry_count = hda_calculate_entries(READ8(0x4E));
 
-	if((entries & 0x40) == 0x40) {
-		tty_printf("CORB: 256 entries\n");
-	} else if((entries & 0x20) == 0x20) {
-		tty_printf("CORB: 16 entries\n");
-	} else if((entries & 0x10) == 0x10) {
-		tty_printf("CORB: 2 entries\n");
-	} else {
-		tty_printf("CORB: NO CORB\n");
-	}
+    tty_printf("HDA: CORB: %d entries\n", hda_corb_entry_count);
 
+    // Reset read pointer
+    WRITE16(0x4A, (1 << 15));
+
+    // Implement loop to check is RP ready
+
+    sleep_ms(50);
+
+    WRITE16(0x4A, 0);
+
+    // Implement loop to check is RP ready
+
+    sleep_ms(50);
+
+    // This is write pointer
+    WRITE16(0x48, 0);
+
+
+    // RIRB
+
+    WRITE32(0x40, (uint32_t)hda_rirb_phys); // First 32 bits
+    WRITE32(0x44, 0); // Last 32 bits (we are 32-bit, so we don't need it)
+
+    hda_rirb_entry_count = hda_calculate_entries(READ8(0x5E));
+
+    tty_printf("HDA: RIRB: %d entries\n", hda_rirb_entry_count);
+
+    // Reset read pointer
+    WRITE16(0x5A, (1 << 15));
+
+    // Implement loop to check is WP ready
+
+    sleep_ms(50);
+
+    WRITE16(0x5A, 0);
+
+    // Implement loop to check is WP ready
+
+    sleep_ms(50);
+
+    // Start!
+    WRITE8(0x4C, (1 << 1));
+    WRITE8(0x5C, (1 << 1));
 }
 
 void hda_reset() {
@@ -111,6 +154,18 @@ void hda_reset() {
     while ((READ32(0x08) & 1) != 1);
 
     qemu_ok("Reset ok!");
+}
+
+size_t hda_calculate_entries(size_t word) {
+    if((word & 0x40) == 0x40) {
+        return 256;
+    } else if((word & 0x20) == 0x20) {
+        return 16;
+    } else if((word & 0x10) == 0x10) {
+        return 2;
+    } else {
+        return 0;
+    }
 }
 
 void hda_disable_interrupts() {
