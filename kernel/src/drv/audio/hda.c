@@ -18,13 +18,16 @@ uint16_t hda_vendor = 0,
 
 uint32_t hda_addr = 0;
 
-void* hda_corb = 0;
+volatile uint32_t* hda_corb = 0;
 size_t hda_corb_phys = 0;
-void* hda_rirb = 0;
+volatile uint32_t* hda_rirb = 0;
 size_t hda_rirb_phys = 0;
 
 size_t hda_corb_entry_count = 0;
 size_t hda_rirb_entry_count = 0;
+
+size_t hda_corb_current = 1;
+size_t hda_rirb_current = 1;
 
 #define WRITE32(reg, value) *(volatile uint32_t*)(hda_addr + (reg)) = (value)
 #define READ32(reg) (*(volatile uint32_t*)(hda_addr + (reg)))
@@ -32,6 +35,8 @@ size_t hda_rirb_entry_count = 0;
 #define READ16(reg) (*(volatile uint16_t*)(hda_addr + (reg)))
 #define WRITE8(reg, value) *(volatile uint8_t*)(hda_addr + (reg)) = (value)
 #define READ8(reg) (*(volatile uint8_t*)(hda_addr + (reg)))
+
+#define VERB(codec, node, verb, command) ((codec << 28) | (node << 20) | (verb << 8) | (command))
 
 void hda_init() {
     pci_find_device_by_class_and_subclass(4, 3, &hda_vendor, &hda_device, &hda_bus, &hda_slot, &hda_func);
@@ -73,7 +78,7 @@ void hda_init() {
     WRITE32(0x74, 0);
 
     //disable synchronization
-    WRITE32(0x34, 0);
+//    WRITE32(0x34, 0);
     WRITE32(0x38, 0);
 
     //stop CORB and RIRB
@@ -116,15 +121,15 @@ void hda_init() {
 
     // RIRB
 
-    WRITE32(0x40, (uint32_t)hda_rirb_phys); // First 32 bits
-    WRITE32(0x44, 0); // Last 32 bits (we are 32-bit, so we don't need it)
+    WRITE32(0x50, (uint32_t)hda_rirb_phys); // First 32 bits
+    WRITE32(0x54, 0); // Last 32 bits (we are 32-bit, so we don't need it)
 
     hda_rirb_entry_count = hda_calculate_entries(READ8(0x5E));
 
     tty_printf("HDA: RIRB: %d entries\n", hda_rirb_entry_count);
 
-    // Reset read pointer
-    WRITE16(0x5A, (1 << 15));
+    // Reset write pointer
+    WRITE16(0x58, (1 << 15));
 
     // Implement loop to check is WP ready
 
@@ -132,13 +137,46 @@ void hda_init() {
 
     WRITE16(0x5A, 0);
 
-    // Implement loop to check is WP ready
-
-    sleep_ms(50);
-
     // Start!
     WRITE8(0x4C, (1 << 1));
     WRITE8(0x5C, (1 << 1));
+
+
+    for(size_t codec = 0; codec < 16; codec++) {
+        size_t id = hda_send_verb_via_corb_rirb(VERB(codec, 0, 0xf00, 0));
+
+        if(id != 0) {
+            tty_printf("FOUND CODEC: %d\n", id);
+        }
+    }
+}
+
+uint32_t hda_send_verb_via_corb_rirb(uint32_t verb) {
+    // SEND VERB
+    hda_corb[hda_corb_current] = verb;
+
+    WRITE16(0x48, hda_corb_current);
+
+    while(true) {
+        if(READ16(0x58) == hda_corb_current) {
+            break;
+        }
+    }
+
+    // READ RESPONSE
+    uint32_t response = hda_rirb[hda_rirb_current << 1];
+
+    qemu_log("VERB %x got response %x", verb, response);
+
+    if(hda_corb_current++ == hda_corb_entry_count) {
+        hda_corb_current = 0;
+    }
+
+    if(hda_rirb_current++ == hda_rirb_entry_count) {
+        hda_rirb_current = 0;
+    }
+
+    return response;
 }
 
 void hda_reset() {

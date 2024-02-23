@@ -8,3 +8,4 @@ void hda_init();
 void hda_reset();
 size_t hda_calculate_entries(size_t word);
 void hda_disable_interrupts();
+uint32_t hda_send_verb_via_corb_rirb(uint32_t verb);
