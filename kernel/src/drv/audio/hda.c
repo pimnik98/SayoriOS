@@ -78,8 +78,8 @@ void hda_init() {
     WRITE32(0x74, 0);
 
     //disable synchronization
-//    WRITE32(0x34, 0);
-    WRITE32(0x38, 0);
+	WRITE32(0x34, 0);
+    // WRITE32(0x38, 0);
 
     //stop CORB and RIRB
     WRITE8(0x4C, 0x0);
@@ -104,20 +104,12 @@ void hda_init() {
 
     // Reset read pointer
     WRITE16(0x4A, (1 << 15));
-
-    // Implement loop to check is RP ready
-
-    sleep_ms(50);
-
+	while((READ16(0x4A) & (1 << 15)) != (1 << 15));
+	
     WRITE16(0x4A, 0);
+	while((READ16(0x4A) & (1 << 15)) != 0);
 
-    // Implement loop to check is RP ready
-
-    sleep_ms(50);
-
-    // This is write pointer
     WRITE16(0x48, 0);
-
 
     // RIRB
 
@@ -137,11 +129,14 @@ void hda_init() {
 
     WRITE16(0x5A, 0);
 
+
+	qemu_log("Starting engines");
     // Start!
     WRITE8(0x4C, (1 << 1));
     WRITE8(0x5C, (1 << 1));
 
-
+	qemu_ok("Okay!");
+	
     for(size_t codec = 0; codec < 16; codec++) {
         size_t id = hda_send_verb_via_corb_rirb(VERB(codec, 0, 0xf00, 0));
 
@@ -164,7 +159,7 @@ uint32_t hda_send_verb_via_corb_rirb(uint32_t verb) {
     }
 
     // READ RESPONSE
-    uint32_t response = hda_rirb[hda_rirb_current << 1];
+    uint32_t response = hda_rirb[hda_rirb_current * 2];
 
     qemu_log("VERB %x got response %x", verb, response);
 
