@@ -1,12 +1,12 @@
-FROM debian:11
+FROM alpine:latest
 
-RUN apt-get update
-RUN apt-get install git -y
-RUN apt-get install make -y
-RUN apt-get install clang-13 -y
-RUN apt-get install g++ -y
-RUN apt-get install grub-pc-bin -y
-RUN apt-get install xorriso -y
+RUN apk update
+RUN apk add git
+RUN apk add bash
+RUN apk add make
+RUN apk add clang
+RUN apk add grub
+RUN apk add xorriso
 RUN git clone https://github.com/NDRAEY/SayoriOS.git /SayoriOS --depth 1
 
 WORKDIR /SayoriOS
