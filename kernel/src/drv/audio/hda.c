@@ -176,6 +176,7 @@ uint32_t hda_send_verb_via_corb_rirb(uint32_t verb) {
 
     WRITE16(0x48, hda_corb_current & 0xff);
 
+    // WHY ich9-intel-hda: intel_hda_corb_run: rirb count reached HAPPENING ON SECOND SEND???
     while(true) {
         if(READ16(0x58) == hda_corb_current) {
             break;
