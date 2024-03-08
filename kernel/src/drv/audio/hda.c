@@ -38,7 +38,14 @@ size_t hda_rirb_current = 1;
 
 #define VERB(codec, node, verb, command) ((codec << 28) | (node << 20) | (verb << 8) | (command))
 
+#define REG_GCAP 0x00
+#define REG_SSYNC 0x34
+#define REG_DMA_LOW_POSITION_ADDR 0x70
+#define REG_DMA_HIGH_POSITION_ADDR 0x74
+
+
 void hda_init() {
+    // Find devce by its class and subclass numbers.
     pci_find_device_by_class_and_subclass(4, 3, &hda_vendor, &hda_device, &hda_bus, &hda_slot, &hda_func);
 
     if(hda_vendor && hda_device) {
@@ -47,11 +54,15 @@ void hda_init() {
         return;
     }
 
+    // Read memory base address
     hda_addr = pci_read32(hda_bus, hda_slot, hda_func, 0x10) & ~0b1111;
+
+    pci_enable_bus_mastering(hda_bus, hda_slot, hda_func);
 
     qemu_ok("HDA address: %x", hda_addr);
     tty_printf("HDA address: %x\n", hda_addr);
 
+    // Map the registers into our address space (without caching, because memory-mapped regs should not be cached).
     map_pages(
             get_kernel_page_directory(),
             hda_addr,
@@ -60,11 +71,13 @@ void hda_init() {
             PAGE_WRITEABLE | PAGE_CACHE_DISABLE // PAGE_PRESENT is set automatically
     );
 
+    // Reset the entire controller!
     hda_reset();
 
     tty_printf("HDA RESET OKAY!\n");
 
-    size_t data = READ16(0x00);
+    // Read capabilities
+    size_t data = READ16(REG_GCAP);
 
     size_t input_streams = (data >> 8) & 0b1111;
     size_t output_streams = (data >> 12) & 0b1111;
@@ -74,11 +87,11 @@ void hda_init() {
     hda_disable_interrupts();
 
     //turn off dma position transfer
-    WRITE32(0x70, 0);
-    WRITE32(0x74, 0);
+    WRITE32(REG_DMA_LOW_POSITION_ADDR, 0);
+    WRITE32(REG_DMA_HIGH_POSITION_ADDR, 0);
 
     //disable synchronization
-	WRITE32(0x34, 0);
+	WRITE32(REG_SSYNC, 0);
     // WRITE32(0x38, 0);
 
     //stop CORB and RIRB
@@ -86,15 +99,21 @@ void hda_init() {
     WRITE8(0x5C, 0x0);
 
     hda_corb = kmalloc_common(1024, PAGE_SIZE);
-    hda_rirb = kmalloc_common(1024, PAGE_SIZE);
+    hda_rirb = kmalloc_common(2048, PAGE_SIZE);
+//    phys_set_flags(get_kernel_page_directory(), (virtual_addr_t)hda_corb, PAGE_PRESENT | PAGE_WRITEABLE | PAGE_CACHE_DISABLE);
+//    phys_set_flags(get_kernel_page_directory(), (virtual_addr_t)hda_rirb, PAGE_PRESENT | PAGE_WRITEABLE | PAGE_CACHE_DISABLE);
     hda_corb_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) hda_corb);
     hda_rirb_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) hda_rirb);
 
-    memset(hda_corb, 0, 1024);
-    memset(hda_rirb, 0, 1024);
+    qemu_note("CORB: V%x => P%x", (size_t)hda_corb, hda_corb_phys);
+    qemu_note("RIRB: V%x => P%x", (size_t)hda_rirb, hda_rirb_phys);
+
+    memset((uint32_t*)hda_corb, 0, 1024);
+    memset((uint32_t*)hda_rirb, 0, 1024);
 
     qemu_ok("Allocated memory for CORB and RIRB!");
 
+    // Write CORB address
 	WRITE32(0x40, (uint32_t)hda_corb_phys); // First 32 bits
 	WRITE32(0x44, 0); // Last 32 bits (we are 32-bit, so we don't need it)
 
@@ -105,7 +124,7 @@ void hda_init() {
     // Reset read pointer
     WRITE16(0x4A, (1 << 15));
 	while((READ16(0x4A) & (1 << 15)) != (1 << 15));
-	
+
     WRITE16(0x4A, 0);
 	while((READ16(0x4A) & (1 << 15)) != 0);
 
@@ -127,35 +146,42 @@ void hda_init() {
 
     sleep_ms(50);
 
-    WRITE16(0x5A, 0);
-
+    // Enable interrupts
+    WRITE16(0x5A, 1);
 
 	qemu_log("Starting engines");
     // Start!
-    WRITE8(0x4C, (1 << 1));
-    WRITE8(0x5C, (1 << 1));
+    WRITE8(0x4C, (1 << 1) | 0);
+    WRITE8(0x5C, (1 << 1) | 0);
 
 	qemu_ok("Okay!");
-	
+
     for(size_t codec = 0; codec < 16; codec++) {
         size_t id = hda_send_verb_via_corb_rirb(VERB(codec, 0, 0xf00, 0));
 
         if(id != 0) {
-            tty_printf("FOUND CODEC: %d\n", id);
+            tty_printf("FOUND CODEC: %x\n", id);
         }
     }
 }
 
 uint32_t hda_send_verb_via_corb_rirb(uint32_t verb) {
+    qemu_warn("CWP: %d; CRP: %d; RWP: %d", READ16(0x48), READ16(0x4A), READ16(0x58));
+    qemu_note("CORB CURRENT: %d", hda_corb_current);
+
     // SEND VERB
     hda_corb[hda_corb_current] = verb;
 
-    WRITE16(0x48, hda_corb_current);
+    qemu_note("WROTE %x TO CORB[%d]", verb, hda_corb_current);
+
+    WRITE16(0x48, hda_corb_current & 0xff);
 
     while(true) {
         if(READ16(0x58) == hda_corb_current) {
             break;
         }
+        qemu_warn("CWP: %d; CRP: %d; RWP: %d", READ16(0x48), READ16(0x4A), READ16(0x58));
+        sleep_ms(1000);
     }
 
     // READ RESPONSE
@@ -163,12 +189,15 @@ uint32_t hda_send_verb_via_corb_rirb(uint32_t verb) {
 
     qemu_log("VERB %x got response %x", verb, response);
 
-    if(hda_corb_current++ == hda_corb_entry_count) {
-        hda_corb_current = 0;
+    hda_corb_current++;
+    hda_rirb_current++;
+
+    if(hda_corb_current == hda_corb_entry_count) {
+        hda_corb_current = 1;
     }
 
-    if(hda_rirb_current++ == hda_rirb_entry_count) {
-        hda_rirb_current = 0;
+    if(hda_rirb_current == hda_rirb_entry_count) {
+        hda_rirb_current = 1;
     }
 
     return response;
