@@ -148,6 +148,7 @@ void hda_init() {
 
     // Enable interrupts
     WRITE16(0x5A, 1);
+//    WRITE16(0x5A, 0xff);
 
 	qemu_log("Starting engines");
     // Start!
@@ -167,8 +168,8 @@ void hda_init() {
 
 uint32_t hda_send_verb_via_corb_rirb(uint32_t verb) {
     qemu_warn("CWP: %d; CRP: %d; RWP: %d", READ16(0x48), READ16(0x4A), READ16(0x58));
-    qemu_note("CORB CURRENT: %d", hda_corb_current);
 
+    qemu_warn("CORB CUR: %d; RIRB CUR: %d", hda_corb_current, hda_rirb_current);
     // SEND VERB
     hda_corb[hda_corb_current] = verb;
 
@@ -181,8 +182,8 @@ uint32_t hda_send_verb_via_corb_rirb(uint32_t verb) {
         if(READ16(0x58) == hda_corb_current) {
             break;
         }
-        qemu_warn("CWP: %d; CRP: %d; RWP: %d", READ16(0x48), READ16(0x4A), READ16(0x58));
-        sleep_ms(1000);
+//        qemu_warn("CWP: %d; CRP: %d; RWP: %d", READ16(0x48), READ16(0x4A), READ16(0x58));
+//        sleep_ms(1000);
     }
 
     // READ RESPONSE
