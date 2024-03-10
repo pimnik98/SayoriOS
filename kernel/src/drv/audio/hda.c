@@ -8,6 +8,7 @@
 #include "io/tty.h"
 #include "mem/pmm.h"
 #include "mem/vmm.h"
+#include "sys/isr.h"
 
 uint8_t hda_bus = 0,
         hda_slot = 0,
@@ -26,8 +27,13 @@ size_t hda_rirb_phys = 0;
 size_t hda_corb_entry_count = 0;
 size_t hda_rirb_entry_count = 0;
 
-size_t hda_corb_current = 1;
-size_t hda_rirb_current = 1;
+size_t hda_corb_current = 0;
+size_t hda_rirb_current = 0;
+
+size_t hda_irq = 0;
+
+volatile bool hda_fired = false;
+volatile size_t hda_response = 0;
 
 #define WRITE32(reg, value) *(volatile uint32_t*)(hda_addr + (reg)) = (value)
 #define READ32(reg) (*(volatile uint32_t*)(hda_addr + (reg)))
@@ -57,6 +63,9 @@ void hda_init() {
     // Read memory base address
     hda_addr = pci_read32(hda_bus, hda_slot, hda_func, 0x10) & ~0b1111;
 
+    uint32_t word = pci_read_confspc_word(hda_bus, hda_slot, hda_func, 0x3C);  // All 0xF PCI register
+    hda_irq = word & 0xff;
+
     pci_enable_bus_mastering(hda_bus, hda_slot, hda_func);
 
     qemu_ok("HDA address: %x", hda_addr);
@@ -84,7 +93,7 @@ void hda_init() {
 
     tty_printf("HDA: I: %d; O: %d;\n", input_streams, output_streams);
 
-    hda_disable_interrupts();
+    WRITE32(0x20, 0);
 
     //turn off dma position transfer
     WRITE32(REG_DMA_LOW_POSITION_ADDR, 0);
@@ -123,10 +132,12 @@ void hda_init() {
 
     // Reset read pointer
     WRITE16(0x4A, (1 << 15));
-	while((READ16(0x4A) & (1 << 15)) != (1 << 15));
+	while((READ16(0x4A) & (1 << 15)) != (1 << 15))
+        ;
 
     WRITE16(0x4A, 0);
-	while((READ16(0x4A) & (1 << 15)) != 0);
+	while((READ16(0x4A) & (1 << 15)) != 0)
+        ;
 
     WRITE16(0x48, 0);
 
@@ -147,17 +158,28 @@ void hda_init() {
     sleep_ms(50);
 
     // Enable interrupts
-    WRITE16(0x5A, 1);
+    WRITE16(0x5A, READ16(0x5A) | 1);
 //    WRITE16(0x5A, 0xff);
 
 	qemu_log("Starting engines");
     // Start!
-    WRITE8(0x4C, (1 << 1) | 0);
-    WRITE8(0x5C, (1 << 1) | 0);
+    WRITE8(0x4C, (1 << 1) | 1);
+    WRITE8(0x5C, (1 << 1) | 1);
 
-	qemu_ok("Okay!");
+    qemu_note("IRQ LINE IS: %d", hda_irq);
+
+    register_interrupt_handler(32 + hda_irq, hda_interrupt_handler);
+
+    WRITE32(0x20, (1 << 30) | (1 << 31));
+
+    qemu_ok("Okay!");
+
+    size_t codec_bitmap = READ16(0x0E);
 
     for(size_t codec = 0; codec < 16; codec++) {
+        if(codec_bitmap & ~(1 << codec)) {
+            continue;
+        }
         size_t id = hda_send_verb_via_corb_rirb(VERB(codec, 0, 0xf00, 0));
 
         if(id != 0) {
@@ -166,54 +188,66 @@ void hda_init() {
     }
 }
 
+void hda_interrupt_handler(__attribute__((unused)) registers_t regs) {
+    qemu_warn("HDA Interrupt!");
+
+    size_t interrupt_status = READ32(0x24);
+
+    if(~interrupt_status & (1 << 31)) {
+        return;
+    }
+
+    if(interrupt_status & (1 << 30)) {
+        size_t rirb_status = READ8(0x5D);
+
+        WRITE8(0x5D, rirb_status);
+
+        if(rirb_status & (1 << 0)) {
+            size_t rirb_wp = READ16(0x58);
+
+            qemu_ok("RESPONSE!");
+
+            while(hda_rirb_current != rirb_wp) {
+                hda_rirb_current = (hda_rirb_current + 1) % hda_rirb_entry_count;
+
+                hda_fired = true;
+                hda_response = hda_rirb[hda_rirb_current * 2];
+
+                qemu_ok("RIRB: %x", hda_rirb[hda_rirb_current * 2]);
+            }
+        }
+    }
+}
+
 uint32_t hda_send_verb_via_corb_rirb(uint32_t verb) {
     qemu_warn("CWP: %d; CRP: %d; RWP: %d", READ16(0x48), READ16(0x4A), READ16(0x58));
+
+    hda_corb_current = (hda_corb_current + 1) % hda_corb_entry_count;
 
     qemu_warn("CORB CUR: %d; RIRB CUR: %d", hda_corb_current, hda_rirb_current);
     // SEND VERB
     hda_corb[hda_corb_current] = verb;
 
-    qemu_note("WROTE %x TO CORB[%d]", verb, hda_corb_current);
-
     WRITE16(0x48, hda_corb_current & 0xff);
 
-    // WHY ich9-intel-hda: intel_hda_corb_run: rirb count reached HAPPENING ON SECOND SEND???
-    while(true) {
-        if(READ16(0x58) == hda_corb_current) {
-            break;
-        }
-//        qemu_warn("CWP: %d; CRP: %d; RWP: %d", READ16(0x48), READ16(0x4A), READ16(0x58));
-//        sleep_ms(1000);
-    }
+    while(!hda_fired)
+        ;
 
-    // READ RESPONSE
-    uint32_t response = hda_rirb[hda_rirb_current * 2];
+    hda_fired = false;
+    qemu_log("VERB %x got response %x", verb, hda_response);
 
-    qemu_log("VERB %x got response %x", verb, response);
-
-    hda_corb_current++;
-    hda_rirb_current++;
-
-    if(hda_corb_current == hda_corb_entry_count) {
-        hda_corb_current = 1;
-    }
-
-    if(hda_rirb_current == hda_rirb_entry_count) {
-        hda_rirb_current = 1;
-    }
-
-    return response;
+    return hda_response;
 }
 
 void hda_reset() {
     if(!hda_vendor)
         return;
 
-    WRITE32(0x8, 0);
+    WRITE32(0x8, READ32(0x8) & ~1);
 
     while((READ32(0x08) & 1) != 0);
 
-    WRITE32(0x8, 1);
+    WRITE32(0x8, READ32(0x8) | 1);
 
     while ((READ32(0x08) & 1) != 1);
 
@@ -230,8 +264,4 @@ size_t hda_calculate_entries(size_t word) {
     } else {
         return 0;
     }
-}
-
-void hda_disable_interrupts() {
-    WRITE32(0x20, 0);
 }
