@@ -187,6 +187,32 @@ void hda_init() {
 
         if(id != 0) {
             tty_printf("FOUND CODEC: %x\n", id);
+
+            hda_find_afg(id, codec);
+        }
+    }
+}
+
+void hda_find_afg(size_t codec_response, size_t codec_id) {
+    // Read vendor id
+    size_t vendor_id = (codec_response >> 16) & 0xffff;
+    size_t dev_id = codec_response & 0xffff;
+
+    tty_printf("|- Vendor: %x; Device: %x\n", vendor_id, dev_id);
+
+    size_t child_nodes_info = hda_send_verb_via_corb_rirb(VERB(codec_id, 0, 0xf00, 0x04));
+    size_t first_gnode = (child_nodes_info >> 16) & 0xff;
+    size_t node_count = child_nodes_info & 0xff;
+    size_t last_node = first_gnode + node_count;
+
+    tty_printf("|- First group node: %d; Node count: %d\n", first_gnode, node_count);
+
+    for(size_t node = first_gnode; node < last_node; node++) {
+        size_t function_group_type = hda_send_verb_via_corb_rirb(VERB(codec_id, node, 0xf00, 0x05));
+
+        if((function_group_type & 0x7f) == 0x01) {
+            tty_printf("|- AFG at node: %d\n", node);
+            qemu_ok("UNBELIEVABLE! FOUND AFG!");
         }
     }
 }
