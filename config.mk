@@ -279,6 +279,8 @@ QEMU_FLAGS = -cdrom kernel.iso -m $(MEMORY_SIZE) \
 			 -M pcspk-audiodev=pa0 \
 			 -device ich9-intel-hda,debug=3 \
 			 -device hda-duplex \
+			 -device hda-duplex \
+			 -device hda-duplex \
 			 -trace "hda*" \
 			 -boot d \
 			 -cpu core2duo-v1 \

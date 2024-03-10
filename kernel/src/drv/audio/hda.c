@@ -177,9 +177,12 @@ void hda_init() {
     size_t codec_bitmap = READ16(0x0E);
 
     for(size_t codec = 0; codec < 16; codec++) {
-        if(codec_bitmap & ~(1 << codec)) {
+        if(~codec_bitmap & (1 << codec)) {
             continue;
         }
+
+        qemu_log("Probing codec: %d", codec);
+
         size_t id = hda_send_verb_via_corb_rirb(VERB(codec, 0, 0xf00, 0));
 
         if(id != 0) {
