@@ -62,7 +62,7 @@ void ahci_init() {
 
 	// Get ABAR
 
-	abar = (volatile AHCI_HBA_MEM*)pci_read32(ahci_busnum, ahci_slot, ahci_func, 0x24);
+	abar = (volatile AHCI_HBA_MEM*)(pci_read32(ahci_busnum, ahci_slot, ahci_func, 0x24) & ~0b1111);
 
 	qemu_log("AHCI ABAR is: %x", abar);
 
@@ -77,37 +77,31 @@ void ahci_init() {
 
 	qemu_log("Version: %x", abar->version);
 
-    // if(abar->host_capabilities_extended & 1) {
-        // for(int i = 0; i < 5; i++) {
-            // qemu_warn("PERFORMING BIOS HANDOFF!!!");
-        // }
-// 
-        // abar->handoff_control_and_status = abar->handoff_control_and_status | (1 << 1);
-// 
-        // while(1) {
-            // size_t status = abar->handoff_control_and_status;
-// 
-            // if (~status & (1 << 0))
-                // break;
-        // }
-    // } else {
-        // qemu_ok("No BIOS Handoff");
-    // }
+     if(abar->host_capabilities_extended & 1) {
+         for(int i = 0; i < 5; i++) {
+             qemu_warn("PERFORMING BIOS HANDOFF!!!");
+         }
+
+         abar->handoff_control_and_status = abar->handoff_control_and_status | (1 << 1);
+
+         while(1) {
+             size_t status = abar->handoff_control_and_status;
+
+             if (~status & (1 << 0))
+                 break;
+         }
+     } else {
+         qemu_ok("No BIOS Handoff");
+     }
 
 	// Reset
-    // abar->global_host_control = (1 << 31);  // AHCI Enable
+	 abar->global_host_control = (1 << 31) | (1 << 0); // AHCI Reset
 
-	// abar->global_host_control = (1 << 31) | (1 << 0); // AHCI Reset
-// 
-	// while(true) {
-		// if((abar->global_host_control & 1) == 0) {
-			// break;
-		// }
-	// }
-// 
-    // abar->global_host_control |= (1 << 31);  // AHCI Enable (again)
-
- 	// qemu_ok("Controller reset ok");
+	 while(true) {
+		 if((abar->global_host_control & 1) == 0) {
+			 break;
+		 }
+	 }
 
 	// Interrupts
 	ahci_irq = pci_read_confspc_word(ahci_busnum, ahci_slot, ahci_func, 0x3C) & 0xFF; // All 0xF PCI register
@@ -125,62 +119,29 @@ void ahci_init() {
 
 	qemu_log("Slot count: %d", slotCount);
 
+	size_t maxports = (caps & 0x1f) + 1;
+
+	qemu_log("Max port count: %d", maxports);
+
 	// Scan bus
 
 	uint32_t implemented_ports = abar->port_implemented;
 
-	for(int i = 0; i < 32; i++) {
+	qemu_log("PI is: %x", implemented_ports);
+
+	for(uint32_t i = 0; i < 32; i++) {
 		if (implemented_ports & (1 << i)) {
-AHCI_HBA_PORT* port = AHCI_PORT(i);
+            AHCI_HBA_PORT* port = AHCI_PORT(i);
 
 			if (!ahci_is_drive_attached(i)) {
 				continue;
 			}
 
-			/*
-Ensure that the controller is not in the running state by reading and examining each
-implemented port’s PxCMD register. If PxCMD.ST, PxCMD.CR, PxCMD.FRE and
-PxCMD.FR are all cleared, the port is in an idle state. Otherwise, the port is not idle and
-should be placed in the idle state prior to manipulating HBA and port specific registers.
-System software places a port into the idle state by clearing PxCMD.ST and waiting for
-PxCMD.CR to return ‘0’ when read. Software should wait at least 500 milliseconds for
-this to occur. If PxCMD.FRE is set to ‘1’, software should clear it to ‘0’ and wait at least
-500 milliseconds for PxCMD.FR to return ‘0’ when read. 
-			*/
+			port->command_and_status = port->command_and_status & 0xfffffffe;
 
-port->command_and_status &= ~(1);
-
-while(true) {
-uint32_t cr = (port->command_and_status >> 15) & 1;
-
-if(cr == 0) {
-break;
-}
-}
-
-uint32_t fre = (port->command_and_status >> 4) & 1;
-
-if(fre == 1) {
-port->command_and_status &= ~(1 << 4);
-}
-
-while(true) {
-uint32_t fr = (port->command_and_status >> 14) & 1;
-
-if(fr == 0) {
-break;
-}
-}
+			while(port->command_and_status & (1 << 15));
 
             ahci_rebase_memory_for(i);
-
-// 			port->command_and_status |= (1 << 4);
-// 
-// 			port->sata_error = (1 << i);
-// 
-//             port->interrupt_enable = (1 << 5) | (1 << 0) | (1 << 30) | (1 << 29) | (1 << 28) | (1 << 27) | (1 << 26) | (1 << 24) | (1 << 23);
-// 
-//             port->command_and_status |= 1;
         }
 	}
 

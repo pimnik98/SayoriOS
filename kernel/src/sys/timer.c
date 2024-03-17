@@ -11,6 +11,7 @@
 /* #include  "sys/scheduler.h" */
 #include  "drv/fpu.h"
 #include  "io/ports.h"
+#include "sys/scheduler.h"
 
 extern bool scheduler_working;
 
@@ -60,9 +61,9 @@ void sleep_ticks(uint32_t delay){
 }
 
 /**
- * @brief Ожидание по милисекундам
+ * @brief Ожидание по миллисекундам
  *
- * @param milliseconds - Милисекунды
+ * @param milliseconds - Миллисекунды
  */
 void sleep_ms(uint32_t milliseconds) {
     uint32_t needticks = milliseconds * frequency;
@@ -74,13 +75,14 @@ void sleep_ms(uint32_t milliseconds) {
 /**
  * @brief Таймер Callback
  *
- * @param regs - Регистр
+ * @param regs - Регистры процессора
  */
-static void timer_callback(__attribute__((unused)) registers_t regs){
+void timer_callback(__attribute__((unused)) registers_t regs){
     tick++;
 
-    if (is_multitask() && scheduler_working)
-        task_switch();
+    if (is_multitask() && scheduler_working) {
+        task_switch(regs);
+    }
 }
 
 /**

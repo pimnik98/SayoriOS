@@ -48,7 +48,7 @@ void vmm_init() {
     memset(system_heap.memory, 0, PAGE_SIZE);
 
 	qemu_log("CAPACITY: %d", system_heap.capacity);
-	qemu_log("MEMORY AT: %x", system_heap.memory);
+	qemu_log("MEMORY AT: %x", (size_t)system_heap.memory);
 }
 
 void heap_dump() {
@@ -195,8 +195,9 @@ void* kmalloc_common(size_t size, size_t align) {
 		reg_addr += PAGE_SIZE;
 	}
 
-    if(vmm_debug)
-    	qemu_ok("From %x to %x, here you are!", allocated, allocated + size);
+    if(vmm_debug) {
+    	qemu_ok("From %x to %x, here you are!", (size_t)allocated, (size_t)(allocated + size));
+    }
 
 	return allocated;
 }
@@ -255,7 +256,7 @@ void kfree(void* ptr) {
 	struct heap_entry block = heap_get_block((size_t)ptr);
 
     if(vmm_debug)
-        qemu_warn("Freeing %x", ptr);
+        qemu_warn("Freeing %x", (size_t)ptr);
 
 	if(!block.address) {
 		qemu_warn("No block!");
@@ -398,16 +399,39 @@ void* krealloc(void* ptr, size_t memory_size) {
 void* clone_kernel_page_directory() {
 	uint32_t* page_dir = kmalloc_common(PAGE_SIZE, PAGE_SIZE);
     uint32_t physaddr = virt2phys(get_kernel_page_directory(), (virtual_addr_t) page_dir);
-	const uint32_t* kern_dir = get_kernel_page_directory();
 
-    for(int i = 0; i < 1024; i++) {
+    const uint32_t* kern_dir = get_kernel_page_directory();
+    const uint32_t linaddr = (const uint32_t)(page_directory_start);
+
+    uint32_t* addresses[1024] = {0};
+
+    for(int i = 0; i < 1023; i++) {
         if (kern_dir[i]) {
-            uint32_t* page_table = kmalloc_common(PAGE_SIZE, PAGE_SIZE);
+            uint32_t *page_table = kmalloc_common(PAGE_SIZE, PAGE_SIZE);
+
+            addresses[i] = page_table;
+        }
+    }
+
+    for(int i = 0; i < 1023; i++) {
+        if (kern_dir[i]) {
+            uint32_t* page_table = addresses[i];
             uint32_t physaddr_pt = virt2phys(kern_dir, (virtual_addr_t) page_table);
 
-            qemu_log("Copying from %x to %x", page_directory_start + (i * 1024), page_table);
+            qemu_log("Copying from %x to %x", linaddr + (i * PAGE_SIZE), (size_t)page_table);
 
-            memcpy(page_table, page_directory_start + (i * 1024), PAGE_SIZE);
+            memcpy(page_table, (void*)(linaddr + (i * PAGE_SIZE)), PAGE_SIZE);
+
+            for(int j = 0; j < 1024; j++) {
+                page_table[j] = (page_table[j] & ~(PAGE_DIRTY | PAGE_ACCESSED));
+            }
+
+//            qemu_log("%x", physaddr_pt);
+//            for(int j = 0; j < 1024; j++) {
+//                if(page_table[j]) {
+//                    qemu_log("|- [%d] = %x", j, page_table[j]);
+//                }
+//            }
 
             page_dir[i] = physaddr_pt | 3;
         }
@@ -415,11 +439,11 @@ void* clone_kernel_page_directory() {
 
     page_dir[1023] = physaddr | 3;
 
-	for(int i = 0; i < 1024; i++)
-		if(kern_dir[i])
-			qemu_log("[%d] %x = %x", i, kern_dir[i], page_dir[i]);
+    for(int i = 0; i < 1024; i++)
+        if(page_dir[i])
+            qemu_log("[%d] %x = %x", i, kern_dir[i], page_dir[i]);
 
-    qemu_log("Page directory at: V%x (P%x); Here you are!", page_dir, physaddr);
+    qemu_log("Page directory at: V%x (P%x); Here you are!", (size_t)page_dir, physaddr);
 
 	return page_dir;
 }

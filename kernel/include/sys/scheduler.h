@@ -12,10 +12,15 @@
  *---------------------------------------------------------------------------*/
 typedef	struct
 {
+    // 0
 	list_item_t		list_item;		/* List item */
-	physical_addr_t	page_dir;		/* Page directory */
-	size_t			threads_count;	/* Count of threads */
+	// 12
+    physical_addr_t	page_dir;		/* Page directory */
+	// 16
+    size_t			threads_count;	/* Count of threads */
+    // 20
 	bool			suspend;		/* Suspend flag */
+    // 24
 	uint32_t			pid;		/* Process ID (PID) */
 	char			name[256];		/* Process name */
     // Every process should have a path that process operates
@@ -26,15 +31,26 @@ typedef	struct
  *---------------------------------------------------------------------------*/
 typedef	struct
 {
+    // 0
 	list_item_t		list_item;			/* List item */
+    // 12
 	process_t*		process;			/* This thread's process */
+    // 16
 	bool			suspend;			/* Suspend flag */
+    // 20
 	size_t			stack_size;			/* Size of thread's stack */
+    // 24
 	void*			stack;
+    // 28
 	uint32_t			esp;				/* Thread state */
+    // 32
 	uint32_t			entry_point;
+    // 36
 	uint32_t			id;				/* Thread ID */
+    // 40
 	uint32_t			stack_top;
+    // registers here
+    uint32_t	eax, ebx, ecx, edx, esi, edi, ebp;
 //    uint32_t time_high;
 //    uint32_t time_low;  // Time accounting
 }__attribute__((packed)) thread_t;
@@ -42,7 +58,10 @@ typedef	struct
 /* Initialization */
 void init_task_manager(void);
 
-extern void task_switch(void);
+extern void task_switch(registers_t regs);
+
+thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t stack_size,
+                                   bool kernel, bool suspend);
 
 /* Create new thread */
 thread_t* thread_create(process_t* proc,

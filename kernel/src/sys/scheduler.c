@@ -41,10 +41,7 @@ void init_task_manager(void){
 	list_init(&thread_list);
 
 	/* Create kernel process */
-	kernel_proc = (process_t*)kmalloc(sizeof(process_t));
-
-	memset(kernel_proc, 0, sizeof(process_t));
-
+	kernel_proc = (process_t*)kcalloc(sizeof(process_t), 1);
 
 	kernel_proc->pid = next_pid++;
     // NOTE: Page directory address must be PHYSICAL!
@@ -86,30 +83,70 @@ void scheduler_mode(bool on) {
 	scheduler_working = on;
 }
 
-void create_process(void* entry_point, char* name, bool suspend, bool is_kernel) {
+void create_process(void* entry_point, char name[256], bool suspend, bool is_kernel) {
+    scheduler_working = false;
 	__asm__ volatile("cli");
 
+    qemu_log("Create process");
+
     process_t* proc = (process_t*)kcalloc(1, sizeof(process_t));
+
+	proc->pid = next_pid++;
+	proc->list_item.list = nullptr;  // No nested processes hehe :)
+	proc->threads_count = 0;
+	strcpy(proc->name, name);
+	proc->suspend = suspend;
+
+    qemu_log("ADD PROCESS TO LIST");
+
+	list_add(&process_list, &proc->list_item);
+
+    qemu_log("CREATE THREAD");
+
+	thread_t* thread = _thread_create_unwrapped(proc, entry_point, DEFAULT_STACK_SIZE, is_kernel, suspend);
+
+    qemu_log("ADD THREAD TO LIST!");
+
+    qemu_log("PID: %d, DIR: %x; Threads: %d; Suspend: %d", proc->pid, proc->page_dir, proc->threads_count, proc->suspend);
+
+	list_add(&thread_list, &thread->list_item);
 
     void* virt = clone_kernel_page_directory();
     uint32_t phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) virt);
 
-    qemu_note("New page directory at: V%x => P%x", virt, phys);
+    proc->page_dir = phys;
 
-	proc->pid = next_pid++;
-//	proc->page_dir = kernel_page_directory;
-	proc->page_dir = phys;
-	proc->list_item.list = nullptr;  // No nested processes hehe :)
-	proc->threads_count = 1;
-	strcpy(proc->name, name);
-	proc->suspend = suspend;
+    qemu_note("New page directory at: V%x => P%x", (size_t)virt, phys);
 
-	list_add(&process_list, &proc->list_item);
+    qemu_log("FINISHED!");
 
-	thread_create(proc, entry_point, DEFAULT_STACK_SIZE, is_kernel, suspend);
-	list_add(&thread_list, &kernel_thread->list_item);
+    {
+        qemu_log("%d процессов", process_list.count);
+
+        list_item_t* item = process_list.first;
+        for(int i = 0; i < process_list.count; i++) {
+
+            process_t* proc =  (process_t*)item;
+
+            qemu_log("    Процесс: %d [%s]", proc->pid, proc->name);
+
+            item = item->next;
+        }
+
+        qemu_log("%d потоков", thread_list.count);
+
+        list_item_t* item_thread = thread_list.first;
+        for(int j = 0; j < thread_list.count; j++) {
+            thread_t* thread = (thread_t*)item_thread;
+
+            qemu_log("    Поток: %d [Стек: (%x, %x, %d)]", thread->id, thread->stack_top, thread->stack, thread->stack_size);
+
+            item_thread = item_thread->next;
+        }
+    }
 
 	__asm__ volatile("sti");
+    scheduler_working = true;
 }
 
  /**
@@ -132,52 +169,65 @@ process_t* get_current_proc(void) {
  *
  * @return thread_t* - Поток
  */
+thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t stack_size,
+                                   bool kernel, bool suspend) {
+    void*	stack = nullptr;
+    uint32_t	eflags;
+
+        /* Create new thread handler */
+    thread_t* tmp_thread = (thread_t*) kmalloc(sizeof(thread_t));
+
+    /* Clear memory */
+    memset(tmp_thread, 0, sizeof(thread_t));
+
+    /* Initialization of thread  */
+    tmp_thread->id = next_thread_id++;
+    tmp_thread->list_item.list = nullptr;
+    tmp_thread->process = proc;
+    tmp_thread->stack_size = stack_size;
+    tmp_thread->suspend = suspend;/* */
+    tmp_thread->entry_point = (uint32_t) entry_point;
+
+    /* Create thread's stack */
+    stack = (void*) kcalloc(stack_size, 1);
+
+    tmp_thread->stack = stack;
+    tmp_thread->esp = (uint32_t) stack + stack_size - (6 * 4);
+    tmp_thread->stack_top = (uint32_t) stack + stack_size;
+
+    /* Add thread to ring queue */
+    list_add(&thread_list, &tmp_thread->list_item);
+
+    /* Thread's count increment */
+    proc->threads_count++;
+
+    /* Fill stack */
+
+    /* Create pointer to stack frame */
+    uint32_t* esp = (uint32_t*) ((char*)stack + stack_size);
+
+    // Get EFL
+    __asm__ volatile ("pushf; pop %0":"=r"(eflags));
+
+    eflags |= (1 << 9);
+
+    esp[-1] = (uint32_t) entry_point;
+    esp[-2] = eflags;
+    esp[-3] = 0;
+    esp[-4] = 0;
+    esp[-5] = 0;
+    esp[-6] = 0;
+
+    return tmp_thread;
+}
+
 thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 						bool kernel, bool suspend){
-	void*	stack = nullptr;
-	uint32_t	eflags;
-
 	/* Disable all interrupts */
 	__asm__ volatile ("cli");
 
 	/* Create new thread handler */
-	thread_t* tmp_thread = (thread_t*) kmalloc(sizeof(thread_t));
-
-	/* Clear memory */
-	memset(tmp_thread, 0, sizeof(thread_t));
-
-	/* Initialization of thread  */
-	tmp_thread->id = next_thread_id++;
-	tmp_thread->list_item.list = nullptr;
-	tmp_thread->process = proc;
-	tmp_thread->stack_size = stack_size;
-	tmp_thread->suspend = suspend;/* */
-	tmp_thread->entry_point = (uint32_t) entry_point;
-
-	/* Create thread's stack */
-	stack = (void*) kcalloc(stack_size, 1);
-
-	tmp_thread->stack = stack;
-	tmp_thread->esp = (uint32_t) stack + stack_size - 12;
-	tmp_thread->stack_top = (uint32_t) stack + stack_size;
-
-	/* Add thread to ring queue */
-	list_add(&thread_list, &tmp_thread->list_item);
-
-	/* Thread's count increment */
-	proc->threads_count++;
-
-	/* Fill stack */
-
-	/* Create pointer to stack frame */
-	uint32_t* esp = (uint32_t*) ((char*)stack + stack_size);
-
-	__asm__ volatile ("pushf; pop %0":"=r"(eflags));
-
-	eflags |= (1 << 9);
-
-	esp[-1] = (uint32_t) entry_point;
-	esp[-3] = eflags;
+	thread_t* tmp_thread = (thread_t*) _thread_create_unwrapped(proc, entry_point, stack_size, kernel, suspend);
 
 	/* Enable all interrupts */
 	__asm__ volatile ("sti");

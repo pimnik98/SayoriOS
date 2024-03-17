@@ -383,7 +383,7 @@ uint32_t phys_get_page_data(uint32_t* page_dir, virtual_addr_t virtual) {
 	return pt[PT_INDEX(virtual)];
 }
 
-uint32_t virt2phys(uint32_t* page_dir, virtual_addr_t virtual) {
+uint32_t virt2phys(const uint32_t *page_dir, virtual_addr_t virtual) {
 //	virtual &= ~0x3ff;
 	virtual &= ~0xfff;
 

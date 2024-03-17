@@ -448,7 +448,6 @@ uint32_t proc_list(uint32_t argc, char* argv[]) {
         item_thread = item_thread->next;
     }
 
-
     return 0;
 }
 
