@@ -192,7 +192,7 @@ thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t st
     stack = (void*) kcalloc(stack_size, 1);
 
     tmp_thread->stack = stack;
-    tmp_thread->esp = (uint32_t) stack + stack_size - 12;
+    tmp_thread->esp = (uint32_t) stack + stack_size - (6 * 4);
     tmp_thread->stack_top = (uint32_t) stack + stack_size;
 
     /* Add thread to ring queue */
@@ -212,7 +212,11 @@ thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t st
     eflags |= (1 << 9);
 
     esp[-1] = (uint32_t) entry_point;
-    esp[-3] = eflags;
+    esp[-2] = 0;
+    esp[-3] = 0;
+    esp[-4] = 0;
+    esp[-5] = 0;
+    esp[-6] = eflags;
 
     return tmp_thread;
 }
