@@ -91,14 +91,7 @@ void create_process(void* entry_point, char name[256], bool suspend, bool is_ker
 
     process_t* proc = (process_t*)kcalloc(1, sizeof(process_t));
 
-    void* virt = clone_kernel_page_directory();
-    uint32_t phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) virt);
-
-    qemu_note("New page directory at: V%x => P%x", virt, phys);
-
 	proc->pid = next_pid++;
-//	proc->page_dir = kernel_page_directory;
-	proc->page_dir = phys;
 	proc->list_item.list = nullptr;  // No nested processes hehe :)
 	proc->threads_count = 0;
 	strcpy(proc->name, name);
@@ -117,6 +110,13 @@ void create_process(void* entry_point, char name[256], bool suspend, bool is_ker
     qemu_log("PID: %d, DIR: %x; Threads: %d; Suspend: %d", proc->pid, proc->page_dir, proc->threads_count, proc->suspend);
 
 	list_add(&thread_list, &thread->list_item);
+
+    void* virt = clone_kernel_page_directory();
+    uint32_t phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) virt);
+
+    proc->page_dir = phys;
+
+    qemu_note("New page directory at: V%x => P%x", (size_t)virt, phys);
 
     qemu_log("FINISHED!");
 
@@ -212,11 +212,11 @@ thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t st
     eflags |= (1 << 9);
 
     esp[-1] = (uint32_t) entry_point;
-    esp[-2] = 0;
+    esp[-2] = eflags;
     esp[-3] = 0;
     esp[-4] = 0;
     esp[-5] = 0;
-    esp[-6] = eflags;
+    esp[-6] = 0;
 
     return tmp_thread;
 }

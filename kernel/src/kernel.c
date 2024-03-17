@@ -475,8 +475,8 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     
     hda_init();
 
-    // void k();
-    // create_process(k, "test process", false, true);
+    void k();
+    create_process(k, "test process", false, true);
 
 //    scheduler_mode(false);
 
@@ -490,11 +490,11 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     while(1);
 }
 
-// void k() {
-    // qemu_log("Focken processez!");
-// 
-    // while(1) {
-        // qemu_log("AAA");
-        // sleep_ms(250);
-    // };
-// }
+void k() {
+    qemu_log("Focken processez!");
+
+    while(1) {
+        qemu_log("AAA");
+        sleep_ms(250);
+    };
+}

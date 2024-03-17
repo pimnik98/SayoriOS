@@ -6,18 +6,17 @@
 .extern		current_proc
 .extern		tss
 
-
 .global		task_switch
 
 task_switch:
 			cli
 
+			pushf
+
             push %ebx
 			push %esi
 			push %edi
 			push %ebp
-
-			pushf
 
 			# Save current thread
 			mov	current_thread, %edx
@@ -46,21 +45,29 @@ task_switch:
 
 			# Load process' page directory
 			# Load our process structure
-			mov	current_thread, %edx
-			mov 12(%edx), %eax
+			mov	current_thread, %ebx
+			mov 12(%ebx), %eax
 			mov %eax, current_proc
 
-			mov current_proc, %edx
+			mov current_proc, %ebx
 
 			# Load our page directory address
-			mov 12(%edx), %eax
-			mov %eax, %cr3
+			mov 12(%ebx), %ebx
 
-    		popf
+			mov %cr3, %eax
+			cmp %eax, %ebx
+
+			je .no_switch_pd
+
+			mov %ebx, %cr3
+
+			.no_switch_pd:
 
             pop %ebp
             pop %edi
             pop %esi
 			pop %ebx
+
+    		popf
 
 			ret
