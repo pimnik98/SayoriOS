@@ -86,7 +86,12 @@ runlive:
 # Запуск в режиме UEFI с логами в файл
 uefi:
 	qemu-system-x86_64 -bios /usr/share/qemu/OVMF.fd -cdrom SayoriOS_UEFI.iso -serial file:Qemu.log -accel kvm \
-					   -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime
+					   -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime -device ahci,id=ahci \
+						-drive id=thatdisk,file=disk.img,if=none \
+						-device ide-hd,drive=thatdisk,bus=ahci.0 \
+						-drive id=thatcdrom,file=/dev/cdrom,if=none \
+						-device ide-cd,drive=thatcdrom,bus=ahci.1 \
+
 
 # Запуск в режиме UEFI с логами в консоль
 uefilive:
