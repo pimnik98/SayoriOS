@@ -83,7 +83,7 @@ void scheduler_mode(bool on) {
 	scheduler_working = on;
 }
 
-void create_process(void* entry_point, char name[256], bool suspend, bool is_kernel) {
+size_t create_process(void* entry_point, char name[256], bool suspend, bool is_kernel) {
     scheduler_working = false;
 	__asm__ volatile("cli");
 
@@ -125,7 +125,6 @@ void create_process(void* entry_point, char name[256], bool suspend, bool is_ker
 
         list_item_t* item = process_list.first;
         for(int i = 0; i < process_list.count; i++) {
-
             process_t* proc =  (process_t*)item;
 
             qemu_log("    Процесс: %d [%s]", proc->pid, proc->name);
@@ -147,6 +146,8 @@ void create_process(void* entry_point, char name[256], bool suspend, bool is_ker
 
 	__asm__ volatile("sti");
     scheduler_working = true;
+
+    return proc->pid;
 }
 
  /**
@@ -233,6 +234,54 @@ thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 	__asm__ volatile ("sti");
 
 	return tmp_thread;
+}
+
+void kill_process(size_t id) {
+    asm volatile("cli");
+
+    if(id == 0) {
+        goto end;
+    }
+
+    bool found = false;
+    list_item_t* item = process_list.first;
+    for(int i = 0; i < process_list.count; i++) {
+        process_t* proc = (process_t*)item;
+
+        if(proc->pid == id) {
+            found = true;
+            break;
+        }
+
+        item = item->next;
+    }
+
+    if(!found) {
+        goto end;
+    }
+
+
+    process_t* process = (process_t*)item;
+
+    list_item_t* item_thread = thread_list.first;
+    for(int j = 0; j < thread_list.count; j++) {
+        thread_t* thread = (thread_t*)item_thread;
+
+        if(thread->process->pid == id) {
+            process->threads_count--;
+            list_remove(&thread->list_item);
+            kfree(thread->stack);
+            kfree(thread);
+        }
+
+        item_thread = item_thread->next;
+    }
+
+    // TODO: FIND AND CLEAN PAGE TABLES
+    kfree((void *) process->page_dir_virt);
+
+    end:
+    asm volatile("sti");
 }
 
 /**

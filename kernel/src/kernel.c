@@ -475,26 +475,7 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     
     hda_init();
 
-    void k();
-    create_process(k, "test process", false, true);
-
-//    scheduler_mode(false);
-
-//    void* ax = clone_kernel_page_directory();
-//    size_t w = virt2phys(get_kernel_page_directory(), (virtual_addr_t) ax);
-//
-//    load_page_directory(w);
-
     cli();
 
     while(1);
-}
-
-void k() {
-    qemu_log("Focken processez!");
-
-    while(1) {
-        qemu_log("AAA");
-        sleep_ms(250);
-    };
 }
