@@ -33,7 +33,6 @@
 
 #define INITRD_RW_SIZE (1474560) ///< Размер виртуального диска 1.44mb floppy
 
-extern bool ps2_channel1_okay;
 extern bool ps2_channel2_okay;
 
 uint32_t init_esp = 0;
