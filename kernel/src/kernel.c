@@ -446,9 +446,8 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     // punch();
     // while (1){}
     /// КОНЕЦ ПРИМЕРА
-    
-    ahci_init();
 
+    ahci_init();
 
     /// Обновим данные обо всех дисках
     fsm_dpm_update(-1);    
