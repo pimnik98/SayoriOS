@@ -456,7 +456,22 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     
     hda_init();
 
+    void test_process();
+
+    size_t pid = create_process(test_process, "test_process", false, true);
+
+    sleep(4);
+
+    kill_process(pid);
+
     cli();
 
     while(1);
+}
+
+void test_process() {
+    while(1) {
+        qemu_log("HAHAHAHAHAHAA");
+        sleep_ms(250);
+    }
 }

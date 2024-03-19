@@ -111,7 +111,7 @@ size_t create_process(void* entry_point, char name[256], bool suspend, bool is_k
 
 	list_add(&thread_list, &thread->list_item);
 
-    void* virt = clone_kernel_page_directory();
+    void* virt = clone_kernel_page_directory(proc->page_tables_virts);
     uint32_t phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) virt);
 
     proc->page_dir = phys;
@@ -278,6 +278,12 @@ void kill_process(size_t id) {
     }
 
     // TODO: FIND AND CLEAN PAGE TABLES
+    for(int i = 0; i < 1024; i++) {
+        if(process->page_tables_virts[i] != 0) {
+            kfree((void *) process->page_tables_virts[i]);
+        }
+    }
+
     kfree((void *) process->page_dir_virt);
 
     end:

@@ -396,26 +396,26 @@ void* krealloc(void* ptr, size_t memory_size) {
  * @brief Копирует адресное пространство ядра в новое адресное пространство
  * @return Виртуальный адрес директории страниц нового адресного пространства
  */
-void* clone_kernel_page_directory() {
+void* clone_kernel_page_directory(size_t virts_out[1024]) {
 	uint32_t* page_dir = kmalloc_common(PAGE_SIZE, PAGE_SIZE);
     uint32_t physaddr = virt2phys(get_kernel_page_directory(), (virtual_addr_t) page_dir);
 
     const uint32_t* kern_dir = get_kernel_page_directory();
     const uint32_t linaddr = (const uint32_t)(page_directory_start);
 
-    uint32_t* addresses[1024] = {0};
+//    uint32_t* addresses[1024] = {0};
 
     for(int i = 0; i < 1023; i++) {
         if (kern_dir[i]) {
             uint32_t *page_table = kmalloc_common(PAGE_SIZE, PAGE_SIZE);
 
-            addresses[i] = page_table;
+            virts_out[i] = (size_t)page_table;
         }
     }
 
     for(int i = 0; i < 1023; i++) {
         if (kern_dir[i]) {
-            uint32_t* page_table = addresses[i];
+            uint32_t* page_table = (uint32_t*)virts_out[i];
             uint32_t physaddr_pt = virt2phys(kern_dir, (virtual_addr_t) page_table);
 
             qemu_log("Copying from %x to %x", linaddr + (i * PAGE_SIZE), (size_t)page_table);

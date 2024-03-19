@@ -39,7 +39,7 @@ SAYORI_INLINE void* kmalloc(size_t size) {
 
 void* krealloc(void* ptr, size_t memory_size);
 void kfree(void* ptr);
-void* clone_kernel_page_directory();
+void* clone_kernel_page_directory(size_t virts_out[1024]);
 
 void vmm_debug_switch(bool enable);
 

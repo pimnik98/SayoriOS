@@ -26,6 +26,8 @@ typedef	struct
     virtual_addr_t page_dir_virt;	/* Virtual address of page directory */
     // 32
 	char			name[256];		/* Process name */
+	// 32 + 256
+	size_t          page_tables_virts[1024];    /* Page table addresses */
     // Every process should have a path that process operates
 }__attribute__((packed)) process_t;
 
