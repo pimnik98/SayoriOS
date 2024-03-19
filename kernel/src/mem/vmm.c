@@ -426,13 +426,6 @@ void* clone_kernel_page_directory() {
                 page_table[j] = (page_table[j] & ~(PAGE_DIRTY | PAGE_ACCESSED));
             }
 
-//            qemu_log("%x", physaddr_pt);
-//            for(int j = 0; j < 1024; j++) {
-//                if(page_table[j]) {
-//                    qemu_log("|- [%d] = %x", j, page_table[j]);
-//                }
-//            }
-
             page_dir[i] = physaddr_pt | 3;
         }
     }

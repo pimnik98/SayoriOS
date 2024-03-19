@@ -399,6 +399,8 @@ uint32_t virt2phys(const uint32_t *page_dir, virtual_addr_t virtual) {
 	return pt[PT_INDEX(virtual)] & ~0x3ff;
 }
 
+// TODO: IMPLEMENT A REVERSE PHYS2VIRT FUNCTION
+
 void phys_set_flags(uint32_t* page_dir, virtual_addr_t virtual, uint32_t flags) {
     virtual &= ~0xfff;
 
