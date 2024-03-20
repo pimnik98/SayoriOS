@@ -233,6 +233,8 @@ thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 	/* Enable all interrupts */
 	__asm__ volatile ("sti");
 
+    qemu_ok("CREATED THREAD");
+
 	return tmp_thread;
 }
 
