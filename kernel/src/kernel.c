@@ -212,7 +212,7 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     qemu_log("SSE: %s", sse_check() ? "Supported" : "Not supported");
     
     if (sse_check()) {
-        __wtf_fxsave();
+        fpu_save();
     }
     
     qemu_log("Setting `Interrupt Descriptor Table`...");
