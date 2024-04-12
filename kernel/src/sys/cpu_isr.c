@@ -11,6 +11,7 @@
 #include	"sys/logo.h"
 #include	"sys/unwind.h"
 #include 	<io/ports.h>
+#include    "sys/scheduler.h"
 #include 	<io/status_loggers.h>
 
 _Noreturn void sod_screen_legacy(registers_t regs, char* title, char* msg, uint32_t code) {
@@ -39,6 +40,8 @@ _Noreturn void sod_screen_legacy(registers_t regs, char* title, char* msg, uint3
     /* unwind_stack(10); */
 
     /* heap_dump(); */
+
+	qemu_err("PROCESS CAUSED THE EXCEPTION: nr. %d", get_current_proc().pid);
 
     __asm__ volatile("cli");  // Disable interrupts
     __asm__ volatile("hlt");  // Halt
