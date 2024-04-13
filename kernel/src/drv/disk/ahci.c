@@ -601,6 +601,17 @@ void ahci_identify(size_t port_num, bool is_atapi) {
 
     volatile AHCI_HBA_PORT* port = AHCI_PORT(port_num);
 
+	if(is_atapi) {
+		if(port->command_and_status & (1 | (1 << 4) | (1 << 14) | (1 << 15))) {
+			qemu_warn("AHCI: NON-IDLE STATE");
+			qemu_warn("AHCI: NON-IDLE STATE");
+			qemu_warn("AHCI: NON-IDLE STATE");
+			qemu_warn("AHCI: NON-IDLE STATE");
+			qemu_warn("AHCI: NON-IDLE STATE");
+			qemu_warn("AHCI: NON-IDLE STATE");
+		}		
+	}
+
     port->interrupt_status = (uint32_t)-1;
 
     int slot = 0;
