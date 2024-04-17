@@ -95,13 +95,13 @@ void ahci_init() {
      }
 
 	// Reset
-	 abar->global_host_control = (1 << 31) | (1 << 0); // AHCI Reset
+	 abar->global_host_control = (1 << 31) /* | (1 << 0) */; // Just enable AHCI
 
-	 while(true) {
-		 if((abar->global_host_control & 1) == 0) {
-			 break;
-		 }
-	 }
+	 // while(true) {
+		//  if((abar->global_host_control & 1) == 0) {
+		// 	 break;
+		//  }
+	 // }
 
 	// Interrupts
 	ahci_irq = pci_read_confspc_word(ahci_busnum, ahci_slot, ahci_func, 0x3C) & 0xFF; // All 0xF PCI register
@@ -110,7 +110,7 @@ void ahci_init() {
 	register_interrupt_handler(32 + ahci_irq, ahci_irq_handler);
 
 	// Init
-	abar->global_host_control |= (1 << 31) | (1 << 1);  // AHCI Enable and AHCI Interrupts
+	abar->global_host_control |= (1 << 1);  // AHCI Enable and AHCI Interrupts
 
 	qemu_ok("Enabled AHCI and INTERRUPTS");
 
