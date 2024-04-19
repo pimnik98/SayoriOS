@@ -237,19 +237,33 @@ void fsm_dpm_update(char Letter){
             dpm_LabelUpdate(DISKID, BLANK);
             dpm_FileSystemUpdate(DISKID, BLANK);
             DPM_Disk dpm = dpm_info(DISKID);
-            if (dpm.Ready != 1) continue;
+
+            if (dpm.Ready != 1) {
+            	continue;
+            }
+
+            qemu_note("SCANNING PARTITIONS ON: %c", DISKID);
+            mbr_dump_all(DISKID);
+
             for(int f = 0; f < C_FSM; f++){
                 qemu_note("[FSM] [DPM] >>> Disk %c | Test %s", DISKID, G_FSM[f].Name);
+
                 int detect = G_FSM[f].Detect(DISKID);
-                if (detect != 1) continue;
-                qemu_note("SCANNING PARTITIONS ON: %c", DISKID);
-                mbr_dump_all(DISKID);
+
+                if (detect != 1)
+                	continue;
+
                 char* lab_test = kcalloc(1,129);
+
                 G_FSM[f].Label(DISKID,lab_test);
+
                 dpm_LabelUpdate(DISKID, lab_test);
                 dpm_FileSystemUpdate(DISKID, G_FSM[f].Name);
+
                 qemu_note("                       | Label: %s", lab_test);
+
                 kfree(lab_test);
+
                 break;
             }
         }
@@ -266,11 +280,14 @@ void fsm_dpm_update(char Letter){
                 continue;
 
             char* lab_test = kcalloc(1,129);
+
             G_FSM[f].Label(DISKID, lab_test);
             dpm_LabelUpdate(DISKID, lab_test);
             dpm_FileSystemUpdate(DISKID, G_FSM[f].Name);
             qemu_note("[FSM] [DPM] ^^^ Disk %c | Label: %s", DISKID, lab_test);
+
             kfree(lab_test);
+
             break;
         }
     }
