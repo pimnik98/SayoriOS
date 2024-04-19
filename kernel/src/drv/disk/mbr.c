@@ -17,7 +17,7 @@ void ebr_recursive_dump(char disk, uint32_t abs_lba, uint32_t lba, int depth) {
            w.end_cylinder, w.end_head, w.end_sector,
            w.start_sector_lba, w.num_sectors);
 
-    qemu_log("%*s A: %d; [%d:%d:%d] Type: %d; [%d:%d:%d] SLBA: %d; COUNT: %d\n",
+    tty_printf("%*s A: %d; [%d:%d:%d] Type: %d; [%d:%d:%d] SLBA: %d; COUNT: %d\n",
            depth + 3, "|--",
            w.activity,
            w.start_cylinder, w.start_head, w.start_sector,
@@ -53,7 +53,7 @@ void mbr_dump(char disk, uint32_t i) {
            p.end_cylinder, p.end_head, p.end_sector,
            p.start_sector_lba, p.num_sectors);
 
-    if(p.type == 5) {
+    if(p.type == 5 || p.type == 15) {
         ebr_recursive_dump(disk, p.start_sector_lba, 0, 1);
     }
 }
