@@ -504,7 +504,9 @@ void init_paging() {
 	kernel_start = (size_t)&KERNEL_BASE_pos;
 	kernel_end = (size_t)&KERNEL_END_pos;
 
-	size_t real_end = grub_last_module_end;
+    qemu_log("MODEND: %x; &MODEND: %x", grub_last_module_end, (size_t)&grub_last_module_end);
+
+	size_t real_end = (size_t)grub_last_module_end;
 
 	size_t kernel_size = real_end - kernel_start;
 

@@ -40,3 +40,16 @@ void mbr_dump(char disk, uint32_t i) {
         ebr_recursive_dump(disk, p.start_sector_lba, 0, 1);
     }
 }
+
+void mbr_dump_all(char disk) {
+    uint16_t p;
+
+    dpm_read(disk, 510, 2, (uint8_t *)&p);
+
+    if(p == 0xaa55) {
+        mbr_dump(disk, 0);
+        mbr_dump(disk, 1);
+        mbr_dump(disk, 2);
+        mbr_dump(disk, 3);
+    }
+}
