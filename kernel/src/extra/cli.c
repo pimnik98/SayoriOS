@@ -474,7 +474,7 @@ uint32_t CLI_RD(uint32_t argc, char* argv[]) {
 
     char* newdata = kcalloc(1024, 1);
 
-    dpm_read(disk[0], 0, 1024, newdata);
+    dpm_read(disk[0], 0, 0, 1024, newdata);
 
     hexview_advanced(newdata, 1024, 26, true, _tty_printf);
 

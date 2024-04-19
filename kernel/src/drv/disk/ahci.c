@@ -604,17 +604,17 @@ void ahci_read(size_t port_num, uint8_t* buf, uint32_t location, uint32_t length
 	kfree(real_buf);
 }
 
-size_t ahci_dpm_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+size_t ahci_dpm_read(size_t Disk, size_t high_offset, size_t low_offset, size_t Size, void* Buffer){
     qemu_err("TODO: SATA DPM READ");
 
 	DPM_Disk dpm = dpm_info(Disk + 65);
 
-    ahci_read((uint8_t) dpm.Point, Buffer, Offset, Size);
+    ahci_read((uint8_t) dpm.Point, Buffer, low_offset, Size);
 
     return Size;
 }
 
-size_t ahci_dpm_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
+size_t ahci_dpm_write(size_t Disk, size_t high_offset, size_t low_offset, size_t Size, void* Buffer){
     qemu_err("TODO: SATA DPM WRITE");
 
 //    DPM_Disk dpm = dpm_info(Disk + 65);

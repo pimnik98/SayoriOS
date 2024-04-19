@@ -468,8 +468,8 @@ void _FloppyCheck(){
 	
 }
 
-size_t _FloppyDPMWriteA(size_t Disk, size_t Offset, size_t Size, void* Buffer){
-	qemu_log("[DPM] Floppy A Write! Offset: %d | Size: %d",Offset, Size);
+size_t _FloppyDPMWriteA(size_t Disk, size_t high_offset, size_t low_offset, size_t Size, void* Buffer){
+	qemu_log("[DPM] Floppy A Write! Offset: %d | Size: %d",low_offset, Size);
 	if (Floppy(0).Status != 1) return 0;
 	//qemu_log("[FD%c] Write | Addr: %d | Size: %d",(device==FDB?'B':'A'),addr,size);
 	
@@ -477,26 +477,26 @@ size_t _FloppyDPMWriteA(size_t Disk, size_t Offset, size_t Size, void* Buffer){
 	size_t ds = 0;
 	int ret;
 	while (Size > ds){
-		ret = _FloppyCache(0,FLOPPY_READ, Offset+ds, &_offset, &ws);
+		ret = _FloppyCache(0,FLOPPY_READ, low_offset+ds, &_offset, &ws);
 		if (ret < 0) return ret;
 		if (ws > Size - ds) ws = Size - ds;
 		memcpy((void*) &FLOPPY_DMABUFA[_offset], Buffer+ds, ws);
-		ret = _FloppyCache(0,FLOPPY_WRITE, Offset+ds, nullptr, nullptr);
+		ret = _FloppyCache(0,FLOPPY_WRITE, low_offset+ds, nullptr, nullptr);
 		if (ret < 0) return ret;
 		ds += ws;
 	}
 	return ds;
 }
 
-size_t _FloppyDPMReadA(size_t Disk, size_t Offset, size_t Size, void* Buffer){
-	qemu_log("[DPM] Floppy A Read! Offset: %d | Size: %d",Offset, Size);
+size_t _FloppyDPMReadA(size_t Disk, size_t high_offset, size_t low_offset, size_t Size, void* Buffer){
+	qemu_log("[DPM] Floppy A Read! Offset: %d | Size: %d",low_offset, Size);
 	if (Floppy(0).Status != 1) return 0;
 	floppy_data[0].LastErr = 0;
 	uint32_t _offset=0, ws=0;
 	size_t ds = 0;
 	int ret;
 	while (Size > ds){
-		ret = _FloppyCache(0, FLOPPY_READ, Offset+ds, &_offset, &ws);
+		ret = _FloppyCache(0, FLOPPY_READ, low_offset+ds, &_offset, &ws);
 		if (ret < 0) return ret;
 		if (ws > Size - ds) ws = Size - ds;
 		memcpy(Buffer + ds, (void*) &FLOPPY_DMABUFA[_offset], ws);

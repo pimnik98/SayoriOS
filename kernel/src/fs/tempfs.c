@@ -69,7 +69,7 @@ int fs_tempfs_tcache_update(const char Disk){
     tfs_log(" |  |--- Zero Boot...\n");
     memset(__TCache__->Boot, 0, sizeof(TEMPFS_BOOT));
     tfs_log(" |  |--- Read Boot...\n");
-    int read = dpm_read(Disk, 0, sizeof(TEMPFS_BOOT), __TCache__->Boot);
+    int read = dpm_read(Disk, 0, 0, sizeof(TEMPFS_BOOT), __TCache__->Boot);
     if (read != sizeof(TEMPFS_BOOT)){
         tfs_log(" |       |--- Read: %d\n", read);
         return 2;
@@ -92,7 +92,7 @@ int fs_tempfs_tcache_update(const char Disk){
         while(1){
             if (inx + 1 > __TCache__->Boot->CountFiles) break;
             tfs_log(" |     |--- [>] %d | %d\n", inx + 1, __TCache__->Boot->CountFiles);
-            int eread = dpm_read(Disk, offset, sizeof(TEMPFS_ENTITY), &__TCache__->Files[inx]);
+            int eread = dpm_read(Disk, 0, offset, sizeof(TEMPFS_ENTITY), &__TCache__->Files[inx]);
             tfs_log(" |     |     |--- [>] Disk read\n");
             tfs_log(" |     |     |     |--- Offset: %d\n", offset);
             tfs_log(" |     |     |     |--- Size: %d\n", sizeof(TEMPFS_ENTITY));
@@ -134,12 +134,12 @@ TEMPFS_PACKAGE* fs_tempfs_func_readPackage(const char Disk, size_t Address){
     }
     memset(pack, 0, sizeof(TEMPFS_PACKAGE));
 
-    /* size_t read = */dpm_read(Disk, Address, sizeof(TEMPFS_PACKAGE), pack);
+    /* size_t read = */dpm_read(Disk,0,Address, sizeof(TEMPFS_PACKAGE), pack);
     return pack;
 }
 
 int fs_tempfs_func_writePackage(const char Disk, size_t Address, TEMPFS_PACKAGE* pack){
-    int write = dpm_write(Disk, Address, sizeof(TEMPFS_PACKAGE), pack);
+    int write = dpm_write(Disk, 0, Address, sizeof(TEMPFS_PACKAGE), pack);
     return (write == sizeof(TEMPFS_PACKAGE)?1:0);
 }
 
@@ -158,7 +158,7 @@ size_t fs_tempfs_func_getIndexEntity(const char Disk, char* Path){
         if (inx + 1 > __TCache__->Boot->CountFiles) break;
         tfs_log(" |     |--- [>] %d | %d\n", inx + 1, __TCache__->Boot->CountFiles);
         TEMPFS_ENTITY tmp = {0};
-        int eread = dpm_read(Disk, offset, sizeof(TEMPFS_ENTITY), &tmp);
+        int eread = dpm_read(Disk, 0, offset, sizeof(TEMPFS_ENTITY), &tmp);
         tfs_log(" |     |     |--- [>] Disk read\n");
         tfs_log(" |     |     |     |--- Offset: %d\n", offset);
         tfs_log(" |     |     |     |--- Size: %d\n", sizeof(TEMPFS_ENTITY));
@@ -220,13 +220,13 @@ TEMPFS_ENTITY* fs_tempfs_func_readEntity(const char Disk, char* Path){
 }
 
 int fs_tempfs_func_writeEntity(const char Disk, int Index, TEMPFS_ENTITY* entity){
-    int write = dpm_write(Disk, 512 + (Index*sizeof(TEMPFS_ENTITY)), sizeof(TEMPFS_ENTITY), entity);
+    int write = dpm_write(Disk, 0, 512 + (Index*sizeof(TEMPFS_ENTITY)), sizeof(TEMPFS_ENTITY), entity);
     return (write == sizeof(TEMPFS_ENTITY)?1:0);
 }
 
 
 int fs_tempfs_func_updateBoot(const char Disk, TEMPFS_BOOT* boot){
-    int write = dpm_write(Disk, 0, sizeof(TEMPFS_BOOT), boot);
+    int write = dpm_write(Disk, 0, 0, sizeof(TEMPFS_BOOT), boot);
     return (write == sizeof(TEMPFS_BOOT)?1:0);
 }
 
@@ -301,7 +301,7 @@ int fs_tempfs_func_findFreeInfoBlock(const char Disk){
     TEMPFS_ENTITY* tmp = malloc(sizeof(TEMPFS_ENTITY));
     while(1){
         memset(tmp, 0, sizeof(TEMPFS_ENTITY));
-        int read = dpm_read(Disk, offset, sizeof(TEMPFS_ENTITY), tmp);
+        int read = dpm_read(Disk, 0, offset, sizeof(TEMPFS_ENTITY), tmp);
         if (read != sizeof(TEMPFS_ENTITY)) {
             free(tmp);
             return -1;
@@ -621,7 +621,7 @@ FSM_DIR* fs_tempfs_dir(const char Disk, const char* Path){
         if (entity == NULL) {
             break;
         }
-        int eread = dpm_read(Disk, offset, sizeof(TEMPFS_ENTITY), entity);
+        int eread = dpm_read(Disk,0,offset, sizeof(TEMPFS_ENTITY), entity);
         tfs_log(" |     |     |--- [>] Disk read\n");
         tfs_log(" |     |     |     |--- Offset: %d\n", offset);
         tfs_log(" |     |     |     |--- Size: %d\n", sizeof(TEMPFS_ENTITY));

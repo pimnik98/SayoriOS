@@ -7,7 +7,7 @@
 void ebr_recursive_dump(char disk, uint32_t abs_lba, uint32_t lba, int depth) {
     struct mbr_parition w = {};
 
-    dpm_read(disk, ((lba + abs_lba) * 512) + 446,  sizeof(w), (uint8_t *)&w);
+    dpm_read(disk, 0, ((lba + abs_lba) * 512) + 446,  sizeof(w), (uint8_t *)&w);
 
     qemu_log("%*s Active: %d; [C: %d; H: %d; S: %d] Type: %d; [C: %d; H: %d; S: %d] Start LBA: %d; Num Sectors: %d\n",
            depth + 3, "|--",
@@ -25,7 +25,7 @@ void ebr_recursive_dump(char disk, uint32_t abs_lba, uint32_t lba, int depth) {
            w.end_cylinder, w.end_head, w.end_sector,
            w.start_sector_lba, w.num_sectors);
 
-    dpm_read(disk, ((lba + abs_lba) * 512) + 446 + 16,  sizeof(w), (uint8_t *)&w);
+    dpm_read(disk, 0, ((lba + abs_lba) * 512) + 446 + 16,  sizeof(w), (uint8_t *)&w);
 
     if(w.type == 5) {
         ebr_recursive_dump(disk, abs_lba, w.start_sector_lba, depth);
@@ -35,7 +35,7 @@ void ebr_recursive_dump(char disk, uint32_t abs_lba, uint32_t lba, int depth) {
 void mbr_dump(char disk, uint32_t i) {
     struct mbr_parition p = {};
 
-    dpm_read(disk, 446 + (i * 16), sizeof(p), (uint8_t *)&p);
+    dpm_read(disk, 0, 446 + (i * 16), sizeof(p), (uint8_t *)&p);
 
     qemu_log("[%d] Active: %d; [C: %d; H: %d; S: %d] Type: %d; [C: %d; H: %d; S: %d] Start LBA: %d; Num Sectors: %d",
            i,
@@ -61,7 +61,7 @@ void mbr_dump(char disk, uint32_t i) {
 void mbr_dump_all(char disk) {
     uint16_t p;
 
-    dpm_read(disk, 510, 2, (uint8_t *)&p);
+    dpm_read(disk, 0, 510, 2, (uint8_t *)&p);
 
     if(p == 0xaa55) {
         mbr_dump(disk, 0);
