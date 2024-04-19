@@ -26,14 +26,14 @@ bool ahci_initialized = false;
 
 volatile AHCI_HBA_MEM* abar;
 
-#undef qemu_log
-#undef qemu_err
-#undef qemu_warn
-#undef qemu_ok
-#define qemu_log(M, ...) tty_printf(M "\n", ##__VA_ARGS__)
-#define qemu_err(M, ...) tty_printf("[ERR] " M "\n", ##__VA_ARGS__)
-#define qemu_warn(M, ...) tty_printf("[WARN] " M "\n", ##__VA_ARGS__)
-#define qemu_ok(M, ...) tty_printf("[OK] " M "\n", ##__VA_ARGS__)
+// #undef qemu_log
+// #undef qemu_err
+// #undef qemu_warn
+// #undef qemu_ok
+// #define qemu_log(M, ...) tty_printf(M "\n", ##__VA_ARGS__)
+// #define qemu_err(M, ...) tty_printf("[ERR] " M "\n", ##__VA_ARGS__)
+// #define qemu_warn(M, ...) tty_printf("[WARN] " M "\n", ##__VA_ARGS__)
+// #define qemu_ok(M, ...) tty_printf("[OK] " M "\n", ##__VA_ARGS__)
 
 #define AHCI_PORT(num) (abar->ports + (num))
 
@@ -579,12 +579,39 @@ void ahci_eject_cdrom(size_t port_num) {
     ahci_send_cmd(port, 0);
 }
 
+void ahci_read(size_t port_num, uint8_t* buf, uint32_t location, uint32_t length) {
+	ON_NULLPTR(buf, {
+		qemu_log("Buffer is nullptr!");
+		return;
+	});
+
+	// TODO: Get sector size somewhere (Now we hardcode it into 512).
+
+	size_t start_sector = location / 512;
+	size_t end_sector = (location + length - 1) / 512;
+	size_t sector_count = end_sector - start_sector + 1;
+
+	size_t real_length = sector_count * 512;
+
+	qemu_log("Reading %d sectors...", sector_count);
+
+	uint8_t* real_buf = kmalloc(real_length);
+
+    ahci_read_sectors(port_num, start_sector, sector_count, real_buf);
+	
+	memcpy(buf, real_buf + (location % 512), length);
+
+	kfree(real_buf);
+}
+
 size_t ahci_dpm_read(size_t Disk, size_t Offset, size_t Size, void* Buffer){
     qemu_err("TODO: SATA DPM READ");
 
-//    DPM_Disk dpm = dpm_info(Disk + 65);
+	DPM_Disk dpm = dpm_info(Disk + 65);
 
-    return 0;
+    ahci_read((uint8_t) dpm.Point, Buffer, Offset, Size);
+
+    return Size;
 }
 
 size_t ahci_dpm_write(size_t Disk, size_t Offset, size_t Size, void* Buffer){
@@ -642,6 +669,8 @@ void ahci_identify(size_t port_num, bool is_atapi) {
 
     uint16_t* memory16 = (uint16_t*)memory;
 
+	size_t capacity = (memory16[101] << 16) | memory16[100];
+
     uint16_t* model = kcalloc(20, 2);
 
     for(int i = 0; i < 20; i++) {
@@ -650,27 +679,27 @@ void ahci_identify(size_t port_num, bool is_atapi) {
 
     *(((uint8_t*)model) + 39) = 0;
 
-    tty_printf("[SATA] MODEL: '%s';\n", model);
+    tty_printf("[SATA] MODEL: '%s'; CAPACITY: %d sectors\n", model, capacity);
 
-//    int disk_inx = dpm_reg(
-//            (char)dpm_searchFreeIndex(0),
-//            "SATA Disk",
-//            "Unknown",
-//            1,
-//            capacity * 512,
-//            capacity,
-//            512,
-//            3, // Ставим 3ку, так как будем юзать функции для чтения и записи
-//            "DISK1234567890",
-//            (void*)0 // Оставим тут индекс диска
-//    );
-//
-//    if (disk_inx < 0){
-//        qemu_err("[SATA/DPM] [ERROR] An error occurred during disk registration, error code: %d", disk_inx);
-//    } else {
-//        qemu_ok("[SATA/DPM] [Successful] Registering OK");
-//        dpm_fnc_write(disk_inx + 65, &ahci_dpm_read, &ahci_dpm_write);
-//    }
+   int disk_inx = dpm_reg(
+           (char)dpm_searchFreeIndex(0),
+           "SATA Disk",
+           "Unknown",
+           1,
+           capacity * 512,
+           capacity,
+           512,
+           3, // Ставим 3ку, так как будем юзать функции для чтения и записи
+           "DISK1234567890",
+           (void*)port_num // Оставим тут индекс диска
+   );
+
+   if (disk_inx < 0){
+       qemu_err("[SATA/DPM] [ERROR] An error occurred during disk registration, error code: %d", disk_inx);
+   } else {
+       qemu_ok("[SATA/DPM] [Successful] Registering OK");
+       dpm_fnc_write(disk_inx + 65, &ahci_dpm_read, &ahci_dpm_write);
+   }
 
     kfree(memory);
     kfree(model);

@@ -242,7 +242,7 @@ void fsm_dpm_update(char Letter){
                 qemu_note("[FSM] [DPM] >>> Disk %c | Test %s", DISKID, G_FSM[f].Name);
                 int detect = G_FSM[f].Detect(DISKID);
                 if (detect != 1) continue;
-                qemu_note("SCANNING PARTITIONS");
+                qemu_note("SCANNING PARTITIONS ON: %c", DISKID);
                 mbr_dump_all(DISKID);
                 char* lab_test = kcalloc(1,129);
                 G_FSM[f].Label(DISKID,lab_test);
