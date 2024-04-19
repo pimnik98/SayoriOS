@@ -267,7 +267,7 @@ void _tty_print(const char* format, va_list args) {
 	kfree(a);
 }
 
-void _tty_printf(char *text, ...) {
+void _tty_printf(const char *text, ...) {
 	int sAT = (showAnimTextCursor?1:0);
     if (sAT == 1){
 		showAnimTextCursor = false;

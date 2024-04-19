@@ -29,6 +29,7 @@
 #include <sys/cpuinfo.h>
 #include "../../include/lib/fileio.h"
 #include "sys/system.h"
+#include "debug/hexview.h"
 
 int G_CLI_CURINXA = 0;
 int G_CLI_CURINXB = 0;
@@ -457,6 +458,33 @@ uint32_t CLI_CMD_REBOOT(uint32_t argc, char* argv[]) {
     return 0;
 }
 
+uint32_t CLI_RD(uint32_t argc, char* argv[]) {
+    if(argc < 2) {
+        tty_error("No arguments.\n");
+        return 1;
+    }
+
+    char* disk = argv[1];
+    DPM_Disk data = dpm_info(disk[0]);
+
+    if(!data.Ready) {
+        tty_error("No disk.\n");
+        return 1;
+    }
+
+    char* newdata = kcalloc(1024, 1);
+
+    dpm_read(disk[0], 0, 1024, newdata);
+
+    hexview_advanced(newdata, 1024, 26, true, _tty_printf);
+
+    punch();
+
+    kfree(newdata);
+
+    return 0;
+}
+
 uint32_t pavi_view(uint32_t, char**);
 uint32_t minesweeper(uint32_t, char**);
 uint32_t shell_diskctl(uint32_t, char**);
@@ -491,6 +519,7 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
     {"MKDIR", "mkdir", CLI_CMD_MKDIR, "Создать папку"},
     {"RMDIR", "rmdir", CLI_CMD_RMDIR, "Удалить папку"},
     {"REBOOT", "reboot", CLI_CMD_REBOOT, "Перезагрузка"},
+    {"RD", "rd", CLI_RD, "Чтение данных с диска"},
 	{nullptr, nullptr, nullptr}
 };
 

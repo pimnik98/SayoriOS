@@ -78,6 +78,7 @@ typedef struct svga_mode_info {
 } __attribute__ ((packed)) svga_mode_info_t;
 
 #define punch() memcpy(framebuffer_addr, back_framebuffer_addr, framebuffer_size)
+// #define punch() sse_memcpy(framebuffer_addr, back_framebuffer_addr, framebuffer_size)
 //#define punch() rect_copy(0, 0, VESA_WIDTH, VESA_HEIGHT)
 
 uint32_t getDisplayPitch();

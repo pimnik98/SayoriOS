@@ -6,7 +6,7 @@
  * @date 2022-08-24
  *
  * @copyright Copyright Пиминов Никита (с) 2023
- *
+
  */
 #include <kernel.h>
 #include <io/ports.h>

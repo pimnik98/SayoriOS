@@ -28,12 +28,12 @@
 #include "sys/file_descriptors.h"
 #include "sys/lapic.h"
 #include "drv/ps2.h"
+#include "net/dhcp.h"
 
 #include <lib/pixel.h>
 
 #define INITRD_RW_SIZE (1474560) ///< Размер виртуального диска 1.44mb floppy
 
-extern bool ps2_channel1_okay;
 extern bool ps2_channel2_okay;
 
 uint32_t init_esp = 0;
@@ -212,7 +212,7 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     qemu_log("SSE: %s", sse_check() ? "Supported" : "Not supported");
     
     if (sse_check()) {
-        __wtf_fxsave();
+        fpu_save();
     }
     
     qemu_log("Setting `Interrupt Descriptor Table`...");
@@ -278,7 +278,6 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
             &fs_natfs_dir, &fs_natfs_label, &fs_natfs_detect);
     fsm_reg("ISO9660", 1, &fs_iso9660_read, &fs_iso9660_write, &fs_iso9660_info, &fs_iso9660_create, &fs_iso9660_delete,
             &fs_iso9660_dir, &fs_iso9660_label, &fs_iso9660_detect);
-
     fsm_reg("TEMPFS", 1, &fs_tempfs_read, &fs_tempfs_write, &fs_tempfs_info, &fs_tempfs_create, &fs_tempfs_delete,
             &fs_tempfs_dir, &fs_tempfs_label, &fs_tempfs_detect);
     fs_natfs_init();
@@ -323,7 +322,6 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     bootScreenPaint("Инициализация ATA...");
     ata_init();
     ata_dma_init();
-//    bootScreenPaint("Инициализация AHCI (SATA)...");
 //    ahci_init();
 
     bootScreenPaint("Калибрировка датчика температуры процессора...");
@@ -442,59 +440,23 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     
     ac97_init();
     
-    //	uint8_t ip[4] = {192, 168, 2, 2};
-    //
-    //	udp_send_packet(card, ip, 8888, 9999, "EEVEE\n", 6);
-
     /// Пример закругленных квадратов
     // drawRoundedSquare(32,32, 128, 2, 0xFFFF0000, 0xFF0000FF);
     // drawRoundedRectangle(32,32,128,16,4,0xFFFF0000, 0xFF0000FF);
     // punch();
     // while (1){}
     /// КОНЕЦ ПРИМЕРА
-    
-    //	ada_t *ada = ada_file("R:\\ada\\test.ada");
-    // void* buf = kcalloc(1, 512);
-    //
-    //    int buf_read = dpm_read('C',0,512,buf);
-    //
-    //    qemu_log("Buff (%d|%d) %s",buf_read, strlen(buf),buf);
-    //
-    //    buf_read = dpm_read('E',0,512,buf);
-    //    qemu_log("Buff (%d|%d) %s",buf_read, strlen(buf),buf);
-    //
-    // kfree(buf);
 
     ahci_init();
-
 
     /// Обновим данные обо всех дисках
     fsm_dpm_update(-1);    
     
     // vio_ntw_init();
     
-    hda_init();
-
-    void k();
-    create_process(k, "test process", false, true);
-
-//    scheduler_mode(false);
-
-//    void* ax = clone_kernel_page_directory();
-//    size_t w = virt2phys(get_kernel_page_directory(), (virtual_addr_t) ax);
-//
-//    load_page_directory(w);
+    // hda_init();
 
     cli();
 
     while(1);
-}
-
-void k() {
-    qemu_log("Focken processez!");
-
-    while(1) {
-        qemu_log("AAA");
-        sleep_ms(250);
-    };
 }

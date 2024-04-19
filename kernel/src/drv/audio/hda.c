@@ -49,6 +49,8 @@ volatile size_t hda_response = 0;
 #define REG_DMA_LOW_POSITION_ADDR 0x70
 #define REG_DMA_HIGH_POSITION_ADDR 0x74
 
+size_t hda_afg_codec_id = 0;
+size_t hda_afg_node_id = 0;
 
 void hda_init() {
     // Find devce by its class and subclass numbers.
@@ -194,6 +196,8 @@ void hda_init() {
 }
 
 void hda_find_afg(size_t codec_response, size_t codec_id) {
+     hda_afg_codec_id = codec_id; // Save codec id
+     
     // Read vendor id
     size_t vendor_id = (codec_response >> 16) & 0xffff;
     size_t dev_id = codec_response & 0xffff;
@@ -212,13 +216,74 @@ void hda_find_afg(size_t codec_response, size_t codec_id) {
 
         if((function_group_type & 0x7f) == 0x01) {
             tty_printf("|- AFG at node: %d\n", node);
+            tty_printf("|- FP: %d -> %d\n", codec_id, node);
+
+            hda_afg_node_id = node; // Save node
             qemu_ok("UNBELIEVABLE! FOUND AFG!");
+
+            hda_initialize_afg();
+            break;
+        }
+    }
+}
+
+void hda_initialize_afg() {
+    hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, hda_afg_node_id, 0x7ff, 0));
+    hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, hda_afg_node_id, 0x705, 0));
+    hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, hda_afg_node_id, 0x708, 0));
+
+    size_t hda_afg_node_sample_capabilities = hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, hda_afg_node_id, 0xF00, 0x0A));
+    size_t hda_afg_node_stream_format_capabilities = hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, hda_afg_node_id, 0xF00, 0x0B));
+    size_t hda_afg_node_input_amp_capabilities = hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, hda_afg_node_id, 0xF00, 0x0D));
+    size_t hda_afg_node_output_amp_capabilities = hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, hda_afg_node_id, 0xF00, 0x12));
+
+    qemu_note("hda_afg_node_sample_capabilities: %x", hda_afg_node_sample_capabilities);
+    qemu_note("hda_afg_node_stream_format_capabilities: %x", hda_afg_node_stream_format_capabilities);
+    qemu_note("hda_afg_node_input_amp_capabilities: %x", hda_afg_node_input_amp_capabilities);
+    qemu_note("hda_afg_node_output_amp_capabilities: %x", hda_afg_node_output_amp_capabilities);
+
+
+    size_t node_data = hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, hda_afg_node_id, 0xf00, 0x04));
+    size_t first_gnode = (node_data >> 16) & 0xff; // First group node
+    size_t node_count = node_data & 0xff; // Node count
+    size_t last_node = first_gnode + node_count;
+
+    char* node_types[] = {
+            "Output",
+            "Input",
+            "Mixer",
+            "Selector",
+            "Complex"
+    };
+
+    for(size_t node = first_gnode; node < last_node; node++) {
+        qemu_note("node: %d", node);
+        size_t type = (hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, node, 0xF00, 0x09)) >> 20) & 0xF;
+
+        if(type >= 5) {
+            continue;
+        }
+
+        qemu_note("type: %d = %s", type, node_types[type]);
+        tty_printf("|- %s at node: %d\n", node_types[type], node);
+
+        if(type == 0x4) {
+            size_t type_of_node = ((hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, node, 0xF1C, 0x00)) >> 20) & 0xF);
+
+            qemu_note("COMPLEX PIN HAS TYPE: %d", type_of_node);
+            tty_printf("|- COMPLEX PIN HAS TYPE: %d\n", type_of_node);
+
+            if(type_of_node == 0) {
+                tty_printf("|- LINE OUT\n");
+            } else if(type_of_node == 1) {
+                tty_printf("|- SPEAKER\n");
+            }
         }
     }
 }
 
 void hda_interrupt_handler(__attribute__((unused)) registers_t regs) {
-    qemu_warn("HDA Interrupt!");
+//    qemu_warn("HDA Interrupt!");
 
     size_t interrupt_status = READ32(0x24);
 
@@ -234,7 +299,7 @@ void hda_interrupt_handler(__attribute__((unused)) registers_t regs) {
         if(rirb_status & (1 << 0)) {
             size_t rirb_wp = READ16(0x58);
 
-            qemu_ok("RESPONSE!");
+//            qemu_ok("RESPONSE!");
 
             while(hda_rirb_current != rirb_wp) {
                 hda_rirb_current = (hda_rirb_current + 1) % hda_rirb_entry_count;
@@ -242,18 +307,18 @@ void hda_interrupt_handler(__attribute__((unused)) registers_t regs) {
                 hda_fired = true;
                 hda_response = hda_rirb[hda_rirb_current * 2];
 
-                qemu_ok("RIRB: %x", hda_rirb[hda_rirb_current * 2]);
+//                qemu_ok("RIRB: %x", hda_rirb[hda_rirb_current * 2]);
             }
         }
     }
 }
 
 uint32_t hda_send_verb_via_corb_rirb(uint32_t verb) {
-    qemu_warn("CWP: %d; CRP: %d; RWP: %d", READ16(0x48), READ16(0x4A), READ16(0x58));
+//    qemu_warn("CWP: %d; CRP: %d; RWP: %d", READ16(0x48), READ16(0x4A), READ16(0x58));
 
     hda_corb_current = (hda_corb_current + 1) % hda_corb_entry_count;
 
-    qemu_warn("CORB CUR: %d; RIRB CUR: %d", hda_corb_current, hda_rirb_current);
+//    qemu_warn("CORB CUR: %d; RIRB CUR: %d", hda_corb_current, hda_rirb_current);
     // SEND VERB
     hda_corb[hda_corb_current] = verb;
 

@@ -22,7 +22,12 @@ typedef	struct
 	bool			suspend;		/* Suspend flag */
     // 24
 	uint32_t			pid;		/* Process ID (PID) */
+    // 28
+    virtual_addr_t page_dir_virt;	/* Virtual address of page directory */
+    // 32
 	char			name[256];		/* Process name */
+	// 32 + 256
+	size_t          page_tables_virts[1024];    /* Page table addresses */
     // Every process should have a path that process operates
 }__attribute__((packed)) process_t;
 
@@ -63,6 +68,8 @@ extern void task_switch(registers_t regs);
 thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t stack_size,
                                    bool kernel, bool suspend);
 
+void kill_process(size_t id);
+
 /* Create new thread */
 thread_t* thread_create(process_t* proc,
 	               	    void* entry_point,
@@ -79,7 +86,7 @@ void thread_suspend(thread_t* thread, bool suspend);
 /* Exit from thread */
 void thread_exit(thread_t* thread);
 
-void create_process(void* entry_point, char* name, bool suspend, bool is_kernel);
+size_t create_process(void* entry_point, char name[256], bool suspend, bool is_kernel);
 
 /* Check multitask flag */
 bool is_multitask(void);
@@ -89,6 +96,7 @@ extern void user_mode_switch(void* entry_point, uint32_t user_stack_top);
 
 /* Init user mode */
 void init_user_mode(void* entry_point, size_t stack_size);
+
 
 void scheduler_mode(bool on);
 
