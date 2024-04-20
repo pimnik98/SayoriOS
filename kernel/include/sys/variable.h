@@ -2,8 +2,8 @@
 
 typedef struct {
 	bool	Ready;
-	char	Key[512];
-	char	Value[2048];
+	char	Key[256];
+	char	Value[1024];
 } VARIABLE;
 
 char* variable_read(char* Key);
