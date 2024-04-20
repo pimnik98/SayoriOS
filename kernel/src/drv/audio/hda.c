@@ -220,6 +220,7 @@ void hda_find_afg(size_t codec_response, size_t codec_id) {
 
             hda_afg_node_id = node; // Save node
             qemu_ok("UNBELIEVABLE! FOUND AFG!");
+          	tty_printf("UNBELIEVABLE! FOUND AFG!\n");
 
             hda_initialize_afg();
             break;
@@ -264,19 +265,19 @@ void hda_initialize_afg() {
             continue;
         }
 
-        qemu_note("type: %d = %s", type, node_types[type]);
-        tty_printf("|- %s at node: %d\n", node_types[type], node);
+        // qemu_note("type: %d = %s", type, node_types[type]);
+        // tty_printf("|- %s at node: %d\n", node_types[type], node);
 
         if(type == 0x4) {
             size_t type_of_node = ((hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, node, 0xF1C, 0x00)) >> 20) & 0xF);
 
-            qemu_note("COMPLEX PIN HAS TYPE: %d", type_of_node);
-            tty_printf("|- COMPLEX PIN HAS TYPE: %d\n", type_of_node);
+            // qemu_note("COMPLEX PIN HAS TYPE: %d", type_of_node);
+            // tty_printf("|- COMPLEX PIN HAS TYPE: %d\n", type_of_node);
 
             if(type_of_node == 0) {
-                tty_printf("|- LINE OUT\n");
+                tty_printf("Node %d is LINE OUT\n", node);
             } else if(type_of_node == 1) {
-                tty_printf("|- SPEAKER\n");
+                tty_printf("Node %d is SPEAKER\n", node);
             }
         }
     }

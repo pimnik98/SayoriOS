@@ -454,7 +454,7 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     
     // vio_ntw_init();
     
-    // hda_init();
+    hda_init();
 
     cli();
 
