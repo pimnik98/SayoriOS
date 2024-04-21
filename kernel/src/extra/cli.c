@@ -51,24 +51,24 @@ CLI_CMD_ELEM G_CLI_CMD[];
 // 	qemu_log("[F_CLI_KYB] Key:%d | Pressed: %x",(int) data1, (int) data2);	
 // }
 
-uint32_t CLI_CMD_GBA(uint32_t c, char* v[]){
-    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
-        _tty_printf("Эмулятор GameBoy.\n");
-        _tty_printf("Пример:\"GBA R:\\game.gb\".\n");
-        _tty_printf("\n");
-        return 1;
-    }
-    // gb game.gb
-    tty_printf("%d\n", c);
-
-    for(int i = 0; i < c; i++) {
-        tty_printf("#%d = %s\n", i, v[i]);
-    }
-
-    gb_main(c, v);
-
-	return 1;
-}
+//uint32_t CLI_CMD_GBA(uint32_t c, char* v[]){
+//    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
+//        _tty_printf("Эмулятор GameBoy.\n");
+//        _tty_printf("Пример:\"GBA R:\\game.gb\".\n");
+//        _tty_printf("\n");
+//        return 1;
+//    }
+//    // gb game.gb
+//    tty_printf("%d\n", c);
+//
+//    for(int i = 0; i < c; i++) {
+//        tty_printf("#%d = %s\n", i, v[i]);
+//    }
+//
+//    gb_main(c, v);
+//
+//	return 1;
+//}
 
 
 uint32_t CLI_CMD_CLS(uint32_t c, char* v[]){
@@ -498,7 +498,7 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
 	{"DIR", "dir", CLI_CMD_DIR, "Выводит список файлов и папок."},
     {"DISKCTL", "diskctl", shell_diskctl, "Управление ATA-дисками"},
     {"DISKPART", "diskpart", CLI_CMD_DISKPART, "Список дисков Disk Partition Manager"},
-    {"GBA", "gba", CLI_CMD_GBA, "GameBoy Emulator"},
+//    {"GBA", "gba", CLI_CMD_GBA, "GameBoy Emulator"},
 	{"HELP", "help", CLI_CMD_HELP, "Выводит справочную информацию о командах SayoriOS (CLI)."},
 	{"SET", "set", CLI_CMD_SET, "Показывает, указывает и удаляет переменные среды SayoriOS"},
 	{"NET", "net", CLI_CMD_NET, "Информация об сетевых устройствах"},

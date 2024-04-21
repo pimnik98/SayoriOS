@@ -15,8 +15,8 @@ endif
 
 CC=$(shell bash tools/compiler.sh $(COMPILER_DETECTOR_FLAGS))
 
-GAMEBOY = $(wildcard kernel/src/ports/gameboy/*.c)
-GAMEBOY_OBJS = $(GAMEBOY:.c=.o)
+#GAMEBOY = $(wildcard kernel/src/ports/gameboy/*.c)
+#GAMEBOY_OBJS = $(GAMEBOY:.c=.o)
 
 OBJ_DIRECTORY = objects
 DIRECTORIES = objects/kernel/src \

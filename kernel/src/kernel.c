@@ -322,9 +322,8 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     bootScreenPaint("Инициализация ATA...");
     ata_init();
     ata_dma_init();
-//    ahci_init();
 
-    bootScreenPaint("Калибрировка датчика температуры процессора...");
+    bootScreenPaint("Калибровка датчика температуры процессора...");
     cputemp_calibrate();
 
     bootScreenPaint("Настройка FDT...");
@@ -454,7 +453,7 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     
     // vio_ntw_init();
     
-    hda_init();
+//    hda_init();
 
     cli();
 
