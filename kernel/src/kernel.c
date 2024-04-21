@@ -456,22 +456,7 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     
     hda_init();
 
-    void huyak();
-
-    create_process(huyak, "Huyak!", false, true);
-
     cli();
 
     while(1);
-}
-
-void huyak() {
-    qemu_warn("HUYAK!!!!");
-    qemu_warn("HUYAK!!!!");
-    qemu_warn("HUYAK!!!!");
-    qemu_warn("HUYAK!!!!");
-    qemu_warn("HUYAK!!!!");
-    qemu_warn("HUYAK!!!!");
-    qemu_warn("HUYAK!!!!");
-    qemu_warn("HUYAK!!!!");
 }

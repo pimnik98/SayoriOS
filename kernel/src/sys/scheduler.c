@@ -160,7 +160,9 @@ process_t* get_current_proc(void) {
 }
 
 void blyat_fire() {
+    qemu_note("PROCESS %d WANTS TO EXIT!", current_proc->pid);
     qemu_err("BLYAT FIRE-RE-RE-RE-RE-RE-RE-RE-RE-RE-RE!!!");
+    kill_process(current_proc->pid);
     while(1);
 }
 
@@ -251,6 +253,8 @@ void kill_process(size_t id) {
         goto end;
     }
 
+    qemu_note("Killing process: %d", id);
+
     bool found = false;
     list_item_t* item = process_list.first;
     for(int i = 0; i < process_list.count; i++) {
@@ -286,6 +290,7 @@ void kill_process(size_t id) {
     }
 
     // TODO: FIND AND CLEAN PAGE TABLES
+    // IS IT DONE?
     for(int i = 0; i < 1024; i++) {
         if(process->page_tables_virts[i] != 0) {
             kfree((void *) process->page_tables_virts[i]);
@@ -293,6 +298,8 @@ void kill_process(size_t id) {
     }
 
     kfree((void *) process->page_dir_virt);
+
+    list_remove(&process->list_item);
 
     end:
     asm volatile("sti");
