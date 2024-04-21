@@ -159,6 +159,11 @@ process_t* get_current_proc(void) {
 	return current_proc;
 }
 
+void blyat_fire() {
+    qemu_err("BLYAT FIRE-RE-RE-RE-RE-RE-RE-RE-RE-RE-RE!!!");
+    while(1);
+}
+
 /**
  * @brief Создание потока
  * 
@@ -193,7 +198,7 @@ thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t st
     stack = (void*) kcalloc(stack_size, 1);
 
     tmp_thread->stack = stack;
-    tmp_thread->esp = (uint32_t) stack + stack_size - (6 * 4);
+    tmp_thread->esp = (uint32_t) stack + stack_size - (7 * 4);
     tmp_thread->stack_top = (uint32_t) stack + stack_size;
 
     /* Add thread to ring queue */
@@ -212,12 +217,13 @@ thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t st
 
     eflags |= (1 << 9);
 
-    esp[-1] = (uint32_t) entry_point;
-    esp[-2] = eflags;
-    esp[-3] = 0;
+    esp[-1] = (uint32_t) blyat_fire;
+    esp[-2] = (uint32_t) entry_point;
+    esp[-3] = eflags;
     esp[-4] = 0;
     esp[-5] = 0;
     esp[-6] = 0;
+    esp[-7] = 0;
 
     return tmp_thread;
 }

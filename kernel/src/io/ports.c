@@ -174,7 +174,9 @@ void new_qemu_printf(const char *format, ...) {
 
     va_end(args);
 
+    scheduler_mode(false);  // Stop scheduler
     __com_writeString(PORT_COM1, container);
+    scheduler_mode(true);  // Start scheduler
 
     kfree(container);
 }
