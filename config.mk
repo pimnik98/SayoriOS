@@ -194,6 +194,7 @@ SOURCES=\
 	kernel/src/lib/utf_conversion.c \
 	kernel/src/lib/base64.c \
 	kernel/src/sys/file_descriptors.c \
+	kernel/src/net/tcp.c \
 	kernel/src/net/stack.c \
 	kernel/src/toys/pavi.c \
 	kernel/src/drv/audio/hda.c \
