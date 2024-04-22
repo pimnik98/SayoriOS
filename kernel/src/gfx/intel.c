@@ -6,7 +6,9 @@
 #include "io/ports.h"
 #include "io/tty.h"
 #include "mem/pmm.h"
+#include "mem/vmm.h"
 #include "gfx/intel.h"
+#include "net/endianess.h"
 
 
 uint8_t igfx_bus = 0,
@@ -90,12 +92,11 @@ void igfx_init() {
         uint32_t our_dword = IGFX_READ(IGFX_GMBUS3);
 
         igfx_edid_buffer[i] = our_dword;
-
-        tty_printf("%x %x %x %x ",
-                   (our_dword >> 24) & 0xff,
-                   (our_dword >> 16) & 0xff,
-                   (our_dword >> 8) & 0xff,
-                   our_dword  & 0xff);
+        // tty_printf("%x %x %x %x ",
+        //            (our_dword >> 24) & 0xff,
+        //            (our_dword >> 16) & 0xff,
+        //            (our_dword >> 8) & 0xff,
+        //            our_dword  & 0xff);
     }
 
     tty_printf("\nSTOPPING TRANSACTIONS\n");
@@ -125,10 +126,10 @@ void igfx_init() {
     IGFX_WRITE(0x700c0, IGFX_READ(0x700c0) & ~0x27);
     IGFX_WRITE(0x700c4, 0);
 
-    IGFX_WRITE(0x70183, IGFX_READ(0x70183) & ~0x80);
+    IGFX_WRITE(0x70180, IGFX_READ(0x70180) & ~(1 << 31));
     IGFX_WRITE(0x70184, 0);
 
-    IGFX_WRITE(0x71183, IGFX_READ(0x71183) & ~0x80);
+    IGFX_WRITE(0x71180, IGFX_READ(0x71180) & ~(1 << 31));
     IGFX_WRITE(0x71184, 0);
 
     // MIDDLE
@@ -136,26 +137,21 @@ void igfx_init() {
     IGFX_WRITE(0x70024, IGFX_READ(0x70024) | 0x2);
     IGFX_WRITE(0x71024, IGFX_READ(0x71024) | 0x2);
 
-    IGFX_WRITE(0x7000B, IGFX_READ(0x7000B) & ~0x80); // disable pipe
-    IGFX_WRITE(0x7100B, IGFX_READ(0x7100B) & ~0x80); // disable pipe
+    IGFX_WRITE(0x70008, IGFX_READ(0x70008) & ~(1 << 31)); // disable pipe
+    IGFX_WRITE(0x71008, IGFX_READ(0x71008) & ~(1 << 31)); // disable pipe
 
-   while(IGFX_READ(0x7000B) & 0x40)
-       ;
-
-   while(IGFX_READ(0x7100B) & 0x40)
-       ;
+    while(IGFX_READ(0x70008) & (1 << 30)) {}
+    while(IGFX_READ(0x71008) & (1 << 30)) {}
 
 	size_t xaddr = 0x60000;
 
-	if((IGFX_READ(0x61180) & (1 << 31)) == 0) {
-		tty_printf("LVDS NOT ENABLED\n");
-	} else {
-		tty_printf("LVDS ENABLED\n");
+	if((IGFX_READ(0x61180) & (1 << 31)) != 0) {
 		xaddr += 0x1000;
 	}
-
-	size_t command = ((igfx_width - 1) << 16) | (igfx_height - 1);
-	size_t command_old = ((command & 0xffff) << 16) | ((command >> 16) & 0xffff);
+	
+	uint16_t command = ((igfx_width - 1) << 16) | (igfx_height - 1);
+	// uint16_t command_old = ntohs(command);
+	uint16_t command_old = ((command & 0xffff) << 16) | ((command >> 16) & 0xffff);
 
 	IGFX_WRITE(xaddr + 0x1C, command);
 	IGFX_WRITE(xaddr + 0x10190, command_old);
@@ -166,9 +162,39 @@ void igfx_init() {
 	IGFX_WRITE(xaddr + 0x10184, 0);
 
     // END
-	IGFX_WRITE(0x61233, IGFX_READ(0x61233) & ~0x80); // disable panel fitting
-	IGFX_WRITE(xaddr + 0x1000B, IGFX_READ(0x7000B) | 0x80); // enable pipe
-	IGFX_WRITE(xaddr + 0x10183, IGFX_READ(0x70183) | 0x80); // enable Display Plane A
+	IGFX_WRITE(0x61230, IGFX_READ(0x61230) & ~(1 << 31)); // disable panel fitting
+	IGFX_WRITE(xaddr + 0x10008, IGFX_READ(xaddr + 0x10008) | (1 << 31)); // enable pipe
+	IGFX_WRITE(xaddr + 0x10180, IGFX_READ(xaddr + 0x10180) | (1 << 31)); // enable Display Plane A
 
-    asm volatile("sti");
+
+    unmap_pages_overlapping(get_kernel_page_directory(), (virtual_addr_t)framebuffer_addr, framebuffer_size);
+
+    framebuffer_size = igfx_width * igfx_height * 4;
+
+    map_pages(get_kernel_page_directory(),
+              (physical_addr_t)framebuffer_addr,
+              (virtual_addr_t)framebuffer_addr,
+              framebuffer_size,
+              PAGE_WRITEABLE);
+
+	asm volatile("cli");
+	
+	memset(framebuffer_addr, (char)0xff, framebuffer_size);
+
+	asm volatile("hlt");
+
+//     back_framebuffer_addr = krealloc(back_framebuffer_addr, framebuffer_size);
+// 
+//     memset(back_framebuffer_addr, (char)0, framebuffer_size);
+// 
+// 
+//     extern uint32_t framebuffer_width;				///< Длина экрана
+//     extern uint32_t framebuffer_height;			///< Высота экрана
+// 
+//     framebuffer_width = igfx_width;
+//     framebuffer_height = igfx_height;
+// 
+//     punch();
+// 
+//     asm volatile("sti");
 }
