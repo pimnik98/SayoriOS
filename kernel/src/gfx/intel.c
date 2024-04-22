@@ -21,7 +21,11 @@ size_t igfx_width = 0;
 size_t igfx_height = 0;
 
 #define IGFX_READ(reg) (*(volatile uint32_t*)(igfx_addr + reg))
-#define IGFX_WRITE(reg, val) (*(volatile uint32_t*)(igfx_addr + reg) = val)
+#define IGFX_WRITE(reg, val) (*(volatile uint32_t*)(igfx_addr + reg) = (uint32_t)val)
+
+#define IGFX_READ8(reg) (*(volatile uint8_t*)(igfx_addr + reg))
+#define IGFX_WRITE8(reg, val) (*(volatile uint8_t*)(igfx_addr + reg) = (uint8_t)val)
+
 
 volatile size_t igfx_edid_buffer[32] = {0};
 
@@ -112,7 +116,6 @@ void igfx_init() {
     igfx_width = ((data[0x3a] >> 4) << 8) | (data[0x38]);
     igfx_height = ((data[0x3d] >> 4) << 8) | (data[0x3b]);
 
-    tty_printf("[%x, %x, %x, %x]\n", data[0x3a], data[0x38], data[0x3d], data[0x3b]);
     tty_printf("WIDTH: %d; HEIGHT: %d\n", igfx_width, igfx_height);
 
 
@@ -120,7 +123,7 @@ void igfx_init() {
 
 
     // START
-    IGFX_WRITE(IGFX_CURACNTR, IGFX_READ(IGFX_CURACNTR) & ~0x27);
+    IGFX_WRITE(0x70080, IGFX_READ(0x70080) & ~0x27);
     IGFX_WRITE(0x70084, 0);
 
     IGFX_WRITE(0x700c0, IGFX_READ(0x700c0) & ~0x27);
@@ -145,20 +148,27 @@ void igfx_init() {
 
 	size_t xaddr = 0x60000;
 
-	if((IGFX_READ(0x61180) & (1 << 31)) != 0) {
+	if((IGFX_READ(0x61180) & (1 << 30))) {
 		xaddr += 0x1000;
 	}
 	
-	uint16_t command = ((igfx_width - 1) << 16) | (igfx_height - 1);
-	// uint16_t command_old = ntohs(command);
-	uint16_t command_old = ((command & 0xffff) << 16) | ((command >> 16) & 0xffff);
+	uint32_t command = (igfx_width - 1);
+	command <<= 16;
+	command |= (igfx_height - 1);
+
+	// uint32_t command_old = ((command & 0xffff) << 16) | ((command >> 16) & 0xffff);
 
 	IGFX_WRITE(xaddr + 0x1C, command);
-	IGFX_WRITE(xaddr + 0x10190, command_old);
+	// IGFX_WRITE(xaddr + 0x10190, command_old);
 
-	size_t scanline_w = ((igfx_width + 15) & ~15) << 2;
+	// uint32_t scanline_w = ((igfx_width + 15) & ~15) << 2;
+	uint32_t scanline_w = (igfx_width & ~15) << 2;
+	// uint32_t scanline_w = (igfx_width * 4) & ~0xF;
+	// uint32_t scanline_w = ((igfx_width + 64) * 4) & ~64;
 
 	IGFX_WRITE(xaddr + 0x10188, scanline_w);
+	IGFX_WRITE(xaddr + 0x10184, 0);
+	IGFX_WRITE(xaddr + 0x1019c, (uint32_t)framebuffer_addr); // addr
 	IGFX_WRITE(xaddr + 0x10184, 0);
 
     // END
@@ -177,24 +187,18 @@ void igfx_init() {
               framebuffer_size,
               PAGE_WRITEABLE);
 
-	asm volatile("cli");
-	
-	memset(framebuffer_addr, (char)0xff, framebuffer_size);
+	memset(framebuffer_addr, 0xff, framebuffer_size);
 
-	asm volatile("hlt");
+    extern uint32_t framebuffer_width;
+    extern uint32_t framebuffer_height;
 
-//     back_framebuffer_addr = krealloc(back_framebuffer_addr, framebuffer_size);
+    framebuffer_width = igfx_width;
+    framebuffer_height = igfx_height;
+
+    back_framebuffer_addr = krealloc(back_framebuffer_addr, framebuffer_size);
+    // memset(back_framebuffer_addr, 0x00, framebuffer_size);
+
+//     clean_tty_screen();
 // 
-//     memset(back_framebuffer_addr, (char)0, framebuffer_size);
-// 
-// 
-//     extern uint32_t framebuffer_width;				///< Длина экрана
-//     extern uint32_t framebuffer_height;			///< Высота экрана
-// 
-//     framebuffer_width = igfx_width;
-//     framebuffer_height = igfx_height;
-// 
-//     punch();
-// 
-//     asm volatile("sti");
+	asm volatile("sti");
 }
