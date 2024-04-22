@@ -125,10 +125,10 @@ void igfx_init() {
     IGFX_WRITE(0x700c0, IGFX_READ(0x700c0) & ~0x27);
     IGFX_WRITE(0x700c4, 0);
 
-    IGFX_WRITE(0x70183, IGFX_READ(0x70183) & ~0x80);
+    IGFX_WRITE(0x70180, IGFX_READ(0x70180) & ~(1 << 31));
     IGFX_WRITE(0x70184, 0);
 
-    IGFX_WRITE(0x71183, IGFX_READ(0x71183) & ~0x80);
+    IGFX_WRITE(0x71180, IGFX_READ(0x71180) & ~(1 << 31));
     IGFX_WRITE(0x71184, 0);
 
     // MIDDLE
@@ -136,8 +136,8 @@ void igfx_init() {
     IGFX_WRITE(0x70024, IGFX_READ(0x70024) | 0x2);
     IGFX_WRITE(0x71024, IGFX_READ(0x71024) | 0x2);
 
-    IGFX_WRITE(0x7000B, IGFX_READ(0x7000B) & ~0x80); // disable pipe
-    IGFX_WRITE(0x7100B, IGFX_READ(0x7100B) & ~0x80); // disable pipe
+    IGFX_WRITE(0x70008, IGFX_READ(0x70008) & ~(1 << 31)); // disable pipe
+    IGFX_WRITE(0x71008, IGFX_READ(0x71008) & ~(1 << 31)); // disable pipe
 
    while(IGFX_READ(0x7000B) & 0x40)
        ;
@@ -167,8 +167,8 @@ void igfx_init() {
 
     // END
 	IGFX_WRITE(0x61233, IGFX_READ(0x61233) & ~0x80); // disable panel fitting
-	IGFX_WRITE(xaddr + 0x1000B, IGFX_READ(0x7000B) | 0x80); // enable pipe
-	IGFX_WRITE(xaddr + 0x10183, IGFX_READ(0x70183) | 0x80); // enable Display Plane A
+	IGFX_WRITE(xaddr + 0x10008, IGFX_READ(xaddr + 0x10008) | (1 << 31)); // enable pipe
+	IGFX_WRITE(xaddr + 0x10180, IGFX_READ(xaddr + 0x10180) | (1 << 31)); // enable Display Plane A
 
     asm volatile("sti");
 }
