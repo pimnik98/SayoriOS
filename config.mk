@@ -42,6 +42,7 @@ DIRECTORIES = objects/kernel/src \
 				objects/kernel/src/fs \
 				objects/kernel/src/lib/math \
 				objects/kernel/src/toys \
+				objects/kernel/src/gfx \
 				objects/kernel/src/gui \
 				objects/kernel/src/desktop \
 				objects/kernel/src/user \
@@ -202,6 +203,7 @@ SOURCES=\
 	kernel/src/drv/disk/mbr.c \
 	kernel/src/sys/lapic.c \
 	kernel/src/drv/ps2.c \
+	kernel/src/gfx/intel.c \
 	$(GAMEBOY) \
 	kernel/src/kernel.c \
 #	kernel/src/lib/duktape.c \
@@ -213,12 +215,6 @@ SOURCES=\
 	kernel/src/fs/fat12.c \
 	kernel/src/fs/smfs.c \
 	kernel/src/lib/base64.c \
-
-RUST_DIR = rust/
-RUST_TARGET = i686-unknown-none
-RUST_OBJ_DEBUG = rust/target/$(RUST_TARGET)/debug/librust.a
-RUST_OBJ_RELEASE = rust/target/$(RUST_TARGET)/release/librust.a
-RUST_SOURCES = $(shell find rust/src/ -type f -name '*.rs')
 
 OBJS = $(SOURCES:%.c=$(OBJ_DIRECTORY)/%.o)
 DEPS = $(OBJS:%.o=%.d)
