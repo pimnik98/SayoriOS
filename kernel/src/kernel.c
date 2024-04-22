@@ -454,19 +454,19 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     
     // vio_ntw_init();
 
-	size_t hwstart = timestamp();
-
-	for(int i = 0, sh = getScreenHeight(); i < sh; i+=20) {	
-		for(int j = 0, sw = getScreenWidth(); j < sw; j+=20) {
-			draw_filled_rectangle(j, i, 20, 20, rand());
-		}
-	}
-
-	qemu_note("Program finished generating rects in %d ms", hwstart);
-
-	punch();
-
-	while(1);
+// 	size_t hwstart = timestamp();
+// 
+// 	for(int i = 0, sh = getScreenHeight(); i < sh; i+=20) {	
+// 		for(int j = 0, sw = getScreenWidth(); j < sw; j+=20) {
+// 			draw_filled_rectangle(j, i, 20, 20, rand());
+// 		}
+// 	}
+// 
+// 	qemu_note("Program finished generating rects in %d ms", hwstart);
+// 
+// 	punch();
+// 
+// 	while(1);
 
     igfx_init();
 

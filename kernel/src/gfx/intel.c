@@ -161,10 +161,7 @@ void igfx_init() {
 	IGFX_WRITE(xaddr + 0x1C, command);
 	// IGFX_WRITE(xaddr + 0x10190, command_old);
 
-	// uint32_t scanline_w = ((igfx_width + 15) & ~15) << 2;
-	uint32_t scanline_w = (igfx_width & ~15) << 2;
-	// uint32_t scanline_w = (igfx_width * 4) & ~0xF;
-	// uint32_t scanline_w = ((igfx_width + 64) * 4) & ~64;
+	uint32_t scanline_w = ((igfx_width + 15) & ~15) << 2;
 
 	IGFX_WRITE(xaddr + 0x10188, scanline_w);
 	IGFX_WRITE(xaddr + 0x10184, 0);
@@ -194,11 +191,12 @@ void igfx_init() {
 
     framebuffer_width = igfx_width;
     framebuffer_height = igfx_height;
+    framebuffer_pitch = scanline_w;
 
     back_framebuffer_addr = krealloc(back_framebuffer_addr, framebuffer_size);
-    // memset(back_framebuffer_addr, 0x00, framebuffer_size);
+    memset(back_framebuffer_addr, 0x00, framebuffer_size);
 
-//     clean_tty_screen();
-// 
+    clean_tty_screen();
+
 	asm volatile("sti");
 }
