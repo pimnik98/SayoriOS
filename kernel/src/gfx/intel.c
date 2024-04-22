@@ -139,16 +139,36 @@ void igfx_init() {
     IGFX_WRITE(0x7000B, IGFX_READ(0x7000B) & ~0x80); // disable pipe
     IGFX_WRITE(0x7100B, IGFX_READ(0x7100B) & ~0x80); // disable pipe
 
-//    while(IGFX_READ(0x7000B) & 0x40)
-//        ;
-//
-//    while(IGFX_READ(0x7100B) & 0x40)
-//        ;
+   while(IGFX_READ(0x7000B) & 0x40)
+       ;
+
+   while(IGFX_READ(0x7100B) & 0x40)
+       ;
+
+	size_t xaddr = 0x60000;
+
+	if((IGFX_READ(0x61180) & (1 << 31)) == 0) {
+		tty_printf("LVDS NOT ENABLED\n");
+	} else {
+		tty_printf("LVDS ENABLED\n");
+		xaddr += 0x1000;
+	}
+
+	size_t command = ((igfx_width - 1) << 16) | (igfx_height - 1);
+	size_t command_old = ((command & 0xffff) << 16) | ((command >> 16) & 0xffff);
+
+	IGFX_WRITE(xaddr + 0x1C, command);
+	IGFX_WRITE(xaddr + 0x10190, command_old);
+
+	size_t scanline_w = ((igfx_width + 15) & ~15) << 2;
+
+	IGFX_WRITE(xaddr + 0x10188, scanline_w);
+	IGFX_WRITE(xaddr + 0x10184, 0);
 
     // END
-//    IGFX_WRITE(0x61233, IGFX_READ(0x61233) & ~0x80); // disable panel fitting
-   IGFX_WRITE(0x7000B, IGFX_READ(0x7000B) | 0x80); // enable pipe
-   IGFX_WRITE(0x70183, IGFX_READ(0x70183) | 0x80); // enable Display Plane A
+	IGFX_WRITE(0x61233, IGFX_READ(0x61233) & ~0x80); // disable panel fitting
+	IGFX_WRITE(xaddr + 0x1000B, IGFX_READ(0x7000B) | 0x80); // enable pipe
+	IGFX_WRITE(xaddr + 0x10183, IGFX_READ(0x70183) | 0x80); // enable Display Plane A
 
     asm volatile("sti");
 }
