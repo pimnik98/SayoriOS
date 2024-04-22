@@ -29,6 +29,7 @@
 #include "sys/lapic.h"
 #include "drv/ps2.h"
 #include "net/dhcp.h"
+#include "gfx/intel.h"
 
 #include <lib/pixel.h>
 
@@ -452,7 +453,9 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     fsm_dpm_update(-1);    
     
     // vio_ntw_init();
-    
+
+    igfx_init();
+
 //    hda_init();
 
     cli();

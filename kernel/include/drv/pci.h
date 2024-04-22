@@ -39,6 +39,13 @@
 
 #define PCI_VENDOR_NO_DEVICE 0xFFFF /// Устройство не найдено
 
+#define PCI_BAR0 0x10
+#define PCI_BAR1 0x14
+#define PCI_BAR2 0x18
+#define PCI_BAR3 0x1C
+#define PCI_BAR4 0x20
+#define PCI_BAR5 0x24
+
 /**
  * @brief Структура устройства
  */

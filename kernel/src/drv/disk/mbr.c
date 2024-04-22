@@ -68,7 +68,6 @@ void mbr_dump_all(char disk) {
         mbr_dump(disk, 1);
         mbr_dump(disk, 2);
         mbr_dump(disk, 3);
+        tty_printf("\n");
     }
-
-    tty_printf("\n");
 }
