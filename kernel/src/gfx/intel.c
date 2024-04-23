@@ -176,7 +176,7 @@ void igfx_init() {
 
     unmap_pages_overlapping(get_kernel_page_directory(), (virtual_addr_t)framebuffer_addr, framebuffer_size);
 
-    framebuffer_size = igfx_width * igfx_height * 4;
+    framebuffer_size = ALIGN((igfx_width + 32) * igfx_height * 4, PAGE_SIZE);
 
     map_pages(get_kernel_page_directory(),
               (physical_addr_t)framebuffer_addr,
@@ -197,6 +197,8 @@ void igfx_init() {
     memset(back_framebuffer_addr, 0x00, framebuffer_size);
 
     clean_tty_screen();
+
+	tty_printf("Screen now tuned to: %dx%d;  Size: %d; BackFB: %x\n", igfx_width, igfx_height, framebuffer_size, back_framebuffer_addr);
 
 	asm volatile("sti");
 }
