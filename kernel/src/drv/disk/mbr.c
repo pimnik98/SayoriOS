@@ -4,7 +4,7 @@
 #include "debug/hexview.h"
 #include "io/tty.h"
 
-void ebr_recursive_dump(char disk, uint32_t abs_lba, uint32_t lba, int depth) {
+void ebr_recursive_dump(char disk, uint64_t abs_lba, uint64_t lba, int depth) {
     struct mbr_parition w = {};
 
     dpm_read(disk, 0, ((lba + abs_lba) * 512) + 446,  sizeof(w), (uint8_t *)&w);
@@ -32,7 +32,7 @@ void ebr_recursive_dump(char disk, uint32_t abs_lba, uint32_t lba, int depth) {
     }
 }
 
-void mbr_dump(char disk, uint32_t i) {
+void mbr_dump(char disk, uint64_t i) {
     struct mbr_parition p = {};
 
     dpm_read(disk, 0, 446 + (i * 16), sizeof(p), (uint8_t *)&p);

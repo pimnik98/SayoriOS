@@ -468,7 +468,7 @@ void _FloppyCheck(){
 	
 }
 
-size_t _FloppyDPMWriteA(size_t Disk, size_t high_offset, size_t low_offset, size_t Size, void* Buffer){
+size_t _FloppyDPMWriteA(size_t Disk, uint64_t high_offset, uint64_t low_offset, size_t Size, void* Buffer){
 	qemu_log("[DPM] Floppy A Write! Offset: %d | Size: %d",low_offset, Size);
 	if (Floppy(0).Status != 1) return 0;
 	//qemu_log("[FD%c] Write | Addr: %d | Size: %d",(device==FDB?'B':'A'),addr,size);
@@ -488,7 +488,7 @@ size_t _FloppyDPMWriteA(size_t Disk, size_t high_offset, size_t low_offset, size
 	return ds;
 }
 
-size_t _FloppyDPMReadA(size_t Disk, size_t high_offset, size_t low_offset, size_t Size, void* Buffer){
+size_t _FloppyDPMReadA(size_t Disk, uint64_t high_offset, uint64_t low_offset, size_t Size, void* Buffer){
 	qemu_log("[DPM] Floppy A Read! Offset: %d | Size: %d",low_offset, Size);
 	if (Floppy(0).Status != 1) return 0;
 	floppy_data[0].LastErr = 0;

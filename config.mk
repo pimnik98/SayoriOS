@@ -62,6 +62,7 @@ ASM_SRC=kernel/asm/init.s \
 	kernel/asm/regs.s \
 	kernel/src/lib/setjmp.s \
 	kernel/asm/switch_task.s \
+	kernel/asm/64bit_on_32bit.s \
 #	kernel/src/sys/v8086.s \
 
 ASM=$(ASM_SRC:%.s=$(OBJ_DIRECTORY)/%.o)
@@ -223,7 +224,7 @@ KERNEL_NEED = $(ASM) $(OBJS) $(CPP_CODE)
 
 COMMON_FLAGS = -O0 -nostdlib -fno-stack-protector -fno-builtin -Ikernel/include/ -ffreestanding \
 			   -Wall -Wno-div-by-zero -Wno-address-of-packed-member -Wno-implicit-function-declaration \
-			   -mno-red-zone -MMD -MP
+			   -mno-red-zone -MMD -MP 
 
 # Флаги компилятора языка C
 CFLAGS=$(DEBUG) $(ADDCFLAGS) $(COMMON_FLAGS)

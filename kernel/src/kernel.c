@@ -468,6 +468,13 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 // 
 // 	while(1);
 
+	uint64_t abc = 0x728430928748923;
+	uint64_t def = 0x857384123;
+	uint32_t aaa = (uint32_t)(abc / def);
+
+	qemu_log("%x (%x)", aaa, 0xdbad5b);
+	
+
     igfx_init();
 
 //    hda_init();

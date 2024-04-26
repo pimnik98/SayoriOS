@@ -19,5 +19,5 @@ struct mbr_parition {
     uint32_t num_sectors;
 } __attribute__((packed));
 
-void ebr_recursive_dump(char disk, uint32_t abs_lba, uint32_t lba, int depth);
-void mbr_dump(char disk, uint32_t i);
+void ebr_recursive_dump(char disk, uint64_t abs_lba, uint64_t lba, int depth);
+void mbr_dump(char disk, uint64_t i);

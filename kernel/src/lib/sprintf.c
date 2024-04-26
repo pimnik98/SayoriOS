@@ -306,7 +306,7 @@ int vsprintf(char* buffer, const char *format, va_list args) {
 
                 case 'i':
                 case 'd': {
-                	// FIXME: IMPLEMENT PRECISION HERE!
+                    // FIXME: IMPLEMENT PRECISION HERE!
                     int num = va_arg(args, int);
 
                     if(num < 0) {
@@ -333,7 +333,7 @@ int vsprintf(char* buffer, const char *format, va_list args) {
 
                     if(!left_align) {
                         itoa(num, buffer);
-                        
+
                         buffer += digit_count(num);
                     }
 

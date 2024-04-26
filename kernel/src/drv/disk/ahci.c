@@ -352,7 +352,7 @@ void ahci_send_cmd(volatile AHCI_HBA_PORT *port, size_t slot) {
  * @param sector_count - колчество секторов
  * @param buffer - буфер куда сохранять данные
  */
-void ahci_read_sectors(size_t port_num, size_t location, size_t sector_count, void* buffer) {
+void ahci_read_sectors(size_t port_num, uint64_t location, size_t sector_count, void* buffer) {
 	if(!ahci_initialized) {
 		qemu_err("AHCI not present!");
 		return;
@@ -418,8 +418,12 @@ void ahci_read_sectors(size_t port_num, size_t location, size_t sector_count, vo
 
 	cmdfis->lba0 = location & 0xFF;
 	cmdfis->lba1 = (location >> 8) & 0xFF;
-	cmdfis->lba2 = (location >> 16) & 0xFF;
-	cmdfis->device = 1 << 6;	// LBA mode
+    cmdfis->lba2 = (location >> 16) & 0xFF;
+    cmdfis->lba3 = (location >> 24) & 0xFF;
+    cmdfis->lba4 = (location >> 32) & 0xFF;
+    cmdfis->lba5 = (location >> 40) & 0xFF;
+
+    cmdfis->device = 1 << 6;	// LBA mode
 
 	cmdfis->lba3 = (location >> 24) & 0xFF;
 
@@ -579,7 +583,7 @@ void ahci_eject_cdrom(size_t port_num) {
     ahci_send_cmd(port, 0);
 }
 
-void ahci_read(size_t port_num, uint8_t* buf, uint32_t location, uint32_t length) {
+void ahci_read(size_t port_num, uint8_t* buf, uint64_t location, uint32_t length) {
 	ON_NULLPTR(buf, {
 		qemu_log("Buffer is nullptr!");
 		return;
@@ -587,13 +591,13 @@ void ahci_read(size_t port_num, uint8_t* buf, uint32_t location, uint32_t length
 
 	// TODO: Get sector size somewhere (Now we hardcode it into 512).
 
-	size_t start_sector = location / 512;
-	size_t end_sector = (location + length - 1) / 512;
-	size_t sector_count = end_sector - start_sector + 1;
+	uint64_t start_sector = location / 512;
+	uint64_t end_sector = (location + length - 1) / 512;
+	uint64_t sector_count = end_sector - start_sector + 1;
 
-	size_t real_length = sector_count * 512;
+	uint64_t real_length = sector_count * 512;
 
-	qemu_log("Reading %d sectors...", sector_count);
+	qemu_log("Reading %d sectors...", (uint32_t)sector_count);
 
 	uint8_t* real_buf = kmalloc(real_length);
 
@@ -604,7 +608,7 @@ void ahci_read(size_t port_num, uint8_t* buf, uint32_t location, uint32_t length
 	kfree(real_buf);
 }
 
-size_t ahci_dpm_read(size_t Disk, size_t high_offset, size_t low_offset, size_t Size, void* Buffer){
+size_t ahci_dpm_read(size_t Disk, uint64_t high_offset, uint64_t low_offset, size_t Size, void* Buffer){
     qemu_err("TODO: SATA DPM READ");
 
 	DPM_Disk dpm = dpm_info(Disk + 65);
@@ -614,7 +618,7 @@ size_t ahci_dpm_read(size_t Disk, size_t high_offset, size_t low_offset, size_t 
     return Size;
 }
 
-size_t ahci_dpm_write(size_t Disk, size_t high_offset, size_t low_offset, size_t Size, void* Buffer){
+size_t ahci_dpm_write(size_t Disk, uint64_t high_offset, uint64_t low_offset, size_t Size, void* Buffer){
     qemu_err("TODO: SATA DPM WRITE");
 
 //    DPM_Disk dpm = dpm_info(Disk + 65);

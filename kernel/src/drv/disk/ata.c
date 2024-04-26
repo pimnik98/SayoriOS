@@ -49,7 +49,7 @@ void ide_soft_reset(size_t io) {
 	outb(io + ATA_REG_CONTROL, 0);
 }
 
-size_t dpm_ata_read(size_t Disk, size_t high_offset, size_t low_offset, size_t Size, void* Buffer){
+size_t dpm_ata_read(size_t Disk, uint64_t high_offset, uint64_t low_offset, size_t Size, void* Buffer){
     /// Функции для чтения
     DPM_Disk dpm = dpm_info(Disk + 65);
 //    qemu_note("[ATA] [DPM] [DISK %d] [READ] Off: %d | Size: %d", dpm.Point, Offset, Size);
@@ -60,7 +60,7 @@ size_t dpm_ata_read(size_t Disk, size_t high_offset, size_t low_offset, size_t S
 }
 
 
-size_t dpm_ata_write(size_t Disk, size_t high_offset, size_t low_offset, size_t Size, void* Buffer){
+size_t dpm_ata_write(size_t Disk, uint64_t high_offset, uint64_t low_offset, size_t Size, void* Buffer){
     /// Функции для записи
     DPM_Disk dpm = dpm_info(Disk + 65);
 //    qemu_note("[ATA] [DPM] [DISK %d] [WRITE] Off: %d | Size: %d", dpm.Point, Offset, Size);
