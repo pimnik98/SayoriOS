@@ -257,19 +257,7 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     kHandlerCMD((char *) mboot->cmdline);
     
     drv_vbe_init(mboot);
-    
-    // TODO: Read-only memory for .rodata segment
-    //	size_t rostart = &RODATA_start;
-    //	size_t roend = &RODATA_end;
-    //
-    //	map_pages(
-    //		get_kernel_dir(),
-    //		rostart,
-    //		rostart,
-    //		(ALIGN(roend, PAGE_SIZE) - rostart) / PAGE_SIZE,
-    //		PAGE_PRESENT
-    //	);
-    
+
     qemu_log("Registration of file system drivers...");
     fsm_reg("TARFS", 1, &fs_tarfs_read, &fs_tarfs_write, &fs_tarfs_info, &fs_tarfs_create, &fs_tarfs_delete,
             &fs_tarfs_dir, &fs_tarfs_label, &fs_tarfs_detect);
@@ -284,6 +272,8 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     fs_natfs_init();
 
     grub_modules_init(mboot);
+    
+    kernel_start_time = getTicks();
 
     mtrr_init();
     text_init("R:\\Sayori\\Fonts\\UniCyrX-ibm-8x16.psf");
@@ -320,6 +310,9 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     ps2_keyboard_install_irq();
     ps2_mouse_install_irq();
 
+    bootScreenPaint("PCI Setup...");
+    pci_scan_everything();
+
     bootScreenPaint("Инициализация ATA...");
     ata_init();
     ata_dma_init();
@@ -341,8 +334,6 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
     bootScreenPaint("Настройка системных вызовов...");
     qemu_log("Registering System Calls...");
     init_syscalls();
-    
-    kernel_start_time = getTicks();
     
     bootScreenPaint("Настройка ENV...");
     qemu_log("Registering ENV...");
@@ -430,8 +421,7 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
                 );
         }
     }
-    qemu_log("Kernel bootup time: %f seconds.", (double) (getTicks() - kernel_start_time) / getFrequency());
-    
+
     //	if (test_floppy){
     //		initFloppy();
     //		fatTest();
@@ -468,16 +458,11 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 // 
 // 	while(1);
 
-	uint64_t abc = 0x728430928748923;
-	uint64_t def = 0x857384123;
-	uint32_t aaa = (uint32_t)(abc / def);
-
-	qemu_log("%x (%x)", aaa, 0xdbad5b);
-	
-
     igfx_init();
 
 //    hda_init();
+
+    qemu_log("System initialized everything at: %f seconds.", (double) (getTicks() - kernel_start_time) / getFrequency());
 
     cli();
 

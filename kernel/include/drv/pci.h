@@ -74,6 +74,17 @@ typedef struct pci_header_t {
 	uint8_t max_latency;            /// ???
 } pci_header_t;
 
+typedef struct {
+    uint16_t vendor_id;
+    uint16_t device_id;
+    uint16_t klass;
+    uint16_t subclass;
+    uint16_t bus;
+    uint16_t slot;
+    uint16_t func;
+    uint16_t hdrtype;
+} pci_device_t;
+
 uint16_t pci_read_confspc_word(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset);
 uint8_t pci_get_class(uint8_t bus, uint8_t slot, uint8_t function);
 uint8_t pci_get_subclass(uint8_t bus, uint8_t slot, uint8_t function);
@@ -90,3 +101,5 @@ void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, ui
 									  uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret);
 void pci_enable_bus_mastering(uint8_t bus, uint8_t slot, uint8_t func);
 uint32_t pci_read32(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset);
+
+void pci_scan_everything();
