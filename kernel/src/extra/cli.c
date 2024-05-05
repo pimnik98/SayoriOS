@@ -604,6 +604,8 @@ void cli(){
 
 		if(delta > 0) {
 			qemu_err("Memory leak!");
+		} else if(delta == 0) {
+			qemu_ok("All right! No memory leaks! Keep it up, buddy!");
 		}
 
         qemu_note("Time elapsed: %d milliseconds", timestamp() - current_time);
