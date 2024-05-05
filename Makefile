@@ -24,10 +24,6 @@ $(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
 	@echo -e '\x1b[32mCPP  \x1b[0m' $@
 	@$(CXX) $(CPP_FLAGS) -c -o $@ $<
 
-build_rust:
-	@echo -e '\x1b[32mRUST  \x1b[0mBuilding Rust subsystem'
-	cd rust && rustup override set nightly && rustup component add rust-src --toolchain nightly-x86_64-unknown-linux-gnu && cargo +nightly build --release
-
 # Сборка ядра
 build: $(SOURCES)
 

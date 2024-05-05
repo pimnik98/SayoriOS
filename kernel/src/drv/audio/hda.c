@@ -9,6 +9,7 @@
 #include "mem/pmm.h"
 #include "mem/vmm.h"
 #include "sys/isr.h"
+#include "../../lib/libvector/include/vector.h"
 
 uint8_t hda_bus = 0,
         hda_slot = 0,
@@ -52,6 +53,8 @@ volatile size_t hda_response = 0;
 size_t hda_afg_codec_id = 0;
 size_t hda_afg_node_id = 0;
 
+vector_t* hda_output_nodes;
+
 void hda_init() {
     // Find devce by its class and subclass numbers.
     pci_find_device_by_class_and_subclass(4, 3, &hda_vendor, &hda_device, &hda_bus, &hda_slot, &hda_func);
@@ -94,6 +97,8 @@ void hda_init() {
     size_t output_streams = (data >> 12) & 0b1111;
 
     tty_printf("HDA: I: %d; O: %d;\n", input_streams, output_streams);
+
+    hda_output_nodes = vector_new();
 
     WRITE32(0x20, 0);
 
@@ -193,6 +198,8 @@ void hda_init() {
             hda_find_afg(id, codec);
         }
     }
+
+    tty_printf("Found %d suitable output nodes.\n", hda_output_nodes->size);
 }
 
 void hda_find_afg(size_t codec_response, size_t codec_id) {
@@ -220,6 +227,7 @@ void hda_find_afg(size_t codec_response, size_t codec_id) {
 
             hda_afg_node_id = node; // Save node
             qemu_ok("UNBELIEVABLE! FOUND AFG!");
+          	tty_printf("UNBELIEVABLE! FOUND AFG!\n");
 
             hda_initialize_afg();
             break;
@@ -264,19 +272,21 @@ void hda_initialize_afg() {
             continue;
         }
 
-        qemu_note("type: %d = %s", type, node_types[type]);
-        tty_printf("|- %s at node: %d\n", node_types[type], node);
+        // qemu_note("type: %d = %s", type, node_types[type]);
+        // tty_printf("|- %s at node: %d\n", node_types[type], node);
 
         if(type == 0x4) {
             size_t type_of_node = ((hda_send_verb_via_corb_rirb(VERB(hda_afg_codec_id, node, 0xF1C, 0x00)) >> 20) & 0xF);
 
-            qemu_note("COMPLEX PIN HAS TYPE: %d", type_of_node);
-            tty_printf("|- COMPLEX PIN HAS TYPE: %d\n", type_of_node);
+            // qemu_note("COMPLEX PIN HAS TYPE: %d", type_of_node);
+            // tty_printf("|- COMPLEX PIN HAS TYPE: %d\n", type_of_node);
 
             if(type_of_node == 0) {
-                tty_printf("|- LINE OUT\n");
+                tty_printf("Node %d is LINE OUT\n", node);
+                vector_push_back(hda_output_nodes, node);
             } else if(type_of_node == 1) {
-                tty_printf("|- SPEAKER\n");
+                tty_printf("Node %d is SPEAKER\n", node);
+                vector_push_back(hda_output_nodes, node);
             }
         }
     }

@@ -19,7 +19,7 @@ void substr(char* restrict dest, const char* restrict source, int from, int leng
 int strcmp(const char *s1, const char *s2);
 int32_t strncmp(const char *s1, const char *s2, size_t num);
 
-char digit_count(size_t num);
+char digit_count(uint64_t num);
 char hex_count(size_t num);
 size_t itoh(size_t n, char *buffer);
 size_t itou(size_t n, char *buffer);

@@ -679,7 +679,7 @@ int dcmpstr( const char *s1, const char *s2 )
            ( ( unsigned char )*s1 < ( unsigned char )*s2 );
 }
 
-char digit_count(size_t num) {
+char digit_count(uint64_t num) {
     if(num == 0)
         return 1;
     

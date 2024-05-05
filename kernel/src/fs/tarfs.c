@@ -39,7 +39,7 @@ size_t fs_tarfs_read(const char Disk, const char* Path, size_t Offset, size_t Si
 		if (!strcmpn(initrd->Files[i].Name,Path))
 			continue;
 
-		return dpm_read(Disk,initrd->Files[i].Addr+Offset, Size, Buffer);
+		return dpm_read(Disk,0,initrd->Files[i].Addr+Offset, Size, Buffer);
 	}
 
     if (tarfs_debug)
@@ -103,7 +103,7 @@ void fs_tarfs_label(const char Disk, char* Label){
 int fs_tarfs_detect(const char Disk){
 	char* Buffer = kmalloc(5);
 
-	dpm_read(Disk, 257, 5,Buffer);
+	dpm_read(Disk,0,257, 5,Buffer);
 
 	bool isTarFS = ((Buffer[0]  != 0x75 || Buffer[1]  != 0x73 || Buffer[2]  != 0x74 || Buffer[3]  != 0x61 || Buffer[4]  != 0x72)?false:true);
     if (tarfs_debug) qemu_log("[0] = %x",Buffer[0]);

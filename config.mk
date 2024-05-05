@@ -15,8 +15,8 @@ endif
 
 CC=$(shell bash tools/compiler.sh $(COMPILER_DETECTOR_FLAGS))
 
-GAMEBOY = $(wildcard kernel/src/ports/gameboy/*.c)
-GAMEBOY_OBJS = $(GAMEBOY:.c=.o)
+#GAMEBOY = $(wildcard kernel/src/ports/gameboy/*.c)
+#GAMEBOY_OBJS = $(GAMEBOY:.c=.o)
 
 OBJ_DIRECTORY = objects
 DIRECTORIES = objects/kernel/src \
@@ -42,6 +42,7 @@ DIRECTORIES = objects/kernel/src \
 				objects/kernel/src/fs \
 				objects/kernel/src/lib/math \
 				objects/kernel/src/toys \
+				objects/kernel/src/gfx \
 				objects/kernel/src/gui \
 				objects/kernel/src/desktop \
 				objects/kernel/src/user \
@@ -61,6 +62,7 @@ ASM_SRC=kernel/asm/init.s \
 	kernel/asm/regs.s \
 	kernel/src/lib/setjmp.s \
 	kernel/asm/switch_task.s \
+	kernel/asm/64bit_on_32bit.s \
 #	kernel/src/sys/v8086.s \
 
 ASM=$(ASM_SRC:%.s=$(OBJ_DIRECTORY)/%.o)
@@ -194,6 +196,7 @@ SOURCES=\
 	kernel/src/lib/utf_conversion.c \
 	kernel/src/lib/base64.c \
 	kernel/src/sys/file_descriptors.c \
+	kernel/src/net/tcp.c \
 	kernel/src/net/stack.c \
 	kernel/src/toys/pavi.c \
 	kernel/src/drv/audio/hda.c \
@@ -201,6 +204,7 @@ SOURCES=\
 	kernel/src/drv/disk/mbr.c \
 	kernel/src/sys/lapic.c \
 	kernel/src/drv/ps2.c \
+	kernel/src/gfx/intel.c \
 	$(GAMEBOY) \
 	kernel/src/kernel.c \
 #	kernel/src/lib/duktape.c \
@@ -213,12 +217,6 @@ SOURCES=\
 	kernel/src/fs/smfs.c \
 	kernel/src/lib/base64.c \
 
-RUST_DIR = rust/
-RUST_TARGET = i686-unknown-none
-RUST_OBJ_DEBUG = rust/target/$(RUST_TARGET)/debug/librust.a
-RUST_OBJ_RELEASE = rust/target/$(RUST_TARGET)/release/librust.a
-RUST_SOURCES = $(shell find rust/src/ -type f -name '*.rs')
-
 OBJS = $(SOURCES:%.c=$(OBJ_DIRECTORY)/%.o)
 DEPS = $(OBJS:%.o=%.d)
 
@@ -226,7 +224,7 @@ KERNEL_NEED = $(ASM) $(OBJS) $(CPP_CODE)
 
 COMMON_FLAGS = -O0 -nostdlib -fno-stack-protector -fno-builtin -Ikernel/include/ -ffreestanding \
 			   -Wall -Wno-div-by-zero -Wno-address-of-packed-member -Wno-implicit-function-declaration \
-			   -mno-red-zone -MMD -MP
+			   -mno-red-zone -MMD -MP 
 
 # Флаги компилятора языка C
 CFLAGS=$(DEBUG) $(ADDCFLAGS) $(COMMON_FLAGS)
@@ -273,11 +271,11 @@ QEMU_FLAGS = -cdrom kernel.iso -m $(MEMORY_SIZE) \
 			 -rtc base=localtime \
 			 -d guest_errors,cpu_reset,int \
 			 -audiodev pa,id=pa0 \
-			 -netdev user,id=net0,net=192.168.111.0,dhcpstart=192.168.111.128,hostfwd=tcp::9999-:8888 \
+			 -netdev user,id=net0,net=192.168.111.0,dhcpstart=192.168.111.128,hostfwd=tcp::9999-:9999 \
 			 -device rtl8139,netdev=net0,id=mydev0 \
 			 -M pcspk-audiodev=pa0 \
 			 -device ich9-intel-hda,debug=0 \
-			 -device hda-output \
+			 -device hda-output,audiodev=pa0 \
 			 -trace "hda*" \
 			 -boot d \
 			 -cpu core2duo-v1 \

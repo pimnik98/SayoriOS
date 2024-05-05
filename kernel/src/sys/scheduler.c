@@ -159,6 +159,13 @@ process_t* get_current_proc(void) {
 	return current_proc;
 }
 
+void blyat_fire() {
+    qemu_note("PROCESS %d WANTS TO EXIT!", current_proc->pid);
+    qemu_err("BLYAT FIRE-RE-RE-RE-RE-RE-RE-RE-RE-RE-RE!!!");
+    kill_process(current_proc->pid);
+    while(1);
+}
+
 /**
  * @brief Создание потока
  * 
@@ -193,7 +200,7 @@ thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t st
     stack = (void*) kcalloc(stack_size, 1);
 
     tmp_thread->stack = stack;
-    tmp_thread->esp = (uint32_t) stack + stack_size - (6 * 4);
+    tmp_thread->esp = (uint32_t) stack + stack_size - (7 * 4);
     tmp_thread->stack_top = (uint32_t) stack + stack_size;
 
     /* Add thread to ring queue */
@@ -212,12 +219,13 @@ thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t st
 
     eflags |= (1 << 9);
 
-    esp[-1] = (uint32_t) entry_point;
-    esp[-2] = eflags;
-    esp[-3] = 0;
+    esp[-1] = (uint32_t) blyat_fire;
+    esp[-2] = (uint32_t) entry_point;
+    esp[-3] = eflags;
     esp[-4] = 0;
     esp[-5] = 0;
     esp[-6] = 0;
+    esp[-7] = 0;
 
     return tmp_thread;
 }
@@ -244,6 +252,8 @@ void kill_process(size_t id) {
     if(id == 0) {
         goto end;
     }
+
+    qemu_note("Killing process: %d", id);
 
     bool found = false;
     list_item_t* item = process_list.first;
@@ -280,6 +290,7 @@ void kill_process(size_t id) {
     }
 
     // TODO: FIND AND CLEAN PAGE TABLES
+    // IS IT DONE?
     for(int i = 0; i < 1024; i++) {
         if(process->page_tables_virts[i] != 0) {
             kfree((void *) process->page_tables_virts[i]);
@@ -287,6 +298,8 @@ void kill_process(size_t id) {
     }
 
     kfree((void *) process->page_dir_virt);
+
+    list_remove(&process->list_item);
 
     end:
     asm volatile("sti");

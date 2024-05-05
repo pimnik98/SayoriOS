@@ -214,7 +214,7 @@ void fs_fat32_read_entire_fat(char Disk) {
 
     desc->fat_table = kcalloc(1, desc->fat_size);
 
-    dpm_read(Disk, desc->fat_offset, desc->fat_size, desc->fat_table);
+    dpm_read(Disk, 0, desc->fat_offset, desc->fat_size, desc->fat_table);
 }
 
 // Make sure buffer size is cluster-size aligned :)
@@ -229,7 +229,7 @@ void fs_fat32_read_clusters_to_memory(char Disk, size_t cluster_number, void* bu
         size_t addr = ((desc->info.reserved_sectors + (desc->info.fat_size_in_sectors * 2)) \
  						+ ((current_cluster - 2) * desc->info.sectors_per_cluster)) * desc->info.bytes_per_sector;
 
-        dpm_read(Disk, addr, desc->cluster_size, (void*)(((size_t)buffer) + (i * desc->cluster_size)));
+        dpm_read(Disk, 0, addr, desc->cluster_size, (void*)(((size_t)buffer) + (i * desc->cluster_size)));
     }
 
     vector_destroy(cluster_list);
@@ -319,6 +319,7 @@ void fs_fat32_read_clusters_to_memory_precise(char Disk, size_t cluster_number, 
 
         dpm_read(
                 Disk,
+                0,
                 addr,
                 MIN(desc->cluster_size * count, len),
                 (void*)(((size_t)buffer) + (buffer_index * desc->cluster_size))
@@ -340,6 +341,7 @@ void fs_fat32_read_clusters_to_memory_precise(char Disk, size_t cluster_number, 
 
         dpm_read(
                 Disk,
+                0,
                 addr + byte_offset,
                 MIN(desc->cluster_size, len),
                 (void*)(((size_t)buffer) + (buffer_index * desc->cluster_size))
@@ -649,7 +651,7 @@ int fs_fat32_detect(char Disk) {
 
     fat_description_t* fat_system = kcalloc(1, sizeof(fat_description_t));
 
-	dpm_read(Disk, 0, sizeof(fat_info_t), &fat_system->info);
+	dpm_read(Disk, 0, 0, sizeof(fat_info_t), &fat_system->info);
 
     qemu_warn("Trying FAT32...");
 

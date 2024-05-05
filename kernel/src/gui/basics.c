@@ -26,8 +26,8 @@ void draw_rectangle(const uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32
 }
 
 void draw_filled_rectangle(size_t x, size_t y, size_t w, size_t h, const uint32_t fill) {
-    for(int i = 0; i < h; i++) {
-        for(int j = 0; j < w; j++) {
+    for(register int i = 0; i < h; i++) {
+        for(register int j = 0; j < w; j++) {
             set_pixel(x+j, y+i, fill);
         }
     }

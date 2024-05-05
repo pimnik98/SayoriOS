@@ -12,6 +12,7 @@
 #include "net/arp.h"
 #include "net/udp.h"
 #include "net/icmp.h"
+#include "net/tcp.h"
 
 void ipv4_handle_packet(netcard_entry_t *card, char *packet, size_t packet_size) {
 	ETH_IPv4_PKG* ipv4_pkt = (ETH_IPv4_PKG*)packet;
@@ -33,7 +34,11 @@ void ipv4_handle_packet(netcard_entry_t *card, char *packet, size_t packet_size)
 		qemu_err("ICMP not implemented!");
 
 		icmp_handle_packet(card, packet + sizeof(ETH_IPv4_PKG));
-	} else {
+	} else if(ipv4_pkt->Protocol == ETH_IPv4_HEAD_TCP) {
+        qemu_note("HANDLING TCP!");
+
+        tcp_handle_packet(card, (tcp_packet_t*)(packet + sizeof(ETH_IPv4_PKG)));
+    } else {
 		qemu_log("  | |--- Header: [%x] %s", ipv4_pkt->Protocol, "Unknown");
 		qemu_log("  | |--- RAW: %d bytes", packet_size - sizeof(ETH_IPv4_PKG));
 		qemu_log("  | |");

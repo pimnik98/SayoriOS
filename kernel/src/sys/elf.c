@@ -117,8 +117,6 @@ int32_t run_elf_file(const char *name, int argc, char* eargv[]) {
 			(PAGE_PRESENT | PAGE_USER | PAGE_WRITEABLE) // 0x07
 		);
 
-		// Can be collapsed into: vmm_allocated[vmm_allocated_count++] = addrto;
-
 		vmm_allocated[vmm_allocated_count] = addrto;
 		vmm_sizes[vmm_allocated_count] = pagecount;
 		vmm_mapped[vmm_allocated_count] = phdr->p_vaddr;
