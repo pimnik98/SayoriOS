@@ -26,4 +26,20 @@ typedef struct {
     uint16_t urg_ptr;
 } tcp_packet_t;
 
+typedef enum {
+	EIKS_CREATED,
+	EIKS_LISTENING,
+	EIKS_ESTABLISHED
+} tcp_connection_status_t;
+
+typedef struct {
+	netcard_entry_t* card;
+	uint32_t dest_ip_addr;
+	uint16_t source_port;
+	uint16_t dest_port;
+	uint32_t seq;
+	uint32_t dst_seq;
+	tcp_connection_status_t status;
+} tcp_connection_t;
+
 void tcp_handle_packet(netcard_entry_t *card, tcp_packet_t *packet);

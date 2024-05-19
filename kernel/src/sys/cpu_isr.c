@@ -69,6 +69,10 @@ _Noreturn void bsod_screen(registers_t regs, char* title, char* msg, uint32_t co
     qemu_log("======================================================\n");
 
 	qemu_err("PROCESS CAUSED THE EXCEPTION: nr. %d", get_current_proc()->pid);
+
+	if(get_current_proc()->pid != 0) {
+		qemu_note("TODO: Kill that process and return to system.");
+	}
 	
     unwind_stack(10);
 
