@@ -3,6 +3,7 @@
 #include "io/ports.h"
 #include "sys/msr.h"
 #include "sys/mtrr.h"
+#include "io/tty.h"
 
 #define UNCACHED 0
 #define WRITECOMBINING 1
@@ -49,6 +50,34 @@ void mtrr_init() {
 	}
 }
 
+void list_mtrrs() {
+	tty_printf("Physical FB is: %x", getDisplayAddr());
+
+	for(size_t i = 0; i < variable_size_mtrrs; i++) {
+		uint32_t base, mask;
+
+		read_mtrr(i, &base, &mask);
+
+		qemu_log("[%d] MTRR: base: %x; mask: %x", i, base, mask);
+		tty_printf("[%d] MTRR: base: %x; mask: %x\n", i, base, mask);
+	}
+}
+
+uint32_t get_mtrr_index(uint32_t address) {
+    for(size_t i = 0; i < variable_size_mtrrs; i++) {
+        uint32_t base, mask;
+
+        read_mtrr(i, &base, &mask);
+
+        if((mask & (1 << 11)) && (base & ~0xfff) == ALIGN(address, 4096)) {
+            return i;
+        }
+    }
+
+    return 0xffffffff;
+}
+
+
 void read_mtrr(size_t index, uint32_t* base, uint32_t* mask) {
 	uint32_t unused;
 
@@ -75,8 +104,8 @@ void write_mtrr_size(size_t index, uint32_t base, uint32_t size, size_t type) {
 	if(index >= variable_size_mtrrs)
 		return;
 
-	wrmsr(0x200 + (index * 2), base | type, unused);
-	wrmsr(0x201 + (index * 2), CALC_MASK(ALIGN(size, 4096)), unused);
+	wrmsr(0x200 + (index * 2), ALIGN(base, 4096) | type, unused);
+	wrmsr(0x201 + (index * 2), CALC_MASK(ALIGN(size, 4096)) | (1 << 11), unused);
 }
 
 size_t find_free_mtrr() {

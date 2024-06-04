@@ -31,11 +31,11 @@ vector_t* pci_device_list = 0;
  */
 uint16_t pci_read_confspc_word(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset) {
     uint32_t addr;
-    uint32_t bus32 = bus;
+    // uint32_t bus32 = bus;
     uint32_t slot32 = slot;
     uint32_t func32 = function;
     
-    addr = (uint32_t)((bus32 << 16) | (slot32 << 11) |
+    addr = (uint32_t)(((uint32_t)bus << 16) | (slot32 << 11) |
            (func32 << 8) | (offset & 0xfc) | ((uint32_t)0x80000000)); //yes, this line is copied from osdev
 
     outl(PCI_ADDRESS_PORT, addr);

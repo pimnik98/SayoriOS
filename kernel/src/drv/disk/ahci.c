@@ -142,6 +142,8 @@ void ahci_init() {
 			while(port->command_and_status & (1 << 15));
 
             ahci_rebase_memory_for(i);
+
+            // Additional initialization here
         }
 	}
 
@@ -425,16 +427,6 @@ void ahci_read_sectors(size_t port_num, uint64_t location, size_t sector_count, 
 
     cmdfis->device = 1 << 6;	// LBA mode
 
-	cmdfis->lba3 = (location >> 24) & 0xFF;
-
-#ifdef SAYORI64
-    cmdfis->lba4 = (location >> 32) & 0xFF;
-	cmdfis->lba5 = (location >> 40) & 0xFF;
-#else
-    cmdfis->lba4 = 0;
-    cmdfis->lba5 = 0;
-#endif
-
 	cmdfis->countl = sector_count & 0xff;
 	cmdfis->counth = (sector_count >> 8) & 0xff;
 
@@ -525,15 +517,6 @@ void ahci_write_sectors(size_t port_num, size_t location, size_t sector_count, v
 	cmdfis->device = 1 << 6;	// LBA mode
 
 	cmdfis->lba3 = (location >> 24) & 0xFF;
-
-#ifdef SAYORI64
-    cmdfis->lba4 = (location >> 32) & 0xFF;
-	cmdfis->lba5 = (location >> 40) & 0xFF;
-#else
-    cmdfis->lba4 = 0;
-    cmdfis->lba5 = 0;
-#endif
-
 	cmdfis->countl = sector_count & 0xff;
 	cmdfis->counth = (sector_count >> 8) & 0xff;
 

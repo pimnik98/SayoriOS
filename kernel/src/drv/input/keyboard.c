@@ -32,14 +32,14 @@ extern void tty_backspace();
 
 bool    SHIFT = false,          ///< Включен ли SHIFT
         RU = false;             ///< Печатаем русскими?
-int     lastKey = 0;            ///< Последний индекс клавишы
+volatile int     lastKey = 0;            ///< Последний индекс клавишы
 uint8_t kbdstatus = 0;          ///< Статус клавиатуры
 bool    echo = true;            ///< Включен ли вывод?
 bool    key_ctrl = false;
 
-char kmode = 0;
-char* curbuf = 0;
-uint32_t chartyped = 0;
+volatile char kmode = 0;
+volatile char* curbuf = 0;
+volatile uint32_t chartyped = 0;
 
 /**
  * @brief Выводит правильный символ, в зависимости от языка и шифта

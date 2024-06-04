@@ -174,27 +174,29 @@ void igfx_init() {
 	IGFX_WRITE(xaddr + 0x10180, IGFX_READ(xaddr + 0x10180) | (1 << 31)); // enable Display Plane A
 
 
-    unmap_pages_overlapping(get_kernel_page_directory(), (virtual_addr_t)framebuffer_addr, framebuffer_size);
+//    unmap_pages_overlapping(get_kernel_page_directory(), (virtual_addr_t)framebuffer_addr, framebuffer_size);
+//
+//    framebuffer_size = ALIGN((igfx_width + 32) * igfx_height * 4, PAGE_SIZE);
+//
+//    map_pages(get_kernel_page_directory(),
+//              (physical_addr_t)framebuffer_addr,
+//              (virtual_addr_t)framebuffer_addr,
+//              framebuffer_size,
+//              PAGE_WRITEABLE);
+//
+//	memset(framebuffer_addr, 0xff, framebuffer_size);
+//
+//    extern uint32_t framebuffer_width;
+//    extern uint32_t framebuffer_height;
+//
+//    framebuffer_width = igfx_width;
+//    framebuffer_height = igfx_height;
+//    framebuffer_pitch = scanline_w;
+//
+//    back_framebuffer_addr = krealloc(back_framebuffer_addr, framebuffer_size);
+//    memset(back_framebuffer_addr, 0x00, framebuffer_size);
 
-    framebuffer_size = ALIGN((igfx_width + 32) * igfx_height * 4, PAGE_SIZE);
-
-    map_pages(get_kernel_page_directory(),
-              (physical_addr_t)framebuffer_addr,
-              (virtual_addr_t)framebuffer_addr,
-              framebuffer_size,
-              PAGE_WRITEABLE);
-
-	memset(framebuffer_addr, 0xff, framebuffer_size);
-
-    extern uint32_t framebuffer_width;
-    extern uint32_t framebuffer_height;
-
-    framebuffer_width = igfx_width;
-    framebuffer_height = igfx_height;
-    framebuffer_pitch = scanline_w;
-
-    back_framebuffer_addr = krealloc(back_framebuffer_addr, framebuffer_size);
-    memset(back_framebuffer_addr, 0x00, framebuffer_size);
+    graphics_update(igfx_width, igfx_height, scanline_w);
 
     clean_tty_screen();
 

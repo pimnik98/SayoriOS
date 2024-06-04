@@ -122,3 +122,5 @@ inline static __attribute__((always_inline)) uint32_t getDisplaySize(){
 
 void setPixelAlpha(uint32_t x, uint32_t y, rgba_color color);
 void rect_copy(int x, int y, int width, int height);
+void graphics_update(uint32_t new_width, uint32_t new_height, uint32_t new_pitch);
+

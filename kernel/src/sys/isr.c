@@ -11,9 +11,9 @@
 #include "io/ports.h"
 #include "sys/cpu_isr.h"
 
-isr_t	interrupt_handlers[256];
+volatile isr_t	interrupt_handlers[256];
 
-void isr_handler(registers_t regs){
+void isr_handler(const registers_t regs){
     if (interrupt_handlers[regs.int_num] != 0){
         isr_t handler = interrupt_handlers[regs.int_num];
         handler(regs);

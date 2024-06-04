@@ -458,6 +458,12 @@ uint32_t CLI_CMD_REBOOT(uint32_t argc, char* argv[]) {
     return 0;
 }
 
+uint32_t CLI_CMD_MTRR(uint32_t argc, char* argv[]) {
+	list_mtrrs();
+
+	return 0;
+}
+
 uint32_t CLI_RD(uint32_t argc, char* argv[]) {
     if(argc < 2) {
         tty_error("No arguments.\n");
@@ -508,6 +514,7 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
 	{"DESKTOP", "desktop", parallel_desktop_start, "Рабочий стол"},
 	{"MALA", "mala", mala_draw, "Нарисовать рисунок"},
     {"MINESWEEPER", "minesweeper", minesweeper, "Сапёр"},
+    {"MTRR", "mtrr", CLI_CMD_MTRR, "MTRR"},
 	{"PAVI", "pavi", pavi_view, "Программа для просмотра изображений"},
 	{"PCI", "pci", pci_print_list, "Список PCI устройств"},
 	// {"RS", "rs", rust_command, "Rust command"},
@@ -604,6 +611,8 @@ void cli(){
 
 		if(delta > 0) {
 			qemu_err("Memory leak!");
+		} else if(delta == 0) {
+			qemu_ok("All right! No memory leaks! Keep it up, buddy!");
 		}
 
         qemu_note("Time elapsed: %d milliseconds", timestamp() - current_time);
