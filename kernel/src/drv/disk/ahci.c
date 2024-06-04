@@ -142,6 +142,8 @@ void ahci_init() {
 			while(port->command_and_status & (1 << 15));
 
             ahci_rebase_memory_for(i);
+
+            // Additional initialization here
         }
 	}
 
