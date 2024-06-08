@@ -149,7 +149,7 @@ void ahci_init() {
 
 				port->command_and_status |= (1 << 2);
 
-				sleep_ms(50);  // Replace them with checks
+				sleep_ms(200);  // Replace them with checks
 			} else {
 				tty_printf("ALREADY POWERED ON\n");
 			}
