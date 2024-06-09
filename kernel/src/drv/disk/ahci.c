@@ -110,7 +110,14 @@ void ahci_init() {
 	register_interrupt_handler(32 + ahci_irq, ahci_irq_handler);
 
 	// Init
-	abar->global_host_control |= (1 << 1);  // AHCI Enable and AHCI Interrupts
+	abar->global_host_control |= (1 << 0);  // Reset
+
+	while((abar->global_host_control & 1) == 1)
+		;
+
+	tty_printf("Reset okay");
+
+	abar->global_host_control |= (1 << 31) | (1 << 1);  // AHCI Enable and AHCI Interrupts
 
 	qemu_ok("Enabled AHCI and INTERRUPTS");
 
@@ -133,17 +140,48 @@ void ahci_init() {
 		if (implemented_ports & (1 << i)) {
             AHCI_HBA_PORT* port = AHCI_PORT(i);
 
+            // Additional initialization here
+
+            tty_printf("[%d] BEFORE CMD = %x\n", i, port->command_and_status);
+
+			if((port->command_and_status & (1 << 2)) != (1 << 2)) {
+				tty_printf("POWERING ON...\n");
+
+				port->command_and_status |= (1 << 2);
+
+				sleep_ms(200);  // Replace them with checks
+			} else {
+				tty_printf("ALREADY POWERED ON\n");
+			}
+
+			if((port->command_and_status & (1 << 1)) != (1 << 1)) {
+				tty_printf("NEEDS SPIN UP...\n");
+
+				port->sata_error = 0xFFFFFFFF;
+
+				port->sata_control = 0;
+
+				port->command_and_status |= (1 << 1); // Spin up.
+
+				sleep_ms(100); // Replace them with checks
+			} else {
+				tty_printf("SPUN UP\n");
+			}
+
 			if (!ahci_is_drive_attached(i)) {
 				continue;
 			}
 
+			port->sata_error = 0xFFFFFFFF;
+
+			// Idk why we are clearing START bit.
 			port->command_and_status = port->command_and_status & 0xfffffffe;
 
 			while(port->command_and_status & (1 << 15));
 
-            ahci_rebase_memory_for(i);
+            tty_printf("[%d] AFTER CMD = %x\n", i, port->command_and_status);
 
-            // Additional initialization here
+            ahci_rebase_memory_for(i);
         }
 	}
 
@@ -427,16 +465,6 @@ void ahci_read_sectors(size_t port_num, uint64_t location, size_t sector_count, 
 
     cmdfis->device = 1 << 6;	// LBA mode
 
-	cmdfis->lba3 = (location >> 24) & 0xFF;
-
-#ifdef SAYORI64
-    cmdfis->lba4 = (location >> 32) & 0xFF;
-	cmdfis->lba5 = (location >> 40) & 0xFF;
-#else
-    cmdfis->lba4 = 0;
-    cmdfis->lba5 = 0;
-#endif
-
 	cmdfis->countl = sector_count & 0xff;
 	cmdfis->counth = (sector_count >> 8) & 0xff;
 
@@ -527,15 +555,6 @@ void ahci_write_sectors(size_t port_num, size_t location, size_t sector_count, v
 	cmdfis->device = 1 << 6;	// LBA mode
 
 	cmdfis->lba3 = (location >> 24) & 0xFF;
-
-#ifdef SAYORI64
-    cmdfis->lba4 = (location >> 32) & 0xFF;
-	cmdfis->lba5 = (location >> 40) & 0xFF;
-#else
-    cmdfis->lba4 = 0;
-    cmdfis->lba5 = 0;
-#endif
-
 	cmdfis->countl = sector_count & 0xff;
 	cmdfis->counth = (sector_count >> 8) & 0xff;
 
@@ -638,6 +657,8 @@ void ahci_identify(size_t port_num, bool is_atapi) {
 
     int slot = 0;
 
+	uint32_t block_size = 512;
+
     AHCI_HBA_CMD_HEADER* hdr = ports[port_num].command_list_addr_virt;
     hdr += slot;
 
@@ -665,6 +686,7 @@ void ahci_identify(size_t port_num, bool is_atapi) {
     cmdfis->c = 1;	// Command
     if(is_atapi) {
         cmdfis->command = ATA_CMD_IDENTIFY_PACKET;
+        block_size = 2048;
     } else {
         cmdfis->command = ATA_CMD_IDENTIFY;
     }
@@ -687,25 +709,27 @@ void ahci_identify(size_t port_num, bool is_atapi) {
 
     tty_printf("[SATA] MODEL: '%s'; CAPACITY: %d sectors\n", model, capacity);
 
-   int disk_inx = dpm_reg(
-           (char)dpm_searchFreeIndex(0),
-           "SATA Disk",
-           "Unknown",
-           1,
-           capacity * 512,
-           capacity,
-           512,
-           3, // Ставим 3ку, так как будем юзать функции для чтения и записи
-           "DISK1234567890",
-           (void*)port_num // Оставим тут индекс диска
-   );
-
-   if (disk_inx < 0){
-       qemu_err("[SATA/DPM] [ERROR] An error occurred during disk registration, error code: %d", disk_inx);
-   } else {
-       qemu_ok("[SATA/DPM] [Successful] Registering OK");
-       dpm_fnc_write(disk_inx + 65, &ahci_dpm_read, &ahci_dpm_write);
-   }
+	if(!is_atapi) {
+		int disk_inx = dpm_reg(
+	           (char)dpm_searchFreeIndex(0),
+	           "SATA Disk",
+	           "Unknown",
+	           1,
+	           capacity * block_size,
+	           capacity,
+	           block_size,
+	           3, // Ставим 3ку, так как будем юзать функции для чтения и записи
+	           "DISK1234567890",
+	           (void*)port_num // Оставим тут индекс диска
+	   	);
+	
+		if (disk_inx < 0){
+		    qemu_err("[SATA/DPM] [ERROR] An error occurred during disk registration, error code: %d", disk_inx);
+		} else {
+		    qemu_ok("[SATA/DPM] [Successful] Registering OK");
+		    dpm_fnc_write(disk_inx + 65, &ahci_dpm_read, &ahci_dpm_write);
+		}
+	}
 
     kfree(memory);
     kfree(model);
