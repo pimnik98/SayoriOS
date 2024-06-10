@@ -43,6 +43,7 @@ void igfx_wait() {
 }
 
 void igfx_init() {
+	// TODO: Add 0x5a85 support
     pci_find_device(0x8086, 0x2a42, &igfx_bus, &igfx_slot, &igfx_func);
 
     if(igfx_bus == 0xFF) {
