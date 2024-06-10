@@ -246,69 +246,6 @@ thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 	return tmp_thread;
 }
 
-void kill_process(size_t id) {
-    asm volatile("cli");
-
-    if(id == 0) {
-        goto end;
-    }
-
-    qemu_note("Killing process: %d", id);
-
-    bool found = false;
-    list_item_t* item = process_list.first;
-    for(int i = 0; i < process_list.count; i++) {
-        process_t* proc = (process_t*)item;
-
-        if(proc->pid == id) {
-            found = true;
-            break;
-        }
-
-        item = item->next;
-    }
-
-    if(!found) {
-        goto end;
-    }
-
-
-    process_t* process = (process_t*)item;
-    qemu_log("FOUND PROCESS");
-
-    list_item_t* item_thread = thread_list.first;
-    for(int j = 0; j < thread_list.count; j++) {
-        thread_t* thread = (thread_t*)item_thread;
-        thread_t* next = (thread_t *) item_thread->next;
-
-        if(thread->process->pid == id) {
-            process->threads_count--;
-            list_remove(&thread->list_item);
-            kfree(thread->stack);
-            kfree(thread);
-        }
-
-        item_thread = next;
-    }
-
-    qemu_log("CLEAN PTs");
-
-    // TODO: FIND AND CLEAN PAGE TABLES
-    // IS IT DONE?
-    for(int i = 0; i < 1024; i++) {
-        if(process->page_tables_virts[i] != 0) {
-            kfree((void *) process->page_tables_virts[i]);
-        }
-    }
-
-    kfree((void *) process->page_dir_virt);
-
-    list_remove(&process->list_item);
-
-    end:
-    asm volatile("sti");
-}
-
 /**
  * @brief Остановить поток
  * 
@@ -358,31 +295,46 @@ bool is_multitask(void){
     return multi_task;
 }
 
-void task_switch_v2_wrapper(registers_t regs) {
-    thread_t* next_thread = current_thread->list_item.next;
+void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs) {
+    thread_t* next_thread = (thread_t *)current_thread->list_item.next;
 
     while(next_thread->state == PAUSED || next_thread->state == DEAD) {
         thread_t* next_thread_soon = (thread_t *)next_thread->list_item.next;
 
         if(next_thread->state == DEAD) {
+            process_t* process = next_thread->process;
             qemu_log("REMOVING DEAD THREAD: #%u", next_thread->id);
 
             list_remove(&next_thread->list_item);
 
             kfree(next_thread->stack);
             kfree(next_thread);
+
+            process->threads_count--;
+
+            if(process->threads_count == 0)  {
+                qemu_log("PROCESS DOES NOT HAVE ANY THREADS: #%u", process->pid);
+
+                for(size_t pt = 0; pt < 1024; pt++) {
+                    size_t page_table = process->page_tables_virts[pt];
+
+                    if(page_table) {
+                        kfree((void *) page_table);
+                    }
+                }
+
+                kfree((void *) process->page_dir_virt);
+
+                list_remove(&process->list_item);
+
+                kfree(process);
+            }
         }
 
         next_thread = next_thread_soon;
     }
 
-//    if(current_thread != next_thread)  {
-//        qemu_log("CUR: %p, NEXT: %p\n", current_thread, next_thread);
-//    }
-
     task_switch_v2(current_thread, next_thread);
-
-//    current_thread = next_thread;
 }
 
 /**
