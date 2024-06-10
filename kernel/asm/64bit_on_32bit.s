@@ -1,4 +1,4 @@
-# Code from https:
+# Code from https://github.com/llvm-mirror/compiler-rt/blob/master/lib/builtins/i386/
 
 .text
 .balign 4
