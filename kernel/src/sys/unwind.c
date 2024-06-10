@@ -2,6 +2,7 @@
 #include "io/ports.h"
 #include "lib/string.h"
 
+#ifndef RELEASE
 __attribute__((section(".debug_symbols"))) char function_addr_data[128 * 1024] = {0};
 
 char _temp_funcname[1024] = {0};
@@ -74,3 +75,4 @@ void unwind_stack(uint32_t MaxFrames) {
 
     // qemu_log("%s", function_addr_data);
 }
+#endif

@@ -463,7 +463,7 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 //    hda_init();
 	void k();
 
-	// create_process(k, "process", false, true);
+//	 create_process(k, "process", false, true);
 
     qemu_log("System initialized everything at: %f seconds.", (double) (getTicks() - kernel_start_time) / getFrequency());
 

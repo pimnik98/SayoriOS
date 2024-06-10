@@ -49,8 +49,10 @@ run_ahci_sata:
 	-device ahci,id=ahci \
 	-drive id=thatdisk,file=disk.img,if=none \
 	-device ide-hd,drive=thatdisk,bus=ahci.0 \
-	-drive id=thatcdrom,file=/dev/cdrom,if=none \
+	-drive id=thatcdrom,file=TEST.iso,if=none \
 	-device ide-cd,drive=thatcdrom,bus=ahci.1 \
+	# -drive id=thatcdrom,file=/dev/cdrom,if=none \
+	# -device ide-cd,drive=thatcdrom,bus=ahci.1 \
 	# -trace "ahci*" \
 
 run_disks:

@@ -13,7 +13,7 @@
 #include <io/ports.h>
 #include <sys/variable.h>  
 
-VARIABLE G_VARIABLE[512] = {0};
+VARIABLE G_VARIABLE[128] = {0};
 size_t C_VARIABLE = 0;
 
 size_t variable_freeID(char* Key){

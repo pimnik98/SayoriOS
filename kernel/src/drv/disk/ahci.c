@@ -12,7 +12,7 @@
 #include "drv/atapi.h"
 #include "net/endianess.h"
 #include "drv/disk/dpm.h"
-#include "debug/hexview.h"
+//#include "debug/hexview.h"
 
 #define AHCI_CLASS 1
 #define AHCI_SUBCLASS 6
@@ -62,9 +62,9 @@ void ahci_init() {
 
 	// Get ABAR
 
-	abar = (volatile AHCI_HBA_MEM*)(pci_read32(ahci_busnum, ahci_slot, ahci_func, 0x24) & ~0b1111);
+	abar = (volatile AHCI_HBA_MEM*)(pci_read32(ahci_busnum, ahci_slot, ahci_func, 0x24) & ~0b1111U);
 
-	qemu_log("AHCI ABAR is: %x", abar);
+	qemu_log("AHCI ABAR is: %p", abar);
 
 	// Map memory
 	map_pages(
@@ -77,7 +77,7 @@ void ahci_init() {
 
 	qemu_log("Version: %x", abar->version);
 
-     if(abar->host_capabilities_extended & 1) {
+     if(abar->host_capabilities_extended & 1U) {
          for(int i = 0; i < 5; i++) {
              qemu_warn("PERFORMING BIOS HANDOFF!!!");
          }
@@ -87,8 +87,9 @@ void ahci_init() {
          while(1) {
              size_t status = abar->handoff_control_and_status;
 
-             if (~status & (1 << 0))
+             if (~status & (1 << 0)) {
                  break;
+             }
          }
      } else {
          qemu_ok("No BIOS Handoff");
@@ -142,21 +143,13 @@ void ahci_init() {
 
             // Additional initialization here
 
-            tty_printf("[%d] BEFORE CMD = %x\n", i, port->command_and_status);
-
-			if((port->command_and_status & (1 << 2)) != (1 << 2)) {
-				tty_printf("POWERING ON...\n");
-
+            if((port->command_and_status & (1 << 2)) != (1 << 2)) {
 				port->command_and_status |= (1 << 2);
 
 				sleep_ms(200);  // Replace them with checks
-			} else {
-				tty_printf("ALREADY POWERED ON\n");
 			}
 
 			if((port->command_and_status & (1 << 1)) != (1 << 1)) {
-				tty_printf("NEEDS SPIN UP...\n");
-
 				port->sata_error = 0xFFFFFFFF;
 
 				port->sata_control = 0;
@@ -164,8 +157,6 @@ void ahci_init() {
 				port->command_and_status |= (1 << 1); // Spin up.
 
 				sleep_ms(100); // Replace them with checks
-			} else {
-				tty_printf("SPUN UP\n");
 			}
 
 			if (!ahci_is_drive_attached(i)) {
@@ -177,7 +168,8 @@ void ahci_init() {
 			// Idk why we are clearing START bit.
 			port->command_and_status = port->command_and_status & 0xfffffffe;
 
-			while(port->command_and_status & (1 << 15));
+			while(port->command_and_status & (1 << 15))
+                ;
 
             tty_printf("[%d] AFTER CMD = %x\n", i, port->command_and_status);
 
@@ -189,7 +181,7 @@ void ahci_init() {
 		if(abar->port_implemented & (1 << i)) {
 			volatile AHCI_HBA_PORT* port = abar->ports + i;
 
-			qemu_log("[%x: Port %d]", port, i);
+			qemu_log("[%p: Port %d]", port, i);
 
 			if(!ahci_is_drive_attached(i)) {
 				qemu_log("\tNo drive attached to port!");
@@ -354,7 +346,7 @@ void ahci_irq_handler() {
     }
 }
 
-void ahci_send_cmd(volatile AHCI_HBA_PORT *port, size_t slot) {
+bool ahci_send_cmd(volatile AHCI_HBA_PORT *port, size_t slot) {
     int spin = 0;
     while ((port->task_file_data & (ATA_SR_BSY | ATA_SR_DRQ)) && spin < 1000000) {
         spin++;
@@ -362,7 +354,7 @@ void ahci_send_cmd(volatile AHCI_HBA_PORT *port, size_t slot) {
 
     if (spin == 1000000) {
         qemu_err("Port is hung");
-        return;
+        return false;
     }
 
     qemu_warn("DRIVE IS READY");
@@ -378,11 +370,12 @@ void ahci_send_cmd(volatile AHCI_HBA_PORT *port, size_t slot) {
         if (port->interrupt_status & AHCI_HBA_TFES)	{  // Task file error? Tell about error and exit
             qemu_err("Read disk error (Task file error); IS: %x", port->interrupt_status);
 
-            return;
+            return false;
         }
     }
 
     qemu_warn("OK");
+    return true;
 }
 
 /**
@@ -398,10 +391,14 @@ void ahci_read_sectors(size_t port_num, uint64_t location, size_t sector_count, 
 		return;
 	}
 
+    struct ahci_port_descriptor desc = ports[port_num];
+
+    size_t block_size = desc.is_atapi ? 2048 : 512;
+
 	qemu_warn("\033[7mAHCI READ STARTED\033[0m");
 
-	char* buffer_mem = kmalloc_common(sector_count * 512, PAGE_SIZE);
-	memset(buffer_mem, 0, sector_count * 512);
+	char* buffer_mem = kmalloc_common(sector_count * block_size, PAGE_SIZE);
+	memset(buffer_mem, 0, sector_count * block_size);
 
 	size_t buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) buffer_mem);
 
@@ -412,7 +409,7 @@ void ahci_read_sectors(size_t port_num, uint64_t location, size_t sector_count, 
 	AHCI_HBA_CMD_HEADER* hdr = ports[port_num].command_list_addr_virt;
 
 	hdr->cfl = sizeof(AHCI_FIS_REG_DEVICE_TO_HOST) / sizeof(uint32_t);  // Should be 5
-	hdr->a = 0;  // Not ATAPI
+	hdr->a = desc.is_atapi ? 1 : 0;  // ATAPI / Not ATAPI
 	hdr->w = 0;  // Read
 	hdr->p = 0;  // No prefetch
 
@@ -422,7 +419,7 @@ void ahci_read_sectors(size_t port_num, uint64_t location, size_t sector_count, 
 
 	memset(table, 0, sizeof(HBA_CMD_TBL));
 
-    size_t bytes = sector_count * 512;
+    size_t bytes = sector_count * block_size;
 
 	// FIXME: Simplify statements
 	int index = 0;
@@ -450,23 +447,52 @@ void ahci_read_sectors(size_t port_num, uint64_t location, size_t sector_count, 
 
 	AHCI_FIS_REG_HOST_TO_DEVICE *cmdfis = (AHCI_FIS_REG_HOST_TO_DEVICE*)&(table->cfis);
 
-	qemu_log("CMDFIS at: %x", cmdfis);
+	qemu_log("CMDFIS at: %p", cmdfis);
 
 	cmdfis->fis_type = FIS_TYPE_REG_HOST_TO_DEVICE;
 	cmdfis->c = 1;	// Command
-	cmdfis->command = ATA_CMD_READ_DMA_EXT;
+	cmdfis->command = desc.is_atapi ? ATA_CMD_PACKET : ATA_CMD_READ_DMA_EXT;
 
-	cmdfis->lba0 = location & 0xFF;
-	cmdfis->lba1 = (location >> 8) & 0xFF;
-    cmdfis->lba2 = (location >> 16) & 0xFF;
-    cmdfis->lba3 = (location >> 24) & 0xFF;
-    cmdfis->lba4 = (location >> 32) & 0xFF;
-    cmdfis->lba5 = (location >> 40) & 0xFF;
+    if(desc.is_atapi) {
+        qemu_log("ATAPI DEVICE");
 
-    cmdfis->device = 1 << 6;	// LBA mode
+        char command[12] = {
+                ATAPI_CMD_READ,  // Command
+                0, // ?
+                (location >> 0x18) & 0xFF,  // LBA
+                (location >> 0x10) & 0xFF,
+                (location >> 0x08) & 0xFF,
+                (location >> 0x00) & 0xFF,
+                (sector_count >> 0x18) & 0xFF,  // Sector count
+                (sector_count >> 0x10) & 0xFF,
+                (sector_count >> 0x08) & 0xFF,
+                (sector_count >> 0x00) & 0xFF,
+                0, // ?
+                0  // ?
+        };
 
-	cmdfis->countl = sector_count & 0xff;
-	cmdfis->counth = (sector_count >> 8) & 0xff;
+        memcpy(table->acmd, command, 12);
+
+        size_t bytecount = sector_count * 2048;
+
+        cmdfis->lba0 = bytecount & 0xff;
+        cmdfis->lba1 = (bytecount >> 8) & 0xff;
+        cmdfis->lba2 = (bytecount >> 16) & 0xff;
+    } else {
+        qemu_log("JUST A DISK DEVICE");
+
+        cmdfis->lba0 = location & 0xFF;
+        cmdfis->lba1 = (location >> 8) & 0xFF;
+        cmdfis->lba2 = (location >> 16) & 0xFF;
+        cmdfis->lba3 = (location >> 24) & 0xFF;
+        cmdfis->lba4 = (location >> 32) & 0xFF;
+        cmdfis->lba5 = (location >> 40) & 0xFF;
+
+        cmdfis->countl = sector_count & 0xffU;
+        cmdfis->counth = (sector_count >> 8) & 0xffU;
+
+        cmdfis->device = 1U << 6;	// LBA mode
+    }
 
 	ahci_send_cmd(port, 0);
 
@@ -543,7 +569,7 @@ void ahci_write_sectors(size_t port_num, size_t location, size_t sector_count, v
 
 	AHCI_FIS_REG_HOST_TO_DEVICE *cmdfis = (AHCI_FIS_REG_HOST_TO_DEVICE*)&(table->cfis);
 
-	qemu_log("CMDFIS at: %x", cmdfis);
+	qemu_log("CMDFIS at: %p", cmdfis);
 
 	cmdfis->fis_type = FIS_TYPE_REG_HOST_TO_DEVICE;
 	cmdfis->c = 1;	// Command
@@ -589,7 +615,7 @@ void ahci_eject_cdrom(size_t port_num) {
         ATAPI_CMD_START_STOP,  // Command
         0, 0, 0,  // Reserved
         1 << 1, // Eject the disc
-        0, 0, 0, 0,   // Reserved
+        0, 0, 0, 0, 0   // Reserved
     };
 
     memcpy(table->acmd, command, 10);
@@ -612,11 +638,13 @@ void ahci_read(size_t port_num, uint8_t* buf, uint64_t location, uint32_t length
 
 	// TODO: Get sector size somewhere (Now we hardcode it into 512).
 
-	uint64_t start_sector = location / 512;
-	uint64_t end_sector = (location + length - 1) / 512;
+    size_t block_size = ports[port_num].is_atapi ? 2048 : 512;
+
+	uint64_t start_sector = location / block_size;
+	uint64_t end_sector = (location + length - 1) / block_size;
 	uint64_t sector_count = end_sector - start_sector + 1;
 
-	uint64_t real_length = sector_count * 512;
+	uint64_t real_length = sector_count * block_size;
 
 	qemu_log("Reading %d sectors...", (uint32_t)sector_count);
 
@@ -624,17 +652,17 @@ void ahci_read(size_t port_num, uint8_t* buf, uint64_t location, uint32_t length
 
     ahci_read_sectors(port_num, start_sector, sector_count, real_buf);
 	
-	memcpy(buf, real_buf + (location % 512), length);
+	memcpy(buf, real_buf + (location % block_size), length);
 
 	kfree(real_buf);
 }
 
 size_t ahci_dpm_read(size_t Disk, uint64_t high_offset, uint64_t low_offset, size_t Size, void* Buffer){
-    qemu_err("TODO: SATA DPM READ");
+//    qemu_err("TODO: SATA DPM READ");
 
 	DPM_Disk dpm = dpm_info(Disk + 65);
 
-    ahci_read((uint8_t) dpm.Point, Buffer, low_offset, Size);
+    ahci_read((size_t) dpm.Point, Buffer, low_offset, Size);
 
     return Size;
 }
@@ -730,6 +758,8 @@ void ahci_identify(size_t port_num, bool is_atapi) {
 		    dpm_fnc_write(disk_inx + 65, &ahci_dpm_read, &ahci_dpm_write);
 		}
 	}
+
+    ports[port_num].is_atapi = is_atapi;
 
     kfree(memory);
     kfree(model);

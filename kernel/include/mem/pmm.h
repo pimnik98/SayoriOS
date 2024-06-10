@@ -20,14 +20,14 @@ extern size_t kernel_end;
 #define		PAGE_TABLE_INDEX_BITS	10	
 #define		PAGE_TABLE_INDEX_MASK	0x3FF
 
-#define		PAGE_PRESENT		(1 << 0)
-#define		PAGE_WRITEABLE		(1 << 1)
-#define		PAGE_USER			(1 << 2)
-#define		PAGE_WRITE_THROUGH	(1 << 3)
-#define		PAGE_CACHE_DISABLE	(1 << 4)
-#define		PAGE_ACCESSED		(1 << 5)
-#define		PAGE_DIRTY			(1 << 6)
-#define		PAGE_GLOBAL			(1 << 8)
+#define		PAGE_PRESENT		(1U << 0)
+#define		PAGE_WRITEABLE		(1U << 1)
+#define		PAGE_USER			(1U << 2)
+#define		PAGE_WRITE_THROUGH	(1U << 3)
+#define		PAGE_CACHE_DISABLE	(1U << 4)
+#define		PAGE_ACCESSED		(1U << 5)
+#define		PAGE_DIRTY			(1U << 6)
+#define		PAGE_GLOBAL			(1U << 8)
 
 #define     PAGE_BITMAP_SIZE (131072)
 

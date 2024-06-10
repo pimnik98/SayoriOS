@@ -274,10 +274,12 @@ void kill_process(size_t id) {
 
 
     process_t* process = (process_t*)item;
+    qemu_log("FOUND PROCESS");
 
     list_item_t* item_thread = thread_list.first;
     for(int j = 0; j < thread_list.count; j++) {
         thread_t* thread = (thread_t*)item_thread;
+        thread_t* next = (thread_t *) item_thread->next;
 
         if(thread->process->pid == id) {
             process->threads_count--;
@@ -286,8 +288,10 @@ void kill_process(size_t id) {
             kfree(thread);
         }
 
-        item_thread = item_thread->next;
+        item_thread = next;
     }
+
+    qemu_log("CLEAN PTs");
 
     // TODO: FIND AND CLEAN PAGE TABLES
     // IS IT DONE?
@@ -325,16 +329,18 @@ void thread_exit(thread_t* thread){
 	__asm__ volatile ("cli");
 
 	/* Remove thread from queue */
-	list_remove(&thread->list_item);
-	
-	thread->process->threads_count--;
+//	list_remove(&thread->list_item);
+//
+//	thread->process->threads_count--;
+//
+//	/* Free thread's memory (handler and stack) */
+//	kfree(thread->stack);
+//	kfree(thread);
 
-	/* Free thread's memory (handler and stack) */
-	kfree(thread->stack);
-	kfree(thread);
+    thread->state = DEAD;
 
 	/* Load to ECX switch function address */
-	__asm__ volatile ("mov %0, %%ecx"::"a"(&task_switch));
+	__asm__ volatile ("mov %0, %%ecx"::"a"(&task_switch_v2_wrapper));
 
 	/* Enable all interrupts */
 	__asm__ volatile ("sti");
@@ -350,6 +356,23 @@ void thread_exit(thread_t* thread){
  */
 bool is_multitask(void){
     return multi_task;
+}
+
+void task_switch_v2_wrapper(registers_t regs) {
+    thread_t* next_thread = current_thread->list_item.next;
+
+    while(next_thread->state == PAUSED
+          || next_thread->state == DEAD) {
+        next_thread = (thread_t *)next_thread->list_item.next;
+    }
+
+//    if(current_thread != next_thread)  {
+//        qemu_log("CUR: %p, NEXT: %p\n", current_thread, next_thread);
+//    }
+
+    task_switch_v2(current_thread, next_thread);
+
+//    current_thread = next_thread;
 }
 
 /**

@@ -86,7 +86,7 @@ size_t ata_scsi_receive_size_of_transfer(uint16_t bus) {
 		return 0;
 	}
 	
-	return inb(ATA_PORT(bus) + ATA_REG_LBA2) << 8
+	return (inb(ATA_PORT(bus) + ATA_REG_LBA2) << 8)
 			| inb(ATA_PORT(bus) + ATA_REG_LBA1);
 }
 
