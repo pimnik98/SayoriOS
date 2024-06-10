@@ -14,6 +14,21 @@ typedef enum {
     DEAD
 } thread_state_t;
 
+SAYORI_INLINE const char* thread_state_string(thread_state_t state) {
+    switch (state) {
+        case CREATED:
+            return "CREATED";
+        case RUNNING:
+            return "RUNNING";
+        case PAUSED:
+            return "PAUSED";
+        case DEAD:
+            return "DEAD";
+        default:
+            return "UNKNOWN";
+    }
+}
+
 /*-----------------------------------------------------------------------------
  * 		Process structure
  *---------------------------------------------------------------------------*/

@@ -159,11 +159,11 @@ process_t* get_current_proc(void) {
 	return current_proc;
 }
 
-void blyat_fire() {
-    qemu_note("PROCESS %d WANTS TO EXIT!", current_proc->pid);
-    qemu_err("BLYAT FIRE-RE-RE-RE-RE-RE-RE-RE-RE-RE-RE!!!");
-    kill_process(current_proc->pid);
-    while(1);
+__attribute__((noreturn)) void blyat_fire() {
+    qemu_note("THREAD %d WANTS TO EXIT!", current_thread->id);
+    thread_exit(current_thread);
+    while(1)  // If something goes wrong, we loop here.
+        ;
 }
 
 /**
@@ -361,9 +361,19 @@ bool is_multitask(void){
 void task_switch_v2_wrapper(registers_t regs) {
     thread_t* next_thread = current_thread->list_item.next;
 
-    while(next_thread->state == PAUSED
-          || next_thread->state == DEAD) {
-        next_thread = (thread_t *)next_thread->list_item.next;
+    while(next_thread->state == PAUSED || next_thread->state == DEAD) {
+        thread_t* next_thread_soon = (thread_t *)next_thread->list_item.next;
+
+        if(next_thread->state == DEAD) {
+            qemu_log("REMOVING DEAD THREAD: #%u", next_thread->id);
+
+            list_remove(&next_thread->list_item);
+
+            kfree(next_thread->stack);
+            kfree(next_thread);
+        }
+
+        next_thread = next_thread_soon;
     }
 
 //    if(current_thread != next_thread)  {

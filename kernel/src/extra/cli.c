@@ -444,7 +444,10 @@ uint32_t proc_list(uint32_t argc, char* argv[]) {
     for(int j = 0; j < thread_list.count; j++) {
         thread_t* thread = (thread_t*)item_thread;
 
-        tty_printf("    Поток: %d [Стек: (%x, %x, %d)]\n", thread->id, thread->stack_top, thread->stack, thread->stack_size);
+        tty_printf("    Поток: #%u процесса #%u; Стек: (%x, %x, %d); Состояние: %s\n",
+                   thread->id, thread->process->pid, thread->stack_top, thread->stack, thread->stack_size,
+                   thread_state_string(thread->state)
+                   );
 
         item_thread = item_thread->next;
     }
