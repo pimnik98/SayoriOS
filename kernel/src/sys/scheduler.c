@@ -159,11 +159,11 @@ process_t* get_current_proc(void) {
 	return current_proc;
 }
 
-void blyat_fire() {
-    qemu_note("PROCESS %d WANTS TO EXIT!", current_proc->pid);
-    qemu_err("BLYAT FIRE-RE-RE-RE-RE-RE-RE-RE-RE-RE-RE!!!");
-    kill_process(current_proc->pid);
-    while(1);
+__attribute__((noreturn)) void blyat_fire() {
+    qemu_note("THREAD %d WANTS TO EXIT!", current_thread->id);
+    thread_exit(current_thread);
+    while(1)  // If something goes wrong, we loop here.
+        ;
 }
 
 /**
@@ -246,65 +246,6 @@ thread_t* thread_create(process_t* proc, void* entry_point, size_t stack_size,
 	return tmp_thread;
 }
 
-void kill_process(size_t id) {
-    asm volatile("cli");
-
-    if(id == 0) {
-        goto end;
-    }
-
-    qemu_note("Killing process: %d", id);
-
-    bool found = false;
-    list_item_t* item = process_list.first;
-    for(int i = 0; i < process_list.count; i++) {
-        process_t* proc = (process_t*)item;
-
-        if(proc->pid == id) {
-            found = true;
-            break;
-        }
-
-        item = item->next;
-    }
-
-    if(!found) {
-        goto end;
-    }
-
-
-    process_t* process = (process_t*)item;
-
-    list_item_t* item_thread = thread_list.first;
-    for(int j = 0; j < thread_list.count; j++) {
-        thread_t* thread = (thread_t*)item_thread;
-
-        if(thread->process->pid == id) {
-            process->threads_count--;
-            list_remove(&thread->list_item);
-            kfree(thread->stack);
-            kfree(thread);
-        }
-
-        item_thread = item_thread->next;
-    }
-
-    // TODO: FIND AND CLEAN PAGE TABLES
-    // IS IT DONE?
-    for(int i = 0; i < 1024; i++) {
-        if(process->page_tables_virts[i] != 0) {
-            kfree((void *) process->page_tables_virts[i]);
-        }
-    }
-
-    kfree((void *) process->page_dir_virt);
-
-    list_remove(&process->list_item);
-
-    end:
-    asm volatile("sti");
-}
-
 /**
  * @brief Остановить поток
  * 
@@ -325,16 +266,18 @@ void thread_exit(thread_t* thread){
 	__asm__ volatile ("cli");
 
 	/* Remove thread from queue */
-	list_remove(&thread->list_item);
-	
-	thread->process->threads_count--;
+//	list_remove(&thread->list_item);
+//
+//	thread->process->threads_count--;
+//
+//	/* Free thread's memory (handler and stack) */
+//	kfree(thread->stack);
+//	kfree(thread);
 
-	/* Free thread's memory (handler and stack) */
-	kfree(thread->stack);
-	kfree(thread);
+    thread->state = DEAD;
 
 	/* Load to ECX switch function address */
-	__asm__ volatile ("mov %0, %%ecx"::"a"(&task_switch));
+	__asm__ volatile ("mov %0, %%ecx"::"a"(&task_switch_v2_wrapper));
 
 	/* Enable all interrupts */
 	__asm__ volatile ("sti");
@@ -350,6 +293,48 @@ void thread_exit(thread_t* thread){
  */
 bool is_multitask(void){
     return multi_task;
+}
+
+void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs) {
+    thread_t* next_thread = (thread_t *)current_thread->list_item.next;
+
+    while(next_thread->state == PAUSED || next_thread->state == DEAD) {
+        thread_t* next_thread_soon = (thread_t *)next_thread->list_item.next;
+
+        if(next_thread->state == DEAD) {
+            process_t* process = next_thread->process;
+            qemu_log("REMOVING DEAD THREAD: #%u", next_thread->id);
+
+            list_remove(&next_thread->list_item);
+
+            kfree(next_thread->stack);
+            kfree(next_thread);
+
+            process->threads_count--;
+
+            if(process->threads_count == 0)  {
+                qemu_log("PROCESS DOES NOT HAVE ANY THREADS: #%u", process->pid);
+
+                for(size_t pt = 0; pt < 1024; pt++) {
+                    size_t page_table = process->page_tables_virts[pt];
+
+                    if(page_table) {
+                        kfree((void *) page_table);
+                    }
+                }
+
+                kfree((void *) process->page_dir_virt);
+
+                list_remove(&process->list_item);
+
+                kfree(process);
+            }
+        }
+
+        next_thread = next_thread_soon;
+    }
+
+    task_switch_v2(current_thread, next_thread);
 }
 
 /**

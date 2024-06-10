@@ -81,7 +81,7 @@ void timer_callback(__attribute__((unused)) registers_t regs){
     tick++;
 
     if (is_multitask() && scheduler_working) {
-        task_switch(regs);
+        task_switch_v2_wrapper(regs);
     }
 }
 

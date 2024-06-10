@@ -7,6 +7,28 @@
 
 #define DEFAULT_STACK_SIZE 0x4000
 
+typedef enum {
+    CREATED = 0,
+    RUNNING,
+    PAUSED,
+    DEAD
+} thread_state_t;
+
+SAYORI_INLINE const char* thread_state_string(thread_state_t state) {
+    switch (state) {
+        case CREATED:
+            return "CREATED";
+        case RUNNING:
+            return "RUNNING";
+        case PAUSED:
+            return "PAUSED";
+        case DEAD:
+            return "DEAD";
+        default:
+            return "UNKNOWN";
+    }
+}
+
 /*-----------------------------------------------------------------------------
  * 		Process structure
  *---------------------------------------------------------------------------*/
@@ -54,16 +76,18 @@ typedef	struct
 	uint32_t			id;				/* Thread ID */
     // 40
 	uint32_t			stack_top;
-    // registers here
+    // registers here [44]
     uint32_t	eax, ebx, ecx, edx, esi, edi, ebp;
-//    uint32_t time_high;
-//    uint32_t time_low;  // Time accounting
+    // 72
+    thread_state_t state;
 }__attribute__((packed)) thread_t;
 
 /* Initialization */
 void init_task_manager(void);
 
 extern void task_switch(registers_t regs);
+void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs);
+extern void task_switch_v2(thread_t*, thread_t*);
 
 thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t stack_size,
                                    bool kernel, bool suspend);

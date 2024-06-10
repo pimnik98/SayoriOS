@@ -4,7 +4,7 @@
 
 KERNEL = iso/boot/kernel.elf
 DEBUG =# -ggdb3 #-Werror
-MEMORY_SIZE=128M
+MEMORY_SIZE?=128M
 USE_SSE=true
 
 COMPILER_DETECTOR_FLAGS = ""
@@ -220,7 +220,7 @@ SOURCES=\
 OBJS = $(SOURCES:%.c=$(OBJ_DIRECTORY)/%.o)
 DEPS = $(OBJS:%.o=%.d)
 
-KERNEL_NEED = $(ASM) $(OBJS) $(CPP_CODE)
+KERNEL_NEED = $(ASM) $(OBJS)
 
 COMMON_FLAGS = -O0 -nostdlib -fno-stack-protector -fno-builtin -Ikernel/include/ -ffreestanding \
 			   -Wall -Wno-div-by-zero -Wno-address-of-packed-member -Wno-implicit-function-declaration \

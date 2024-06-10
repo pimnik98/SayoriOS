@@ -46,12 +46,14 @@ run_remote_mon:
 
 run_ahci_sata:
 	$(QEMU) $(QEMU_FLAGS) -serial mon:stdio \
-	-device ahci,id=ahci \
+	-device ahci,id=ahci,debug=3 \
+	-trace "ahci*" \
 	-drive id=thatdisk,file=disk.img,if=none \
 	-device ide-hd,drive=thatdisk,bus=ahci.0 \
 	-drive id=thatcdrom,file=/dev/cdrom,if=none \
 	-device ide-cd,drive=thatcdrom,bus=ahci.1 \
-	# -trace "ahci*" \
+	# -drive id=thatcdrom,file=TEST.iso,if=none \
+	# -device ide-cd,drive=thatcdrom,bus=ahci.1 \
 
 run_disks:
 	$(QEMU) $(QEMU_FLAGS) -serial mon:stdio -hda disk1.img -hdb disk2.img -hdd disk3.img

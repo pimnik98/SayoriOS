@@ -1,4 +1,4 @@
-# Code from https://github.com/llvm-mirror/compiler-rt/blob/master/lib/builtins/i386/udivdi3.S
+# Code from https://github.com/llvm-mirror/compiler-rt/blob/master/lib/builtins/i386/
 
 .text
 .balign 4
@@ -92,3 +92,97 @@ __udivdi3:
 	movl		%ebx,			%edx	#		rhi:alo = qlo*b + rlo  with 0 ≤ rlo < b
 	popl		%ebx					#
 	retl								# and return qhi:qlo
+
+
+
+
+.text
+.balign 4
+.global __umoddi3
+__umoddi3:
+	pushl		%ebx
+	movl	 20(%esp),			%ebx
+	bsrl		%ebx,			%ecx	
+	jz			9f						
+
+	movl	 16(%esp),			%eax	
+
+	shrl		%cl,			%eax	
+	shrl		%eax					
+	notl		%ecx					
+	shll		%cl,			%ebx	
+	orl			%eax,			%ebx	
+	movl	 12(%esp),			%edx	
+	movl	  8(%esp),			%eax	
+	cmpl		%ebx,			%edx	
+	jae			2f
+
+	divl		%ebx
+
+	pushl		%edi
+	notl		%ecx
+	shrl		%eax
+	shrl		%cl,			%eax	
+	movl		%eax,			%edi
+	mull	 20(%esp)					
+	movl	 12(%esp),			%ebx
+	movl	 16(%esp),			%ecx	
+	subl		%eax,			%ebx
+	sbbl		%edx,			%ecx	
+	movl	 24(%esp),			%eax
+	imull		%edi,			%eax	
+	subl		%eax,			%ecx	
+
+	jnc			1f						
+	addl	 20(%esp),			%ebx	
+	adcl	 24(%esp),			%ecx	
+1:	movl		%ebx,			%eax
+	movl		%ecx,			%edx
+
+	popl		%edi
+	popl		%ebx
+	retl
+
+
+2:
+	subl		%ebx,			%edx	
+	divl		%ebx					
+
+	pushl		%edi
+	notl		%ecx
+	shrl		%eax
+	orl			$0x80000000,	%eax
+	shrl		%cl,			%eax	
+	movl		%eax,			%edi
+	mull	 20(%esp)					
+	movl	 12(%esp),			%ebx
+	movl	 16(%esp),			%ecx	
+	subl		%eax,			%ebx
+	sbbl		%edx,			%ecx	
+	movl	 24(%esp),			%eax
+	imull		%edi,			%eax	
+	subl		%eax,			%ecx	
+
+	jnc			3f						
+	addl	 20(%esp),			%ebx	
+	adcl	 24(%esp),			%ecx	
+3:	movl		%ebx,			%eax
+	movl		%ecx,			%edx
+
+	popl		%edi
+	popl		%ebx
+	retl
+
+
+9:	
+	movl	 12(%esp),			%eax
+	movl	 16(%esp),			%ecx	
+	xorl		%edx,			%edx	
+	divl		%ecx					
+	movl		%eax,			%ebx	
+	movl	  8(%esp),			%eax	
+	divl		%ecx					
+	movl		%edx,			%eax	
+	popl		%ebx					
+	xorl		%edx,			%edx	
+	retl

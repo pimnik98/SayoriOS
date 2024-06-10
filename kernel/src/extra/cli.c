@@ -413,11 +413,11 @@ uint32_t pci_print_list(uint32_t argc, char* argv[]);
 uint32_t rust_command(uint32_t argc, char* argv[]);
 uint32_t CLI_MEMINFO(uint32_t argc, char* argv[]) {
 	tty_printf("Физическая:\n");
-	tty_printf("    Используется: %d байт (%d MB)\n", used_phys_memory_size, used_phys_memory_size / MB);
-	tty_printf("    Свободно: %d байт (%d MB)\n",  phys_memory_size - used_phys_memory_size, (phys_memory_size - used_phys_memory_size) / MB);
+	tty_printf("    Используется: %u байт (%u MB)\n", used_phys_memory_size, used_phys_memory_size / MB);
+	tty_printf("    Свободно: %u байт (%u MB)\n",  phys_memory_size - used_phys_memory_size, (phys_memory_size - used_phys_memory_size) / MB);
 	tty_printf("Виртуальная:\n");
-	tty_printf("    %d записей\n", system_heap.allocated_count);
-	tty_printf("    Используется: %d байт (%d MB)\n", system_heap.used_memory, system_heap.used_memory / MB);
+	tty_printf("    %u записей\n", system_heap.allocated_count);
+	tty_printf("    Используется: %u байт (%u MB)\n", system_heap.used_memory, system_heap.used_memory / MB);
 
 	return 0;
 }
@@ -444,7 +444,10 @@ uint32_t proc_list(uint32_t argc, char* argv[]) {
     for(int j = 0; j < thread_list.count; j++) {
         thread_t* thread = (thread_t*)item_thread;
 
-        tty_printf("    Поток: %d [Стек: (%x, %x, %d)]\n", thread->id, thread->stack_top, thread->stack, thread->stack_size);
+        tty_printf("    Поток: #%u процесса #%u; Стек: (%x, %x, %d); Состояние: %s\n",
+                   thread->id, thread->process->pid, thread->stack_top, thread->stack, thread->stack_size,
+                   thread_state_string(thread->state)
+                   );
 
         item_thread = item_thread->next;
     }
