@@ -274,28 +274,44 @@ void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs) {
 
             list_remove(&next_thread->list_item);
 
+            qemu_log("REMOVED FROM LIST");
+
             kfree(next_thread->stack);
             kfree(next_thread);
 
+            qemu_log("FREED MEMORY");
+
             process->threads_count--;
 
+            qemu_log("MODIFIED PROCESS");
+
             if(process->threads_count == 0)  {
+                // `st` command crashes here
                 qemu_log("PROCESS #%d `%s` DOES NOT HAVE ANY THREADS", process->pid, process->name);
 
                 for(size_t pt = 0; pt < 1024; pt++) {
                     size_t page_table = process->page_tables_virts[pt];
 
                     if(page_table) {
+                        qemu_log("[%x] FREE PAGE TABLE AT: %x", pt << 22, page_table);
                         kfree((void *) page_table);
                     }
                 }
+                // end
+
+                qemu_log("FREED PAGE TABLES");
 
                 kfree((void *) process->page_dir_virt);
 
+                qemu_log("FREED SPACE FOR TABLES");
+
                 list_remove(&process->list_item);
+
+                qemu_log("REMOVED PROCESS FROM LIST");
 
                 kfree(process);
 
+                qemu_log("FREED PROCESS LIST ITEM");
             }
         }
 

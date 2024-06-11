@@ -37,7 +37,7 @@ _Noreturn void sod_screen_legacy(registers_t regs, char* title, char* msg, uint3
 
     /* qemu_err("Failed on: %s", exists ? _temp_funcname : "???"); */
 
-    /* unwind_stack(10); */
+    unwind_stack(10);
 
     /* heap_dump(); */
 
