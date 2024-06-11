@@ -64,6 +64,7 @@ void unload_elf(elf_t* elf) {
 int32_t run_elf_file(const char *name, int argc, char* eargv[]) {
     elf_t* elf_file = load_elf(name);
 
+    // TODO: Did you know you can optimize that function without using additional 12288 bytes of RAM?
     uint32_t vmm_allocated[4096] = {0};
     uint32_t vmm_mapped[4096] = {0};
     uint32_t vmm_sizes[4096] = {0};
