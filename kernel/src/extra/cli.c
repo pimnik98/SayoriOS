@@ -493,6 +493,16 @@ uint32_t CLI_SPAWN(uint32_t argc, char* argv[]) {
     return 0;
 }
 
+uint32_t CLI_SPAWN_TEST(uint32_t argc, char* argv[]) {
+    char* cmdline[] = {"hello"};
+
+    spawn("R:\\prog", 0, cmdline);
+    sleep_ms(1000);
+    spawn("R:\\hellors", 0, cmdline);
+
+    return 0;
+}
+
 uint32_t CLI_CMD_MTRR(uint32_t argc, char* argv[]) {
 	list_mtrrs();
 
@@ -563,6 +573,7 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
     {"REBOOT", "reboot", CLI_CMD_REBOOT, "Перезагрузка"},
     {"RD", "rd", CLI_RD, "Чтение данных с диска"},
     {"SPAWN", "spawn", CLI_SPAWN, "spawn a new process"},
+    {"ST", "st", CLI_SPAWN_TEST, "spawn test"},
 	{nullptr, nullptr, nullptr}
 };
 

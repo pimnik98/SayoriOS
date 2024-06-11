@@ -181,8 +181,6 @@ int32_t spawn(const char *name, int argc, char* eargv[]) {
     strcpy(proc->name, name);
     proc->suspend = false;
 
-    uint32_t vmm_allocated_count = 0;
-
     for (int32_t i = 0; i < elf_file->elf_header.e_phnum; i++) {
         Elf32_Phdr *phdr = elf_file->p_header + i;
 
@@ -224,6 +222,8 @@ int32_t spawn(const char *name, int argc, char* eargv[]) {
 
     list_add(&process_list, &proc->list_item);
 
+    qemu_log("PROCESS CREATED");
+
     for (int32_t i = 0; i < elf_file->elf_header.e_phnum; i++) {
         Elf32_Phdr *phdr = elf_file->p_header + i;
 
@@ -242,19 +242,13 @@ int32_t spawn(const char *name, int argc, char* eargv[]) {
         }
     }
 
-//    for (int32_t i = 0; i < vmm_allocated_count; i++){
-//        qemu_log("\tCleaning %d: %x [%d]", i, vmm_allocated[i], vmm_sizes[i]);
-//        for(int j = 0; j < vmm_sizes[i]; j++) {
-//            unmap_single_page(get_kernel_page_directory(), vmm_mapped[i] + (j * PAGE_SIZE));
-//        }
-////        phys_free_single_page(vmm_allocated[i]);
-//    }
-
-    qemu_log("Cleaned %d pages", vmm_allocated_count);
+    qemu_log("CLEANED  %d pages",  elf_file->elf_header.e_phnum);
 
     // FREE ELF DATA
 
     unload_elf(elf_file);
+
+    qemu_log("RESUMING...");
 
     __asm__ volatile("sti");
 

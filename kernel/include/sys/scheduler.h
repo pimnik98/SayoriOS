@@ -5,7 +5,7 @@
 #include	"lib/list.h"
 #include	"mem/pmm.h"
 
-#define DEFAULT_STACK_SIZE 0x4000
+#define DEFAULT_STACK_SIZE 0x8000
 
 typedef enum {
     CREATED = 0,
@@ -32,7 +32,7 @@ SAYORI_INLINE const char* thread_state_string(thread_state_t state) {
 /*-----------------------------------------------------------------------------
  * 		Process structure
  *---------------------------------------------------------------------------*/
-typedef	struct
+typedef	volatile struct
 {
     // 0
 	list_item_t		list_item;		/* List item */
@@ -56,7 +56,7 @@ typedef	struct
 /*-----------------------------------------------------------------------------
  * 		Thread structure
  *---------------------------------------------------------------------------*/
-typedef	struct
+typedef volatile struct
 {
     // 0
 	list_item_t		list_item;			/* List item */
@@ -102,7 +102,7 @@ thread_t* thread_create(process_t* proc,
 	               	    bool suspend);
 
 /* Get current process */
-process_t* get_current_proc(void);
+volatile process_t * get_current_proc(void);
 
 /* Suspend thread */
 void thread_suspend(thread_t* thread, bool suspend);

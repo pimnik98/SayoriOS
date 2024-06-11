@@ -122,8 +122,8 @@ size_t create_process(void* entry_point, char name[256], bool suspend, bool is_k
  *
  * @return process_t* - Текущий обработчик задачи
  */
-process_t* get_current_proc(void) {
-	return current_proc;
+ volatile process_t * get_current_proc(void) {
+    return current_proc;
 }
 
 __attribute__((noreturn)) void blyat_fire() {
@@ -280,7 +280,7 @@ void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs) {
             process->threads_count--;
 
             if(process->threads_count == 0)  {
-                qemu_log("PROCESS DOES NOT HAVE ANY THREADS: #%u", process->pid);
+                qemu_log("PROCESS #%d `%s` DOES NOT HAVE ANY THREADS", process->pid, process->name);
 
                 for(size_t pt = 0; pt < 1024; pt++) {
                     size_t page_table = process->page_tables_virts[pt];
@@ -295,6 +295,7 @@ void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs) {
                 list_remove(&process->list_item);
 
                 kfree(process);
+
             }
         }
 

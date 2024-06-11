@@ -464,7 +464,10 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 	void k();
 
 //	 create_process(k, "process", false, true);
-//    thread_create(get_current_proc(), k, 4096, true, false);
+//    sleep_ms(500);
+//    create_process(k, "process2", false, true);
+//    sleep_ms(1500);
+//    create_process(k, "process3", false, true);
 
     qemu_log("System initialized everything at: %f seconds.", (double) (getTicks() - kernel_start_time) / getFrequency());
 
@@ -477,9 +480,9 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
         ;
 }
 
-//void k() {
-//    for(int i = 0; i < 10; i++) {
-//        qemu_err("HELLO");
-//        sleep_ms(250);
-//    }
-//}
+void k() {
+    for(int i = 0; i < 10; i++) {
+        qemu_err("HELLO");
+        sleep_ms(250);
+    }
+}
