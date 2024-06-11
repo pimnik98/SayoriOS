@@ -150,7 +150,7 @@ thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t st
     uint32_t	eflags;
 
         /* Create new thread handler */
-    thread_t* tmp_thread = (thread_t*) kmalloc(sizeof(thread_t));
+    thread_t* tmp_thread = (thread_t*) kcalloc(sizeof(thread_t), 1);
 
     /* Clear memory */
     memset(tmp_thread, 0, sizeof(thread_t));
@@ -289,11 +289,14 @@ void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs) {
                 // `st` command crashes here
                 qemu_log("PROCESS #%d `%s` DOES NOT HAVE ANY THREADS", process->pid, process->name);
 
+//                heap_dump();
+
                 for(size_t pt = 0; pt < 1024; pt++) {
                     size_t page_table = process->page_tables_virts[pt];
+                    qemu_log("[%p: %d] PAGE TABLE AT: %x", process->page_tables_virts + pt, pt, page_table);
 
                     if(page_table) {
-                        qemu_log("[%x] FREE PAGE TABLE AT: %x", pt << 22, page_table);
+                        qemu_note("[%d] FREE PAGE TABLE AT: %x", pt, page_table);
                         kfree((void *) page_table);
                     }
                 }

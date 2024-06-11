@@ -172,7 +172,9 @@ int32_t spawn(const char *name, int argc, char* eargv[]) {
     extern uint32_t next_pid;
     extern list_t process_list, thread_list;
 
+//    vmm_debug_switch(true);
     process_t* proc = (process_t*)kcalloc(1, sizeof(process_t));
+//    vmm_debug_switch(false);
 
     proc->pid = next_pid++;
     proc->list_item.list = nullptr;  // No nested processes hehe :)
@@ -195,7 +197,7 @@ int32_t spawn(const char *name, int argc, char* eargv[]) {
                 get_kernel_page_directory(),
                 addrto,
                 phdr->p_vaddr,
-                pagecount * 4096,
+                pagecount * PAGE_SIZE,
                 (PAGE_PRESENT | PAGE_USER | PAGE_WRITEABLE) // 0x07
         );
 

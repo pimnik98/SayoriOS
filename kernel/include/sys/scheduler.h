@@ -29,11 +29,7 @@ SAYORI_INLINE const char* thread_state_string(thread_state_t state) {
     }
 }
 
-/*-----------------------------------------------------------------------------
- * 		Process structure
- *---------------------------------------------------------------------------*/
-typedef	volatile struct
-{
+typedef	volatile struct {
     // 0
 	list_item_t		list_item;		/* List item */
 	// 12
@@ -51,7 +47,7 @@ typedef	volatile struct
 	// 32 + 256
 	size_t          page_tables_virts[1024];    /* Page table addresses */
     // Every process should have a path that process operates
-}__attribute__((packed)) process_t;
+} __attribute__((packed)) process_t;
 
 /*-----------------------------------------------------------------------------
  * 		Thread structure
@@ -80,7 +76,7 @@ typedef volatile struct
     uint32_t	eax, ebx, ecx, edx, esi, edi, ebp;
     // 72
     thread_state_t state;
-}__attribute__((packed)) thread_t;
+} __attribute__((packed)) thread_t;
 
 /* Initialization */
 void init_task_manager(void);
