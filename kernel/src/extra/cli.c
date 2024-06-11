@@ -374,7 +374,7 @@ uint32_t CLI_CMD_ECHO(uint32_t c, char* v[]){
 			_tty_printf("%s",G_CLI_PATH);
 		} else if (strcmpn(v[i],"%RANDOM%") || strcmpn(v[i],"%random%")){
 			/// Магии не будет - я хз как у нас тут работает рандом
-			_tty_printf("%d",1);
+			_tty_printf("%u", rand());
 		} else if (strcmpn(v[i],"%TIME%") || strcmpn(v[i],"%time%")){
 			_tty_printf("%s","12:34");
 		} else {
@@ -461,6 +461,38 @@ uint32_t CLI_CMD_REBOOT(uint32_t argc, char* argv[]) {
     return 0;
 }
 
+
+uint32_t CLI_SPAWN(uint32_t argc, char* argv[]) {
+    qemu_log("SPAWN! %u", argc);
+    if (argc <= 1) {
+        //tty_setcolor(COLOR_ERROR);
+        tty_printf("Файл не указан.\n");
+        return 1;
+    }
+
+    const char* path = argv[1];
+
+    FILE* elf_exec = fopen(path, "r");
+
+    if(!elf_exec) {
+        fclose(elf_exec);
+        tty_error("\"%s\" не является внутренней или внешней\n командой, исполняемой программой или пакетным файлом.\n", path);
+        return 2;
+    }
+
+    if(!is_elf_file(elf_exec)) {
+        fclose(elf_exec);
+        tty_printf("\"%s\" не является программой или данный тип файла не поддерживается.\n", path);
+        return 2;
+    }
+
+    fclose(elf_exec);
+
+    spawn(path, argc, argv);
+
+    return 0;
+}
+
 uint32_t CLI_CMD_MTRR(uint32_t argc, char* argv[]) {
 	list_mtrrs();
 
@@ -530,6 +562,7 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
     {"RMDIR", "rmdir", CLI_CMD_RMDIR, "Удалить папку"},
     {"REBOOT", "reboot", CLI_CMD_REBOOT, "Перезагрузка"},
     {"RD", "rd", CLI_RD, "Чтение данных с диска"},
+    {"SPAWN", "spawn", CLI_SPAWN, "spawn a new process"},
 	{nullptr, nullptr, nullptr}
 };
 

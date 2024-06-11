@@ -121,6 +121,7 @@ extern void user_mode_switch(void* entry_point, uint32_t user_stack_top);
 /* Init user mode */
 void init_user_mode(void* entry_point, size_t stack_size);
 
+int32_t spawn(const char *name, int argc, char* eargv[]);
 
 void scheduler_mode(bool on);
 

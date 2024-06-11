@@ -87,25 +87,18 @@ size_t create_process(void* entry_point, char name[256], bool suspend, bool is_k
     scheduler_working = false;
 	__asm__ volatile("cli");
 
-    qemu_log("Create process");
-
     process_t* proc = (process_t*)kcalloc(1, sizeof(process_t));
 
 	proc->pid = next_pid++;
 	proc->list_item.list = nullptr;  // No nested processes hehe :)
 	proc->threads_count = 0;
+
 	strcpy(proc->name, name);
 	proc->suspend = suspend;
 
-    qemu_log("ADD PROCESS TO LIST");
+    list_add(&process_list, &proc->list_item);
 
-	list_add(&process_list, &proc->list_item);
-
-    qemu_log("CREATE THREAD");
-
-	thread_t* thread = _thread_create_unwrapped(proc, entry_point, DEFAULT_STACK_SIZE, is_kernel, suspend);
-
-    qemu_log("ADD THREAD TO LIST!");
+    thread_t* thread = _thread_create_unwrapped(proc, entry_point, DEFAULT_STACK_SIZE, is_kernel, suspend);
 
     qemu_log("PID: %d, DIR: %x; Threads: %d; Suspend: %d", proc->pid, proc->page_dir, proc->threads_count, proc->suspend);
 
@@ -116,33 +109,7 @@ size_t create_process(void* entry_point, char name[256], bool suspend, bool is_k
 
     proc->page_dir = phys;
 
-    qemu_note("New page directory at: V%x => P%x", (size_t)virt, phys);
-
     qemu_log("FINISHED!");
-
-    {
-        qemu_log("%d процессов", process_list.count);
-
-        list_item_t* item = process_list.first;
-        for(int i = 0; i < process_list.count; i++) {
-            process_t* proc =  (process_t*)item;
-
-            qemu_log("    Процесс: %d [%s]", proc->pid, proc->name);
-
-            item = item->next;
-        }
-
-        qemu_log("%d потоков", thread_list.count);
-
-        list_item_t* item_thread = thread_list.first;
-        for(int j = 0; j < thread_list.count; j++) {
-            thread_t* thread = (thread_t*)item_thread;
-
-            qemu_log("    Поток: %d [Стек: (%x, %x, %d)]", thread->id, thread->stack_top, thread->stack, thread->stack_size);
-
-            item_thread = item_thread->next;
-        }
-    }
 
 	__asm__ volatile("sti");
     scheduler_working = true;

@@ -12,10 +12,7 @@
 #include <io/ports.h>
 #include <lib/stdio.h>
 #include <lib/math.h>
-
-uint32_t vmm_allocated[4096];
-uint32_t vmm_mapped[4096];
-uint32_t vmm_sizes[4096];
+#include "sys/scheduler.h"
 
 elf_t* load_elf(const char* name){
 	/* Allocate ELF file structure */
@@ -66,6 +63,10 @@ void unload_elf(elf_t* elf) {
 
 int32_t run_elf_file(const char *name, int argc, char* eargv[]) {
     elf_t* elf_file = load_elf(name);
+
+    uint32_t vmm_allocated[4096] = {0};
+    uint32_t vmm_mapped[4096] = {0};
+    uint32_t vmm_sizes[4096] = {0};
 
     if (elf_file == nullptr) {
 		qemu_err("[DBG] Error opening file %s\n", name);
@@ -153,6 +154,108 @@ int32_t run_elf_file(const char *name, int argc, char* eargv[]) {
 	// FREE ELF DATA
 
 	unload_elf(elf_file);
+
+    return 0;
+}
+
+int32_t spawn(const char *name, int argc, char* eargv[]) {
+    __asm__ volatile("cli");
+
+    elf_t* elf_file = load_elf(name);
+
+    if (elf_file == nullptr) {
+        qemu_err("[DBG] Error opening file %s\n", name);
+        return -1;
+    }
+
+    extern uint32_t next_pid;
+    extern list_t process_list, thread_list;
+
+    process_t* proc = (process_t*)kcalloc(1, sizeof(process_t));
+
+    proc->pid = next_pid++;
+    proc->list_item.list = nullptr;  // No nested processes hehe :)
+    proc->threads_count = 0;
+
+    strcpy(proc->name, name);
+    proc->suspend = false;
+
+    uint32_t vmm_allocated_count = 0;
+
+    for (int32_t i = 0; i < elf_file->elf_header.e_phnum; i++) {
+        Elf32_Phdr *phdr = elf_file->p_header + i;
+
+        if (phdr->p_type != PT_LOAD)
+            continue;
+
+        size_t pagecount = MAX((ALIGN(phdr->p_memsz, PAGE_SIZE) / PAGE_SIZE), 1);
+
+        physical_addr_t addrto = phys_alloc_multi_pages(pagecount);
+
+        map_pages(
+                get_kernel_page_directory(),
+                addrto,
+                phdr->p_vaddr,
+                pagecount * 4096,
+                (PAGE_PRESENT | PAGE_USER | PAGE_WRITEABLE) // 0x07
+        );
+
+        memset((void*)phdr->p_vaddr, 0, phdr->p_memsz);
+        qemu_log("Set %x - %x to zero.", (int)((void*)phdr->p_vaddr), (int)((void*)phdr->p_vaddr) + phdr->p_memsz);
+
+        fseek(elf_file->file, (ssize_t)phdr->p_offset, SEEK_SET);
+        fread(elf_file->file, phdr->p_filesz, 1, (char *) phdr->p_vaddr);
+
+        qemu_log("Loaded");
+    }
+
+    int(*entry_point)(int argc, char* eargv[]) = (int(*)(int, char**))elf_file->elf_header.e_entry;
+    qemu_log("ELF entry point: %x", elf_file->elf_header.e_entry);
+
+    thread_t* thread = _thread_create_unwrapped(proc, entry_point, DEFAULT_STACK_SIZE, true, false);
+
+    list_add(&thread_list, &thread->list_item);
+
+    void* virt = clone_kernel_page_directory(proc->page_tables_virts);
+    uint32_t phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) virt);
+
+    proc->page_dir = phys;
+
+    list_add(&process_list, &proc->list_item);
+
+    for (int32_t i = 0; i < elf_file->elf_header.e_phnum; i++) {
+        Elf32_Phdr *phdr = elf_file->p_header + i;
+
+        if(phdr->p_type != PT_LOAD)
+            continue;
+
+        size_t pagecount = MAX((ALIGN(phdr->p_memsz, PAGE_SIZE) / PAGE_SIZE), 1);
+
+        qemu_log("\t??? Cleaning %d: %x [%d]", i, phdr->p_vaddr, pagecount * PAGE_SIZE);
+
+        for(size_t x = 0; x < pagecount; x++) {
+            unmap_single_page(
+                get_kernel_page_directory(),
+                phdr->p_vaddr + (x * PAGE_SIZE)
+            );
+        }
+    }
+
+//    for (int32_t i = 0; i < vmm_allocated_count; i++){
+//        qemu_log("\tCleaning %d: %x [%d]", i, vmm_allocated[i], vmm_sizes[i]);
+//        for(int j = 0; j < vmm_sizes[i]; j++) {
+//            unmap_single_page(get_kernel_page_directory(), vmm_mapped[i] + (j * PAGE_SIZE));
+//        }
+////        phys_free_single_page(vmm_allocated[i]);
+//    }
+
+    qemu_log("Cleaned %d pages", vmm_allocated_count);
+
+    // FREE ELF DATA
+
+    unload_elf(elf_file);
+
+    __asm__ volatile("sti");
 
     return 0;
 }
