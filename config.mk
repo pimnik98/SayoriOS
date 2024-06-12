@@ -15,9 +15,6 @@ endif
 
 CC=$(shell bash tools/compiler.sh $(COMPILER_DETECTOR_FLAGS))
 
-#GAMEBOY = $(wildcard kernel/src/ports/gameboy/*.c)
-#GAMEBOY_OBJS = $(GAMEBOY:.c=.o)
-
 OBJ_DIRECTORY = objects
 DIRECTORIES = objects/kernel/src \
 				objects/kernel/asm \
@@ -222,7 +219,7 @@ DEPS = $(OBJS:%.o=%.d)
 
 KERNEL_NEED = $(ASM) $(OBJS)
 
-COMMON_FLAGS = -O0 -nostdlib -fno-stack-protector -fno-builtin -Ikernel/include/ -ffreestanding \
+COMMON_FLAGS = -Os -nostdlib -fno-stack-protector -fno-builtin -Ikernel/include/ -ffreestanding \
 			   -Wall -Wno-div-by-zero -Wno-address-of-packed-member -Wno-implicit-function-declaration \
 			   -mno-red-zone -MMD -MP 
 
