@@ -3,9 +3,10 @@
 # (c) SayoriOS Team 2022-2023
 
 KERNEL = iso/boot/kernel.elf
-DEBUG =# -ggdb3 #-Werror
+DEBUG?=# -ggdb3 #-Werror
 MEMORY_SIZE?=128M
-USE_SSE=true
+USE_SSE?=true
+OPTIMIZATION_LEVEL?=0
 
 COMPILER_DETECTOR_FLAGS = ""
 
@@ -219,7 +220,7 @@ DEPS = $(OBJS:%.o=%.d)
 
 KERNEL_NEED = $(ASM) $(OBJS)
 
-COMMON_FLAGS = -Os -nostdlib -fno-stack-protector -fno-builtin -Ikernel/include/ -ffreestanding \
+COMMON_FLAGS = -O$(OPTIMIZATION_LEVEL) -nostdlib -fno-stack-protector -fno-builtin -Ikernel/include/ -ffreestanding \
 			   -Wall -Wno-div-by-zero -Wno-address-of-packed-member -Wno-implicit-function-declaration \
 			   -mno-red-zone -MMD -MP 
 
