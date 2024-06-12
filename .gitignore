@@ -17,3 +17,4 @@
 .idea/
 iso/boot/ramdisk
 disk*.img
+builds/
