@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import shutil
 # The Scorbunny Configuration tool for SayoriOS
 # Made by NDRAEY.
 
@@ -159,6 +159,11 @@ def main():
             os.mkdir(f"builds/{res[1]}")  # create new configuration directory
 
             save_configuration(res[1], Config())
+
+            # Copy files
+            shutil.copy("common.mk", f"builds/{res[1]}/common.mk")
+            shutil.copytree("ramdisk", f"builds/{res[1]}/ramdisk", dirs_exist_ok=True)
+            shutil.copytree("iso", f"builds/{res[1]}/iso", dirs_exist_ok=True)
 
             okay(f"Configuration {res[1]} created!")
         else:

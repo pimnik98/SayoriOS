@@ -32,6 +32,8 @@ ASM_SRC=kernel/asm/init.s \
 	kernel/asm/switch_task.s \
 	kernel/asm/64bit_on_32bit.s \
 
+ASM_SRC:=$(ASM_SRC:%.s=$(BUILD_PREFIX)/%.s)
+
 ASM=$(ASM_SRC:%.s=$(OBJ_DIRECTORY)/%.o)
 
 SOURCES=\
@@ -48,8 +50,6 @@ SOURCES=\
 	kernel/src/lib/math/math.c \
 	kernel/src/mem/pmm.c	\
 	kernel/src/mem/vmm.c	\
-	$(wildcard kernel/src/lib/libvector/src/*.c) \
-	$(wildcard kernel/src/lib/libstring/src/*.c) \
 	kernel/src/lib/stdio.c \
 	kernel/src/lib/split.c \
 	kernel/src/io/screen.c \
@@ -68,7 +68,6 @@ SOURCES=\
 	kernel/src/lib/elk/elk_engine.c \
 	kernel/src/lib/elk/elk_libs.c \
 	kernel/src/lib/elk/jse_func.c \
-	$(wildcard kernel/src/lib/elk/ext/*.c) \
 	kernel/src/drv/psf.c \
 	kernel/src/sys/unwind.c \
 	kernel/src/fs/NatSuki.c \
@@ -181,6 +180,11 @@ SOURCES=\
 	kernel/src/fs/fat12.c \
 	kernel/src/fs/smfs.c \
 	kernel/src/lib/base64.c \
+
+SOURCES:=$(SOURCES:%.c=$(BUILD_PREFIX)/%.c) \
+	$(wildcard $(BUILD_PREFIX)/kernel/src/lib/libvector/src/*.c) \
+	$(wildcard $(BUILD_PREFIX)/kernel/src/lib/libstring/src/*.c) \
+	$(wildcard $(BUILD_PREFIX)/kernel/src/lib/elk/ext/*.c) \
 
 DIRECTORIES := $(addprefix $(OBJ_DIRECTORY)/,$(sort $(dir $(SOURCES) $(ASM_SRC))))
 

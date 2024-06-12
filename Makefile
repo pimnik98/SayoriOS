@@ -13,11 +13,11 @@ all:
 	@echo $(OBJ_DIRECTORY) $(BUILD_PREFIX)
 	$(MAKE) -C $(CURDIR) -f $(BUILD_PREFIX)Makefile $(KERNEL)
 
-$(OBJ_DIRECTORY)/%.o : $(BUILD_PREFIX)/%.s | $(OBJ_DIRECTORY)
+$(OBJ_DIRECTORY)/%.o : %.s | $(OBJ_DIRECTORY)
 	@echo -e '\x1b[32mASM  \x1b[0m' $@
 	@$(AS) $< $(ASFLAGS) -o $@
 
-$(OBJ_DIRECTORY)/%.o : $(BUILD_PREFIX)/%.c | $(OBJ_DIRECTORY)
+$(OBJ_DIRECTORY)/%.o : %.c | $(OBJ_DIRECTORY)
 	@echo -e '\x1b[32mC    \x1b[0m' $@
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
