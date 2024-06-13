@@ -1,0 +1,4 @@
+DEBUG?=# -ggdb3 #-Werror
+MEMORY_SIZE?=128M
+USE_SSE?=true
+OPTIMIZATION_LEVEL?=0

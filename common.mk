@@ -2,11 +2,9 @@
 # SayoriOS Soul
 # (c) SayoriOS Team 2022-2023
 
+include config.mk
+
 KERNEL = iso/boot/kernel.elf
-DEBUG?=# -ggdb3 #-Werror
-MEMORY_SIZE?=128M
-USE_SSE?=true
-OPTIMIZATION_LEVEL?=0
 BUILD_PREFIX=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
 COMPILER_DETECTOR_FLAGS = ""

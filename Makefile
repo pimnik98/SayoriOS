@@ -237,4 +237,4 @@ files:
 	@echo $(DIRECTORIES)
 
 
-#-include $(DEPS)
+-include $(DEPS)

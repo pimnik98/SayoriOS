@@ -17,6 +17,7 @@ BUILD_MODES = ["debug",  "release"]
 MAPPING = (
     ("Optimization level", "optimization_level", OPTIMIZATION_LEVELS),
     ("Build mode",  "build_mode", BUILD_MODES),
+    ("Enable -Werror",  "enable_werror", bool),
 )
 
 
@@ -24,6 +25,7 @@ MAPPING = (
 class Config:
     optimization_level: str = "0"
     build_mode: str = "debug"
+    enable_werror: bool = False
 
 
 # -- logging --
@@ -108,14 +110,19 @@ def dialog_configure_parameter(dialog: Dialog, config_name: str, config_paramete
     print(parameter)
 
     choices = []
+    choices_texts = parameter[2]
 
-    for i in parameter[2]:
-        choices.append((i, "", conf.__dict__[parameter[1]] == i))
+    if parameter[2] is bool:
+        choices_texts = (True, False)
+    
+    for i in choices_texts:
+        choices.append((str(i), "", conf.__dict__[parameter[1]] == i))
 
     choice = dialog.radiolist(f"{config_name} - {parameter[0]}", choices=choices)
 
     if choice[0] == 'ok':
-        conf.__dict__[parameter[1]] = choice[1]
+        # Convert string selecttion into a type provided in a mapped field 
+        conf.__dict__[parameter[1]] = type(conf.__dict__[parameter[1]])(choice[1])
         save_configuration(config_name, conf)
 
     return choice
@@ -162,15 +169,19 @@ def main():
 
             # Copy files
             shutil.copy("common.mk", f"builds/{res[1]}/common.mk")
+            shutil.copy("config.mk", f"builds/{res[1]}/config.mk")
             shutil.copytree("ramdisk", f"builds/{res[1]}/ramdisk", dirs_exist_ok=True)
             shutil.copytree("iso", f"builds/{res[1]}/iso", dirs_exist_ok=True)
 
             okay(f"Configuration {res[1]} created!")
         else:
-            cfg = dialog_configure(dialog, a[1])
+            while True:
+                cfg = dialog_configure(dialog, a[1])
 
-            if cfg[0] == 'ok':
-                dialog_configure_parameter(dialog, a[1], cfg[1])
+                if cfg[0] == 'ok':
+                    dialog_configure_parameter(dialog, a[1], cfg[1])
+                else:
+                    break
 
 
 if __name__ == "__main__":
