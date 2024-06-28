@@ -14,6 +14,8 @@ import yaml
 
 OPTIMIZATION_LEVELS = ["0", "1", "2", "3", "s"]
 BUILD_MODES = ["debug",  "release"]
+
+# Tuple<Description, FieldInConfigDataclass, Variant<AcceptedValues, Type>>
 MAPPING = (
     ("Optimization level", "optimization_level", OPTIMIZATION_LEVELS),
     ("Build mode",  "build_mode", BUILD_MODES),
