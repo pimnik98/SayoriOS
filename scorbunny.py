@@ -107,8 +107,6 @@ def dialog_configure_parameter(dialog: Dialog, config_name: str, config_paramete
 
     parameter = [i for i in MAPPING if i[0] == config_parameter][0]
 
-    print(parameter)
-
     choices = []
     choices_texts = parameter[2]
 
@@ -122,7 +120,11 @@ def dialog_configure_parameter(dialog: Dialog, config_name: str, config_paramete
 
     if choice[0] == 'ok':
         # Convert string selecttion into a type provided in a mapped field 
-        conf.__dict__[parameter[1]] = type(conf.__dict__[parameter[1]])(choice[1])
+        if parameter[2] is bool:
+            conf.__dict__[parameter[1]] = eval(choice[1])
+        else:
+            conf.__dict__[parameter[1]] = type(conf.__dict__[parameter[1]])(choice[1])
+
         save_configuration(config_name, conf)
 
     return choice
