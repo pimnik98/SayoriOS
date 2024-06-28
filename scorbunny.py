@@ -20,6 +20,7 @@ MAPPING = (
     ("Optimization level", "optimization_level", OPTIMIZATION_LEVELS),
     ("Build mode",  "build_mode", BUILD_MODES),
     ("Enable -Werror",  "enable_werror", bool),
+    ("Use SSE instructions",  "use_sse", bool),
 )
 
 
@@ -28,6 +29,7 @@ class Config:
     optimization_level: str = "0"
     build_mode: str = "debug"
     enable_werror: bool = False
+    use_sse: bool = True
 
 
 # -- logging --
