@@ -287,7 +287,8 @@ void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs) {
 
             qemu_log("MODIFIED PROCESS");
 
-            if(process->threads_count == 0)  {
+			bool is_krnl_process = current_proc->pid == 0; // TODO: Switch to kernel's PD here, because process info stored there
+            if(process->threads_count == 0 && is_krnl_process)  {
                 // `st` command crashes here
                 qemu_log("PROCESS #%d `%s` DOES NOT HAVE ANY THREADS", process->pid, process->name);
 
@@ -295,7 +296,7 @@ void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs) {
 
                 for(size_t pt = 0; pt < 1024; pt++) {
                     size_t page_table = process->page_tables_virts[pt];
-                    qemu_log("[%p: %d] PAGE TABLE AT: %x", process->page_tables_virts + pt, pt, page_table);
+                    // qemu_log("[%p: %d] PAGE TABLE AT: %x", process->page_tables_virts + pt, pt, page_table);
 
                     if(page_table) {
                         qemu_note("[%d] FREE PAGE TABLE AT: %x", pt, page_table);
