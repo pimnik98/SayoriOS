@@ -269,6 +269,8 @@ void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs) {
         thread_t* next_thread_soon = (thread_t *)next_thread->list_item.next;
 
         if(next_thread->state == DEAD) {
+        	qemu_log("QUICK NOTICE: WE ARE IN PROCESS NR. #%u", current_proc->pid);
+        	
             process_t* process = next_thread->process;
             qemu_log("REMOVING DEAD THREAD: #%u", next_thread->id);
 

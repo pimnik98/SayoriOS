@@ -167,7 +167,7 @@ SOURCES=\
 	kernel/src/drv/disk/mbr.c \
 	kernel/src/sys/lapic.c \
 	kernel/src/drv/ps2.c \
-	kernel/src/gfx/intel.c \
+	kernel/src/drv/video/intel.c \
 	kernel/src/kernel.c \
 #	kernel/src/lib/duktape.c \
 	kernel/src/toys/piano.c \
