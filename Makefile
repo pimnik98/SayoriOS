@@ -9,7 +9,7 @@ include common.mk
 # Cтандартное действие при вызове Make
 
 all:
-	-mkdir -p $(OBJ_DIRECTORY) $(DIRECTORIES)
+	@-mkdir -p $(OBJ_DIRECTORY) $(DIRECTORIES)
 	@echo $(OBJ_DIRECTORY) $(BUILD_PREFIX)
 	$(MAKE) -C $(CURDIR) -f $(BUILD_PREFIX)Makefile $(KERNEL)
 

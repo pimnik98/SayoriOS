@@ -127,7 +127,7 @@ SOURCES=\
 	kernel/src/sys/fxsave_region.c \
 	kernel/src/toys/gfxbench.c \
 	kernel/src/toys/miniplay.c \
-	kernel/src/drv/rtl8139.c \
+	kernel/src/drv/network/rtl8139.c \
 	kernel/src/drv/network/virtio_network.c \
 	kernel/src/fmt/tga.c \
 	kernel/src/lib/sprintf.c \
@@ -252,6 +252,9 @@ QEMU_FLAGS = $(QEMU_BASE_FLAGS) \
 			 -device ich9-intel-hda,debug=0 \
 			 -device hda-output,audiodev=pa0 \
 			 -trace "hda*" \
+			 -device ich9-usb-uhci1 \
+			 -drive file=disk.img,id=disk0,if=none \
+			 -device usb-storage,drive=disk0 \
 			 -boot d \
 			 -object filter-dump,id=dump0,netdev=net0,file=netdump.pcap \
  			 # -device AC97 \
