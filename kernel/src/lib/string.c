@@ -577,6 +577,26 @@ uint32_t atoi(const char s[]){
     return n;
 }
 
+size_t htoi(const char* hex) {
+    const char* p = hex;
+    size_t result = 0;
+
+    while (*p != '\0') {
+        if (*p >= '0' && *p <= '9') {
+            result = (result << 4) + (*p - '0');
+        } else if (*p >= 'A' && *p <= 'F') {
+            result = (result << 4) + (*p - 'A' + 10);
+        } else if (*p >= 'a' && *p <= 'f') {
+            result = (result << 4) + (*p - 'a' + 10);
+        } else {
+            break;
+        }
+        p++;
+    }
+
+    return result;
+}
+
 /**
  * @brief Переворачивает строку задом наперед
  *

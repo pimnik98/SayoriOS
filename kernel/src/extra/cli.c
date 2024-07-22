@@ -536,6 +536,40 @@ uint32_t CLI_RD(uint32_t argc, char* argv[]) {
     return 0;
 }
 
+uint32_t CLI_PLAIN(uint32_t argc, char** argv) {
+	if(argc < 3) {
+		tty_error("plain <address> <file>");
+	}
+
+	size_t address = htoi(argv[1] + 2);
+
+	FILE* file = fopen(argv[2], "rb");
+
+	size_t filesize = fsize(file);
+
+	qemu_log("FILE SIZE IS: %d", filesize);
+
+	void* a = kmalloc_common(ALIGN(filesize, PAGE_SIZE), PAGE_SIZE);
+	memset(a, 0, ALIGN(filesize, PAGE_SIZE));
+
+	size_t a_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t)a);
+
+	map_pages(get_kernel_page_directory(), (physical_addr_t)a_phys, address, ALIGN(filesize, PAGE_SIZE), PAGE_WRITEABLE);
+
+	fread(file, 1, filesize, (void*)a);
+
+	int (*entry)(int, char**) = (int(*)(int, char**))address;
+
+	qemu_log("RESULT IS: %d", entry(0, 0));
+
+	//unmap_pages_overlapping(get_kernel_page_directory(), address, filesize);
+
+	//kfree(a);
+	fclose(file);
+
+	return 0;
+}
+
 uint32_t pavi_view(uint32_t, char**);
 uint32_t minesweeper(uint32_t, char**);
 uint32_t shell_diskctl(uint32_t, char**);
@@ -574,6 +608,7 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
     {"RD", "rd", CLI_RD, "Чтение данных с диска"},
     {"SPAWN", "spawn", CLI_SPAWN, "spawn a new process"},
     {"ST", "st", CLI_SPAWN_TEST, "spawn test"},
+    {"PLAIN", "plain", CLI_PLAIN, "Run plain program"},
 	{nullptr, nullptr, nullptr}
 };
 
