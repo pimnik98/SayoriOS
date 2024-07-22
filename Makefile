@@ -28,10 +28,10 @@ $(KERNEL): $(KERNEL_NEED)
 	@echo -e '\x1b[32mLINK \x1b[0m' $(KERNEL)
 	@rm -f $(KERNEL)
 	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED)
-	@bash $(BUILD_PREFIX)tools/genmap.sh
-	@bash $(BUILD_PREFIX)tools/insertmap.sh
-	@ls -lh $(KERNEL) kernel.map
-	@-rm kernel.map
+	@#bash $(BUILD_PREFIX)tools/genmap.sh
+	@#bash $(BUILD_PREFIX)tools/insertmap.sh
+	@ls -lh $(KERNEL) # kernel.map
+	@#-rm kernel.map
 
 # Сборка ядра
 build: $(SOURCES)
