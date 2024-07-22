@@ -562,9 +562,9 @@ uint32_t CLI_PLAIN(uint32_t argc, char** argv) {
 
 	qemu_log("RESULT IS: %d", entry(0, 0));
 
-	//unmap_pages_overlapping(get_kernel_page_directory(), address, filesize);
+	unmap_pages_overlapping(get_kernel_page_directory(), address, filesize);
 
-	//kfree(a);
+	kfree(a);
 	fclose(file);
 
 	return 0;
