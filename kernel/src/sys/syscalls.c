@@ -47,12 +47,20 @@ size_t syscall_env(struct env* position) {
     return 0;
 }
 
-size_t syscall_memory_alloc(size_t size, void** out) {
-    void* allocated = kcalloc(size, 1);
+size_t syscall_memory_alloc(size_t size, size_t align, void** out) {
+    void* allocated = kcalloc(size, align);
 
     *out = allocated;
 
     return 0;
+}
+
+size_t syscall_memory_realloc(void* memory, size_t size, void** out) {
+	void* r = krealloc(memory, size);
+
+	*out = r;
+	
+	return 0;
 }
 
 size_t syscall_memory_free(void* memory) {
@@ -150,6 +158,7 @@ void init_syscalls(void){
     calls_table[15] = (syscall_fn_t *)syscall_sleep;
     calls_table[16] = (syscall_fn_t *)syscall_datetime;
     calls_table[17] = (syscall_fn_t *)syscall_exit;
+	calls_table[18] = (syscall_fn_t)syscall_memory_realloc;
 
 	qemu_ok("System calls initialized!");
 }
