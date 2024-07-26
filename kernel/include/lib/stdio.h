@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include <fs/fsm.h>  
+
 #define EOF (-1)
 #define SEEK_SET 0
 #define SEEK_CUR 1
@@ -36,6 +37,7 @@ enum FileOpenMode {
 };
 
 FILE* fopen(const char* filename, const char* mode);
+FILE* fopen_binmode(const char* filename, size_t mode);
 void fclose(FILE *stream);
 int32_t fread(FILE* stream, size_t count, size_t size, void* buffer);
 int ftell(FILE* stream);

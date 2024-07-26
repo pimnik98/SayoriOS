@@ -164,42 +164,43 @@ void perror(FILE* stream,char* s){
  * @return Структура FILE*
  */
 FILE* fopen(const char* filename, const char* _mode){
-	ON_NULLPTR(filename, {
-		qemu_log("Filename is nullptr!");
-		return NULL;
-	});
-
-	ON_NULLPTR(_mode, {
-		qemu_log("Mode is nullptr!");
-		return NULL;
-	});
-
-    qemu_log("Open file");
-    qemu_log("|- Name: '%s'", filename);
-    qemu_log("|- Mode: '%s'", _mode);
-
-	FILE* file = kcalloc(sizeof(FILE), 1);
-	// Получаем тип открытого файла
 	uint32_t freal_mode = fmodecheck(_mode);
-	FSM_FILE finfo = nvfs_info(filename);
-	if (finfo.Ready == 0 || freal_mode == 0) {
+	
+	return fopen_binmode(filename, freal_mode);
+}
+
+FILE* fopen_binmode(const char* filename, size_t mode) {
+	ON_NULLPTR(filename, {
+               qemu_log("Filename is nullptr!");
+               return NULL;
+       });
+
+	qemu_log("Open file");
+	qemu_log("|- Name: '%s'", filename);
+	qemu_log("|- Mode: '%x'", mode);
+
+       FILE* file = kcalloc(sizeof(FILE), 1);
+       // Получаем тип открытого файла
+       FSM_FILE finfo = nvfs_info(filename);
+       if (finfo.Ready == 0 || mode == 0) {
         //kfree(file);
         qemu_err("Failed to open file: %s (Exists: %d; FMODE: %d)",
-			filename,
-			finfo.Ready,
-			freal_mode);
-		return 0;
-	}
+                       filename,
+                       finfo.Ready,
+                       mode);
+               return 0;
+       }
 
-	file->open = 1;										// Файл успешно открыт
-	file->fmode = freal_mode;								// Режим работы с файлом
-	file->size = finfo.Size;		// Размер файла
-	file->path = (char*)filename;						// Полный путь к файлу
-	file->pos = 0;										// Установка указателя в самое начало
-	file->err = 0;										// Ошибок в работе нет
+       file->open = 1;                                                                         // Файл успешно открыт
+       file->fmode = mode;                                                               // Режим работы с файлом
+       file->size = finfo.Size;                // Размер файла
+       file->path = (char*)filename;                                           // Полный путь к файлу
+       file->pos = 0;                                                                          // Установка указателя в самое начало
+       file->err = 0;                                                                          // Ошибок в работе нет
 
-    qemu_ok("File opened!");
-	return file;
+       qemu_ok("File opened!");
+	
+       return file;
 }
 
 /**
