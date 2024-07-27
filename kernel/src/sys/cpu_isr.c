@@ -43,6 +43,11 @@ _Noreturn void sod_screen_legacy(registers_t regs, char* title, char* msg, uint3
 
     qemu_err("PROCESS CAUSED THE EXCEPTION: nr. %d", get_current_proc()->pid);
 
+	if(get_current_proc()->pid != 0) {
+		qemu_note("EXIT HERE");
+		blyat_fire();
+	}
+
     __asm__ volatile("cli");  // Disable interrupts
     __asm__ volatile("hlt");  // Halt
 
@@ -212,7 +217,7 @@ void page_fault(registers_t regs){
     }
     qemu_log("at address (virtual) %x",fault_addr);
 
-    tty_printf("Page fault: ");
+    tty_printf("Process nr.%d caused page fault: ", get_current_proc()->pid); 
     if (present){
         tty_printf("NOT PRESENT, ");
     }

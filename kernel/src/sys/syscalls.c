@@ -159,6 +159,7 @@ void init_syscalls(void){
     calls_table[16] = (syscall_fn_t *)syscall_datetime;
     calls_table[17] = (syscall_fn_t *)syscall_exit;
 	calls_table[18] = (syscall_fn_t *)syscall_memory_realloc;
+	calls_table[19] = (syscall_fn_t *)file_descriptor_write;
 
 	qemu_ok("System calls initialized!");
 }
