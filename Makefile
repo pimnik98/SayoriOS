@@ -2,7 +2,7 @@
 # SayoriOS Soul
 # (c) SayoriOS Team 2022-2023
 
-include config.mk
+include common.mk
 
 # Правило сборки
 ############################################################
@@ -10,7 +10,8 @@ include config.mk
 
 all:
 	@-mkdir -p $(OBJ_DIRECTORY) $(DIRECTORIES)
-	@$(MAKE) $(KERNEL)
+	@echo $(OBJ_DIRECTORY) $(BUILD_PREFIX)
+	$(MAKE) -C $(CURDIR) -f $(BUILD_PREFIX)Makefile $(KERNEL)
 
 $(OBJ_DIRECTORY)/%.o : %.s | $(OBJ_DIRECTORY)
 	@echo -e '\x1b[32mASM  \x1b[0m' $@
@@ -20,9 +21,17 @@ $(OBJ_DIRECTORY)/%.o : %.c | $(OBJ_DIRECTORY)
 	@echo -e '\x1b[32mC    \x1b[0m' $@
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
-$(OBJ_DIRECTORY)/%.o : %.cpp | $(OBJ_DIRECTORY)
-	@echo -e '\x1b[32mCPP  \x1b[0m' $@
-	@$(CXX) $(CPP_FLAGS) -c -o $@ $<
+#$(OBJ_DIRECTORY)/%.o: %.s
+#	@echo $< $@
+
+$(KERNEL): $(KERNEL_NEED)
+	@echo -e '\x1b[32mLINK \x1b[0m' $(KERNEL)
+	@rm -f $(KERNEL)
+	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED)
+	@#bash $(BUILD_PREFIX)tools/genmap.sh
+	@#bash $(BUILD_PREFIX)tools/insertmap.sh
+	@ls -lh $(KERNEL) # kernel.map
+	@#-rm kernel.map
 
 # Сборка ядра
 build: $(SOURCES)
@@ -59,23 +68,23 @@ run_disks:
 	$(QEMU) $(QEMU_FLAGS) -serial mon:stdio -hda disk1.img -hdb disk2.img -hdd disk3.img
 	
 bra:
-	@$(MAKE)
-	@$(MAKE) RAM
-	@$(MAKE) geniso
-	@$(MAKE) run_ahci_sata
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C .
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . RAM
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . geniso
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . run_ahci_sata
 
 disks:
-	@$(MAKE)
-	@$(MAKE) RAM
-	@$(MAKE) geniso
-	@$(MAKE) run_disks
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C .
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . RAM
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . geniso
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . run_disks
 
 # Запуск Milla
 milla:
-	qemu-system-i386 -cdrom kernel.iso -serial file:Qemu.log -serial telnet:sayorios.piminoff.ru:10000 -accel kvm -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime -soundhw pcspk
+	$(QEMU) -cdrom kernel.iso -serial file:Qemu.log -serial telnet:sayorios.piminoff.ru:10000 -accel kvm -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime -soundhw pcspk
 
 floppy:
-	qemu-system-i386 -cdrom kernel.iso -serial mon:stdio -m 64M -name "SayoriOS v0.3.x (Dev)" -d guest_errors -rtc base=localtime -fda floppy.img -boot order=dc -accel kvm
+	$(QEMU) -cdrom kernel.iso -serial mon:stdio -m 64M -name "SayoriOS v0.3.x (Dev)" -d guest_errors -rtc base=localtime -fda floppy.img -boot order=dc -accel kvm
 
 # Запуск с логами в консоль
 runlive:
@@ -97,11 +106,11 @@ uefilive:
 					   -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime
 # Генерация ISO-файла
 geniso: $(KERNEL)
-	$(shell bash tools/grub.sh) -o "kernel.iso" iso/ -V kernel
+	$(shell bash $(BUILD_PREFIX)tools/grub.sh) -o "kernel.iso" iso/ -V kernel
 
 # Генерация ISO-файла с поддержкой UEFI
 genuefi:
-	$(shell bash tools/grub.sh) -d /usr/lib/grub/x86_64-efi -o SayoriOS_UEFI.iso iso/ --locale-directory=/usr/share/locale/ -V "SayoriOS Soul"
+	$(shell bash $(BUILD_PREFIX)tools/grub.sh) -d /usr/lib/grub/x86_64-efi -o SayoriOS_UEFI.iso iso/ --locale-directory=/usr/share/locale/ -V "SayoriOS Soul"
 
 # Удаление оригинального файла и *.о файлов
 clean:
@@ -110,44 +119,24 @@ clean:
 	-rm -f $(DEPS)
 	-rm -f iso/boot/ramdisk
 
-# Линковка файлов
-$(KERNEL): $(KERNEL_NEED)
-	@echo -e '\x1b[32mLINK \x1b[0m' $(KERNEL)
-	@rm -f $(KERNEL)
-	@$(LD) $(LDFLAGS) -o $(KERNEL) $(KERNEL_NEED)
-	@bash tools/genmap.sh
-	@bash tools/insertmap.sh
-	@ls -lh $(KERNEL) kernel.map
-	@-rm kernel.map
-
 # Быстрая линковка, генерация ISO, запуск
 bir:
-	@$(MAKE)
-	@$(MAKE) RAM
-	@$(MAKE) geniso
-	@$(MAKE) run
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C .
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . RAM
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . geniso
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . run
 
 # Быстрая линковка, генерация ISO, запуск
 birl:
-	@$(MAKE)
-	@$(MAKE) RAM
-	@$(MAKE) geniso
-	@$(MAKE) runlive
-
-# Очистка лишних файлов, линковка, генерация ISO, запуск
-cir:
-	@$(MAKE) clean
-	@$(MAKE) bir
-
-cirl:
-	@$(MAKE) clean
-	@$(MAKE) geniso
-	@$(MAKE) lite
+	$(MAKE) -f $(BUILD_PREFIX)/Makefile -C .
+	$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . RAM
+	$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . geniso
+	$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . runlive
 
 bf:
-	@$(MAKE) clean
-	@$(MAKE) geniso
-	@$(MAKE) floppy
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . clean
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . geniso
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . floppy
 
 cppcheck:
 	cppcheck --enable=warning,performance,portability .
@@ -183,9 +172,9 @@ VBOX_create_vm:
 	@VBoxManage storageattach SayoriOS --type=dvddrive --medium kernel.iso --storagectl=ide --port=0 --device=0
 
 VBOX:
-	@$(MAKE)
-	@$(MAKE) RAM
-	@$(MAKE) geniso
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C .
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . RAM
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . geniso
 	@VBoxManage startvm "SayoriOS"
 
 WSL_RUN:
@@ -193,25 +182,25 @@ WSL_RUN:
 
 
 WSL:
-	@$(MAKE)
-	@$(MAKE) RAM
-	@$(MAKE) geniso
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C .
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . RAM
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . geniso
 	@-mkdir /mnt/c/SayoriDev/
 	mv kernel.iso /mnt/c/SayoriDev/SayoriOS_DEV_WSL.iso
 	"/mnt/c/Program Files/qemu/qemu-system-i386.exe" -cdrom "C:\\SayoriDev\\SayoriOS_DEV_WSL.iso" -serial mon:stdio -m 128M -name "SayoriOS DEV WSL MODE" -d guest_errors -rtc base=localtime -netdev user,id=net1,net=192.168.222.0,dhcpstart=192.168.222.128 -device virtio-net-pci,netdev=net1,id=mydev1,mac=52:54:00:6a:40:f8 $(QEMU_FLAGS_WSL)
 
 WSL_NAT:
-	@$(MAKE)
-	@$(MAKE) RAM
-	@$(MAKE) geniso
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C .
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . RAM
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . geniso
 	@-mkdir /mnt/c/SayoriDev/
 	mv kernel.iso /mnt/c/SayoriDev/SayoriOS_DEV_WSL.iso
 	"/mnt/c/Program Files/qemu/qemu-system-i386.exe" -cdrom "C:\\SayoriDev\\SayoriOS_DEV_WSL.iso" -serial mon:stdio -serial telnet:sayorios.piminoff.ru:10000 -m 128M -name "SayoriOS DEV WSL MODE" -d guest_errors -rtc base=localtime $(QEMU_FLAGS_WSL)
 
 WSL_DISKS:
-	@$(MAKE)
-	@$(MAKE) RAM
-	@$(MAKE) geniso
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C .
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . RAM
+	@$(MAKE) -f $(BUILD_PREFIX)/Makefile -C . geniso
 	@-mkdir /mnt/c/SayoriDev/
 	mv kernel.iso /mnt/c/SayoriDev/SayoriOS_DEV_WSL.iso
 	@-mv disk1.img /mnt/c/SayoriDev/disk1.img
@@ -236,9 +225,16 @@ net_tap_dev: geniso
 						 -serial mon:stdio \
             			 $(KVM_QEMU_FLAGS)
 
+files:
+	@echo $(KERNEL_NEED)
+	@echo ------------------
+	@echo $(ASM_SRC) $(SOURCES)
+	@echo ------------------
+	@echo $(DEPS)
 
-clangd:
-	$(MAKE) clean
-	bear -- $(MAKE) -j2
+	# Extract directories from file paths
+
+	@echo $(DIRECTORIES)
+
 
 -include $(DEPS)

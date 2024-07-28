@@ -87,25 +87,18 @@ size_t create_process(void* entry_point, char name[256], bool suspend, bool is_k
     scheduler_working = false;
 	__asm__ volatile("cli");
 
-    qemu_log("Create process");
-
     process_t* proc = (process_t*)kcalloc(1, sizeof(process_t));
 
 	proc->pid = next_pid++;
 	proc->list_item.list = nullptr;  // No nested processes hehe :)
 	proc->threads_count = 0;
+
 	strcpy(proc->name, name);
 	proc->suspend = suspend;
 
-    qemu_log("ADD PROCESS TO LIST");
+    list_add(&process_list, &proc->list_item);
 
-	list_add(&process_list, &proc->list_item);
-
-    qemu_log("CREATE THREAD");
-
-	thread_t* thread = _thread_create_unwrapped(proc, entry_point, DEFAULT_STACK_SIZE, is_kernel, suspend);
-
-    qemu_log("ADD THREAD TO LIST!");
+    thread_t* thread = _thread_create_unwrapped(proc, entry_point, DEFAULT_STACK_SIZE, is_kernel, suspend);
 
     qemu_log("PID: %d, DIR: %x; Threads: %d; Suspend: %d", proc->pid, proc->page_dir, proc->threads_count, proc->suspend);
 
@@ -116,33 +109,7 @@ size_t create_process(void* entry_point, char name[256], bool suspend, bool is_k
 
     proc->page_dir = phys;
 
-    qemu_note("New page directory at: V%x => P%x", (size_t)virt, phys);
-
     qemu_log("FINISHED!");
-
-    {
-        qemu_log("%d процессов", process_list.count);
-
-        list_item_t* item = process_list.first;
-        for(int i = 0; i < process_list.count; i++) {
-            process_t* proc =  (process_t*)item;
-
-            qemu_log("    Процесс: %d [%s]", proc->pid, proc->name);
-
-            item = item->next;
-        }
-
-        qemu_log("%d потоков", thread_list.count);
-
-        list_item_t* item_thread = thread_list.first;
-        for(int j = 0; j < thread_list.count; j++) {
-            thread_t* thread = (thread_t*)item_thread;
-
-            qemu_log("    Поток: %d [Стек: (%x, %x, %d)]", thread->id, thread->stack_top, thread->stack, thread->stack_size);
-
-            item_thread = item_thread->next;
-        }
-    }
 
 	__asm__ volatile("sti");
     scheduler_working = true;
@@ -155,8 +122,8 @@ size_t create_process(void* entry_point, char name[256], bool suspend, bool is_k
  *
  * @return process_t* - Текущий обработчик задачи
  */
-process_t* get_current_proc(void) {
-	return current_proc;
+ volatile process_t * get_current_proc(void) {
+    return current_proc;
 }
 
 __attribute__((noreturn)) void blyat_fire() {
@@ -183,7 +150,7 @@ thread_t* _thread_create_unwrapped(process_t* proc, void* entry_point, size_t st
     uint32_t	eflags;
 
         /* Create new thread handler */
-    thread_t* tmp_thread = (thread_t*) kmalloc(sizeof(thread_t));
+    thread_t* tmp_thread = (thread_t*) kcalloc(sizeof(thread_t), 1);
 
     /* Clear memory */
     memset(tmp_thread, 0, sizeof(thread_t));
@@ -302,32 +269,55 @@ void task_switch_v2_wrapper(__attribute__((unused)) registers_t regs) {
         thread_t* next_thread_soon = (thread_t *)next_thread->list_item.next;
 
         if(next_thread->state == DEAD) {
+        	qemu_log("QUICK NOTICE: WE ARE IN PROCESS NR. #%u", current_proc->pid);
+        	
             process_t* process = next_thread->process;
             qemu_log("REMOVING DEAD THREAD: #%u", next_thread->id);
 
             list_remove(&next_thread->list_item);
 
+            qemu_log("REMOVED FROM LIST");
+
             kfree(next_thread->stack);
             kfree(next_thread);
 
+            qemu_log("FREED MEMORY");
+
             process->threads_count--;
 
-            if(process->threads_count == 0)  {
-                qemu_log("PROCESS DOES NOT HAVE ANY THREADS: #%u", process->pid);
+            qemu_log("MODIFIED PROCESS");
+
+			bool is_krnl_process = current_proc->pid == 0; // TODO: Switch to kernel's PD here, because process info stored there
+            if(process->threads_count == 0 && is_krnl_process)  {
+                // `st` command crashes here
+                qemu_log("PROCESS #%d `%s` DOES NOT HAVE ANY THREADS", process->pid, process->name);
+
+//                heap_dump();
 
                 for(size_t pt = 0; pt < 1024; pt++) {
                     size_t page_table = process->page_tables_virts[pt];
+                    // qemu_log("[%p: %d] PAGE TABLE AT: %x", process->page_tables_virts + pt, pt, page_table);
 
                     if(page_table) {
+                        qemu_note("[%d] FREE PAGE TABLE AT: %x", pt, page_table);
                         kfree((void *) page_table);
                     }
                 }
+                // end
+
+                qemu_log("FREED PAGE TABLES");
 
                 kfree((void *) process->page_dir_virt);
 
+                qemu_log("FREED SPACE FOR TABLES");
+
                 list_remove(&process->list_item);
 
+                qemu_log("REMOVED PROCESS FROM LIST");
+
                 kfree(process);
+
+                qemu_log("FREED PROCESS LIST ITEM");
             }
         }
 

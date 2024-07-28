@@ -47,12 +47,20 @@ size_t syscall_env(struct env* position) {
     return 0;
 }
 
-size_t syscall_memory_alloc(size_t size, void** out) {
-    void* allocated = kcalloc(size, 1);
+size_t syscall_memory_alloc(size_t size, size_t align, void** out) {
+    void* allocated = kcalloc(size, align);
 
     *out = allocated;
 
     return 0;
+}
+
+size_t syscall_memory_realloc(void* memory, size_t size, void** out) {
+	void* r = krealloc(memory, size);
+
+	*out = r;
+	
+	return 0;
 }
 
 size_t syscall_memory_free(void* memory) {
@@ -110,6 +118,19 @@ size_t syscall_datetime(sayori_time_t* out_time) {
     return 0;
 }
 
+size_t syscall_exit(uint32_t status) {
+	process_t* proc = get_current_proc();
+	
+	qemu_log("Exit requested (status %d) by PID %d\n", status, proc->pid);
+
+	if(proc->pid == 0) {
+		qemu_warn("Request cancelled because PID == 0");
+		return 1;
+	}
+
+	blyat_fire();
+}
+
 /**
  * @brief Инициализация системных вызовов
  * 
@@ -136,6 +157,9 @@ void init_syscalls(void){
     calls_table[14] = (syscall_fn_t *)syscall_get_timer_ticks;
     calls_table[15] = (syscall_fn_t *)syscall_sleep;
     calls_table[16] = (syscall_fn_t *)syscall_datetime;
+    calls_table[17] = (syscall_fn_t *)syscall_exit;
+	calls_table[18] = (syscall_fn_t *)syscall_memory_realloc;
+	calls_table[19] = (syscall_fn_t *)file_descriptor_write;
 
 	qemu_ok("System calls initialized!");
 }

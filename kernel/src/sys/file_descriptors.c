@@ -18,8 +18,8 @@ void file_descriptors_init() {
     qemu_log("File descriptors initialized");
 }
 
-void file_descriptor_allocate(const char *filename, const char *mode, int *out) {
-    FILE* file = fopen(filename, mode);
+void file_descriptor_allocate(const char *filename, size_t mode, int *out) {
+    FILE* file = fopen_binmode(filename, mode);
 
     if(!file) {
         *out = -1;
@@ -68,6 +68,25 @@ void file_descriptor_read(int descriptor_number, size_t count, void* buffer) {
 	qemu_note("Read: %d bytes (buffer at: %x)", count, buffer);
 
     fread(inf->file, count, 1, buffer);
+}
+
+void file_descriptor_write(int descriptor_number, size_t count, const void* buffer) {
+	qemu_log("FD: %d; Size: %d; Buffer: %x", descriptor_number, count, buffer);
+
+    if(descriptor_number < 0 || descriptor_number >= last_descriptor_number) {
+		qemu_err("Invalid descriptor: %d!", descriptor_number);
+        return;
+    }
+
+	if(!file_descriptor_get(descriptor_number)) {
+        return;
+    }
+
+    struct fd_info* inf = file_descriptor_get(descriptor_number);
+
+	qemu_note("Read: %d bytes (buffer at: %x)", count, buffer);
+
+    fwrite(inf->file, count, 1, buffer);
 }
 
 void file_descriptor_close(int descriptor_number) {
