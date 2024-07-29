@@ -8,6 +8,7 @@
  * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
+#include <cinttypes>
 #include <io/ports.h>  
 #include <drv/disk/dpm.h> 
 #include <fs/nvfs.h>
@@ -21,59 +22,77 @@
 bool nvfs_debug = false;
 
 
+NVFS_DECINFO* nvfs_decode(const char* Name) {
+	NVFS_DECINFO* info = kcalloc(sizeof(NVFS_DECINFO), 1);
+	
+	info->DriverFS = -1;
+	
+	qemu_log("Decoding name: %s (%x)", Name, Name);
 
-NVFS_DECINFO nvfs_decode(const char* Name){
-	NVFS_DECINFO info = {};
-    memset(&info, 0, sizeof(NVFS_DECINFO));
-	info.Ready = 0;
-	info.DriverFS = -1;
-	uint32_t pc = str_cdsp2(Name, ':');
+	// Is path header valid?
+	bool is_valid_delim = struntil(Name, ':') == 1 && (struntil(Name, '\\') == 2 || struntil(Name, '/') == 2);
 
-	string_t* strname = string_from_charptr(Name);
-	vector_t* out = string_split(strname, ":");
-
-	if (pc != 1)
+	if (!is_valid_delim) {
 		goto end;
-
-	info.Disk = ADDR2STRING(out->data[0])->data[0];
-
-	substr(info.Path, ADDR2STRING(out->data[1])->data, 0 , ADDR2STRING(out->data[1])->length - 0);
-
-	DPM_Disk disk = dpm_info(info.Disk);
-
-	if (disk.Ready != 1)
-		goto end;
-
-	info.Online = 1;
-	memcpy(info.FileSystem, disk.FileSystem, sizeof(disk.FileSystem));
-
-	info.DriverFS = fsm_getIDbyName(info.FileSystem);
-
-	if (info.DriverFS == -1)
-		goto end;
-
-	int fgm = fsm_getMode(info.DriverFS);
-
-	if (fgm == 0){
-		char_replace(0x2F,0x5C,info.Path);
-	} else {
-		char_replace(0x5C,0x2F,info.Path);
 	}
 
-	info.Ready = 1;
+	// Disk is always first letter of the path.
+	info->Disk = Name[0];
+
+	qemu_log("Disk: %d", info->Disk);
+
+
+	// Now cut a rest of path with trailing \ (or /)
+	substr(info->Path, Name, 2, strlen(Name + 2));
+
+	qemu_log("Supposed path: %s", info->Path);
+
+
+	// Get disk info.
+	DPM_Disk disk = dpm_info(info->Disk);
+
+	if (disk.Ready != 1) {
+		goto end;
+	}
+
+	info->Online = 1;
+	memcpy(info->FileSystem, disk.FileSystem, sizeof(disk.FileSystem));
+
+	info->DriverFS = fsm_getIDbyName(info->FileSystem);
+
+	if (info->DriverFS == -1) {
+		goto end;
+	}
+
+	int fgm = fsm_getMode(info->DriverFS);
+
+	if (fgm == 0){
+		char_replace(0x2F,0x5C,info->Path);
+	} else {
+		char_replace(0x5C,0x2F,info->Path);
+	}
+
+	info->Ready = 1;
 
 	end:
-
-    string_split_free(out);
-    string_destroy(strname);
 
 	return info;
 }
 
 size_t nvfs_read(const char* Name, size_t Offset, size_t Count, void* Buffer){
-	const NVFS_DECINFO vinfo = nvfs_decode(Name);
-	if (vinfo.Ready == 0) return 0;
-	return fsm_read(vinfo.DriverFS, vinfo.Disk, vinfo.Path, Offset, Count, Buffer);
+	const NVFS_DECINFO* vinfo = nvfs_decode(Name);
+	size_t res = 0;
+
+	if (vinfo.Ready == 0) {
+		goto end;
+	}
+	
+	res = fsm_read(vinfo->DriverFS, vinfo->Disk, vinfo->Path, Offset, Count, Buffer);
+
+end:
+	kfree(vinfo);
+
+	return res;
 }
 
 int nvfs_create(const char* Name, int Mode){
@@ -98,7 +117,9 @@ size_t nvfs_write(const char* Name, size_t Offset, size_t Count, const void *Buf
 
 FSM_FILE nvfs_info(const char* Name){
 	NVFS_DECINFO vinfo = nvfs_decode(Name);  // no memleak
-    if (nvfs_debug) qemu_log("NVFS INFO:\nReady: %d\nDisk: [%d] %c\nPath: [%d]  %s\nDisk Online: %d\nDisk file system: [%d] %s\nLoaded in file system driver: %d",vinfo.Ready,vinfo.Disk,vinfo.Disk,strlen(vinfo.Path),vinfo.Path,vinfo.Online,strlen(vinfo.FileSystem),vinfo.FileSystem,vinfo.DriverFS);
+    if (nvfs_debug) {
+	    qemu_log("NVFS INFO:\nReady: %d\nDisk: [%d] %c\nPath: [%d]  %s\nDisk Online: %d\nDisk file system: [%d] %s\nLoaded in file system driver: %d",vinfo.Ready,vinfo.Disk,vinfo.Disk,strlen(vinfo.Path),vinfo.Path,vinfo.Online,strlen(vinfo.FileSystem),vinfo.FileSystem,vinfo.DriverFS);
+    }
 
 	if (vinfo.Ready != 1){
 		return (FSM_FILE){};

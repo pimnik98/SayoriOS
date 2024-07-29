@@ -18,7 +18,7 @@
  *
  * @return uint32_t - Количество строк
  */
-uint32_t str_cdsp2(const char a_str[], char del){
+uint32_t str_cdsp2(const char* a_str, char del){
     int x = 0;
     for(size_t i = 0, len = strlen(a_str); i < len; i++){
         if (a_str[i] == del) {

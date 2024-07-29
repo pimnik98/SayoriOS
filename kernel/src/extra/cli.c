@@ -342,7 +342,7 @@ uint32_t CLI_CMD_RUN(uint32_t c, char* v[]) {
 
     fclose(elf_exec);
 
-    run_elf_file(path, c, v);
+    run_elf_file(path, c - 1, v);
 
     return 0;
 }
@@ -536,6 +536,37 @@ uint32_t CLI_RD(uint32_t argc, char* argv[]) {
     return 0;
 }
 
+uint32_t CLI_CMD_HEX(uint32_t argc, char** argv) {
+	if(argc < 2) {
+		tty_printf("No arguments\n");
+		return 1;
+	}
+
+	char* file = argv[1];
+
+	FILE* fp = fopen(file, "rb");
+
+	if(!fp) {
+		tty_error("Failed to open file: %s\n", file);
+		return 1;
+	}
+
+	size_t sz = fsize(fp);
+
+	char* data = kcalloc(512, 1);
+
+	fread(fp, 512, 1, data);
+
+	tty_printf("Showing first 512 bytes:\n");
+
+	hexview_advanced(data, 512, 26, true, _tty_printf);
+	
+	kfree(data);
+	fclose(fp);
+
+	return 0;
+}
+
 uint32_t CLI_PLAIN(uint32_t argc, char** argv) {
 	if(argc < 3) {
 		tty_error("plain <address> <file>");
@@ -607,8 +638,9 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
     {"REBOOT", "reboot", CLI_CMD_REBOOT, "Перезагрузка"},
     {"RD", "rd", CLI_RD, "Чтение данных с диска"},
     {"SPAWN", "spawn", CLI_SPAWN, "spawn a new process"},
-    {"ST", "st", CLI_SPAWN_TEST, "spawn test"},
     {"PLAIN", "plain", CLI_PLAIN, "Run plain program"},
+    {"HEX", "hex", CLI_CMD_HEX, "Show hex data"},
+    {"ST", "st", CLI_SPAWN_TEST, "spawn test"},
 	{nullptr, nullptr, nullptr}
 };
 

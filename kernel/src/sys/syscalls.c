@@ -125,7 +125,7 @@ size_t syscall_exit(uint32_t status) {
 
 	if(proc->pid == 0) {
 		qemu_warn("Request cancelled because PID == 0");
-		return 1;
+		return 0;
 	}
 
 	blyat_fire();

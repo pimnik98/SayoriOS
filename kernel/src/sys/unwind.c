@@ -2,7 +2,7 @@
 #include "io/ports.h"
 #include "lib/string.h"
 
-/*
+
 #ifndef RELEASE
 __attribute__((section(".debug_symbols"))) char function_addr_data[128 * 1024] = {0};
 
@@ -57,7 +57,7 @@ bool get_func_name_by_addr(size_t addr) {
 
     return false;
 }
-*/
+
 void unwind_stack(uint32_t MaxFrames) {
     struct stackframe *stk;
     __asm__ volatile("movl %%ebp, %0" : "=r"(stk) :: );
@@ -65,15 +65,15 @@ void unwind_stack(uint32_t MaxFrames) {
     qemu_log("Stack trace:");
 
     for(uint32_t frame = 0; stk && frame < MaxFrames; ++frame) {
-        qemu_log("  Frame #%d => %x", frame, stk->eip);
+        qemu_printf("  Frame #%d => %x  ->   ", frame, stk->eip);
 
-        //bool exists = get_func_name_by_addr(stk->eip);
+        bool exists = get_func_name_by_addr(stk->eip);
 
-        //qemu_printf("%s\n", exists ? _temp_funcname : "???");
+        qemu_printf("%s\n", exists ? _temp_funcname : "???");
 
         stk = stk->ebp;
     }
 
     // qemu_log("%s", function_addr_data);
 }
-//#endif
+#endif
