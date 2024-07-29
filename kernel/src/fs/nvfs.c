@@ -8,7 +8,6 @@
  * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
-#include <cinttypes>
 #include <io/ports.h>  
 #include <drv/disk/dpm.h> 
 #include <fs/nvfs.h>
@@ -80,10 +79,10 @@ NVFS_DECINFO* nvfs_decode(const char* Name) {
 }
 
 size_t nvfs_read(const char* Name, size_t Offset, size_t Count, void* Buffer){
-	const NVFS_DECINFO* vinfo = nvfs_decode(Name);
+	NVFS_DECINFO* vinfo = nvfs_decode(Name);
 	size_t res = 0;
 
-	if (vinfo.Ready == 0) {
+	if (vinfo->Ready == 0) {
 		goto end;
 	}
 	
@@ -96,49 +95,102 @@ end:
 }
 
 int nvfs_create(const char* Name, int Mode){
-	const NVFS_DECINFO vinfo = nvfs_decode(Name);
-	if (vinfo.Ready == 0) return 0;
-	return fsm_create(vinfo.DriverFS, vinfo.Disk, vinfo.Path, Mode);
+	NVFS_DECINFO* vinfo = nvfs_decode(Name);
+	size_t res = 0;
+
+	if (vinfo->Ready == 0) {
+		goto end;
+	}
+
+	res = fsm_create(vinfo->DriverFS, vinfo->Disk, vinfo->Path, Mode);
+
+end:
+	kfree(vinfo);
+	return res;
 }
 
 int nvfs_delete(const char* Name, int Mode){
-	const NVFS_DECINFO vinfo = nvfs_decode(Name);
-	if (vinfo.Ready == 0)
-		return 0;
-	return fsm_delete(vinfo.DriverFS, vinfo.Disk, vinfo.Path, Mode);
+	NVFS_DECINFO* vinfo = nvfs_decode(Name);
+	size_t res = 0;
+
+	if (vinfo->Ready == 0) {
+		goto end;
+	}
+	
+	res = fsm_delete(vinfo->DriverFS, vinfo->Disk, vinfo->Path, Mode);
+
+	end:
+
+	kfree(vinfo);
+
+	return res;
 }
 
 size_t nvfs_write(const char* Name, size_t Offset, size_t Count, const void *Buffer){
-	const NVFS_DECINFO vinfo = nvfs_decode(Name);
-	if (vinfo.Ready == 0)
-		return 0;
-	return fsm_write(vinfo.DriverFS, vinfo.Disk, vinfo.Path, Offset, Count, Buffer);
+	NVFS_DECINFO* vinfo = nvfs_decode(Name);
+	size_t res = 0;
+
+	if (vinfo->Ready == 0) {
+		goto end;
+	}
+
+	res = fsm_write(vinfo->DriverFS, vinfo->Disk, vinfo->Path, Offset, Count, Buffer);
+
+	end:
+
+	kfree(vinfo);
+
+	return res;
 }
 
 FSM_FILE nvfs_info(const char* Name){
-	NVFS_DECINFO vinfo = nvfs_decode(Name);  // no memleak
+	NVFS_DECINFO* vinfo = nvfs_decode(Name);  // no memleak
     if (nvfs_debug) {
-	    qemu_log("NVFS INFO:\nReady: %d\nDisk: [%d] %c\nPath: [%d]  %s\nDisk Online: %d\nDisk file system: [%d] %s\nLoaded in file system driver: %d",vinfo.Ready,vinfo.Disk,vinfo.Disk,strlen(vinfo.Path),vinfo.Path,vinfo.Online,strlen(vinfo.FileSystem),vinfo.FileSystem,vinfo.DriverFS);
+	    qemu_log("NVFS INFO:\n"
+		     "Ready: %d\n"
+		     "Disk: [%d] %c\n"
+		     "Path: [%d]  %s\n"
+		     "Disk Online: %d\n"
+		     "Disk file system: [%d] %s\n"
+		     "Loaded in file system driver: %d",
+		     vinfo->Ready,
+		     vinfo->Disk,
+		     vinfo->Disk,
+		     strlen(vinfo->Path),
+		     vinfo->Path,
+		     vinfo->Online,
+		     strlen(vinfo->FileSystem),
+		     vinfo->FileSystem,
+		     vinfo->DriverFS
+		);
     }
 
-	if (vinfo.Ready != 1){
-		return (FSM_FILE){};
+	FSM_FILE file = {};
+
+	if (vinfo->Ready != 1){
+		goto end;
 	}
 
-	FSM_FILE file = fsm_info(vinfo.DriverFS, vinfo.Disk, vinfo.Path);
-	
+	file = fsm_info(vinfo->DriverFS, vinfo->Disk, vinfo->Path);
+end:
+
+	kfree(vinfo);
+
 	return file;
 }
 
 FSM_DIR* nvfs_dir(const char* Name){
-	NVFS_DECINFO vinfo = nvfs_decode(Name);
+	NVFS_DECINFO* vinfo = nvfs_decode(Name);
 
-	if (vinfo.Ready != 1) {
+	if (vinfo->Ready != 1) {
+		kfree(vinfo);
 		FSM_DIR* dir = kcalloc(sizeof(FSM_DIR), 1);
 		return dir;
 	}
 
-	FSM_DIR* dir = fsm_dir(vinfo.DriverFS, vinfo.Disk, vinfo.Path);
+	FSM_DIR* dir = fsm_dir(vinfo->DriverFS, vinfo->Disk, vinfo->Path);
+	
+	kfree(vinfo);
 	return dir;
 }
 
