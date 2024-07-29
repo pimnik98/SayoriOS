@@ -17,4 +17,4 @@ size_t file_descriptor_read(int descriptor_number, size_t count, void* buffer);
 size_t file_descriptor_write(int descriptor_number, size_t count, const void* buffer);
 size_t file_descriptor_close(int descriptor_number);
 size_t file_descriptor_seek(int descriptor_number, ssize_t value, size_t whence);
-void file_descriptor_tell(int descriptor_number, int* out);
+size_t file_descriptor_tell(int descriptor_number, int* out);

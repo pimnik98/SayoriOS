@@ -158,17 +158,18 @@ size_t file_descriptor_seek(int descriptor_number, ssize_t value, size_t whence)
 
 }
 
-void file_descriptor_tell(int descriptor_number, int* out) {
-    if(descriptor_number < 0 || descriptor_number >= last_descriptor_number)
-        return;
+size_t file_descriptor_tell(int descriptor_number, int* out) {
+	if(descriptor_number < 0 || descriptor_number >= last_descriptor_number) {
+		return 0;
+	}
 
-    for(int i = 0; i < descriptors->size; i++) {
-        struct fd_info *inf = (struct fd_info *) vector_get(descriptors, i).element;
+	if(!file_descriptor_get(descriptor_number)) {
+        	return 0;
+    	}
 
-        if (inf->fd == descriptor_number) {
-            *out = ftell(inf->file);
+	struct fd_info* inf = file_descriptor_get(descriptor_number);
 
-            return;
-        }
-    }
+	*out = ftell(inf->file);
+    
+	return 0;
 }

@@ -30,6 +30,7 @@
 #include "../../include/lib/fileio.h"
 #include "sys/system.h"
 #include "debug/hexview.h"
+#include "lib/command_parser.h"
 
 int G_CLI_CURINXA = 0;
 int G_CLI_CURINXB = 0;
@@ -287,7 +288,7 @@ uint32_t CLI_CMD_SET(uint32_t c, char* v[]){
 }
 
 uint32_t CLI_CMD_DIR(uint32_t c, char* v[]) {
-    const char* path = (c <= 1 ? G_CLI_PATH : v[1]);
+    const char* path = (c <= 2 ? G_CLI_PATH : v[1]);
 
 	FSM_DIR* Dir = nvfs_dir(path);
 	if (Dir->Ready != 1){
@@ -318,7 +319,7 @@ uint32_t CLI_CMD_DIR(uint32_t c, char* v[]) {
 }
 
 uint32_t CLI_CMD_RUN(uint32_t c, char* v[]) {
-    if (c == 0){
+    if (c <= 2){
         //tty_setcolor(COLOR_ERROR);
         tty_printf("Файл не указан.\n");
         return 1;
@@ -342,7 +343,7 @@ uint32_t CLI_CMD_RUN(uint32_t c, char* v[]) {
 
     fclose(elf_exec);
 
-    run_elf_file(path, c - 1, v);
+    run_elf_file(path, c, v);
 
     return 0;
 }
@@ -647,27 +648,29 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
 void cli_handler(const char* ncmd){
 	set_cursor_enabled(0);
 
-	uint32_t argc = str_cdsp(ncmd," ") + 1;
-    char* argv[128] = {0};
+	command_parser_t parser = {};
 
-    str_split(ncmd, argv, " ");
+	command_parser_new(&parser, ncmd);
 
-	for(size_t i = 0; i < argc; i++){
-		qemu_log("[CLI] '%s' => argc: %d => argv: %s", ncmd, i, argv[i]);
-    }
+	for(size_t i = 0; i < parser.argc; i++){
+		qemu_log("[CLI] '%s' => argc: %d => argv: %s", ncmd, i, parser.argv[i]);
+    	}
 
 	bool found = false;
 
 	for(size_t i = 0; G_CLI_CMD[i].name != nullptr; i++) {
-		if(strcmpn(G_CLI_CMD[i].name, argv[0]) || strcmpn(G_CLI_CMD[i].alias, argv[0])) {
-			G_CLI_CMD[i].funcv(argc, argv);
+		if(strcmpn(G_CLI_CMD[i].name, parser.argv[0]) || strcmpn(G_CLI_CMD[i].alias, parser.argv[0])) {
+			G_CLI_CMD[i].funcv(parser.argc, parser.argv);
 			found = true;
 			break;
 		}
 	}
+	
 	if(!found) {
-		CLI_CMD_RUN(argc + 1, argv);
+		CLI_CMD_RUN(parser.argc, parser.argv);
 	}
+
+	command_parser_destroy(&parser);
 
 	set_cursor_enabled(1);
 }
@@ -675,7 +678,7 @@ void cli_handler(const char* ncmd){
 void cli(){
 	qemu_log("[CLI] Started...");
 	tty_set_bgcolor(0xFF000000);
-    tty_setcolor(0xFFFFFF);
+	tty_setcolor(0xFFFFFF);
 
 	variable_write("HOSTNAME", "SAYORISOUL");
 	variable_write("SYSTEMROOT", "R:\\Sayori\\");
@@ -690,28 +693,28 @@ void cli(){
 
 	punch();
 
-	char* input_buffer = kcalloc(1, 256);
+	char* input_buffer = kcalloc(1, 512);
 	while(1) {
 		size_t memory_cur = system_heap.used_memory;
-        size_t memory_cnt_cur = system_heap.allocated_count;
+        	size_t memory_cnt_cur = system_heap.allocated_count;
 
-    	tty_setcolor(0xFFFFFF);
+    		tty_setcolor(0xFFFFFF);
 		tty_printf("%s>", G_CLI_PATH);
-		memset(input_buffer, 0, 256);
+		memset(input_buffer, 0, 512);
 
-        int result = gets_max(input_buffer, 255);
+		int result = gets_max(input_buffer, 512);
 
-        if(result == 1) {
-            tty_alert("\nMaximum 255 characters!\n");
-            continue;
-        }
+        	if(result == 1) {
+            		tty_alert("\nMaximum 512 characters!\n");
+            		continue;
+        	}
 
-        size_t len_cmd = strlen(input_buffer);
-        if (len_cmd == 0) {
-            continue;
-        }
+        	size_t len_cmd = strlen(input_buffer);
+        	if (len_cmd == 0) {
+            		continue;
+		}
 
-        size_t current_time = timestamp();
+        	size_t current_time = timestamp();
 		qemu_log("cmd: %s", input_buffer);
 
 		cli_handler(input_buffer);
@@ -729,7 +732,7 @@ void cli(){
 			qemu_ok("All right! No memory leaks! Keep it up, buddy!");
 		}
 
-        qemu_note("Time elapsed: %d milliseconds", timestamp() - current_time);
+		qemu_note("Time elapsed: %d milliseconds", timestamp() - current_time);
 	}
 
     kfree(input_buffer);

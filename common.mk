@@ -168,6 +168,7 @@ SOURCES=\
 	kernel/src/sys/lapic.c \
 	kernel/src/drv/ps2.c \
 	kernel/src/drv/video/intel.c \
+	kernel/src/extra/command_parser.c \
 	kernel/src/kernel.c \
 #	kernel/src/lib/duktape.c \
 	kernel/src/toys/piano.c \

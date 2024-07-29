@@ -194,9 +194,11 @@ FILE* fopen_binmode(const char* filename, size_t mode) {
        file->open = 1;                                                                         // Файл успешно открыт
        file->fmode = mode;                                                               // Режим работы с файлом
        file->size = finfo.Size;                // Размер файла
-       file->path = (char*)filename;                                           // Полный путь к файлу
+       file->path = kcalloc(strlen(filename) + 1, 1);                                           // Полный путь к файлу
        file->pos = 0;                                                                          // Установка указателя в самое начало
        file->err = 0;                                                                          // Ошибок в работе нет
+
+	memcpy(file->path, filename, strlen(filename));
 
        qemu_ok("File opened!");
 	
@@ -209,8 +211,10 @@ FILE* fopen_binmode(const char* filename, size_t mode) {
  * @param stream Поток (файл)
  */
 void fclose(FILE* stream){
-	if(stream)
+	if(stream) {
+		kfree(stream->path);
 		kfree(stream);
+	}
 }
 
 /**

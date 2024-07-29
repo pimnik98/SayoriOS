@@ -18,8 +18,7 @@
 #include "fs/fsm.h"
 #include "lib/php/str_replace.h"
 
-bool nvfs_debug = false;
-
+bool nvfs_debug = true;
 
 NVFS_DECINFO* nvfs_decode(const char* Name) {
 	NVFS_DECINFO* info = kcalloc(sizeof(NVFS_DECINFO), 1);
@@ -79,6 +78,10 @@ NVFS_DECINFO* nvfs_decode(const char* Name) {
 }
 
 size_t nvfs_read(const char* Name, size_t Offset, size_t Count, void* Buffer){
+	if(nvfs_debug) {
+		qemu_log("Name=%s", Name);
+	}
+
 	NVFS_DECINFO* vinfo = nvfs_decode(Name);
 	size_t res = 0;
 
