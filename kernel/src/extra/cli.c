@@ -575,13 +575,15 @@ uint32_t CLI_PLAIN(uint32_t argc, char** argv) {
 		return 1;
 	}
 
-	size_t address = htoi(argv[1] + 2);
+	size_t address = htoi(argv[1]);
+
+	qemu_note("Address is: %x", address);
 
 	FILE* file = fopen(argv[2], "rb");
 
 	size_t filesize = fsize(file);
 
-	qemu_log("FILE SIZE IS: %d", filesize);
+	qemu_note("File size is: %d", filesize);
 
 	void* a = kmalloc_common(ALIGN(filesize, PAGE_SIZE), PAGE_SIZE);
 	memset(a, 0, ALIGN(filesize, PAGE_SIZE));

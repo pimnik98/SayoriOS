@@ -18,7 +18,7 @@
 #include "fs/fsm.h"
 #include "lib/php/str_replace.h"
 
-bool nvfs_debug = true;
+bool nvfs_debug = false;
 
 NVFS_DECINFO* nvfs_decode(const char* Name) {
 	NVFS_DECINFO* info = kcalloc(sizeof(NVFS_DECINFO), 1);
