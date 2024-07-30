@@ -403,7 +403,7 @@ int fs_tempfs_func_clearBlocks(const char Disk, size_t Addr){
         tfs_log("[E] ERROR POINT\n");
         return 1;
     }
-    TEMPFS_PACKAGE* pkg_free = malloc(sizeof(TEMPFS_PACKAGE));
+    TEMPFS_PACKAGE* pkg_free = calloc(1, sizeof(TEMPFS_PACKAGE));
     size_t ADRNOW = Addr;
     while(1){
         tfs_log(" |---[>] Starting get package: 0x%x\n", ADRNOW);
@@ -486,9 +486,7 @@ size_t fs_tempfs_write(const char Disk, const char* Path, size_t Offset, size_t 
     tfs_log("File next...\n");
     size_t src_size = ent->Size < Size + Offset ? Size + Offset : ent->Size;
 
-    char* PREBUF = malloc(src_size);
-    memset(PREBUF, 0, src_size);
-
+    char* PREBUF = calloc(src_size, 1);
     size_t fre = fs_tempfs_read(Disk, Path, 0, src_size, PREBUF);
 
     memcpy(PREBUF + Offset, Buffer, Size);
@@ -499,7 +497,7 @@ size_t fs_tempfs_write(const char Disk, const char* Path, size_t Offset, size_t 
     size_t read = 0;
     char src_buf[500] = {0}; // Буфер для одного пакета
 
-    TEMPFS_PACKAGE* pkg_free = malloc(sizeof(TEMPFS_PACKAGE));
+    TEMPFS_PACKAGE* pkg_free = calloc(1, sizeof(TEMPFS_PACKAGE));
     if (pkg_free == NULL){
         tfs_log("KMALLOC ERROR\n");
         return 0;

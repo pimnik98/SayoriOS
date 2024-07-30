@@ -288,7 +288,7 @@ uint32_t CLI_CMD_SET(uint32_t c, char* v[]){
 }
 
 uint32_t CLI_CMD_DIR(uint32_t c, char* v[]) {
-    const char* path = (c <= 2 ? G_CLI_PATH : v[1]);
+    const char* path = (c == 1 ? G_CLI_PATH : v[1]);
 
 	FSM_DIR* Dir = nvfs_dir(path);
 	if (Dir->Ready != 1){
@@ -319,7 +319,7 @@ uint32_t CLI_CMD_DIR(uint32_t c, char* v[]) {
 }
 
 uint32_t CLI_CMD_RUN(uint32_t c, char* v[]) {
-    if (c <= 2){
+    if (c == 0){
         //tty_setcolor(COLOR_ERROR);
         tty_printf("Файл не указан.\n");
         return 1;
@@ -571,6 +571,8 @@ uint32_t CLI_CMD_HEX(uint32_t argc, char** argv) {
 uint32_t CLI_PLAIN(uint32_t argc, char** argv) {
 	if(argc < 3) {
 		tty_error("plain <address> <file>");
+		tty_printf("Note: Address must be in HEX without 0x prefix! Example: CAFEBABE");
+		return 1;
 	}
 
 	size_t address = htoi(argv[1] + 2);

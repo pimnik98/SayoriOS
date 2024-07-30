@@ -24,6 +24,7 @@ void command_parser_new(command_parser_t* parser, const char* _s) {
 
 			while(*ptr++ == ' ')
 				;
+			ptr--;
 		}
 	}
 

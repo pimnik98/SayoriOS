@@ -290,12 +290,15 @@ int ftell(FILE* stream) {
 	});
 
 	if (!stream->open
-		|| stream->size <= 0
+		|| stream->size < 0
 		|| stream->fmode == 0
 	) {
+		qemu_err("ftell(): invalid stream (open: %d; size: %d; mode: %x)", stream->open, stream->size, stream->fmode);
 		fcheckerror(stream);
 		return -1;
 	}
+
+	qemu_warn("Position is: %d", stream->pos);
 
 	return (int)stream->pos;
 }
@@ -382,7 +385,16 @@ size_t fwrite(FILE *stream, size_t size, size_t count, const void *ptr) {
 	});
 	
 //	FSM_FILE finfo = nvfs_info(stream->path);
+
+	if(stream->pos + (size * count) > stream->size) {
+		qemu_warn("Out of bounds write!");
 	
+		// TODO: Filesystem should handle this situation and allocate needed space.
+		
+		// WARNING: Workaround
+		stream->size = stream->pos + (size * count);
+	}
+
 	size_t res = nvfs_write(stream->path, stream->pos, size*count, ptr);
 
 	if(res > 0)
