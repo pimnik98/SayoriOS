@@ -18,3 +18,4 @@
 iso/boot/ramdisk
 disk*.img
 builds/
+compile_commands.json

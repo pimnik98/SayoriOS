@@ -27,9 +27,10 @@ typedef struct {
 } tcp_packet_t;
 
 typedef enum {
-	EIKS_CREATED,
-	EIKS_LISTENING,
-	EIKS_ESTABLISHED
+	TCP_NONE,
+	TCP_CREATED,
+	TCP_LISTENING,
+	TCP_ESTABLISHED
 } tcp_connection_status_t;
 
 typedef struct {
@@ -38,7 +39,7 @@ typedef struct {
 	uint16_t source_port;
 	uint16_t dest_port;
 	uint32_t seq;
-	uint32_t dst_seq;
+	uint32_t ack;
 	tcp_connection_status_t status;
 } tcp_connection_t;
 

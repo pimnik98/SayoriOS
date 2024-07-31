@@ -200,6 +200,8 @@ void rtl8139_send_packet(void *data, size_t length) {
 
 	if(rtl8139_current_tx_index > 3)
 		rtl8139_current_tx_index = 0;
+
+	qemu_log("Send packet end");
 }
 
 size_t rtl8139_current_packet_ptr = 0;
@@ -225,22 +227,22 @@ void rtl8139_receive_packet() {
 
     uint16_t* packet_data = packet + 2;
 
-    qemu_log("[Net] [RTL8139] Данные с пакета:\n");
+	qemu_log("[Net] [RTL8139] Данные с пакета:\n");
 
 //	hexview_advanced((char *) packet_data, packet_length, 10, true, new_qemu_printf);
 
 	if(packet_header == HARDWARE_TYPE_ETHERNET) {
 //        netstack_push(packet_data, packet_length);
 
-        ethernet_handle_packet(&rtl8139_netcard, (ethernet_frame_t *) packet_data, packet_length);
-    }
+		ethernet_handle_packet(&rtl8139_netcard, (ethernet_frame_t *) packet_data, packet_length);
+	}
 
-    rtl8139_current_packet_ptr = (rtl8139_current_packet_ptr + packet_length + 7) & RX_READ_POINTER_MASK;
+	rtl8139_current_packet_ptr = (rtl8139_current_packet_ptr + packet_length + 7) & RX_READ_POINTER_MASK;
 
-    if(rtl8139_current_packet_ptr > 8192)
-        rtl8139_current_packet_ptr -= 8192;
+	if(rtl8139_current_packet_ptr > 8192)
+		rtl8139_current_packet_ptr -= 8192;
 
-    outw(rtl8139_io_base + CAPR, rtl8139_current_packet_ptr - 0x10);
+	outw(rtl8139_io_base + CAPR, rtl8139_current_packet_ptr - 0x10);
 }
 
 void rtl8139_init_interrupts() {
