@@ -9,6 +9,7 @@
 #include "net/endianess.h"
 #include "io/ports.h"
 #include "net/ipv4.h"
+#include "mem/vmm.h"
 
 #define MAX_CONNECTIONS 64
 
@@ -87,24 +88,37 @@ void tcp_handle_packet(netcard_entry_t *card, tcp_packet_t *packet) {
 	bool is_push = !packet->syn && !packet->ack && packet->psh && !packet->fin;
 
 
-	tcp_packet_t sendable_packet = {};
-	memcpy(&sendable_packet, packet, sizeof(tcp_packet_t));
-	
+	tcp_packet_t* sendable_packet = kcalloc(sizeof(tcp_packet_t) + 8, 1);
+	memcpy(sendable_packet, packet, sizeof(tcp_packet_t));
+
+	char* options = (char*)(sendable_packet) + sizeof(tcp_packet_t);
+
+	options[0] = 0x02;
+	options[1] = 0x04;
+	options[2] = 0xff;
+	options[3] = 0xd7;
+	options[4] = 0x04;
+	options[5] = 0x02;
+	options[6] = 0x01;
+	options[7] = 0x01;
+
 	if(is_stage_1) {
 		tcp_connections[idx].seq = rand();
-		tcp_connections[idx].ack = sendable_packet.seq + 1;
+		tcp_connections[idx].ack = sendable_packet->seq + 1;
 
-		sendable_packet.ack = 1;
-		sendable_packet.seq = ntohl(tcp_connections[idx].seq);  // it's rand();
-		sendable_packet.ack_seq = ntohl(tcp_connections[idx].ack);
+		sendable_packet->ack = 1;
+		sendable_packet->seq = ntohl(tcp_connections[idx].seq);  // it's rand();
+		sendable_packet->ack_seq = ntohl(tcp_connections[idx].ack);
 
-		uint16_t dest = ntohs(sendable_packet.destination);
-		uint16_t src = ntohs(sendable_packet.source);
-		sendable_packet.source = dest;
-		sendable_packet.destination = src;
+		uint16_t dest = ntohs(sendable_packet->destination);
+		uint16_t src = ntohs(sendable_packet->source);
+		sendable_packet->source = dest;
+		sendable_packet->destination = src;
 
-		sendable_packet.doff = 5;
+		sendable_packet->doff = 7;
 
-		ipv4_send_packet(tcp_connections[idx].card, ipv4->Source, &sendable_packet, sizeof(tcp_packet_t), ETH_IPv4_HEAD_TCP);
+		ipv4_send_packet(tcp_connections[idx].card, ipv4->Source, sendable_packet, sizeof(tcp_packet_t) + 8, ETH_IPv4_HEAD_TCP);
 	}
+
+	kfree(sendable_packet);
 }
