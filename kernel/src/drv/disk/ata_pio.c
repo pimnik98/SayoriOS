@@ -134,14 +134,17 @@ uint8_t ata_pio_write_raw_sector(uint8_t drive, const uint8_t *buf, uint32_t lba
     outb(io + ATA_REG_LBA2, (uint8_t)((lba) >> 16));
     outb(io + ATA_REG_COMMAND, ATA_CMD_WRITE_PIO);
 
-    ide_poll(io);
+    ide_poll_drq(io);
 
     for(int i = 0; i < 256; i++) {
         outw(io + ATA_REG_DATA, *(uint16_t*)(buf + i * 2));
-        ide_400ns_delay(io);
     }
 
+    ide_400ns_delay(io);
+    
     outb(io + ATA_REG_COMMAND, ATA_CMD_CACHE_FLUSH);
+
+    ide_poll_bsy(io);
 
     return 1;
 }

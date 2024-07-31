@@ -6,6 +6,7 @@ include config.mk
 
 KERNEL = iso/boot/kernel.elf
 BUILD_PREFIX=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+CURRENT_USER := $(shell whoami)
 
 COMPILER_DETECTOR_FLAGS = ""
 
@@ -33,6 +34,12 @@ ASM_SRC=kernel/asm/init.s \
 ASM_SRC:=$(ASM_SRC:%.s=$(BUILD_PREFIX)/%.s)
 
 ASM=$(ASM_SRC:%.s=$(OBJ_DIRECTORY)/%.o)
+
+ELK=\
+	kernel/src/lib/elk/elk.c \
+	kernel/src/lib/elk/elk_engine.c \
+	kernel/src/lib/elk/elk_libs.c \
+	kernel/src/lib/elk/jse_func.c \
 
 SOURCES=\
 	kernel/src/sys/cpuinfo.c \
@@ -62,10 +69,7 @@ SOURCES=\
 	kernel/src/sys/scheduler.c \
 	kernel/src/lib/php/explode.c \
 	kernel/src/lib/php/pathinfo.c \
-	kernel/src/lib/elk/elk.c \
-	kernel/src/lib/elk/elk_engine.c \
-	kernel/src/lib/elk/elk_libs.c \
-	kernel/src/lib/elk/jse_func.c \
+	$(ELK) \
 	kernel/src/drv/psf.c \
 	kernel/src/sys/unwind.c \
 	kernel/src/fs/NatSuki.c \
@@ -185,6 +189,7 @@ SOURCES:=$(SOURCES:%.c=$(BUILD_PREFIX)/%.c) \
 	$(wildcard $(BUILD_PREFIX)/kernel/src/lib/libvector/src/*.c) \
 	$(wildcard $(BUILD_PREFIX)/kernel/src/lib/libstring/src/*.c) \
 	$(wildcard $(BUILD_PREFIX)/kernel/src/lib/elk/ext/*.c) \
+	$(wildcard $(BUILD_PREFIX)/kernel/src/ports/eBat/*.c) \
 
 DIRECTORIES := $(addprefix $(OBJ_DIRECTORY)/,$(sort $(dir $(SOURCES) $(ASM_SRC))))
 
@@ -195,10 +200,10 @@ KERNEL_NEED = $(ASM) $(OBJS)
 
 COMMON_FLAGS = -O$(OPTIMIZATION_LEVEL) -nostdlib -fno-stack-protector -fno-builtin -I$(BUILD_PREFIX)kernel/include/ -ffreestanding \
 			   -Wall -Wno-div-by-zero -Wno-address-of-packed-member -Wno-implicit-function-declaration \
-			   -mno-red-zone -MMD -MP 
+			   -mno-red-zone -MMD -MP -g 
 
 # Флаги компилятора языка C
-CFLAGS=$(DEBUG) $(ADDCFLAGS) $(COMMON_FLAGS)
+CFLAGS=$(DEBUG) $(ADDCFLAGS) $(COMMON_FLAGS) -DBUILDUSER=\"$(CURRENT_USER)\"
 CPP_FLAGS=$(DEBUG) $(COMMON_FLAGS) -fno-use-cxa-atexit -fno-exceptions -fno-rtti -Werror -Ikernel/cpp/include
 
 LD ?= ld.lld
@@ -251,8 +256,7 @@ QEMU_FLAGS = $(QEMU_BASE_FLAGS) \
 			 -netdev user,id=net0,net=192.168.111.0,dhcpstart=192.168.111.128,hostfwd=tcp::9999-:9999 \
 			 -device rtl8139,netdev=net0,id=mydev0 \
 			 -M pcspk-audiodev=pa0 \
-			 -device ich9-intel-hda,debug=0 \
-			 -device hda-output,audiodev=pa0 \
+			 -device ac97,audiodev=pa0 \
 			 -trace "hda*" \
 			 -device ich9-usb-uhci1 \
 			 -drive file=disk.img,id=disk0,if=none \

@@ -1,4 +1,4 @@
-// AC'97 driver by NDRAEY (Drew Pavlenko >_)
+// AC'97 driver by NDRAEY
 
 // FIXME: Not working in VirtualBox, only in QEMU
 
@@ -42,14 +42,12 @@ void ac97_set_master_volume(uint8_t left, uint8_t right, bool mute);
 // Volume in dB, not %
 void ac97_set_pcm_volume(uint8_t right, uint8_t left, bool mute);
 void ac97_set_pcm_sample_rate(uint16_t sample_rate);
-void ac97_load_data(char* data, uint32_t length);
 void ac97_reset_channel();
 void ac97_clear_status_register();
 void ac97_update_bdl();
 void ac97_update_lvi(uint8_t index);
 void ac97_set_play_sound(bool play);
 void ac97_init();
-size_t ac97_copy_user_memory_to_dma(const char* data, size_t length);
-void ac97_single_page_write_wait(size_t page_num);
-void ac97_destroy_user_buffer();
+void ac97_FillBDLs();
+void ac97_WriteAll(void* buffer, size_t size);
 bool ac97_is_initialized();

@@ -99,7 +99,6 @@ typedef	struct
 	Elf32_Half		e_shentsize;		///< Размер записи заголовка раздела
 	Elf32_Half		e_shnum;			///< Количество записей в заголовке раздела
 	Elf32_Half		e_shstrndx;			///< ...
-
 } Elf32_Ehdr;
 
 /*-----------------------------------------------------------------------------
@@ -133,7 +132,6 @@ typedef struct
 	Elf32_Word	p_memsz;	///< ...
 	Elf32_Word	p_flags;	///< Флаги
 	Elf32_Word	p_align;	///< Отступ
-
 } Elf32_Phdr;
 
 typedef struct elf_sections
