@@ -39,6 +39,8 @@ size_t rtl8139_transfer_buffer_phys;
 void rtl8139_send_packet(void* data, size_t length);
 void rtl8139_receive_packet();
 
+bool rtl8139_in_irq = false;
+
 #define NETCARD_NAME ("RTL8139")
 
 void rtl8139_netcard_get_mac(uint8_t mac[6]) {
@@ -157,6 +159,8 @@ void rtl8139_init_buffer() {
 void rtl8139_handler(__attribute__((unused)) registers_t regs) {
 	qemu_log("Received RTL8139 interrupt!");
 
+	rtl8139_in_irq = true;
+
 	uint16_t status = inw(rtl8139_io_base + 0x3e);
 
 	if(status & TOK) {
@@ -171,26 +175,34 @@ void rtl8139_handler(__attribute__((unused)) registers_t regs) {
 	}
 
 	outw(rtl8139_io_base + 0x3E, 0x05);
+
+	rtl8139_in_irq = false;
 }
 
 void rtl8139_send_packet(void *data, size_t length) {
 	// First, copy the data to a physically contiguous chunk of memory
 
+	//qemu_log("Waiting lock...");
+	//while(rtl8139_in_irq)
+	//	;
+
+	qemu_log("Sending packet");
+
 	memset(rtl8139_transfer_buffer, 0, 65535);
 
 	memcpy(rtl8139_transfer_buffer, data, length);
 
-	qemu_log("Send packet: Virtual memory at %x", (size_t)rtl8139_transfer_buffer);
-	qemu_log("Send packet: Physical memory at %x", rtl8139_transfer_buffer_phys);
+	//qemu_log("Send packet: Virtual memory at %x", (size_t)rtl8139_transfer_buffer);
+	//qemu_log("Send packet: Physical memory at %x", rtl8139_transfer_buffer_phys);
 
 	// Second, fill in physical address of data, and length
 
-	qemu_log("Before: %d",  rtl8139_current_tx_index);
+	//qemu_log("Before: %d",  rtl8139_current_tx_index);
 
 	outl(rtl8139_io_base + TSAD_array[rtl8139_current_tx_index], (uint32_t)rtl8139_transfer_buffer_phys);
 	outl(rtl8139_io_base + TSD_array[rtl8139_current_tx_index++], length);
 
-	qemu_log("After: %d",  rtl8139_current_tx_index);
+	//qemu_log("After: %d",  rtl8139_current_tx_index);
 
 	if(rtl8139_current_tx_index > 3)
 		rtl8139_current_tx_index = 0;
@@ -200,6 +212,7 @@ void rtl8139_send_packet(void *data, size_t length) {
 
 size_t rtl8139_current_packet_ptr = 0;
 
+// This function is a part of IRQ
 void rtl8139_receive_packet() {
 	uint16_t* packet = (uint16_t*)(rtl8139_virt_buffer + rtl8139_current_packet_ptr);
 
@@ -226,7 +239,7 @@ void rtl8139_receive_packet() {
 //	hexview_advanced((char *) packet_data, packet_length, 10, true, new_qemu_printf);
 
 	if(packet_header == HARDWARE_TYPE_ETHERNET) {
-//        netstack_push(packet_data, packet_length);
+		//netstack_push(&rtl8139_netcard, packet_data, packet_length);
 
 		qemu_note("Processing packet...");
 		ethernet_handle_packet(&rtl8139_netcard, (ethernet_frame_t *) packet_data, packet_length);
