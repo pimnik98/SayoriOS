@@ -260,7 +260,7 @@ void kfree(void* ptr) {
 	struct heap_entry block = heap_get_block((size_t)ptr);
 
     if(vmm_debug)
-        qemu_warn("Freeing %x", (size_t)ptr);
+        qemu_printf("Freeing %x\n", (size_t)ptr);
 
 	if(!block.address) {
 		qemu_warn("No block!");

@@ -194,9 +194,11 @@ FILE* fopen_binmode(const char* filename, size_t mode) {
        file->open = 1;                                                                         // Файл успешно открыт
        file->fmode = mode;                                                               // Режим работы с файлом
        file->size = finfo.Size;                // Размер файла
-       file->path = (char*)filename;                                           // Полный путь к файлу
+       file->path = kcalloc(strlen(filename) + 1, 1);                                           // Полный путь к файлу
        file->pos = 0;                                                                          // Установка указателя в самое начало
        file->err = 0;                                                                          // Ошибок в работе нет
+
+	memcpy(file->path, filename, strlen(filename));
 
        qemu_ok("File opened!");
 	
@@ -209,8 +211,10 @@ FILE* fopen_binmode(const char* filename, size_t mode) {
  * @param stream Поток (файл)
  */
 void fclose(FILE* stream){
-	if(stream)
+	if(stream) {
+		kfree(stream->path);
 		kfree(stream);
+	}
 }
 
 /**
@@ -251,23 +255,25 @@ int fread(FILE* stream, size_t count, size_t size, void* buffer){
 	ON_NULLPTR(buffer, {
 		return -1;
 	});
+	
+	if (stdio_debug) {
+		qemu_log("Params '%s': count=%d, size=%d, toread=%d, seek=%d", stream->path, count, size, count*size, stream->pos);
+	}
 
 	FSM_FILE finfo = nvfs_info(stream->path);
+	
 	if (!stream->open || finfo.Ready == 0 || stream->size <= 0 || stream->fmode == 0){
 		// Удалось ли открыть файл, существует ли файл, размер файла больше нуля и указан правильный режим для работы с файлом
 		fcheckerror(stream);
 		return -1;
 	}
 
-    if (stdio_debug) qemu_log("Params: count=%d, size=%d, toread=%d, seek=%d", count, size, count*size, stream->pos);
-
 	size_t res = nvfs_read(stream->path, stream->pos, size*count, buffer);
 
-// 	ssize_t res = vfs_read(node, elem, stream->pos, size*count, buffer);
-
-	if(res > 0)
+	if(res > 0) {
 		stream->pos += size*count;
-	
+	}
+
 	return res;
 }
 
@@ -284,12 +290,15 @@ int ftell(FILE* stream) {
 	});
 
 	if (!stream->open
-		|| stream->size <= 0
+		|| stream->size < 0
 		|| stream->fmode == 0
 	) {
+		qemu_err("ftell(): invalid stream (open: %d; size: %d; mode: %x)", stream->open, stream->size, stream->fmode);
 		fcheckerror(stream);
 		return -1;
 	}
+
+	qemu_warn("Position is: %d", stream->pos);
 
 	return (int)stream->pos;
 }
@@ -304,18 +313,22 @@ int ftell(FILE* stream) {
  * @return Если возращает 0, значит все в порядке
  */
 ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence){
+	qemu_log("fseek() call\n");
 	ON_NULLPTR(stream, {
 		return -1;
 	});
 
+	qemu_log("Stream is not null");
 	if (!stream->open || stream->size == 0 || stream->fmode == 0){
 		fcheckerror(stream);
+		qemu_err("Seek error: Open: %d; Size: %d; Mode: %x", stream->open, stream->size, stream->fmode);
 		return -1;
 	}
+	qemu_log("Stream is valid");
 
 	size_t lsk = 0;
 
-    if (whence == SEEK_CUR) {
+	if (whence == SEEK_CUR) {
 		lsk = stream->pos;
 	} else if (whence == SEEK_END) {
 		lsk = stream->size;
@@ -323,16 +336,21 @@ ssize_t fseek(FILE* stream, ssize_t offset, uint8_t whence){
 		//lsk = 0;
 		if(offset >= 0 && offset <= stream->size) {
 			stream->pos = offset;
+			qemu_log("Whence = SET; Value = %d", offset);
 			return 0;
+		} else {
+			qemu_err("Invalid offset (whence = 0x0): %x", offset);
 		}
 	} else {
+		qemu_err("Invalid whence: %d", whence);
 		return -1;
 	}
 
-	    qemu_warn("Offset: %d; Shifting by: %d", offset, lsk);
+	qemu_warn("Offset: %d; Shifting by: %d; Whence = %x", offset, lsk, whence);
 	if (lsk + offset > 0 && stream->size >= lsk+offset){
 		stream->pos = lsk + offset;
 	}
+	
 	return 0;
 }
 
@@ -367,7 +385,16 @@ size_t fwrite(FILE *stream, size_t size, size_t count, const void *ptr) {
 	});
 	
 //	FSM_FILE finfo = nvfs_info(stream->path);
+
+	if(stream->pos + (size * count) > stream->size) {
+		qemu_warn("Out of bounds write!");
 	
+		// TODO: Filesystem should handle this situation and allocate needed space.
+		
+		// WARNING: Workaround
+		stream->size = stream->pos + (size * count);
+	}
+
 	size_t res = nvfs_write(stream->path, stream->pos, size*count, ptr);
 
 	if(res > 0)
