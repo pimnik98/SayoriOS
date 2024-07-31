@@ -6,10 +6,12 @@
 #include "../lib/libvector/include/vector.h"
 #include "mem/vmm.h"
 
-vector_t* system_network_stack = 0;
+volatile vector_t* system_network_incoming_queue = 0;
+volatile vector_t* system_network_outgoing_queue = 0;
 
 void netstack_init() {
-    system_network_stack = vector_new();
+    system_network_incoming_queue = vector_new();
+    system_network_outgoing_queue = vector_new();
 }
 
 void netstack_push(void* packet_data, size_t length) {

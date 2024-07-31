@@ -228,7 +228,9 @@ void rtl8139_receive_packet() {
 	if(packet_header == HARDWARE_TYPE_ETHERNET) {
 //        netstack_push(packet_data, packet_length);
 
+		qemu_note("Processing packet...");
 		ethernet_handle_packet(&rtl8139_netcard, (ethernet_frame_t *) packet_data, packet_length);
+		qemu_ok("Packet processing is finished!");
 	}
 
 	rtl8139_current_packet_ptr = (rtl8139_current_packet_ptr + packet_length + 7) & RX_READ_POINTER_MASK;
