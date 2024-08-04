@@ -610,6 +610,7 @@ uint32_t pavi_view(uint32_t, char**);
 uint32_t minesweeper(uint32_t, char**);
 uint32_t shell_diskctl(uint32_t, char**);
 uint32_t calendar(uint32_t, char**);
+uint32_t forth_sys(uint32_t, char**);
 
 CLI_CMD_ELEM G_CLI_CMD[] = {
 	{"CLS", "cls", CLI_CMD_CLS, "Очистка экрана"},
@@ -646,6 +647,8 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
     {"PLAIN", "plain", CLI_PLAIN, "Run plain program"},
     {"HEX", "hex", CLI_CMD_HEX, "Show hex data"},
     {"ST", "st", CLI_SPAWN_TEST, "spawn test"},
+    {"FORTH", "forth",forth_sys, "Форт система"},
+    {"4TH", "4th",forth_sys, "Форт система"},
 	{nullptr, nullptr, nullptr}
 };
 
