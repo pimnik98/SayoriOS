@@ -36,6 +36,7 @@ volatile int     lastKey = 0;            ///< Последний индекс к
 uint8_t kbdstatus = 0;          ///< Статус клавиатуры
 bool    echo = true;            ///< Включен ли вывод?
 bool    key_ctrl = false;
+bool    key_alt  = false;
 
 volatile char kmode = 0;
 volatile char* curbuf = 0;
@@ -326,6 +327,10 @@ void keyboardHandler(registers_t regs){
             key_ctrl = true;
         } else if (lastKey == 157) { // Left Ctrl release
             key_ctrl = false;
+        } else if (lastKey == 0x38) { // Left Alt press
+            key_alt = true;
+        } else if (lastKey == 0xb8) { // Left Alt release
+            key_alt = false;
         }
 
         char* key = getCharKeyboard(lastKey, false);
