@@ -137,7 +137,7 @@ List of make targets:
     make clean-objs - removes cache files
     make link - link of the kernel files
     make bir - Build of ISO and kernel run
-    make WSL - Buikd of ISO and kernel run from WSL
+    make WSL - Build of ISO and kernel run from WSL
 
 ## <a id="run">Run</a>
 
@@ -150,6 +150,8 @@ Create a folder, move the kernel file to that folder, install software:
 cd to the folder and run emulator
 
     qemu-system-i386 -cdrom kernel.iso -serial file:Qemu.log -accel kvm -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime -soundhw pcspk
+
+alternatively you can just make birl
 
 ### <a id="run_virtualbox">Running in VirtualBox</a>
 
