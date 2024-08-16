@@ -501,6 +501,8 @@ uint32_t* get_kernel_page_directory() {
 void init_paging() {
     extern size_t grub_last_module_end;
 
+    qemu_log("Memory bitmap covers: %d MB", (sizeof(pages_bitmap) * 8) >> 10);
+
 	kernel_start = (size_t)&KERNEL_BASE_pos;
 	kernel_end = (size_t)&KERNEL_END_pos;
 

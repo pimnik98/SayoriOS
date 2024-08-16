@@ -29,7 +29,7 @@ extern size_t kernel_end;
 #define		PAGE_DIRTY			(1U << 6)
 #define		PAGE_GLOBAL			(1U << 8)
 
-#define     PAGE_BITMAP_SIZE (131072)
+#define     PAGE_BITMAP_SIZE (131072 * 4)
 
 #define 	PD_INDEX(virt_addr) ((virt_addr) >> 22)
 #define 	PT_INDEX(virt_addr) (((virt_addr) >> 12) & 0x3ff)
