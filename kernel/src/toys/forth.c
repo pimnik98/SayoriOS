@@ -264,7 +264,7 @@ void Type() {
     Tos =  *Stack++;
 } pp(Type)
 
-void ZType() {_tty_puts(Tos); Tos = *Stack++;} pp(ZType)
+void ZType() {_tty_puts((const char*)Tos); Tos = *Stack++;} pp(ZType)
 
 void SetXY() // ( x y -- )
 {	tty_pos_y = Tos*tty_off_pos_h;
@@ -494,7 +494,7 @@ void Allocate()
 
 void Free()
 {
-	kfree(Tos);
+	kfree((void*)Tos);
 	Tos=0;
 
 } pp(Free)
@@ -578,8 +578,9 @@ Cell CCompare( void * caddr1  ,  Cell len1 ,  void * caddr2  ,  Cell len2) {
     if (len1 > len2) return  1;
 
 //    auto cmpResult = std::memcmp(caddr1, caddr2, len1);
-    auto int cmpResult = memcasecmp(caddr1, caddr2, len1);
 
+    Cell cmpResult = memcasecmp(caddr1, caddr2, len1);
+    
     if (cmpResult < 0) return -1;
     if (cmpResult > 0) return  1;
     return   0;
@@ -820,7 +821,7 @@ void openFile() {
 
 
 // CLOSE-FILE ( fileid -- ior )
-void closeFile() { fclose(Tos); Tos = 0; } pp(closeFile)
+void closeFile() { fclose((FILE*)Tos); Tos = 0; } pp(closeFile)
 
 // READ-FILE ( c-addr u1 fileid -- u2 ior )
 void readFile() {

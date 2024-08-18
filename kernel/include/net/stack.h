@@ -5,8 +5,15 @@
 #pragma once
 
 #include "common.h"
+#include "net/cards.h"
+
+typedef struct {
+	netcard_entry_t* card;
+	void* data;
+	size_t length;
+} netqueue_item_t;
 
 void netstack_init();
-void netstack_push(void* packet_data, size_t length);
-void* netstack_pop();
-void* netstack_poll();
+void netstack_push(netcard_entry_t* card, void* packet_data, size_t length);
+netqueue_item_t* netstack_pop();
+netqueue_item_t* netstack_poll();

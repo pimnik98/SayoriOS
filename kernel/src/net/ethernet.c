@@ -4,7 +4,8 @@
 #include "net/arp.h"
 #include "net/ethernet.h"
 #include "mem/vmm.h"
-#include "debug/hexview.h"
+//#include "debug/hexview.h"
+#include "net/stack.h"
 
 void ethernet_dump(void* data, size_t size, uint16_t type){
 	qemu_log("Types: %x", type);
@@ -97,7 +98,8 @@ void ethernet_send_packet(netcard_entry_t* card, uint8_t* dest_mac, uint8_t* dat
 
     frame->type = htons(type);
 
-    card->send_packet(frame, sizeof(ethernet_frame_t) + len);
+    netstack_push(card, frame, sizeof(ethernet_frame_t) + len);
+    //card->send_packet(frame, sizeof(ethernet_frame_t) + len);
 
     kfree(frame);
 }
