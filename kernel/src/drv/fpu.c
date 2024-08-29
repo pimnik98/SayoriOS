@@ -23,7 +23,7 @@ void fpu_fldcw(const uint16_t cw) {
 
 /// Инициализация FPU
 void fpu_init() {
-	size_t cr4 = 0;
+	uint32_t cr4 = 0;
 
 	__asm__ volatile ("mov %%cr4, %0":"=r"(cr4));
 	cr4 |= 0x200;

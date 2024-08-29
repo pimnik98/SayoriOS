@@ -34,6 +34,12 @@ ASM_SRC:=$(ASM_SRC:%.s=$(BUILD_PREFIX)/%.s)
 
 ASM=$(ASM_SRC:%.s=$(OBJ_DIRECTORY)/%.o)
 
+ELK=\
+	kernel/src/lib/elk/elk.c \
+	kernel/src/lib/elk/elk_engine.c \
+	kernel/src/lib/elk/elk_libs.c \
+	kernel/src/lib/elk/jse_func.c \
+
 SOURCES=\
 	kernel/src/sys/cpuinfo.c \
 	kernel/src/sys/cpu_isr.c \
@@ -62,10 +68,7 @@ SOURCES=\
 	kernel/src/sys/scheduler.c \
 	kernel/src/lib/php/explode.c \
 	kernel/src/lib/php/pathinfo.c \
-	kernel/src/lib/elk/elk.c \
-	kernel/src/lib/elk/elk_engine.c \
-	kernel/src/lib/elk/elk_libs.c \
-	kernel/src/lib/elk/jse_func.c \
+	$(ELK) \
 	kernel/src/drv/psf.c \
 	kernel/src/sys/unwind.c \
 	kernel/src/fs/NatSuki.c \
@@ -195,7 +198,7 @@ KERNEL_NEED = $(ASM) $(OBJS)
 
 COMMON_FLAGS = -O$(OPTIMIZATION_LEVEL) -nostdlib -fno-stack-protector -fno-builtin -I$(BUILD_PREFIX)kernel/include/ -ffreestanding \
 			   -Wall -Wno-div-by-zero -Wno-address-of-packed-member -Wno-implicit-function-declaration \
-			   -mno-red-zone -MMD -MP 
+			   -mno-red-zone -MMD -MP -g 
 
 # Флаги компилятора языка C
 CFLAGS=$(DEBUG) $(ADDCFLAGS) $(COMMON_FLAGS)
