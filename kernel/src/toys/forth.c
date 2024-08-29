@@ -578,8 +578,9 @@ Cell CCompare( void * caddr1  ,  Cell len1 ,  void * caddr2  ,  Cell len2) {
     if (len1 > len2) return  1;
 
 //    auto cmpResult = std::memcmp(caddr1, caddr2, len1);
-    Cell cmpResult = memcasecmp(caddr1, caddr2, len1);
 
+    Cell cmpResult = memcasecmp(caddr1, caddr2, len1);
+    
     if (cmpResult < 0) return -1;
     if (cmpResult > 0) return  1;
     return   0;
