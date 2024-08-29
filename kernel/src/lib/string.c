@@ -9,7 +9,7 @@
 #include "common.h"
 #include "lib/string.h"
 #include "lib/math.h"
-#include <emmintrin.h>  // SSE functions and types
+//#include <emmintrin.h>  // SSE functions and types
 
 bool isalnum(char c){
 	return  (c >= '0' && c <= '9') ||
@@ -137,7 +137,7 @@ size_t struntil(const char* str, const char find) {
  * @param src - Указатель на массив источник копируемых данных.
  * @param size - Количество байт для копирования
  */
-void sse_memcpy(void* restrict dest, const void* restrict src, size_t size) {
+/*void sse_memcpy(void* restrict dest, const void* restrict src, size_t size) {
     __m128i* d = (__m128i*)dest;
     const __m128i* s = (const __m128i*)src;
 
@@ -161,7 +161,7 @@ void sse_memcpy(void* restrict dest, const void* restrict src, size_t size) {
     }
 
 	_mm_sfence();
-}
+}*/
 
 /**
  * @brief Копирование непересекающихся массивов
