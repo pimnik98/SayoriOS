@@ -126,6 +126,8 @@ typedef struct {
 void ide_select_drive(uint8_t bus, bool slave);
 void ide_400ns_delay(uint16_t io);
 void ide_poll(uint16_t io);
+bool ide_poll_drq(uint16_t io);
+bool ide_poll_bsy(uint16_t io);
 
 void ata_read(uint8_t drive, uint8_t* buf, uint32_t location, uint32_t length) ;
 void ata_write(uint8_t drive, const uint8_t* buf, size_t location, size_t length);
