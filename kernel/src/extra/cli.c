@@ -32,6 +32,9 @@
 #include "debug/hexview.h"
 #include "lib/command_parser.h"
 
+#include "../ports/eBat/eBat.h"
+#include "../ports/eBat/eBatRuntime.h"
+
 int G_CLI_CURINXA = 0;
 int G_CLI_CURINXB = 0;
 int G_CLI_H_KYB = 1;
@@ -652,6 +655,26 @@ CLI_CMD_ELEM G_CLI_CMD[] = {
 	{nullptr, nullptr, nullptr}
 };
 
+int cli_handler_ebat(int argc, char** argv){
+    qemu_note("[RUNTIME] [System] [EXEC] Count: %d\n", argc);
+    int ret = 0;
+    bool found = false;
+
+    for(size_t i = 0; G_CLI_CMD[i].name != nullptr; i++) {
+        if(strcmpn(G_CLI_CMD[i].name, argv[0]) || strcmpn(G_CLI_CMD[i].alias, argv[0])) {
+            ret = G_CLI_CMD[i].funcv(argc, argv);
+            found = true;
+            break;
+        }
+    }
+
+    if(!found) {
+        ret = CLI_CMD_RUN(argc, argv);
+    }
+
+    return ret;
+}
+
 void cli_handler(const char* ncmd){
 	set_cursor_enabled(0);
 
@@ -672,7 +695,7 @@ void cli_handler(const char* ncmd){
 			break;
 		}
 	}
-	
+
 	if(!found) {
 		CLI_CMD_RUN(parser.argc, parser.argv);
 	}
@@ -686,11 +709,6 @@ void cli(){
 	qemu_log("[CLI] Started...");
 	tty_set_bgcolor(0xFF000000);
 	tty_setcolor(0xFFFFFF);
-
-	variable_write("HOSTNAME", "SAYORISOUL");
-	variable_write("SYSTEMROOT", "R:\\Sayori\\");
-	variable_write("TEMP", "T:\\");
-	variable_write("USERNAME", "OEM");
 
 // 	T_CLI_KYB = RegTrigger(0x0001, &F_CLI_KYB);
 	
@@ -724,7 +742,23 @@ void cli(){
         	size_t current_time = timestamp();
 		qemu_log("cmd: %s", input_buffer);
 
-		cli_handler(input_buffer);
+        /////////////////////////////////////
+
+        int preprocessor = 0;
+
+        if (preprocessor == 0){
+            cli_handler(input_buffer);
+        } else {
+            BAT_T* token = bat_parse_string(input_buffer);
+            token->Debug = 0;
+            token->Echo = 1;
+            int ret = bat_runtime_exec(token);
+            qemu_warn("RETURN CODE: %d\n",ret);
+            bat_destroy(token);
+        }
+        ////////////////////////////////////
+
+		//
 		tty_printf("\n");
 
 		ssize_t delta = (int)system_heap.used_memory - (int)memory_cur;
