@@ -6,6 +6,7 @@ include config.mk
 
 KERNEL = iso/boot/kernel.elf
 BUILD_PREFIX=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+CURRENT_USER := $(shell whoami)
 
 COMPILER_DETECTOR_FLAGS = ""
 
@@ -188,6 +189,7 @@ SOURCES:=$(SOURCES:%.c=$(BUILD_PREFIX)/%.c) \
 	$(wildcard $(BUILD_PREFIX)/kernel/src/lib/libvector/src/*.c) \
 	$(wildcard $(BUILD_PREFIX)/kernel/src/lib/libstring/src/*.c) \
 	$(wildcard $(BUILD_PREFIX)/kernel/src/lib/elk/ext/*.c) \
+	$(wildcard $(BUILD_PREFIX)/kernel/src/ports/eBat/*.c) \
 
 DIRECTORIES := $(addprefix $(OBJ_DIRECTORY)/,$(sort $(dir $(SOURCES) $(ASM_SRC))))
 
@@ -201,7 +203,7 @@ COMMON_FLAGS = -O$(OPTIMIZATION_LEVEL) -nostdlib -fno-stack-protector -fno-built
 			   -mno-red-zone -MMD -MP -g 
 
 # Флаги компилятора языка C
-CFLAGS=$(DEBUG) $(ADDCFLAGS) $(COMMON_FLAGS)
+CFLAGS=$(DEBUG) $(ADDCFLAGS) $(COMMON_FLAGS) -DBUILDUSER=\"$(CURRENT_USER)\"
 CPP_FLAGS=$(DEBUG) $(COMMON_FLAGS) -fno-use-cxa-atexit -fno-exceptions -fno-rtti -Werror -Ikernel/cpp/include
 
 LD ?= ld.lld
