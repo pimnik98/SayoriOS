@@ -254,8 +254,7 @@ QEMU_FLAGS = $(QEMU_BASE_FLAGS) \
 			 -netdev user,id=net0,net=192.168.111.0,dhcpstart=192.168.111.128,hostfwd=tcp::9999-:9999 \
 			 -device rtl8139,netdev=net0,id=mydev0 \
 			 -M pcspk-audiodev=pa0 \
-			 -device ich9-intel-hda,debug=0 \
-			 -device hda-output,audiodev=pa0 \
+			 -device ac97,audiodev=pa0 \
 			 -trace "hda*" \
 			 -device ich9-usb-uhci1 \
 			 -drive file=disk.img,id=disk0,if=none \
