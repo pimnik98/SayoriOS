@@ -30,6 +30,9 @@
 #include "drv/ps2.h"
 #include "net/dhcp.h"
 #include "gfx/intel.h"
+#include "ports/eBat/eBat.h"
+#include "ports/eBat/eBatRuntime.h"
+
 
 #include <lib/pixel.h>
 
@@ -48,6 +51,52 @@ size_t ramdisk_size = INITRD_RW_SIZE;
 
 void jse_file_getBuff(char* buf);
 void kHandlerCMD(char*);
+
+void autoexec(){
+
+    variable_write("HOSTNAME", "SAYORISOUL");
+    variable_write("SYSTEMROOT", "R:\\Sayori\\");
+    variable_write("TEMP", "T:\\");
+    variable_write("USERNAME", "OEM");
+    variable_write("BUILDUSER", BUILDUSER);
+    variable_write("BUILDDATA", __TIMESTAMP__);
+    variable_write("VERSION_MAJOR", TOSTRING(VERSION_MAJOR));
+    variable_write("VERSION_MINOR", TOSTRING(VERSION_MINOR));
+    variable_write("VERSION_PATCH", TOSTRING(VERSION_PATCH));
+    variable_write("ARCH_TYPE", ARCH_TYPE);
+    variable_write("VERNAME", VERNAME);
+    variable_write("SUBVERSIONNAME", SUBVERSIONNAME);
+    variable_write("VERSION", VERSION_STRING);
+
+
+    char* f = "R:\\autoexec.bat";
+    FILE* cat_file = fopen(f, "r");
+    if (!cat_file){
+        tty_setcolor(COLOR_ERROR);
+        tty_printf("[AutoExec] Не удалось найти файл `%s`.\n",f);
+        return;
+    }
+
+    size_t filesize = fsize(cat_file);
+
+    uint8_t* buffer = kcalloc(1,filesize + 1);
+
+    fread(cat_file, 1, filesize, buffer);
+
+    qemu_log("'%s'", buffer);
+
+    BAT_T* token = bat_parse_string(buffer);
+    token->Debug = 0;
+    token->Echo = 1;
+    int ret = bat_runtime_exec(token);
+    qemu_warn("RETURN CODE: %d\n",ret);
+    bat_destroy(token);
+
+
+    fclose(cat_file);
+
+    kfree(buffer);
+}
 
 void __createRamDisk(){
     qemu_note("[INITRD] Create virtual read-write disk...");
@@ -468,6 +517,8 @@ void  __attribute__((noreturn)) kmain(multiboot_header_t* mboot, uint32_t initia
 //    create_process(k, "process2", false, true);
 //    sleep_ms(1500);
 //    create_process(k, "process3", false, true);
+
+    autoexec();
 
     qemu_log("System initialized everything at: %f seconds.", (double) (getTicks() - kernel_start_time) / getFrequency());
 
