@@ -52,8 +52,10 @@ jobs:
 
       - name: Step 8 - Update to the latest unstable release
         uses: "marvinpinto/action-automatic-releases@latest"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          repo_token: "${{ secrets.SAYORI }}"
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest-unstable"
           prerelease: true
           title: "💽 SayoriOS Soul- [Автосборка] Нестабильный релиз"
