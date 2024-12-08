@@ -1,0 +1,28 @@
+var kernel_8c =
+[
+    [ "INITRD_RW_SIZE", "d9/d26/kernel_8c.html#ad5a293550f6aad41ceed848cca36091b", null ],
+    [ "__attribute__", "d9/d26/kernel_8c.html#a93b9cf91f7623d6d8b100a3693d6d5e4", null ],
+    [ "__createRamDisk", "d9/d26/kernel_8c.html#aa23d737932b77ef274240e81452c823b", null ],
+    [ "autoexec", "d9/d26/kernel_8c.html#a5b222dbc67408a619cbb14b55d82c794", null ],
+    [ "draw_raw_fb", "d9/d26/kernel_8c.html#a92dd00d2b93317ead5a5233305bd4486", null ],
+    [ "initrd_sefs", "d9/d26/kernel_8c.html#a0fdfac7775ddb906e2f2b8d02540219a", null ],
+    [ "jse_file_getBuff", "d9/d26/kernel_8c.html#a7a7bf24921f21b6e92dfe840b86a633f", null ],
+    [ "kHandlerCMD", "d9/d26/kernel_8c.html#a5f600bd4d5828cdbfcd56e333b89b388", null ],
+    [ "BSS_end", "d9/d26/kernel_8c.html#a70232e360748e56a86d4bc976223bd63", null ],
+    [ "BSS_start", "d9/d26/kernel_8c.html#a761208d58e9b6e5c137262cb2d7ef5f7", null ],
+    [ "CODE_end", "d9/d26/kernel_8c.html#abad616678a980d5dacfed6799b5b810e", null ],
+    [ "CODE_start", "d9/d26/kernel_8c.html#afd581812dd4df5ebf50e4f62abe28c83", null ],
+    [ "DATA_end", "d9/d26/kernel_8c.html#a847cf21ca297df5d2755fe548baf7ad3", null ],
+    [ "DATA_start", "d9/d26/kernel_8c.html#a75c1ce734b7056f85a9f2160f8640456", null ],
+    [ "init_esp", "d9/d26/kernel_8c.html#aeeac1ff951ce06f605c292d58eeb69f6", null ],
+    [ "initRD", "d9/d26/kernel_8c.html#aec2927f8a04206a42f92be03277f9f78", null ],
+    [ "is_rsdp", "d9/d26/kernel_8c.html#a45d8c2e1c99e8d04779145460fbdd426", null ],
+    [ "kernel_start_time", "d9/d26/kernel_8c.html#a7fd12f6b3f4e4e0a4aaf24113d17cdc8", null ],
+    [ "ps2_channel2_okay", "d9/d26/kernel_8c.html#afdf74c32ba1ea19814a1e8b2f9dac20c", null ],
+    [ "ramdisk_size", "d9/d26/kernel_8c.html#ad4d2e2dc7df6dfc9376fb7cd17a93e99", null ],
+    [ "RODATA_end", "d9/d26/kernel_8c.html#a1d9401301995356b159cab06651c9641", null ],
+    [ "RODATA_start", "d9/d26/kernel_8c.html#ad27e6b04afac0490489dd0c8cd742109", null ],
+    [ "test_floppy", "d9/d26/kernel_8c.html#a6b308e7c2f38f80c552be0955f50a6cf", null ],
+    [ "test_network", "d9/d26/kernel_8c.html#ada3629fe08303f26138b2b239a23d315", null ],
+    [ "test_pcs", "d9/d26/kernel_8c.html#a8fc67b64f162aea7dbcacd4d5c9db0ce", null ]
+];

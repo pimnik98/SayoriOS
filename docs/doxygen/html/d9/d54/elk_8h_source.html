@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/lib/elk/elk.h</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d9/d54/elk_8h_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">elk.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef SAYORI_ELK_H</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define SAYORI_ELK_H</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="../../dc/d54/common_8h.html">common.h</a>&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;ext/jse_canvas.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;ext/jse_event.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;ext/jse_array.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">int</span>     double_t;   <span class="comment">// Тип данных для чисел</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">struct </span><a class="code" href="../../d3/daf/structjs.html">js</a>;                  <span class="comment">// Движок JS (непрозрачный)</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">typedef</span> uint64_t jsval_t;   <span class="comment">// Типы данных хранящие значения JS</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">struct </span><a class="code" href="../../d3/daf/structjs.html">js</a> *js_create(<span class="keywordtype">void</span> *buf, <span class="keywordtype">size_t</span> len);                        <span class="comment">// Создать экземпляр JS</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;jsval_t js_eval(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *, <span class="keyword">const</span> <span class="keywordtype">char</span> *, <span class="keywordtype">size_t</span>);                 <span class="comment">// Выполнить JS-код</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;jsval_t js_glob(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *);                                       <span class="comment">// Возвращает глобальный объект</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *js_str(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *, jsval_t val);                       <span class="comment">// Stringify JS value</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keywordtype">bool</span> js_chkargs(jsval_t *, <span class="keywordtype">int</span>, <span class="keyword">const</span> <span class="keywordtype">char</span> *);                      <span class="comment">// Проверяет правильность аргументов</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">bool</span> js_truthy(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *, jsval_t);                               <span class="comment">// Проверьте, является ли значение истинным</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keywordtype">void</span> js_setmaxcss(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *, <span class="keywordtype">size_t</span>);                             <span class="comment">// Установите максимальный размер стека</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keywordtype">void</span> js_setgct(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *, <span class="keywordtype">size_t</span>);                                <span class="comment">// Установите порог срабатывания GC</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keywordtype">void</span> js_stats(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *, <span class="keywordtype">size_t</span> *total, <span class="keywordtype">size_t</span> *min, <span class="keywordtype">size_t</span> *cstacksize);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keywordtype">void</span> js_dump(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *);                                          <span class="comment">// Выводит отладочную информацию.</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keywordtype">void</span> js_statsInfo(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>);                                   <span class="comment">// Печает в консоль результаты выполнения JS экземпляра</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">// Создайте значения JS из значений C</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;jsval_t js_mkundef(<span class="keywordtype">void</span>);                                           <span class="comment">// Создать undefined</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;jsval_t js_mknull(<span class="keywordtype">void</span>);                                            <span class="comment">// Создать null, null, true, false</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;jsval_t js_mktrue(<span class="keywordtype">void</span>);                                            <span class="comment">// Создать true</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;jsval_t js_mkfalse(<span class="keywordtype">void</span>);                                           <span class="comment">// Создать false</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;jsval_t js_mkstr(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *, <span class="keyword">const</span> <span class="keywordtype">void</span> *, <span class="keywordtype">size_t</span>);                <span class="comment">// Создать строку</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;jsval_t js_mknum(double_t);                                         <span class="comment">// Создать число</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;jsval_t js_mkerr(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, <span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);              <span class="comment">// Создать error</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;jsval_t js_mkfun(jsval_t (*fn)(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *, jsval_t *, <span class="keywordtype">int</span>));       <span class="comment">// Создать функцию</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;jsval_t js_mkobj(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *);                                      <span class="comment">// Создать объект</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keywordtype">void</span> js_set(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *, jsval_t, <span class="keyword">const</span> <span class="keywordtype">char</span> *, jsval_t);           <span class="comment">// Установить object attr</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">enum</span> { JS_UNDEF, JS_NULL, JS_TRUE, JS_FALSE, JS_STR, JS_NUM, JS_ERR, JS_PRIV };</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keywordtype">int</span> js_type(jsval_t val);                                           <span class="comment">// Возвращает тип JS-значения</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;double_t js_getnum(jsval_t val);                                    <span class="comment">// Получить число</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">int</span> js_getbool(jsval_t val);                                        <span class="comment">// Получить boolean, 0 or 1</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keywordtype">char</span> *js_getstr(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, jsval_t val, <span class="keywordtype">size_t</span> *len);           <span class="comment">// Получить строку</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">typedef</span> uint32_t jsoff_t;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="../../d3/daf/structjs.html">   48</a></span>&#160;<span class="keyword">struct </span><a class="code" href="../../d3/daf/structjs.html">js</a> {</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    jsoff_t css;                                                    <span class="comment">// Максимальный наблюдаемый размер стека C</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    jsoff_t lwm;                                                    <span class="comment">// JS RAM low watermark: наблюдается минимальное количество свободной оперативной памяти</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *code;                                               <span class="comment">// Анализируемый в данный момент фрагмент кода (весь код, который выполняется)</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">char</span> errmsg[33];                                                <span class="comment">// Сообщение об ошибке</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    uint8_t isFatal;                                                <span class="comment">// Выполнение закончилось ошибкой?</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    uint8_t tok;                                                    <span class="comment">// Последнее проанализированное значение токена</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    uint8_t consumed;                                               <span class="comment">// Индикатор того, что был использован последний проанализированный токен</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    uint8_t flags;                                                  <span class="comment">// Флаги выполнения, смотрите константы F_* ниже</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#define F_NOEXEC 1U                                                 </span><span class="comment">// Разбирать код, но не выполнять</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#define F_LOOP 2U                                                   </span><span class="comment">// Код выполняется внутри петли</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#define F_CALL 4U                                                   </span><span class="comment">// Код выполняется внутри вызова функции</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#define F_BREAK 8U                                                  </span><span class="comment">// Выход из цикла</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#define F_RETURN 16U                                                </span><span class="comment">// Был выполнен возврат из функции</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    jsoff_t clen;                                                   <span class="comment">// Длина фрагмента кода</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    jsoff_t pos;                                                    <span class="comment">// Текущая позиция синтаксического анализа</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    jsoff_t toff;                                                   <span class="comment">// Смещение последнего проанализированного токена</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    jsoff_t tlen;                                                   <span class="comment">// Длина последнего проанализированного токена</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    jsoff_t nogc;                                                   <span class="comment">// Смещение объекта для исключения из GC</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    jsval_t tval;                                                   <span class="comment">// Содержит последнее проанализированное числовое или строковое литеральное значение</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    jsval_t scope;                                                  <span class="comment">// Текущая область применения</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    uint8_t *mem;                                                   <span class="comment">// Доступная память JS</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    jsoff_t size;                                                   <span class="comment">// Объем памяти JS</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    jsoff_t brk;                                                    <span class="comment">// Текущая граница использования mem</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    jsoff_t gct;                                                    <span class="comment">// Порог GC. Если brk &gt; gct, запустите GC</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    jsoff_t maxcss;                                                 <span class="comment">// Максимально допустимый размер использования стека C</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    jsoff_t incSize;                                                <span class="comment">// Размер загруженных библиотек</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    jsoff_t paramSize;                                              <span class="comment">// Кол-во просканированных параметров JSE CF</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    JSE_CANVAS Canvas;                                              <span class="comment">// [JSE] [EXT] [Canvas]</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">void</span> *cstk;                                                     <span class="comment">// Указатель стека C в начале js_eval()</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;};</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">// В памяти JS хранятся различные сущности: объекты, свойства, строки</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">// Все объекты упаковываются в начало буфера.</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">// `brk` обозначает конец используемой памяти:</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment">//    | entity1 | entity2| .... |entityN|     неиспользуемая память    |</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment">//    |---------|--------|------|-------|------------------------------|</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment">//  js.mem                           js.brk                        js.size</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment">//  Каждый объект выровнен по 4 байтам, поэтому 2 бита LSB хранят тип объекта.</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment">//  Объект: 8 байт: смещение первого свойства, смещение верхнего объекта</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">//  Свойство: 8 байт + значение val: 4 байта следующего пропа, 4 байта отстува, N байт значения</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment">//  Строка: 4xN байт: 4 байта len &lt;&lt; 2, 4 байта выровненных по 0-завершенных данных</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment">// Если импортируются функции C, они используют верхнюю часть памяти в качестве стека для передачи параметров.</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment">// Каждый аргумент помещается в верхнюю часть памяти как jsval_t, а js.size уменьшается на sizeof(jsval_t), т.е. на 8 байт.</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment">// Когда функция возвращается, js.size восстанавливается обратно.</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment">// Таким образом, js.size используется в качестве указателя стека.</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    TOK_ERR, TOK_EOF, TOK_IDENTIFIER, TOK_NUMBER, TOK_STRING, TOK_SEMICOLON,</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    TOK_LPAREN, TOK_RPAREN, TOK_LBRACE, TOK_RBRACE,</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="comment">// Keyword tokens</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    TOK_BREAK = 50, TOK_CASE, TOK_CATCH, TOK_CLASS, TOK_CONST, TOK_CONTINUE,</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    TOK_DEFAULT, TOK_DELETE, TOK_DO, TOK_ELSE, TOK_FINALLY, TOK_FOR, TOK_FUNC,</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    TOK_IF, TOK_IN, TOK_INSTANCEOF, TOK_LET, TOK_NEW, TOK_RETURN, TOK_SWITCH,</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    TOK_THIS, TOK_THROW, TOK_TRY, TOK_VAR, TOK_VOID, TOK_WHILE, TOK_WITH,</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    TOK_YIELD, TOK_UNDEF, TOK_NULL, TOK_TRUE, TOK_FALSE,</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="comment">// JS Operator tokens</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    TOK_DOT = 100, TOK_CALL, TOK_POSTINC, TOK_POSTDEC, TOK_NOT, TOK_TILDA,    <span class="comment">// 100</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    TOK_TYPEOF, TOK_UPLUS, TOK_UMINUS, TOK_EXP, TOK_MUL, TOK_DIV, TOK_REM,    <span class="comment">// 106</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    TOK_PLUS, TOK_MINUS, TOK_SHL, TOK_SHR, TOK_ZSHR, TOK_LT, TOK_LE, TOK_GT,  <span class="comment">// 113</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    TOK_GE, TOK_EQ, TOK_NE, TOK_AND, TOK_XOR, TOK_OR, TOK_LAND, TOK_LOR,      <span class="comment">// 121</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    TOK_COLON, TOK_Q,  TOK_ASSIGN, TOK_PLUS_ASSIGN, TOK_MINUS_ASSIGN,</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    TOK_MUL_ASSIGN, TOK_DIV_ASSIGN, TOK_REM_ASSIGN, TOK_SHL_ASSIGN,</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    TOK_SHR_ASSIGN, TOK_ZSHR_ASSIGN, TOK_AND_ASSIGN, TOK_XOR_ASSIGN,</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    TOK_OR_ASSIGN, TOK_COMMA,</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;};</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="comment">// ВАЖНО: T_OBJ, T_PROP, T_STR должны быть запущены первыми.</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="comment">// Этого требуют функции компоновки памяти: типы объектов памяти кодируются в 2 битах,</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="comment">// таким образом, значения типов должны быть 0,1,2,3</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    T_OBJ, T_PROP, T_STR, T_UNDEF, T_NULL, T_NUM, T_BOOL, T_FUNC, T_CODEREF,</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    T_CFUNC, T_ERR</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;};</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="keyword">static</span> jsval_t tov(double_t d) {</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keyword">union </span>{ double_t d; jsval_t v; } u = {d};</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">return</span> u.v;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;}</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="keyword">static</span> jsval_t tov2(<span class="keywordtype">int</span> d) { <span class="keyword">union </span>{ <span class="keywordtype">int</span> d; jsval_t v; } u = {d}; <span class="keywordflow">return</span> u.v; }</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="keyword">static</span> double_t tod(jsval_t v) {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keyword">union </span>{ jsval_t v; double_t d; } u = {v};</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordflow">return</span> u.d;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;}</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="keyword">static</span> double_t tod2(jsval_t v) {</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keyword">union </span>{ jsval_t v; <span class="keywordtype">int</span> d; } u = {v};</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordflow">return</span> u.d;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;}</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="keyword">static</span> jsval_t mkval(uint8_t type, uint64_t data) { <span class="keywordflow">return</span> ((jsval_t) 0x7ff0U &lt;&lt; 48U) | ((jsval_t) (type) &lt;&lt; 48) | (data &amp; 0xffffffffffffUL); }</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> is_nan(jsval_t v) { <span class="keywordflow">return</span> (v &gt;&gt; 52U) == 0x7ffU; }</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="keyword">static</span> uint8_t vtype(jsval_t v) { <span class="keywordflow">return</span> is_nan(v) ? ((v &gt;&gt; 48U) &amp; 15U) : (uint8_t) T_NUM; }</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="keyword">static</span> <span class="keywordtype">size_t</span> vdata(jsval_t v) { <span class="keywordflow">return</span> (<span class="keywordtype">size_t</span>) (v &amp; ~((jsval_t) 0x7fffUL &lt;&lt; 48U)); }</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="keyword">static</span> jsval_t mkcoderef(jsval_t off, jsoff_t len) { <span class="keywordflow">return</span> mkval(T_CODEREF, (off &amp; 0xffffffU) | ((jsval_t)(len &amp; 0xffffffU) &lt;&lt; 24U)); }</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="keyword">static</span> jsoff_t coderefoff(jsval_t v) { <span class="keywordflow">return</span> v &amp; 0xffffffU; }</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="keyword">static</span> jsoff_t codereflen(jsval_t v) { <span class="keywordflow">return</span> (v &gt;&gt; 24U) &amp; 0xffffffU; }</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="keyword">static</span> uint8_t unhex(uint8_t c) { <span class="keywordflow">return</span> (c &gt;= <span class="charliteral">&#39;0&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;9&#39;</span>) ? (uint8_t) (c - <span class="charliteral">&#39;0&#39;</span>) : (c &gt;= <span class="charliteral">&#39;a&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;f&#39;</span>) ? (uint8_t) (c - <span class="charliteral">&#39;W&#39;</span>) : (c &gt;= <span class="charliteral">&#39;A&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;F&#39;</span>) ? (uint8_t) (c - <span class="charliteral">&#39;7&#39;</span>) : 0; }</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> is_space(<span class="keywordtype">int</span> c) { <span class="keywordflow">return</span> c == <span class="charliteral">&#39; &#39;</span> || c == <span class="charliteral">&#39;\r&#39;</span> || c == <span class="charliteral">&#39;\n&#39;</span> || c == <span class="charliteral">&#39;\t&#39;</span> || c == <span class="charliteral">&#39;\f&#39;</span> || c == <span class="charliteral">&#39;\v&#39;</span>; }</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> is_digit(<span class="keywordtype">int</span> c) { <span class="keywordflow">return</span> c &gt;= <span class="charliteral">&#39;0&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;9&#39;</span>; }</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> is_xdigit(<span class="keywordtype">int</span> c) { <span class="keywordflow">return</span> is_digit(c) || (c &gt;= <span class="charliteral">&#39;a&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;f&#39;</span>) || (c &gt;= <span class="charliteral">&#39;A&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;F&#39;</span>); }</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> is_alpha(<span class="keywordtype">int</span> c) { <span class="keywordflow">return</span> (c &gt;= <span class="charliteral">&#39;a&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;z&#39;</span>) || (c &gt;= <span class="charliteral">&#39;A&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;Z&#39;</span>); }</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> is_ident_begin(<span class="keywordtype">int</span> c) { <span class="keywordflow">return</span> c == <span class="charliteral">&#39;_&#39;</span> || c == <span class="charliteral">&#39;$&#39;</span> || is_alpha(c); }</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> is_ident_continue(<span class="keywordtype">int</span> c) { <span class="keywordflow">return</span> c == <span class="charliteral">&#39;_&#39;</span> || c == <span class="charliteral">&#39;$&#39;</span> || is_alpha(c) || is_digit(c); }</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> is_err(jsval_t v) { <span class="keywordflow">return</span> vtype(v) == T_ERR; }</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> is_unary(uint8_t tok) { <span class="keywordflow">return</span> tok &gt;= TOK_POSTINC &amp;&amp; tok &lt;= TOK_UMINUS; }</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> is_assign(uint8_t tok) { <span class="keywordflow">return</span> (tok &gt;= TOK_ASSIGN &amp;&amp; tok &lt;= TOK_OR_ASSIGN); }</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> saveoff(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, jsoff_t off, jsoff_t val) { <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(&amp;<a class="code" href="../../d3/daf/structjs.html">js</a>-&gt;mem[off], &amp;val, <span class="keyword">sizeof</span>(val)); }</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> saveval(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, jsoff_t off, jsval_t val) { <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(&amp;<a class="code" href="../../d3/daf/structjs.html">js</a>-&gt;mem[off], &amp;val, <span class="keyword">sizeof</span>(val)); }</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="keyword">static</span> jsoff_t loadoff(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, jsoff_t off) { jsoff_t v = 0; passert(<a class="code" href="../../d3/daf/structjs.html">js</a>-&gt;brk &lt;= <a class="code" href="../../d3/daf/structjs.html">js</a>-&gt;size); <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(&amp;v, &amp;<a class="code" href="../../d3/daf/structjs.html">js</a>-&gt;mem[off], <span class="keyword">sizeof</span>(v)); <span class="keywordflow">return</span> v; }</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="keyword">static</span> jsoff_t offtolen(jsoff_t off) { <span class="keywordflow">return</span> (off &gt;&gt; 2) - 1; }</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="keyword">static</span> jsoff_t vstrlen(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, jsval_t v) { <span class="keywordflow">return</span> offtolen(loadoff(<a class="code" href="../../d3/daf/structjs.html">js</a>, (jsoff_t) vdata(v))); }</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="keyword">static</span> jsval_t loadval(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, jsoff_t off) { jsval_t v = 0; <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(&amp;v, &amp;<a class="code" href="../../d3/daf/structjs.html">js</a>-&gt;mem[off], <span class="keyword">sizeof</span>(v)); <span class="keywordflow">return</span> v; }</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="keyword">static</span> jsval_t upper(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, jsval_t scope) { <span class="keywordflow">return</span> mkval(T_OBJ, loadoff(<a class="code" href="../../d3/daf/structjs.html">js</a>, (jsoff_t) (vdata(scope) + <span class="keyword">sizeof</span>(jsoff_t)))); }</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="keyword">static</span> jsoff_t align32(jsoff_t v) { <span class="keywordflow">return</span> ((v + 3) &gt;&gt; 2) &lt;&lt; 2; }</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="preprocessor">#define CHECKV(_v) do { if (is_err(_v)) { res = (_v); goto done; } } while (0)</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="preprocessor">#define EXPECT(_tok, _e) do { if (next(js) != _tok) { _e; return js_mkerr(js, &quot;parse error&quot;</span>); }; js-&gt;consumed = 1; } while (0)</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="keyword">static</span> <span class="keywordtype">size_t</span> tostr(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, jsval_t value, <span class="keywordtype">char</span> *buf, <span class="keywordtype">size_t</span> len);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="keyword">static</span> jsval_t js_expr(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="keyword">static</span> jsval_t js_stmt(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="keyword">static</span> jsval_t do_op(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *, uint8_t op, jsval_t l, jsval_t r);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="keywordtype">void</span> jse_file_getBuff(<span class="keywordtype">char</span>* buf);</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<a class="code" href="../../d6/d8f/struct_j_s_e___a_r_r_a_y.html">JSE_ARRAY</a>* js_getObjectToArray(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, jsval_t value);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;jsval_t elk_call_js_fnc(<span class="keyword">struct</span> <a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a>, <span class="keyword">const</span> <span class="keywordtype">char</span> *fn, jsoff_t fnlen);</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="preprocessor">#include &quot;ext/jse_function.h&quot;</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//SAYORI_ELK_H</span></div>
+<div class="ttc" id="acommon_8h_html"><div class="ttname"><a href="../../dc/d54/common_8h.html">common.h</a></div><div class="ttdoc">Основные определения ядра</div></div>
+<div class="ttc" id="alib_2string_8c_html_a873acd8f51f646b739d45f152ef5afc3"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a></div><div class="ttdeci">void * memcpy(void *restrict destination, const void *restrict source, size_t n)</div><div class="ttdoc">Копирование непересекающихся массивов используя SSE.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00173">string.c:173</a></div></div>
+<div class="ttc" id="astruct_j_s_e___a_r_r_a_y_html"><div class="ttname"><a href="../../d6/d8f/struct_j_s_e___a_r_r_a_y.html">JSE_ARRAY</a></div><div class="ttdoc">Структура массива</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/db9/jse__array_8h_source.html#l00040">jse_array.h:40</a></div></div>
+<div class="ttc" id="astructjs_html"><div class="ttname"><a href="../../d3/daf/structjs.html">js</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d9/d54/elk_8h_source.html#l00048">elk.h:48</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_30344f54b1e95ac4cceded48601d8b77.html">lib</a></li><li class="navelem"><a class="el" href="../../dir_3282e9c27035e4391f29a5e22876e9ab.html">elk</a></li><li class="navelem"><b>elk.h</b></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Дек 2024 11:09:51. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
