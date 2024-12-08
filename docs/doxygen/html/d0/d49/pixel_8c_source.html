@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/lib/pixel.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d0/d49/pixel_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">pixel.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="../../d0/d49/pixel_8c.html">См. документацию.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;io/status_loggers.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;lib/stdio.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;lib/tui.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;lib/pixel.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#a301ee846d908515a21b5ccfacfa459f7">   25</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#a301ee846d908515a21b5ccfacfa459f7">drawRect</a>(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t color){</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordflow">for</span> (__typeof__(x) _y = y, endy = y+h; _y &lt; endy; _y++){</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keywordflow">for</span> (__typeof__(x) _x = x, endx = x+w; _x &lt; endx; _x++){</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            set_pixel(_x, _y, color);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        }</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    }</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;}</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#a5efa44647bf45bc3041e3baf00487f81">   44</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#a5efa44647bf45bc3041e3baf00487f81">drawRectLine</a>(<span class="keywordtype">int</span> x,<span class="keywordtype">int</span> y,<span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h,<span class="keywordtype">int</span> color,<span class="keywordtype">int</span> color2, <span class="keywordtype">int</span> c){</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;} </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#ab1fd8493ed9a490788f3c76f01cd1c56">   66</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#ab1fd8493ed9a490788f3c76f01cd1c56">drawRectBorder</a>(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h, <span class="keywordtype">int</span> color){</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> _x = x; _x &lt; x+w ; _x++){</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        set_pixel(_x, y, color);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        set_pixel(_x, y+h, color);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> _y = y; _y &lt; y+h; _y++){</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        set_pixel(x, _y, color);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        set_pixel(x+w, _y, color);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    }</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">   86</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(<span class="keywordtype">int</span> x1, <span class="keywordtype">int</span> x2, <span class="keywordtype">int</span> y, uint32_t color) {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> x = x1; x &lt;= x2; x++) {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        set_pixel(x, y, color);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;}</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#a8ce573ca772db407d0a141c844c5567a">  100</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#a8ce573ca772db407d0a141c844c5567a">drawVerticalLine</a>(<span class="keywordtype">int</span> y1, <span class="keywordtype">int</span> y2, <span class="keywordtype">int</span> x, uint32_t color) {</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> y = y1; y &lt;= y2; y++) {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        set_pixel(x, y, color);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;}</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#aa662e4e7b6374d8203ba10a10138c115">  117</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#aa662e4e7b6374d8203ba10a10138c115">drawCirclePoints</a>(<span class="keywordtype">int</span> cx, <span class="keywordtype">int</span> cy, <span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, uint32_t color) {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    set_pixel(cx + x, cy + y, color);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    set_pixel(cx - x, cy + y, color);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    set_pixel(cx + x, cy - y, color);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    set_pixel(cx - x, cy - y, color);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    set_pixel(cx + y, cy + x, color);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    set_pixel(cx - y, cy + x, color);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    set_pixel(cx + y, cy - x, color);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    set_pixel(cx - y, cy - x, color);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;}</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#a08c7be1ecbf79a6359af769744c7cb01">  136</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#a08c7be1ecbf79a6359af769744c7cb01">drawCircle</a>(<span class="keywordtype">int</span> cx, <span class="keywordtype">int</span> cy, <span class="keywordtype">int</span> radius, uint32_t color) {</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordtype">int</span> x = 0;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keywordtype">int</span> y = radius;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keywordtype">int</span> p = 3 - 2 * radius;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <a class="code" href="../../d0/d49/pixel_8c.html#aa662e4e7b6374d8203ba10a10138c115">drawCirclePoints</a>(cx, cy, x, y, color);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordflow">while</span> (x &lt;= y) {</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordflow">if</span> (p &lt; 0) {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;            p = p + 4 * x + 6;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            p = p + 4 * (x - y) + 10;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            y--;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        }</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        x++;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#aa662e4e7b6374d8203ba10a10138c115">drawCirclePoints</a>(cx, cy, x, y, color);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    }</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;}</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#a143fd37c7627c781d1ff4145a849cd7a">  163</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#a143fd37c7627c781d1ff4145a849cd7a">drawFilledCircle</a>(<span class="keywordtype">int</span> x0, <span class="keywordtype">int</span> y0, <span class="keywordtype">int</span> radius, uint32_t color) {</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordtype">int</span> x = radius;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordtype">int</span> y = 0;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordtype">int</span> err = 0;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keywordflow">while</span> (x &gt;= y) {</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(x0 - x, x0 + x, y0 + y, color);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(x0 - x, x0 + x, y0 - y, color);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(x0 - y, x0 + y, y0 + x, color);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(x0 - y, x0 + y, y0 - x, color);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keywordflow">if</span> (err &lt;= 0) {</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            y += 1;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            err += 2*y + 1;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        }</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="keywordflow">if</span> (err &gt; 0) {</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            x -= 1;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            err -= 2*x + 1;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        }</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    }</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;}</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
+<div class="line"><a name="l00195"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">  195</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">drawFilledRectBorder</a>(<span class="keywordtype">int</span> x0, <span class="keywordtype">int</span> y0, <span class="keywordtype">int</span> radius, <span class="keywordtype">int</span> w, <span class="keywordtype">int</span> <a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a>, uint32_t color) {</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="keywordtype">int</span> x = radius;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    <span class="keywordtype">int</span> y = 0;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="keywordtype">int</span> err = 0;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="keywordflow">while</span> (x &gt;= y) {</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(x0 - x - (<a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 3 || <a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 4?(w/2):0), x0 + x + (<a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 1 || <a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 2?(w/2):0) , y0 - y, color);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(x0 - y - (<a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 3 || <a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 4?(w/2):0), x0 + y + (<a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 1 || <a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 2?(w/2):0), y0 - x, color);</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(x0 - x - (<a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 3 || <a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 4?(w/2):0), x0 + x + (<a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 1 || <a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 2?(w/2):0) , y0 + y, color);</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(x0 - y - (<a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 3 || <a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 4?(w/2):0), x0 + y + (<a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 1 || <a class="code" href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a> == 2?(w/2):0), y0 + x, color);</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        <span class="keywordflow">if</span> (err &lt;= 0) {</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;            y += 1;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;            err += 2*y + 1;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        }</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        <span class="keywordflow">if</span> (err &gt; 0) {</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;            x -= 1;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;            err -= 2*x + 1;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;        }</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    }</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;}</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160; </div>
+<div class="line"><a name="l00227"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#afc9f7666e8498d177f69881eb6324cb8">  227</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#afc9f7666e8498d177f69881eb6324cb8">drawRoundedSquare</a>(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> size, <span class="keywordtype">int</span> radius, uint32_t fill_color, uint32_t border_color) {</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <span class="comment">// Отрисовываем внутренний заполненный квадрат</span></div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = x+1; i &lt; x + size-1; i++) {</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a8ce573ca772db407d0a141c844c5567a">drawVerticalLine</a>(y + radius, y + size - radius - 1, i, fill_color);</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    }</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    <span class="comment">// Отрисовываем угловые закругления</span></div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    <span class="keywordflow">if</span> (radius &gt; 0) {</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">drawFilledRectBorder</a>(x + radius, y + radius, radius, size, 1, (border_color != -1 ? border_color : fill_color));</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">drawFilledRectBorder</a>(x + size - radius - 1, y + radius, radius,size, 3, (border_color != -1 ? border_color : fill_color));</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">drawFilledRectBorder</a>(x + radius, y + size - radius - 1, radius,size, 2, (border_color != -1 ? border_color : fill_color));</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">drawFilledRectBorder</a>(x + size - radius - 1, y + size - radius - 1, radius,size, 4, (border_color != -1 ? border_color : fill_color));</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    }</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160; </div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="comment">// Отрисовываем обводку квадрата</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    <span class="keywordflow">if</span> (border_color != -1) {</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(x + radius, x + size - 1 - radius, y, border_color);</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a>(x + radius, x + size - 1 - radius, y + size - 1, border_color);</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a8ce573ca772db407d0a141c844c5567a">drawVerticalLine</a>(y + radius, y + size - 1 - radius, x, border_color);</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a8ce573ca772db407d0a141c844c5567a">drawVerticalLine</a>(y + radius, y + size - 1 - radius, x + size - 1, border_color);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    }</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;}</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
+<div class="line"><a name="l00263"></a><span class="lineno"><a class="line" href="../../d0/d49/pixel_8c.html#a0a5ff9adace492d2d079333977977397">  263</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#a0a5ff9adace492d2d079333977977397">drawRoundedRectangle</a>(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height, <span class="keywordtype">int</span> radius, uint32_t fill_color, uint32_t border_color) {</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    <span class="comment">// Отрисовываем внутренний заполненный прямоугольник</span></div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = x + 1; i &lt; x + width - 1; i++) {</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = y + radius; j &lt; y + height - radius; j++) {</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;            set_pixel(i, j, fill_color);</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        }</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    }</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    <span class="comment">// Отрисовываем угловые закругления</span></div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    <span class="keywordflow">if</span> (radius &gt; 0) {</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">drawFilledRectBorder</a>(x + radius, y + radius, radius, width, 1, (border_color != -1 ? border_color : fill_color));</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">drawFilledRectBorder</a>(x + width - radius - 1, y + radius, radius,width, 3, (border_color != -1 ? border_color : fill_color));</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">drawFilledRectBorder</a>(x + radius, y + height - radius - 1, radius,width, 2, (border_color != -1 ? border_color : fill_color));</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        <a class="code" href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">drawFilledRectBorder</a>(x + width - radius - 1, y + height - radius - 1, radius,width, 4, (border_color != -1 ? border_color : fill_color));</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    }</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160; </div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;}</div>
+<div class="ttc" id="abootscreen_8c_html_a6b29e4f37f4482274af785ad5ffe96a7"><div class="ttname"><a href="../../d2/d2c/bootscreen_8c.html#a6b29e4f37f4482274af785ad5ffe96a7">mode</a></div><div class="ttdeci">uint32_t mode</div><div class="ttdoc">Режим работы (0 - Обычный | 1 - Режим логирования)</div><div class="ttdef"><b>Definition:</b> <a href="../../d2/d2c/bootscreen_8c_source.html#l00023">bootscreen.c:23</a></div></div>
+<div class="ttc" id="apixel_8c_html_a08c7be1ecbf79a6359af769744c7cb01"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#a08c7be1ecbf79a6359af769744c7cb01">drawCircle</a></div><div class="ttdeci">void drawCircle(int cx, int cy, int radius, uint32_t color)</div><div class="ttdoc">Рисует круг</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00136">pixel.c:136</a></div></div>
+<div class="ttc" id="apixel_8c_html_a0a5ff9adace492d2d079333977977397"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#a0a5ff9adace492d2d079333977977397">drawRoundedRectangle</a></div><div class="ttdeci">void drawRoundedRectangle(int x, int y, int width, int height, int radius, uint32_t fill_color, uint32_t border_color)</div><div class="ttdoc">Рисуем округленный прямоугольник, закрашиваем его и обводим</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00263">pixel.c:263</a></div></div>
+<div class="ttc" id="apixel_8c_html_a143fd37c7627c781d1ff4145a849cd7a"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#a143fd37c7627c781d1ff4145a849cd7a">drawFilledCircle</a></div><div class="ttdeci">void drawFilledCircle(int x0, int y0, int radius, uint32_t color)</div><div class="ttdoc">Закрашивает круг</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00163">pixel.c:163</a></div></div>
+<div class="ttc" id="apixel_8c_html_a301ee846d908515a21b5ccfacfa459f7"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#a301ee846d908515a21b5ccfacfa459f7">drawRect</a></div><div class="ttdeci">void drawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t color)</div><div class="ttdoc">Рисуем залитый прямоугольник</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00025">pixel.c:25</a></div></div>
+<div class="ttc" id="apixel_8c_html_a52d000b22b396311ee235d8e81270c06"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#a52d000b22b396311ee235d8e81270c06">drawFilledRectBorder</a></div><div class="ttdeci">void drawFilledRectBorder(int x0, int y0, int radius, int w, int mode, uint32_t color)</div><div class="ttdoc">Закрашивает округленный куб</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00195">pixel.c:195</a></div></div>
+<div class="ttc" id="apixel_8c_html_a5efa44647bf45bc3041e3baf00487f81"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#a5efa44647bf45bc3041e3baf00487f81">drawRectLine</a></div><div class="ttdeci">void drawRectLine(int x, int y, int w, int h, int color, int color2, int c)</div><div class="ttdoc">Рисует узор вокруг прямоугольника</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00044">pixel.c:44</a></div></div>
+<div class="ttc" id="apixel_8c_html_a6578d3449d8521c597d20710dd2d9c69"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#a6578d3449d8521c597d20710dd2d9c69">drawHorizontalLine</a></div><div class="ttdeci">void drawHorizontalLine(int x1, int x2, int y, uint32_t color)</div><div class="ttdoc">Рисует горизонтальную линию</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00086">pixel.c:86</a></div></div>
+<div class="ttc" id="apixel_8c_html_a8ce573ca772db407d0a141c844c5567a"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#a8ce573ca772db407d0a141c844c5567a">drawVerticalLine</a></div><div class="ttdeci">void drawVerticalLine(int y1, int y2, int x, uint32_t color)</div><div class="ttdoc">Рисует вертикальную линию</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00100">pixel.c:100</a></div></div>
+<div class="ttc" id="apixel_8c_html_aa662e4e7b6374d8203ba10a10138c115"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#aa662e4e7b6374d8203ba10a10138c115">drawCirclePoints</a></div><div class="ttdeci">void drawCirclePoints(int cx, int cy, int x, int y, uint32_t color)</div><div class="ttdoc">Рисует окружные пиксели круга линию</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00117">pixel.c:117</a></div></div>
+<div class="ttc" id="apixel_8c_html_ab1fd8493ed9a490788f3c76f01cd1c56"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#ab1fd8493ed9a490788f3c76f01cd1c56">drawRectBorder</a></div><div class="ttdeci">void drawRectBorder(int x, int y, int w, int h, int color)</div><div class="ttdoc">Рисует линию вокруг прямоугольника</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00066">pixel.c:66</a></div></div>
+<div class="ttc" id="apixel_8c_html_afc9f7666e8498d177f69881eb6324cb8"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#afc9f7666e8498d177f69881eb6324cb8">drawRoundedSquare</a></div><div class="ttdeci">void drawRoundedSquare(int x, int y, int size, int radius, uint32_t fill_color, uint32_t border_color)</div><div class="ttdoc">Рисуем округленный куб закрашиваем его и обводим</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00227">pixel.c:227</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_30344f54b1e95ac4cceded48601d8b77.html">lib</a></li><li class="navelem"><a class="el" href="../../d0/d49/pixel_8c.html">pixel.c</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Дек 2024 11:09:51. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

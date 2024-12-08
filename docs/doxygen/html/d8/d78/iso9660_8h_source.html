@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/include/fs/iso9660.h</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d8/d78/iso9660_8h_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">iso9660.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef SAYORI_ISO9660_H</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define SAYORI_ISO9660_H</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="../../dc/d54/common_8h.html">common.h</a>&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;fs/fsm.h&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html">    8</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a5b69ada9aa718a6436def15fabef3777">    9</a></span>&#160;    uint8_t  <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a5b69ada9aa718a6436def15fabef3777">Zero</a>;                          </div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a3acd3340196b1fc18932c28f1d9937ec">   10</a></span>&#160;    <span class="keywordtype">char</span>     ID[5];                         </div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a3bee6b95c6449755b9e7c167d1360dc5">   11</a></span>&#160;    uint8_t  <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a3bee6b95c6449755b9e7c167d1360dc5">Version</a>;                       </div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#ab31601aef8d8eb86eaaa9dc04180174e">   12</a></span>&#160;    uint8_t  <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#ab31601aef8d8eb86eaaa9dc04180174e">UnUsed00</a>;                      </div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#ab7a433ebc2579c0c23f5635139f5fcbf">   13</a></span>&#160;    <span class="keywordtype">char</span>     SystemName[32];                </div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a720e5f5572d0803817022a51487804b7">   14</a></span>&#160;    <span class="keywordtype">char</span>     Label[32];                     </div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#acfd5fbc1e27f0f13e127aad04920a660">   15</a></span>&#160;    <span class="keywordtype">char</span>     UnUsed01[8];                   </div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a6847d90e6559bc0536928926e3f0657f">   16</a></span>&#160;    int32_t  VolumeSpaceSize[2];            </div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#add4b718edb9e030a9bbe27dec3735009">   17</a></span>&#160;    <span class="keywordtype">char</span>     UnUsed02[32];                  </div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#ad2acef4f27543a138843090d62537248">   18</a></span>&#160;    int32_t  <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#ad2acef4f27543a138843090d62537248">VolumeSetSize</a>;                 </div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a354d944b1aba875c2c8a4a2ea8d4aa23">   19</a></span>&#160;    int32_t  <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a354d944b1aba875c2c8a4a2ea8d4aa23">VolumeSequenceNumber</a>;          </div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#adf953e3d7f238bfdb774273cc88dfc6b">   20</a></span>&#160;    int32_t  <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#adf953e3d7f238bfdb774273cc88dfc6b">LogicalBlockSize</a>;              </div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#aec4183145b51b7d236a416efcce37ed7">   21</a></span>&#160;    int32_t  PathTableSize[2];              </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#af517b2ac14cb40008d767de5e2f1870f">   22</a></span>&#160;    int32_t  <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#af517b2ac14cb40008d767de5e2f1870f">LocOfType_L_PathTable</a>;         </div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a317e937daaf3b5681623e5d9138de3a8">   23</a></span>&#160;    int32_t  <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a317e937daaf3b5681623e5d9138de3a8">LocOfOpti_L_PathTable</a>;         </div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#aa3baa587bb273c3bbbeb8deb046a633a">   24</a></span>&#160;    int32_t  <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#aa3baa587bb273c3bbbeb8deb046a633a">LocOfType_M_PathTable</a>;         </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a05c270f8457f434637651f7ae025f141">   25</a></span>&#160;    int32_t  <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a05c270f8457f434637651f7ae025f141">LocOfOpti_M_PathTable</a>;         </div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a3c88eabe94072edaa13b3f142b434ed9">   26</a></span>&#160;    <span class="keywordtype">char</span>     DirectoryEntry[34];            </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a2890972e0b59f86ed1fd9ca8d665c539">   27</a></span>&#160;    <span class="keywordtype">char</span>     VolumeSetID[128];              </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#ab9e0839a573a78a27e8c3822dbfff645">   28</a></span>&#160;    <span class="keywordtype">char</span>     PublisherID[128];              </div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a1848d76bb07865b5856224542c991dcb">   29</a></span>&#160;    <span class="keywordtype">char</span>     DataPreparerID[128];           </div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#aa032cbfbf83cccc4c828b8482add187f">   30</a></span>&#160;    <span class="keywordtype">char</span>     ApplicationID[128];            </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a03738d500b5c0ba3caf78537eed10467">   31</a></span>&#160;    <span class="keywordtype">char</span>     CopyrightFileID[37];           </div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#af6e3a2d6ccb87d9557b1e59353a59048">   32</a></span>&#160;    <span class="keywordtype">char</span>     AbstractFileID[37];            </div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#af7a9b41f1d07e88f5ce19f6e948c8570">   33</a></span>&#160;    <span class="keywordtype">char</span>     BibliographicFileID[37];       </div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a31c78449d15d6ce848a423737db952cf">   34</a></span>&#160;    <span class="keywordtype">char</span>     VolumeCreationDate[17];        </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#aeded23b79dca0512ca3e0b24b2be28e4">   35</a></span>&#160;    <span class="keywordtype">char</span>     VolumeModificationDate[17];    </div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a235064af659398399dcc1b06c7057b12">   36</a></span>&#160;    <span class="keywordtype">char</span>     VolumeExpirationDate[17];      </div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a6a407b1ad4962f8fbf70f985b0d792b5">   37</a></span>&#160;    <span class="keywordtype">char</span>     VolumeEffectiveDate[17];       </div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a6bf28e08f19f831e72d99149df69b415">   38</a></span>&#160;    int8_t   <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a6bf28e08f19f831e72d99149df69b415">FileStructureVersion</a>;          </div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a4325c4456a6580fa69f83a6f88fbf626">   39</a></span>&#160;    int8_t   <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a4325c4456a6580fa69f83a6f88fbf626">UnUsed03</a>;                      </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#ada5b5ff26e0c20771ed435482d9b8160">   40</a></span>&#160;    <span class="keywordtype">char</span>     ApplicationUsed[512];          </div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a6932b95d480bad788335302939f5e70c">   41</a></span>&#160;    <span class="keywordtype">char</span>     Reserved[653];                 </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;} <a class="code" href="../../dd/de2/struct_i_s_o9660___p_v_d.html">ISO9660_PVD</a>;  </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html">   44</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#a0b64b9fbfbdde12307b5773a95d76efd">   45</a></span>&#160;    int8_t   <a class="code" href="../../da/d62/struct_i_s_o9660___entity.html#a0b64b9fbfbdde12307b5773a95d76efd">LengthDirectoryRecord</a>;         </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#a2cf1ab7af0c710374470928356c8d58f">   46</a></span>&#160;    int8_t   <a class="code" href="../../da/d62/struct_i_s_o9660___entity.html#a2cf1ab7af0c710374470928356c8d58f">ExtendedAttributeRecord</a>;       </div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#a80d0a0998034ccf2c627a976d850ec4c">   47</a></span>&#160;    uint32_t LBA[2];                        </div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#a5344292289935f62bcf4ae4f5e1117f8">   48</a></span>&#160;    uint32_t Lenght[2];                     </div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#aa75ca27eaaa7df9624f06247334efe16">   49</a></span>&#160;    <span class="keywordtype">char</span>     Date[7];                       </div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#a6d4a217f7c011fa0987b40f79d030612">   50</a></span>&#160;    int8_t   <a class="code" href="../../da/d62/struct_i_s_o9660___entity.html#a6d4a217f7c011fa0987b40f79d030612">Flags</a>;                         </div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#a9ff4e4ebffdedc299bc666f086648f13">   51</a></span>&#160;    int8_t   <a class="code" href="../../da/d62/struct_i_s_o9660___entity.html#a9ff4e4ebffdedc299bc666f086648f13">Mode</a>;                          </div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#a0d204f027ce30cab419c2b5a7e78c80a">   52</a></span>&#160;    int8_t   <a class="code" href="../../da/d62/struct_i_s_o9660___entity.html#a0d204f027ce30cab419c2b5a7e78c80a">Interval</a>;                      </div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#a3f7631fa23baffea62d7959b08c3cf0c">   53</a></span>&#160;    uint32_t <a class="code" href="../../da/d62/struct_i_s_o9660___entity.html#a3f7631fa23baffea62d7959b08c3cf0c">VolumeSequenceNumber</a>;          </div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#ac1a92038cbe6709fd18b761953bb8ffe">   54</a></span>&#160;    int8_t   <a class="code" href="../../da/d62/struct_i_s_o9660___entity.html#ac1a92038cbe6709fd18b761953bb8ffe">ID</a>;                            </div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="../../da/d62/struct_i_s_o9660___entity.html#a85f3c5dded773e273e890137ce0699c1">   55</a></span>&#160;    <span class="keywordtype">char</span>*    <a class="code" href="../../da/d62/struct_i_s_o9660___entity.html#a85f3c5dded773e273e890137ce0699c1">FileID</a>;                        </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;} <a class="code" href="../../da/d62/struct_i_s_o9660___entity.html">ISO9660_Entity</a>;  </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keywordtype">size_t</span> fs_iso9660_read(<span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path, <span class="keywordtype">size_t</span> Offset, <span class="keywordtype">size_t</span> Size,<span class="keywordtype">void</span>* Buffer);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keywordtype">size_t</span> fs_iso9660_write(<span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path,<span class="keywordtype">size_t</span> Offset,<span class="keywordtype">size_t</span> Size,<span class="keywordtype">void</span>* Buffer);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;FSM_FILE fs_iso9660_info(<span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;FSM_DIR* fs_iso9660_dir(<span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keywordtype">int</span> fs_iso9660_create(<span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path,<span class="keywordtype">int</span> Mode);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keywordtype">int</span> fs_iso9660_delete(<span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path,<span class="keywordtype">int</span> Mode);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keywordtype">void</span> fs_iso9660_label(<span class="keywordtype">char</span> Disk, <span class="keywordtype">char</span>* Label);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keywordtype">int</span> fs_iso9660_detect(<span class="keywordtype">char</span> Disk);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//SAYORI_ISO9660_H</span></div>
+<div class="ttc" id="acommon_8h_html"><div class="ttname"><a href="../../dc/d54/common_8h.html">common.h</a></div><div class="ttdoc">Основные определения ядра</div></div>
+<div class="ttc" id="astruct_i_s_o9660___entity_html"><div class="ttname"><a href="../../da/d62/struct_i_s_o9660___entity.html">ISO9660_Entity</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00044">iso9660.h:44</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___entity_html_a0b64b9fbfbdde12307b5773a95d76efd"><div class="ttname"><a href="../../da/d62/struct_i_s_o9660___entity.html#a0b64b9fbfbdde12307b5773a95d76efd">ISO9660_Entity::LengthDirectoryRecord</a></div><div class="ttdeci">int8_t LengthDirectoryRecord</div><div class="ttdoc">[0] Длина записи каталога.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00045">iso9660.h:45</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___entity_html_a0d204f027ce30cab419c2b5a7e78c80a"><div class="ttname"><a href="../../da/d62/struct_i_s_o9660___entity.html#a0d204f027ce30cab419c2b5a7e78c80a">ISO9660_Entity::Interval</a></div><div class="ttdeci">int8_t Interval</div><div class="ttdoc">[27] Размер интервала чередования для файлов, записанных в режиме чередования, в противном случае — н...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00052">iso9660.h:52</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___entity_html_a2cf1ab7af0c710374470928356c8d58f"><div class="ttname"><a href="../../da/d62/struct_i_s_o9660___entity.html#a2cf1ab7af0c710374470928356c8d58f">ISO9660_Entity::ExtendedAttributeRecord</a></div><div class="ttdeci">int8_t ExtendedAttributeRecord</div><div class="ttdoc">[1] Длина расширенной записи атрибутов.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00046">iso9660.h:46</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___entity_html_a3f7631fa23baffea62d7959b08c3cf0c"><div class="ttname"><a href="../../da/d62/struct_i_s_o9660___entity.html#a3f7631fa23baffea62d7959b08c3cf0c">ISO9660_Entity::VolumeSequenceNumber</a></div><div class="ttdeci">uint32_t VolumeSequenceNumber</div><div class="ttdoc">[28] Порядковый номер тома — том, на котором записан этот экстент, в 16-битном формате с прямым поряд...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00053">iso9660.h:53</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___entity_html_a6d4a217f7c011fa0987b40f79d030612"><div class="ttname"><a href="../../da/d62/struct_i_s_o9660___entity.html#a6d4a217f7c011fa0987b40f79d030612">ISO9660_Entity::Flags</a></div><div class="ttdeci">int8_t Flags</div><div class="ttdoc">[25] Флаги файлов.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00050">iso9660.h:50</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___entity_html_a85f3c5dded773e273e890137ce0699c1"><div class="ttname"><a href="../../da/d62/struct_i_s_o9660___entity.html#a85f3c5dded773e273e890137ce0699c1">ISO9660_Entity::FileID</a></div><div class="ttdeci">char * FileID</div><div class="ttdoc">[33] Идентификатор файла.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00055">iso9660.h:55</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___entity_html_a9ff4e4ebffdedc299bc666f086648f13"><div class="ttname"><a href="../../da/d62/struct_i_s_o9660___entity.html#a9ff4e4ebffdedc299bc666f086648f13">ISO9660_Entity::Mode</a></div><div class="ttdeci">int8_t Mode</div><div class="ttdoc">[26] Размер файловой единицы для файлов, записанных в чередующемся режиме, в противном случае — ноль.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00051">iso9660.h:51</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___entity_html_ac1a92038cbe6709fd18b761953bb8ffe"><div class="ttname"><a href="../../da/d62/struct_i_s_o9660___entity.html#ac1a92038cbe6709fd18b761953bb8ffe">ISO9660_Entity::ID</a></div><div class="ttdeci">int8_t ID</div><div class="ttdoc">[32] Длина идентификатора файла (имя файла). Это заканчивается знаком ';' символ, за которым следует ...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00054">iso9660.h:54</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html">ISO9660_PVD</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00008">iso9660.h:8</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_a05c270f8457f434637651f7ae025f141"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a05c270f8457f434637651f7ae025f141">ISO9660_PVD::LocOfOpti_M_PathTable</a></div><div class="ttdeci">int32_t LocOfOpti_M_PathTable</div><div class="ttdoc">[152] Местоположение LBA дополнительной таблицы путей. Таблица путей, на которую указывает,...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00025">iso9660.h:25</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_a317e937daaf3b5681623e5d9138de3a8"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a317e937daaf3b5681623e5d9138de3a8">ISO9660_PVD::LocOfOpti_L_PathTable</a></div><div class="ttdeci">int32_t LocOfOpti_L_PathTable</div><div class="ttdoc">[144] Местоположение LBA дополнительной таблицы путей. Таблица путей, на которую указывает,...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00023">iso9660.h:23</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_a354d944b1aba875c2c8a4a2ea8d4aa23"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a354d944b1aba875c2c8a4a2ea8d4aa23">ISO9660_PVD::VolumeSequenceNumber</a></div><div class="ttdeci">int32_t VolumeSequenceNumber</div><div class="ttdoc">[124] Номер этого диска в наборе томов.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00019">iso9660.h:19</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_a3bee6b95c6449755b9e7c167d1360dc5"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a3bee6b95c6449755b9e7c167d1360dc5">ISO9660_PVD::Version</a></div><div class="ttdeci">uint8_t Version</div><div class="ttdoc">[6+1] Версия файловой системы</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00011">iso9660.h:11</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_a4325c4456a6580fa69f83a6f88fbf626"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a4325c4456a6580fa69f83a6f88fbf626">ISO9660_PVD::UnUsed03</a></div><div class="ttdeci">int8_t UnUsed03</div><div class="ttdoc">[882] [!] Всегда 0x00.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00039">iso9660.h:39</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_a5b69ada9aa718a6436def15fabef3777"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a5b69ada9aa718a6436def15fabef3777">ISO9660_PVD::Zero</a></div><div class="ttdeci">uint8_t Zero</div><div class="ttdoc">[0+1] Указывает на загрузочную запись?</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00009">iso9660.h:9</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_a6bf28e08f19f831e72d99149df69b415"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#a6bf28e08f19f831e72d99149df69b415">ISO9660_PVD::FileStructureVersion</a></div><div class="ttdeci">int8_t FileStructureVersion</div><div class="ttdoc">[881] Записи каталога и версия таблицы путей (всегда 0x01).</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00038">iso9660.h:38</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_aa3baa587bb273c3bbbeb8deb046a633a"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#aa3baa587bb273c3bbbeb8deb046a633a">ISO9660_PVD::LocOfType_M_PathTable</a></div><div class="ttdeci">int32_t LocOfType_M_PathTable</div><div class="ttdoc">[148] Расположение LBA таблицы путей. Таблица путей, на которую указывает, содержит только значения с...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00024">iso9660.h:24</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_ab31601aef8d8eb86eaaa9dc04180174e"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#ab31601aef8d8eb86eaaa9dc04180174e">ISO9660_PVD::UnUsed00</a></div><div class="ttdeci">uint8_t UnUsed00</div><div class="ttdoc">[7+1] [!] Все нули</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00012">iso9660.h:12</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_ad2acef4f27543a138843090d62537248"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#ad2acef4f27543a138843090d62537248">ISO9660_PVD::VolumeSetSize</a></div><div class="ttdeci">int32_t VolumeSetSize</div><div class="ttdoc">[120] Количество логических блоков, в которых записан том.</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00018">iso9660.h:18</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_adf953e3d7f238bfdb774273cc88dfc6b"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#adf953e3d7f238bfdb774273cc88dfc6b">ISO9660_PVD::LogicalBlockSize</a></div><div class="ttdeci">int32_t LogicalBlockSize</div><div class="ttdoc">[128] Размер логического блока в байтах. NB: Это означает, что логический блок на компакт-диске может...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00020">iso9660.h:20</a></div></div>
+<div class="ttc" id="astruct_i_s_o9660___p_v_d_html_af517b2ac14cb40008d767de5e2f1870f"><div class="ttname"><a href="../../dd/de2/struct_i_s_o9660___p_v_d.html#af517b2ac14cb40008d767de5e2f1870f">ISO9660_PVD::LocOfType_L_PathTable</a></div><div class="ttdeci">int32_t LocOfType_L_PathTable</div><div class="ttdoc">[140] Расположение LBA таблицы путей. Таблица путей, на которую указывает, содержит только значения с...</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d78/iso9660_8h_source.html#l00022">iso9660.h:22</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_009f605b833ac4622acd6c3c0c26c0f0.html">include</a></li><li class="navelem"><a class="el" href="../../dir_63ad402ee0b4f0ab258f5e7abbb673c6.html">fs</a></li><li class="navelem"><b>iso9660.h</b></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Дек 2024 11:09:50. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

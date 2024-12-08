@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/lib/elk/elk_libs.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d1/d4a/elk__libs_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">elk_libs.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;portability.h&quot;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;io/tty.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;lib/libstring/string.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;../libvector/include/vector.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;lib/stdio.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;elk_config.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;elk.h&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keywordtype">void</span> jse_file_config(<span class="keyword">const</span> <span class="keywordtype">char</span> *cfg, <span class="keyword">const</span> <span class="keywordtype">char</span> *file){</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">size_t</span> minStack = JSE_MIN_STACK;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">size_t</span> bufferSize = 0;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">size_t</span> stack = JSE_MIN_STACK;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">bool</span> jse_p_no_warn_stack = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">size_t</span> param_size = -1;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">char</span>* out = kcalloc(1,<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) * minStack + bufferSize);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="../../da/d81/structstring.html">string_t</a>* str = string_from_charptr(cfg);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="../../d4/db4/structvector.html">vector_t</a>* vec = string_split(str, <span class="stringliteral">&quot;\n&quot;</span>);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; vec-&gt;size; i++) {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        param_size++;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <a class="code" href="../../da/d81/structstring.html">string_t</a>* str_param = (<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(vec-&gt;data[i]);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <a class="code" href="../../d4/db4/structvector.html">vector_t</a>* param = string_split(str_param, <span class="stringliteral">&quot; &quot;</span>);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="comment">//qemu_log(&quot;[VEC] [%d/%d] [C:%d] Str: %s&quot;, i, vec-&gt;size, param-&gt;size, str_param-&gt;data);</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">if</span> (param-&gt;size &lt; 2) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        jse_trim(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[0]))-&gt;data);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        jse_trim(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[1]))-&gt;data);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="comment">//qemu_note(&quot;Key: &#39;%s&#39; | Value: &#39;%s&#39;&quot;, ((string_t*)(param-&gt;data[0]))-&gt;data, ((string_t*)(param-&gt;data[1]))-&gt;data);</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="../../d0/d43/lib_2string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[0]))-&gt;data,<span class="stringliteral">&quot;//#include&quot;</span>)){</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keywordtype">char</span>* fn_buf = kcalloc(1,<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) * (<a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(JSE_LIBS_PATH) + <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[1]))-&gt;data) + 1 ) );</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(fn_buf, JSE_LIBS_PATH, <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(JSE_LIBS_PATH));</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(fn_buf + <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(JSE_LIBS_PATH), (((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[1]))-&gt;data), <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[1]))-&gt;data));</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            <span class="keywordtype">size_t</span> lastInx = <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(JSE_LIBS_PATH) + <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[1]))-&gt;data);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            fn_buf[lastInx] = 0;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            <a class="code" href="../../dd/d90/struct_f_i_l_e.html">FILE</a>* file = <a class="code" href="../../d9/df6/stdio_8c.html#abd87d091823267c19289be5176c44d39">fopen</a>(fn_buf, <span class="stringliteral">&quot;r&quot;</span>);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keywordflow">if</span> (!file){</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                qemu_err(<span class="stringliteral">&quot;[JSE] [Include] File &#39;%s&#39; no found!&quot;</span>, fn_buf);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                kfree(fn_buf);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                <a class="code" href="../../d9/df6/stdio_8c.html#a339e549606415666d4342bb56cffe976">fclose</a>(file);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                <span class="keywordtype">size_t</span> <a class="code" href="../../d8/d37/lib_2fileio_8c.html#a32aa1c14b684d875693e484eb4f808d6">filesize</a> = <a class="code" href="../../d9/df6/stdio_8c.html#ae07cf8f3544a8cfe1bff0e815d367666">fsize</a>(file);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                bufferSize += <a class="code" href="../../d8/d37/lib_2fileio_8c.html#a32aa1c14b684d875693e484eb4f808d6">filesize</a>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="keywordtype">char</span>* buf = kcalloc(1,<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) * (<a class="code" href="../../d8/d37/lib_2fileio_8c.html#a32aa1c14b684d875693e484eb4f808d6">filesize</a>+1));</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                <a class="code" href="../../d9/df6/stdio_8c.html#af50335da1940cdadb28ee3a19655d325">fread</a>(file, 1, <a class="code" href="../../d8/d37/lib_2fileio_8c.html#a32aa1c14b684d875693e484eb4f808d6">filesize</a>, buf);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                out = jse_mergeBuffers(out, buf, <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(out), <a class="code" href="../../d8/d37/lib_2fileio_8c.html#a32aa1c14b684d875693e484eb4f808d6">filesize</a>);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <a class="code" href="../../d9/df6/stdio_8c.html#a339e549606415666d4342bb56cffe976">fclose</a>(file);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                kfree(buf);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                kfree(fn_buf);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                qemu_ok(<span class="stringliteral">&quot;   [JSE] [Include] File &#39;%s&#39; is loaded!&quot;</span>, fn_buf);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (param-&gt;size &lt;= 3 &amp;&amp; <a class="code" href="../../d0/d43/lib_2string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[0]))-&gt;data,<span class="stringliteral">&quot;//#pragma&quot;</span>)) {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            jse_trim(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[2]))-&gt;data);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            qemu_note(<span class="stringliteral">&quot; [JSE] [Pragma] key: &#39;%s&#39; value: &#39;%s&#39;&quot;</span>, ((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[1]))-&gt;data, ((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[2]))-&gt;data);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="../../d0/d43/lib_2string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[1]))-&gt;data,<span class="stringliteral">&quot;stack&quot;</span>)){</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                <span class="keywordtype">int</span> stackValue = jse_func_atoi(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[2]))-&gt;data);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                <span class="keywordflow">if</span> (stackValue &lt; stack){</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                    <span class="keywordflow">if</span> (!jse_p_no_warn_stack) qemu_warn(<span class="stringliteral">&quot; [JSE] [WARN] The stack size has been reset to the minimum size by the installed JSE.&quot;</span>);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                    <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (stackValue &gt; (<a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(file) + bufferSize) * 5) {</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                    <span class="keywordflow">if</span> (!jse_p_no_warn_stack) qemu_warn(<span class="stringliteral">&quot; [JSE] [WARN] You have set the stack value to less than the recommended value (%d), errors may appear during script execution.&quot;</span>, (<a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(file) + bufferSize) * 5);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                }</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                stack = stackValue;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="../../d0/d43/lib_2string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[1]))-&gt;data,<span class="stringliteral">&quot;no-warn-stack&quot;</span>)){</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                <span class="keywordtype">int</span> value = jse_func_atoi(((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[2]))-&gt;data);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                jse_p_no_warn_stack = (value == 1?<span class="keyword">true</span>:<span class="keyword">false</span>);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            }</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            qemu_err(<span class="stringliteral">&quot;[JSE] Unknown argv (%s)&quot;</span>, ((<a class="code" href="../../da/d81/structstring.html">string_t</a>*)(param-&gt;data[0]))-&gt;data);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="comment">//printf(&quot;%s\n&quot;, ((string_t*)(vec-&gt;data[i]))-&gt;data);</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    }</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    string_split_free(vec);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    string_destroy(str);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    out = jse_mergeBuffers(out, file, <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(out), <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(file));</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    qemu_note(<span class="stringliteral">&quot; [JSE] Stack size: %d&quot;</span>, stack);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    stack += <span class="keyword">sizeof</span>(<span class="keyword">struct </span><a class="code" href="../../d3/daf/structjs.html">js</a>) + 1;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">char</span>* js_mem = kcalloc(1,stack);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keyword">struct </span><a class="code" href="../../d3/daf/structjs.html">js</a> *<a class="code" href="../../d3/daf/structjs.html">js</a> = js_create(js_mem, (stack));</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    elk_setup(<a class="code" href="../../d3/daf/structjs.html">js</a>);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <a class="code" href="../../d3/daf/structjs.html">js</a>-&gt;incSize = bufferSize;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <a class="code" href="../../d3/daf/structjs.html">js</a>-&gt;paramSize = param_size;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="comment">//qemu_note(&quot;[Buffer  PRE] [%d] \n=============\n%s\n=============\n&quot;, strlen(out), out);</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="comment">//jse_checkBuffer(out);</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="comment">//qemu_note(&quot;[Buffer POST] [%d] \n=============\n%s\n=============\n&quot;, strlen(out), out);</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    jsval_t result = js_eval(<a class="code" href="../../d3/daf/structjs.html">js</a>, out, <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(out));</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    elk_destroy(<a class="code" href="../../d3/daf/structjs.html">js</a>);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../d3/daf/structjs.html">js</a>-&gt;isFatal){</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        qemu_err(<span class="stringliteral">&quot;\n[JSE] Runtime Fatal Error!\n\r      Message: %s\n&quot;</span>, js_str(<a class="code" href="../../d3/daf/structjs.html">js</a>, result));</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        printf(<span class="stringliteral">&quot;[JSE] Result: %s\n&quot;</span>,js_str(<a class="code" href="../../d3/daf/structjs.html">js</a>, result));</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    }</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    js_statsInfo(<a class="code" href="../../d3/daf/structjs.html">js</a>);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    kfree(out);</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    kfree(js_mem);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="comment">//kfree(file);</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="comment">//return (js-&gt;isFatal == 1?0:1);</span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="comment">//qemu_note(&quot;Buffer: \n%s&quot;, out);</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;}</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="keywordtype">void</span> jse_file_preconfig(<span class="keyword">const</span> <span class="keywordtype">char</span> *buffer, <span class="keyword">const</span> <span class="keywordtype">char</span> *first_search, <span class="keyword">const</span> <span class="keywordtype">char</span> *second_search) {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *start = buffer;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *first_occurrence = jse_strstr(start, first_search);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keywordflow">if</span> (first_occurrence != NULL) {</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        start = first_occurrence + <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(first_search);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span> *second_occurrence = jse_strstr(start, second_search);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        <span class="keywordflow">if</span> (second_occurrence != NULL) {</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            <span class="keywordtype">int</span> content_length = second_occurrence - start;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            <span class="keywordtype">int</span> fileoff = content_length + <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(first_search) + <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(second_search);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            <span class="keywordtype">void</span>* <a class="code" href="../../d4/d25/beeper_8c.html#ac0c635110dc503f164fff91b163936d7">config</a> = calloc(<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) * (content_length + 1), 1);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;            <span class="keywordtype">void</span>* file = calloc(<span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) * (<a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(buffer) - content_length), 1);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            jse_ncpy((<span class="keywordtype">char</span>*) <a class="code" href="../../d4/d25/beeper_8c.html#ac0c635110dc503f164fff91b163936d7">config</a>, (<span class="keywordtype">char</span>*) start, content_length);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            jse_ncpy((<span class="keywordtype">char</span>*) file, (<span class="keywordtype">char</span>*) buffer + fileoff, (<a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(buffer) - content_length));</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;            jse_file_config((<span class="keywordtype">char</span>*) <a class="code" href="../../d4/d25/beeper_8c.html#ac0c635110dc503f164fff91b163936d7">config</a>, (<span class="keywordtype">char</span>*) file);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        }</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    }</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    qemu_note(<span class="stringliteral">&quot;[JSE] The JSE configuration block was not found in the file, so JSE executes in normal mode and with standard settings.&quot;</span>);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    elk_eval(buffer);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;}</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="keywordtype">void</span> jse_file_getBuff(<span class="keywordtype">char</span>* buf){</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *sc1 = <span class="stringliteral">&quot;//&lt;#JSE#&quot;</span>;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *sc2 = <span class="stringliteral">&quot;//#JSE#&gt;&quot;</span>;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    jse_file_preconfig(buf, sc1, sc2);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;}</div>
+<div class="ttc" id="abeeper_8c_html_ac0c635110dc503f164fff91b163936d7"><div class="ttname"><a href="../../d4/d25/beeper_8c.html#ac0c635110dc503f164fff91b163936d7">config</a></div><div class="ttdeci">uint32_t config</div><div class="ttdoc">Корректировка</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/d25/beeper_8c_source.html#l00014">beeper.c:14</a></div></div>
+<div class="ttc" id="alib_2fileio_8c_html_a32aa1c14b684d875693e484eb4f808d6"><div class="ttname"><a href="../../d8/d37/lib_2fileio_8c.html#a32aa1c14b684d875693e484eb4f808d6">filesize</a></div><div class="ttdeci">size_t filesize(const char *Path)</div><div class="ttdoc">[FileIO] Возвращает размер указанного файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/d37/lib_2fileio_8c_source.html#l00067">fileio.c:67</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_a008e171a518fe0e0352f31b245e03875"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a></div><div class="ttdeci">size_t strlen(const char *str)</div><div class="ttdoc">Возращает длину строки</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00088">string.c:88</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_a1a4814aa8c5608eab160349cfa3023f4"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a></div><div class="ttdeci">bool strcmpn(const char *str1, const char *str2)</div><div class="ttdoc">Сравнение строк</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00270">string.c:270</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_a873acd8f51f646b739d45f152ef5afc3"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a></div><div class="ttdeci">void * memcpy(void *restrict destination, const void *restrict source, size_t n)</div><div class="ttdoc">Копирование непересекающихся массивов используя SSE.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00173">string.c:173</a></div></div>
+<div class="ttc" id="astdio_8c_html_a339e549606415666d4342bb56cffe976"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#a339e549606415666d4342bb56cffe976">fclose</a></div><div class="ttdeci">void fclose(FILE *stream)</div><div class="ttdoc">Закончить работу с файлом</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00213">stdio.c:213</a></div></div>
+<div class="ttc" id="astdio_8c_html_abd87d091823267c19289be5176c44d39"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#abd87d091823267c19289be5176c44d39">fopen</a></div><div class="ttdeci">FILE * fopen(const char *filename, const char *_mode)</div><div class="ttdoc">Открывает файл</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00166">stdio.c:166</a></div></div>
+<div class="ttc" id="astdio_8c_html_ae07cf8f3544a8cfe1bff0e815d367666"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#ae07cf8f3544a8cfe1bff0e815d367666">fsize</a></div><div class="ttdeci">int fsize(FILE *stream)</div><div class="ttdoc">Получение размера файла в байтах</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00227">stdio.c:227</a></div></div>
+<div class="ttc" id="astdio_8c_html_af50335da1940cdadb28ee3a19655d325"><div class="ttname"><a href="../../d9/df6/stdio_8c.html#af50335da1940cdadb28ee3a19655d325">fread</a></div><div class="ttdeci">int fread(FILE *stream, size_t count, size_t size, void *buffer)</div><div class="ttdoc">Чтение файла</div><div class="ttdef"><b>Definition:</b> <a href="../../d9/df6/stdio_8c_source.html#l00250">stdio.c:250</a></div></div>
+<div class="ttc" id="astruct_f_i_l_e_html"><div class="ttname"><a href="../../dd/d90/struct_f_i_l_e.html">FILE</a></div><div class="ttdoc">Структура файла. Требуется для работы с VFS.</div><div class="ttdef"><b>Definition:</b> <a href="../../d6/dd1/stdio_8h_source.html#l00021">stdio.h:21</a></div></div>
+<div class="ttc" id="astructjs_html"><div class="ttname"><a href="../../d3/daf/structjs.html">js</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d9/d54/elk_8h_source.html#l00048">elk.h:48</a></div></div>
+<div class="ttc" id="astructstring_html"><div class="ttname"><a href="../../da/d81/structstring.html">string</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dd/dec/include_2lib_2libstring_2string_8h_source.html#l00010">string.h:10</a></div></div>
+<div class="ttc" id="astructvector_html"><div class="ttname"><a href="../../d4/db4/structvector.html">vector</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d6/d68/vector_8h_source.html#l00007">vector.h:7</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_30344f54b1e95ac4cceded48601d8b77.html">lib</a></li><li class="navelem"><a class="el" href="../../dir_3282e9c27035e4391f29a5e22876e9ab.html">elk</a></li><li class="navelem"><b>elk_libs.c</b></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Дек 2024 11:09:51. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
