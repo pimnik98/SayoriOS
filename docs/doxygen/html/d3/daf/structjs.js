@@ -1,0 +1,27 @@
+var structjs =
+[
+    [ "brk", "d3/daf/structjs.html#aec2f705a97524f16edef6bb0704dcbfc", null ],
+    [ "Canvas", "d3/daf/structjs.html#a02ebcf20f388a82db269870281aa94f5", null ],
+    [ "clen", "d3/daf/structjs.html#ad0a5f688282201049e28ac78a85a08e0", null ],
+    [ "code", "d3/daf/structjs.html#ad0e6b406ad1011f626536339fb6427dc", null ],
+    [ "consumed", "d3/daf/structjs.html#a6cad0afecfd8ce97fd1c1cf18b41e45c", null ],
+    [ "css", "d3/daf/structjs.html#a271a6f8ed15656c13fe4c36a488148a5", null ],
+    [ "cstk", "d3/daf/structjs.html#aee9d0f3637abf8e8bcd7d136b014596c", null ],
+    [ "errmsg", "d3/daf/structjs.html#a687d9f259a01eef77afce0180cee2049", null ],
+    [ "flags", "d3/daf/structjs.html#aa2585d779da0ab21273a8d92de9a0ebe", null ],
+    [ "gct", "d3/daf/structjs.html#ab8416b198e09b297d8f13b422103e8f7", null ],
+    [ "incSize", "d3/daf/structjs.html#a0716f573d8ec0cef29d3e5d10ca422b1", null ],
+    [ "isFatal", "d3/daf/structjs.html#a956bd8a2b2b386658d646c10f758aee3", null ],
+    [ "lwm", "d3/daf/structjs.html#a16dc886dae743416a82e8d21538557fb", null ],
+    [ "maxcss", "d3/daf/structjs.html#add846c0e25d61b7347b47aa86bc6559c", null ],
+    [ "mem", "d3/daf/structjs.html#a5b9a364deed0a5f5e5a6d01f05ba5098", null ],
+    [ "nogc", "d3/daf/structjs.html#a60865464a0a649df7876fe3212030071", null ],
+    [ "paramSize", "d3/daf/structjs.html#aac6a9a560321037719193b4bd44d6254", null ],
+    [ "pos", "d3/daf/structjs.html#a59492869bdf98ff11e12db2ce748a3b5", null ],
+    [ "scope", "d3/daf/structjs.html#acffc772f39074c74174ffc27d3f23a78", null ],
+    [ "size", "d3/daf/structjs.html#ad331d1cf8be758547637838c1e17c4b1", null ],
+    [ "tlen", "d3/daf/structjs.html#ae35f26aae324e4327690fbff525b260c", null ],
+    [ "toff", "d3/daf/structjs.html#aa0e7afde1377e81db3c3e69006b2eb30", null ],
+    [ "tok", "d3/daf/structjs.html#ac7c9be02372bca9eab6a2496188ff9cf", null ],
+    [ "tval", "d3/daf/structjs.html#a97714cb817595a4eb4c7f1ee580332a5", null ]
+];

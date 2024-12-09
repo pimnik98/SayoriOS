@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Структура FADT</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d7/deb/struct_f_a_d_t.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Поля данных</a>  </div>
+  <div class="headertitle">
+<div class="title">Структура FADT</div>  </div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Поля данных</h2></td></tr>
+<tr class="memitem:a2ec584bfc7825f672edd5c80682ffb7b"><td class="memItemLeft" align="right" valign="top"><a id="a2ec584bfc7825f672edd5c80682ffb7b"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>FirmwareCtrl</b></td></tr>
+<tr class="separator:a2ec584bfc7825f672edd5c80682ffb7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fa693fc4da6b03e0e1624ab1142fb9e"><td class="memItemLeft" align="right" valign="top"><a id="a7fa693fc4da6b03e0e1624ab1142fb9e"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>Dsdt</b></td></tr>
+<tr class="separator:a7fa693fc4da6b03e0e1624ab1142fb9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68394408e82008fe25bfe2931b59ce58"><td class="memItemLeft" align="right" valign="top"><a id="a68394408e82008fe25bfe2931b59ce58"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>Reserved</b></td></tr>
+<tr class="separator:a68394408e82008fe25bfe2931b59ce58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe03fa1f52580d2ab850d894baa2109e"><td class="memItemLeft" align="right" valign="top"><a id="afe03fa1f52580d2ab850d894baa2109e"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>PreferredPowerManagementProfile</b></td></tr>
+<tr class="separator:afe03fa1f52580d2ab850d894baa2109e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5b053f5985bff1b4c327b9c1b04a506"><td class="memItemLeft" align="right" valign="top"><a id="ab5b053f5985bff1b4c327b9c1b04a506"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>SCI_Interrupt</b></td></tr>
+<tr class="separator:ab5b053f5985bff1b4c327b9c1b04a506"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35e1367b88e4a8acd3545c9b6cecd80d"><td class="memItemLeft" align="right" valign="top"><a id="a35e1367b88e4a8acd3545c9b6cecd80d"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>SMI_CommandPort</b></td></tr>
+<tr class="separator:a35e1367b88e4a8acd3545c9b6cecd80d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb98d626786bf90d532a3216b9984178"><td class="memItemLeft" align="right" valign="top"><a id="adb98d626786bf90d532a3216b9984178"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>AcpiEnable</b></td></tr>
+<tr class="separator:adb98d626786bf90d532a3216b9984178"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7fcb88910fe5d840dc5068431020849"><td class="memItemLeft" align="right" valign="top"><a id="ad7fcb88910fe5d840dc5068431020849"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>AcpiDisable</b></td></tr>
+<tr class="separator:ad7fcb88910fe5d840dc5068431020849"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e5e27beeb23b6f4acc90d96d871105a"><td class="memItemLeft" align="right" valign="top"><a id="a8e5e27beeb23b6f4acc90d96d871105a"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>S4BIOS_REQ</b></td></tr>
+<tr class="separator:a8e5e27beeb23b6f4acc90d96d871105a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2b1407ed48e29f527ed4d39dc0a9a0d"><td class="memItemLeft" align="right" valign="top"><a id="ae2b1407ed48e29f527ed4d39dc0a9a0d"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>PSTATE_Control</b></td></tr>
+<tr class="separator:ae2b1407ed48e29f527ed4d39dc0a9a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1feb2f87b6456c949ea35a88e334b318"><td class="memItemLeft" align="right" valign="top"><a id="a1feb2f87b6456c949ea35a88e334b318"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>PM1aEventBlock</b></td></tr>
+<tr class="separator:a1feb2f87b6456c949ea35a88e334b318"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa01de084cdf2a1b7d0be21a1e221e30d"><td class="memItemLeft" align="right" valign="top"><a id="aa01de084cdf2a1b7d0be21a1e221e30d"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>PM1bEventBlock</b></td></tr>
+<tr class="separator:aa01de084cdf2a1b7d0be21a1e221e30d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a826f8f6833baf87d6cdfde231b210c"><td class="memItemLeft" align="right" valign="top"><a id="a9a826f8f6833baf87d6cdfde231b210c"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>PM1aControlBlock</b></td></tr>
+<tr class="separator:a9a826f8f6833baf87d6cdfde231b210c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd7a988f5a68135705bce7b2d11974a2"><td class="memItemLeft" align="right" valign="top"><a id="acd7a988f5a68135705bce7b2d11974a2"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>PM1bControlBlock</b></td></tr>
+<tr class="separator:acd7a988f5a68135705bce7b2d11974a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63f883b09877d4a852e5a9b1ba25e8cc"><td class="memItemLeft" align="right" valign="top"><a id="a63f883b09877d4a852e5a9b1ba25e8cc"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>PM2ControlBlock</b></td></tr>
+<tr class="separator:a63f883b09877d4a852e5a9b1ba25e8cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e115c76284ffb3ea1b3b4e8125f8ebc"><td class="memItemLeft" align="right" valign="top"><a id="a9e115c76284ffb3ea1b3b4e8125f8ebc"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>PMTimerBlock</b></td></tr>
+<tr class="separator:a9e115c76284ffb3ea1b3b4e8125f8ebc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f86fc4d25bba8b1299096014dbb84db"><td class="memItemLeft" align="right" valign="top"><a id="a9f86fc4d25bba8b1299096014dbb84db"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GPE0Block</b></td></tr>
+<tr class="separator:a9f86fc4d25bba8b1299096014dbb84db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac145151b7be4ed0ea6a3504ca9390d63"><td class="memItemLeft" align="right" valign="top"><a id="ac145151b7be4ed0ea6a3504ca9390d63"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GPE1Block</b></td></tr>
+<tr class="separator:ac145151b7be4ed0ea6a3504ca9390d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb7ffaf233571a91ac67167598a3c4f6"><td class="memItemLeft" align="right" valign="top"><a id="afb7ffaf233571a91ac67167598a3c4f6"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>PM1EventLength</b></td></tr>
+<tr class="separator:afb7ffaf233571a91ac67167598a3c4f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbab2efc1dd984fe6886ce40afca54b3"><td class="memItemLeft" align="right" valign="top"><a id="adbab2efc1dd984fe6886ce40afca54b3"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>PM1ControlLength</b></td></tr>
+<tr class="separator:adbab2efc1dd984fe6886ce40afca54b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae30a5c4702b418a8cb9c175c7e853774"><td class="memItemLeft" align="right" valign="top"><a id="ae30a5c4702b418a8cb9c175c7e853774"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>PM2ControlLength</b></td></tr>
+<tr class="separator:ae30a5c4702b418a8cb9c175c7e853774"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dc2a9915615bb7c462e648ccde0c6ac"><td class="memItemLeft" align="right" valign="top"><a id="a1dc2a9915615bb7c462e648ccde0c6ac"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>PMTimerLength</b></td></tr>
+<tr class="separator:a1dc2a9915615bb7c462e648ccde0c6ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbd5ed4314136649dcb1fb3ef9ee6172"><td class="memItemLeft" align="right" valign="top"><a id="acbd5ed4314136649dcb1fb3ef9ee6172"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>GPE0Length</b></td></tr>
+<tr class="separator:acbd5ed4314136649dcb1fb3ef9ee6172"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f18b267db2ef826cc0bb2cec582ea9a"><td class="memItemLeft" align="right" valign="top"><a id="a4f18b267db2ef826cc0bb2cec582ea9a"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>GPE1Length</b></td></tr>
+<tr class="separator:a4f18b267db2ef826cc0bb2cec582ea9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e806d0e3a20570a78577ad42f4c56fd"><td class="memItemLeft" align="right" valign="top"><a id="a6e806d0e3a20570a78577ad42f4c56fd"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>GPE1Base</b></td></tr>
+<tr class="separator:a6e806d0e3a20570a78577ad42f4c56fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a830cea8d95406fad7abe13d703131333"><td class="memItemLeft" align="right" valign="top"><a id="a830cea8d95406fad7abe13d703131333"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>CStateControl</b></td></tr>
+<tr class="separator:a830cea8d95406fad7abe13d703131333"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d07eb04e424a1c4e5807a8ba3ff603b"><td class="memItemLeft" align="right" valign="top"><a id="a3d07eb04e424a1c4e5807a8ba3ff603b"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>WorstC2Latency</b></td></tr>
+<tr class="separator:a3d07eb04e424a1c4e5807a8ba3ff603b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8415185ea68f95991fd73b6e4681debc"><td class="memItemLeft" align="right" valign="top"><a id="a8415185ea68f95991fd73b6e4681debc"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>WorstC3Latency</b></td></tr>
+<tr class="separator:a8415185ea68f95991fd73b6e4681debc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a764903d3ce0d9d019c6ed852c4c56122"><td class="memItemLeft" align="right" valign="top"><a id="a764903d3ce0d9d019c6ed852c4c56122"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>FlushSize</b></td></tr>
+<tr class="separator:a764903d3ce0d9d019c6ed852c4c56122"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44baebc121415602ce209788e188f55a"><td class="memItemLeft" align="right" valign="top"><a id="a44baebc121415602ce209788e188f55a"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>FlushStride</b></td></tr>
+<tr class="separator:a44baebc121415602ce209788e188f55a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a316a100e8eab36f8697f4b2023d0aa54"><td class="memItemLeft" align="right" valign="top"><a id="a316a100e8eab36f8697f4b2023d0aa54"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>DutyOffset</b></td></tr>
+<tr class="separator:a316a100e8eab36f8697f4b2023d0aa54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19c33d74dc078d2f094aeb5ef059a9b0"><td class="memItemLeft" align="right" valign="top"><a id="a19c33d74dc078d2f094aeb5ef059a9b0"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>DutyWidth</b></td></tr>
+<tr class="separator:a19c33d74dc078d2f094aeb5ef059a9b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a656489ba8dc19532b5ab37314909378c"><td class="memItemLeft" align="right" valign="top"><a id="a656489ba8dc19532b5ab37314909378c"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>DayAlarm</b></td></tr>
+<tr class="separator:a656489ba8dc19532b5ab37314909378c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f39b8556d46229a6d7ef1fad720dc56"><td class="memItemLeft" align="right" valign="top"><a id="a4f39b8556d46229a6d7ef1fad720dc56"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>MonthAlarm</b></td></tr>
+<tr class="separator:a4f39b8556d46229a6d7ef1fad720dc56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b382e4a3f35abb01759f3b9bc148e1b"><td class="memItemLeft" align="right" valign="top"><a id="a4b382e4a3f35abb01759f3b9bc148e1b"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>Century</b></td></tr>
+<tr class="separator:a4b382e4a3f35abb01759f3b9bc148e1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock">
+<p class="definition">См. определение в файле <a class="el" href="../../d3/de6/fadt_8h_source.html">fadt.h</a> строка <a class="el" href="../../d3/de6/fadt_8h_source.html#l00003">3</a></p>
+</div><hr/>Объявления и описания членов структуры находятся в файле:<ul>
+<li>kernel/include/sys/<a class="el" href="../../d3/de6/fadt_8h_source.html">fadt.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../d7/deb/struct_f_a_d_t.html">FADT</a></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Дек 2024 11:15:22. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/drv/network/rtl8139.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d8/d32/rtl8139_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">rtl8139.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;drv/rtl8139.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;net/cards.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;drv/pci.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;net/endianess.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;net/ethernet.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;debug/hexview.h&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;sys/isr.h&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;lib/string.h&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;mem/vmm.h&quot;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;mem/pmm.h&quot;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;net/stack.h&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;uint8_t rtl8139_busnum, rtl8139_slot, rtl8139_func;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;uint32_t rtl8139_io_base, rtl8139_mem_base, rtl8139_bar_type;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keywordtype">size_t</span> rtl8139_phys_buffer = 0;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keywordtype">char</span>* rtl8139_virt_buffer = (<span class="keywordtype">char</span>*)0;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;uint8_t rtl8139_irq;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;uint8_t rtl8139_mac[6];</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;uint8_t TSAD_array[4] = {0x20, 0x24, 0x28, 0x2C};</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;uint8_t TSD_array[4] = {0x10, 0x14, 0x18, 0x1C};</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keywordtype">size_t</span> rtl8139_current_tx_index = 0;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keywordtype">void</span>* rtl8139_transfer_buffer;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keywordtype">size_t</span> rtl8139_transfer_buffer_phys;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keywordtype">void</span> rtl8139_send_packet(<span class="keywordtype">void</span>* data, <span class="keywordtype">size_t</span> length);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keywordtype">void</span> rtl8139_receive_packet();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">bool</span> rtl8139_in_irq = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#define NETCARD_NAME (&quot;RTL8139&quot;</span>)</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keywordtype">void</span> rtl8139_netcard_get_mac(uint8_t mac[6]) {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    rtl8139_read_mac();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(mac, rtl8139_mac, 6);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<a class="code" href="../../d1/dbb/structnetcard__entry__t.html">netcard_entry_t</a> rtl8139_netcard = {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    NETCARD_NAME,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    {0, 0, 0, 0},</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    rtl8139_netcard_get_mac,</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    rtl8139_send_packet,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;};</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keywordtype">void</span> rtl8139_init() {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    qemu_log(<span class="stringliteral">&quot;Initializing RTL8139...&quot;</span>);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="../../d1/de8/pci_8c.html#a1b69d81b60da8b097808c1ac8bb4eba3">pci_find_device</a>(RTL8139_VENDOR, RTL8139_DEVICE,</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                    &amp;rtl8139_busnum, &amp;rtl8139_slot, &amp;rtl8139_func);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    uint16_t devnum = <a class="code" href="../../d1/de8/pci_8c.html#ab03b13e7b31c5fab3a845cf2ba4ce6b8">pci_get_device</a>(rtl8139_busnum, rtl8139_slot, rtl8139_func);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    qemu_log(<span class="stringliteral">&quot;RTL8139 ID: %d (%x)&quot;</span>, devnum, devnum);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordflow">if</span>(devnum == PCI_VENDOR_NO_DEVICE) {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        qemu_log(<span class="stringliteral">&quot;RTL8139 is not connected!&quot;</span>);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        qemu_log(<span class="stringliteral">&quot;Detected RTL8139&quot;</span>);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    }</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="comment">// Enable Bus Mastering</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    pci_enable_bus_mastering(rtl8139_busnum, rtl8139_slot, rtl8139_func);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    qemu_log(<span class="stringliteral">&quot;Enabled Bus Mastering for RTL8139!&quot;</span>);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    uint32_t ret = <a class="code" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a>(rtl8139_busnum, rtl8139_slot, rtl8139_func, 0x10);  <span class="comment">// BAR0</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="comment">// If bar type is 0 use memory-based access, use port-based otherwise.</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    rtl8139_bar_type = ret &amp; 0x1;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    rtl8139_io_base = ret &amp; (~0x3);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    rtl8139_mem_base = ret &amp; (~0xf);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    qemu_log(<span class="stringliteral">&quot;RTL8139 BAR TYPE: %d; IO BASE: %x; MEMORY BASE: %x&quot;</span>, rtl8139_bar_type, rtl8139_io_base, rtl8139_mem_base);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    rtl8139_wake_up();</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    rtl8139_sw_reset();</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    rtl8139_virt_buffer = kmalloc_common(RTL8139_BUFFER_PAGE_COUNT, PAGE_SIZE);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    rtl8139_phys_buffer = virt2phys(get_kernel_page_directory(), (virtual_addr_t) rtl8139_virt_buffer);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    rtl8139_transfer_buffer = kmalloc_common(65535, PAGE_SIZE);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    rtl8139_transfer_buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t)rtl8139_transfer_buffer);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    rtl8139_init_buffer();</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    qemu_log(<span class="stringliteral">&quot;RTL8139 Physical buffer at: %x&quot;</span>, rtl8139_phys_buffer);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    rtl8139_setup_rcr();</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    rtl8139_enable_rx_tx();</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    rtl8139_init_interrupts();</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    rtl8139_read_mac();</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="comment">// If okay, add network card to list.</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    netcard_add(&amp;rtl8139_netcard);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;}</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="keywordtype">void</span> rtl8139_read_mac() {</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    uint32_t mac_part1 = inl(rtl8139_io_base + MAC0_5);</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    uint16_t mac_part2 = inw(rtl8139_io_base + MAC0_5 + 4);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    rtl8139_mac[0] = (mac_part1 &gt;&gt; 0) &amp; 0xFF;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    rtl8139_mac[1] = mac_part1 &gt;&gt; 8;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    rtl8139_mac[2] = mac_part1 &gt;&gt; 16;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    rtl8139_mac[3] = mac_part1 &gt;&gt; 24;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    rtl8139_mac[4] = mac_part2 &gt;&gt; 0;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    rtl8139_mac[5] = mac_part2 &gt;&gt; 8;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    qemu_log(<span class="stringliteral">&quot;Mac is: %x:%x:%x:%x:%x:%x&quot;</span>, rtl8139_mac[0], rtl8139_mac[1], rtl8139_mac[2], rtl8139_mac[3], rtl8139_mac[4], rtl8139_mac[5]);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;}</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="keywordtype">void</span> rtl8139_enable_rx_tx() {</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    outb(rtl8139_io_base + CMD, 0x0C); <span class="comment">// Sets the RE and TE bits high</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;}</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="keywordtype">void</span> rtl8139_setup_rcr() {</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="comment">// AB - Accept Broadcast: Accept broadcast packets sent to mac ff:ff:ff:ff:ff:ff</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="comment">// AM - Accept Multicast: Accept multicast packets.</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="comment">// APM - Accept Physical Match: Accept packets send to NIC&#39;s MAC address.</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="comment">// AAP - Accept All Packets. Accept all packets (run in promiscuous mode). </span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="comment">// (1 &lt;&lt; 7) is the WRAP bit, 0xf is AB+AM+APM+AAP</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    outl(rtl8139_io_base + 0x44, 0xf | (1 &lt;&lt; 7));</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;}</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="keywordtype">void</span> rtl8139_wake_up() {</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    outb(rtl8139_io_base + CONFIG_1, 0x0);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;}</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="keywordtype">void</span> rtl8139_sw_reset() {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    outb(rtl8139_io_base + CMD, 0x10);  <span class="comment">// Reset</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    </div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="keywordflow">while</span>((inb(rtl8139_io_base + CMD) &amp; 0x10) != 0)</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        ;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;}</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="keywordtype">void</span> rtl8139_init_buffer() {</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    outl(rtl8139_io_base + RBSTART, rtl8139_phys_buffer);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;}</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="keywordtype">void</span> rtl8139_handler(<a class="code" href="../../dc/d54/common_8h.html#afbe98bd1f8d3c7a65d8a8048fdd8cd99">__attribute__</a>((unused)) <a class="code" href="../../df/d94/structregisters.html">registers_t</a> regs) {</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    qemu_log(<span class="stringliteral">&quot;Received RTL8139 interrupt!&quot;</span>);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    rtl8139_in_irq = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    uint16_t status = inw(rtl8139_io_base + 0x3e);</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordflow">if</span>(status &amp; TOK) {</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        qemu_log(<span class="stringliteral">&quot;Packet sent&quot;</span>);</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    }</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="keywordflow">if</span> (status &amp; ROK) {</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        qemu_log(<span class="stringliteral">&quot;Packet received!\n&quot;</span>);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="comment">// TODO: Push packet to stack then, when needed, work with packets on the stack</span></div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        rtl8139_receive_packet();</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    }</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    outw(rtl8139_io_base + 0x3E, 0x05);</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    rtl8139_in_irq = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;}</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="keywordtype">void</span> rtl8139_send_packet(<span class="keywordtype">void</span> *data, <span class="keywordtype">size_t</span> length) {</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="comment">// First, copy the data to a physically contiguous chunk of memory</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="comment">//qemu_log(&quot;Waiting lock...&quot;);</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="comment">//while(rtl8139_in_irq)</span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="comment">//  ;</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    qemu_log(<span class="stringliteral">&quot;Sending packet&quot;</span>);</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <a class="code" href="../../d0/d43/lib_2string_8c.html#a701fc29ed547cc81722d77e9fe9160a6">memset</a>(rtl8139_transfer_buffer, 0, 65535);</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(rtl8139_transfer_buffer, data, length);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <span class="comment">//qemu_log(&quot;Send packet: Virtual memory at %x&quot;, (size_t)rtl8139_transfer_buffer);</span></div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="comment">//qemu_log(&quot;Send packet: Physical memory at %x&quot;, rtl8139_transfer_buffer_phys);</span></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="comment">// Second, fill in physical address of data, and length</span></div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="comment">//qemu_log(&quot;Before: %d&quot;,  rtl8139_current_tx_index);</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    outl(rtl8139_io_base + TSAD_array[rtl8139_current_tx_index], (uint32_t)rtl8139_transfer_buffer_phys);</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    outl(rtl8139_io_base + TSD_array[rtl8139_current_tx_index++], length);</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="comment">//qemu_log(&quot;After: %d&quot;,  rtl8139_current_tx_index);</span></div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordflow">if</span>(rtl8139_current_tx_index &gt; 3)</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        rtl8139_current_tx_index = 0;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160; </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    qemu_log(<span class="stringliteral">&quot;Send packet end&quot;</span>);</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;}</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="keywordtype">size_t</span> rtl8139_current_packet_ptr = 0;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160; </div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;<span class="comment">// This function is a part of IRQ</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="keywordtype">void</span> rtl8139_receive_packet() {</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    uint16_t* packet = (uint16_t*)(rtl8139_virt_buffer + rtl8139_current_packet_ptr);</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    EthernetPacked* e_pack = (EthernetPacked*)packet;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160; </div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    qemu_log(<span class="stringliteral">&quot;[Net] [RTL8139] Получен пакет!&quot;</span>);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    qemu_log(<span class="stringliteral">&quot;  |-- Заголовок данных: %x&quot;</span>,e_pack-&gt;Header);</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    qemu_log(<span class="stringliteral">&quot;  |-- Длина данных: %d&quot;</span>,e_pack-&gt;Size);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    qemu_log(<span class="stringliteral">&quot;  |-- Источник: %x:%x:%x:%x:%x:%x&quot;</span>,e_pack-&gt;MAC_SOURCE[0] ,e_pack-&gt;MAC_SOURCE[1],e_pack-&gt;MAC_SOURCE[2], e_pack-&gt;MAC_SOURCE[3] ,e_pack-&gt;MAC_SOURCE[4] ,e_pack-&gt;MAC_SOURCE[5]);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    qemu_log(<span class="stringliteral">&quot;  |-- Кому: %x:%x:%x:%x:%x:%x&quot;</span>, e_pack-&gt;MAC_DEVICE[0], e_pack-&gt;MAC_DEVICE[1], e_pack-&gt;MAC_DEVICE[2], e_pack-&gt;MAC_DEVICE[3], e_pack-&gt;MAC_DEVICE[4], e_pack-&gt;MAC_DEVICE[5]);</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    qemu_log(<span class="stringliteral">&quot;  |-- Тип данных: %x&quot;</span>, bit_flip_short(e_pack-&gt;Type));</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160; </div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <span class="comment">// Skip packet header, get packet length</span></div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="comment">//^ Может быть и верно, но теряется сама логика пакета, из-за этого я не мог понять некоторые моменты</span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    <span class="comment">// NDRAEY: Это сырая реализция!!!1</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    uint16_t packet_header = e_pack-&gt;Header;</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    uint16_t packet_length = e_pack-&gt;Size;</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    uint16_t* packet_data = packet + 2;</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    qemu_log(<span class="stringliteral">&quot;[Net] [RTL8139] Данные с пакета:\n&quot;</span>);</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="comment">//  hexview_advanced((char *) packet_data, packet_length, 10, true, new_qemu_printf);</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160; </div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <span class="keywordflow">if</span>(packet_header == HARDWARE_TYPE_ETHERNET) {</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        <span class="comment">//netstack_push(&amp;rtl8139_netcard, packet_data, packet_length);</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160; </div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        qemu_note(<span class="stringliteral">&quot;Processing packet...&quot;</span>);</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        ethernet_handle_packet(&amp;rtl8139_netcard, (ethernet_frame_t *) packet_data, packet_length);</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        qemu_ok(<span class="stringliteral">&quot;Packet processing is finished!&quot;</span>);</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    }</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    rtl8139_current_packet_ptr = (rtl8139_current_packet_ptr + packet_length + 7) &amp; RX_READ_POINTER_MASK;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    <span class="keywordflow">if</span>(rtl8139_current_packet_ptr &gt; 8192)</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        rtl8139_current_packet_ptr -= 8192;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    outw(rtl8139_io_base + CAPR, rtl8139_current_packet_ptr - 0x10);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;}</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="keywordtype">void</span> rtl8139_init_interrupts() {</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    outw(rtl8139_io_base + IMR, 0x0005);</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    <span class="comment">// https://wiki.osdev.org/PCI</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="comment">//</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="comment">// Offset 0x3C</span></div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    <span class="comment">//</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    <span class="comment">// Bits 31-24   Bits 23-16  Bits 15-8       Bits 7-0 </span></div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    <span class="comment">// Max latency  Min Grant   Interrupt PIN   Interrupt Line </span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <span class="comment">//                                          ~~~~~~~~~~~~~~</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    uint32_t word = <a class="code" href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a>(rtl8139_busnum, rtl8139_slot, rtl8139_func, 0x3C);  <span class="comment">// All 0xF PCI register</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    rtl8139_irq = word &amp; 0xff;</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    qemu_log(<span class="stringliteral">&quot;RTL8139 IRQ: %x&quot;</span>, rtl8139_irq);</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160; </div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    register_interrupt_handler(32 + rtl8139_irq, rtl8139_handler);</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    qemu_log(<span class="stringliteral">&quot;Initialized RTl8139 interrupts!&quot;</span>);</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;}</div>
+<div class="ttc" id="acommon_8h_html_afbe98bd1f8d3c7a65d8a8048fdd8cd99"><div class="ttname"><a href="../../dc/d54/common_8h.html#afbe98bd1f8d3c7a65d8a8048fdd8cd99">__attribute__</a></div><div class="ttdeci">struct registers __attribute__((packed))</div><div class="ttdoc">Структура данных пакета от мыши</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d39/psf_8h_source.html#l00001">psf.h:19</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_a701fc29ed547cc81722d77e9fe9160a6"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a701fc29ed547cc81722d77e9fe9160a6">memset</a></div><div class="ttdeci">void * memset(void *ptr, char value, size_t num)</div><div class="ttdoc">Заполнение массива указанными символами</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00203">string.c:203</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_a873acd8f51f646b739d45f152ef5afc3"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a></div><div class="ttdeci">void * memcpy(void *restrict destination, const void *restrict source, size_t n)</div><div class="ttdoc">Копирование непересекающихся массивов используя SSE.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00173">string.c:173</a></div></div>
+<div class="ttc" id="apci_8c_html_a142db44f668cf69c27a771e1cf3659d4"><div class="ttname"><a href="../../d1/de8/pci_8c.html#a142db44f668cf69c27a771e1cf3659d4">pci_read_confspc_word</a></div><div class="ttdeci">uint16_t pci_read_confspc_word(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)</div><div class="ttdoc">[PCI] Чтение 16-битных полей из пространства механизма конфигураций 1</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00032">pci.c:32</a></div></div>
+<div class="ttc" id="apci_8c_html_a1b69d81b60da8b097808c1ac8bb4eba3"><div class="ttname"><a href="../../d1/de8/pci_8c.html#a1b69d81b60da8b097808c1ac8bb4eba3">pci_find_device</a></div><div class="ttdeci">void pci_find_device(uint16_t vendor, uint16_t device, uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret)</div><div class="ttdoc">[PCI] Поиск устройства по ID-поставшика и устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00362">pci.c:362</a></div></div>
+<div class="ttc" id="apci_8c_html_ab03b13e7b31c5fab3a845cf2ba4ce6b8"><div class="ttname"><a href="../../d1/de8/pci_8c.html#ab03b13e7b31c5fab3a845cf2ba4ce6b8">pci_get_device</a></div><div class="ttdeci">uint16_t pci_get_device(uint8_t bus, uint8_t slot, uint8_t function)</div><div class="ttdoc">[PCI] Получение ID-Устройства</div><div class="ttdef"><b>Definition:</b> <a href="../../d1/de8/pci_8c_source.html#l00269">pci.c:269</a></div></div>
+<div class="ttc" id="astructnetcard__entry__t_html"><div class="ttname"><a href="../../d1/dbb/structnetcard__entry__t.html">netcard_entry_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../da/d04/cards_8h_source.html#l00005">cards.h:5</a></div></div>
+<div class="ttc" id="astructregisters_html"><div class="ttname"><a href="../../df/d94/structregisters.html">registers</a></div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d54/common_8h_source.html#l00059">common.h:59</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_294885e234569f555c14a529bc5dac14.html">drv</a></li><li class="navelem"><a class="el" href="../../dir_22af04e178dc6e9689c7db76621278ed.html">network</a></li><li class="navelem"><b>rtl8139.c</b></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Дек 2024 11:15:22. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

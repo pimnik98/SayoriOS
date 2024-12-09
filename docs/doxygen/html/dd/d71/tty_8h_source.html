@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/include/io/tty.h</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('dd/d71/tty_8h_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">tty.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="../../dc/d54/common_8h.html">common.h</a>&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;io/screen.h&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;stdarg.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#define NEW_TTY_PRINTF 1</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="../../dc/d03/tty_8c.html#a2d27058a139029f0370f500cbe69da6e">stateTTY</a>;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a22d890129d0650eb304809ff67a7f9df">tty_fontConfigurate</a>();</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#ab19864740ff5612e289b5d30d7832bf9">_tty_puts</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> str[]);</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a976d682928d79981d744307cca1594ac">_tty_print</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *format, <a class="code" href="../../d5/d6b/structva__list.html">va_list</a> args);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keywordtype">void</span> _tty_printf(<span class="keyword">const</span> <span class="keywordtype">char</span> *text, ...);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#define tty_print(format, args) _tty_print(format, args); punch()</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#define tty_puts(str) _tty_puts(str); punch()</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> tty_printf(<span class="keywordtype">char</span> *text, ...) {</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="../../dc/d03/tty_8c.html#a2d27058a139029f0370f500cbe69da6e">stateTTY</a>){</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <a class="code" href="../../d5/d6b/structva__list.html">va_list</a> args;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        va_start(args, text);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        tty_print(text, args);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        va_end(args);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    }</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;}</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../d0/d49/pixel_8c.html#a301ee846d908515a21b5ccfacfa459f7">drawRect</a>(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t color);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a7f7800e1950bd1e91183e645811568ba">setPosX</a>(uint32_t x);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a9ed3e46497fc8f05f335cea148b819a1">setPosY</a>(uint32_t y);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#ad76320b21e5d5b0d64d32ace6106be10">tty_setcolor</a>(uint32_t color);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;uint32_t tty_getcolor();</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#a85e66ecea71028f65c4417865599a547">tty_changeState</a>(<span class="keywordtype">bool</span> state);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#ab2df77275751297ddc41686991153f24">tty_set_bgcolor</a>(uint32_t color);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keywordtype">void</span> set_cursor_enabled(<span class="keywordtype">bool</span> en);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keywordtype">void</span> _tty_putuint(<span class="keyword">const</span> <span class="keywordtype">size_t</span> i);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">void</span> _tty_putint(<span class="keyword">const</span> ssize_t i);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#aa066c0a91afb8afbaf26b5dbcd886b50">_tty_putchar</a>(<span class="keywordtype">char</span> c, <span class="keywordtype">char</span> c1);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keywordtype">void</span> tty_putchar(<span class="keywordtype">char</span> c, <span class="keywordtype">char</span> c1);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keywordtype">void</span> clean_screen();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keywordtype">void</span> clean_tty_screen();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keywordtype">void</span> <a class="code" href="../../dc/d03/tty_8c.html#ae9ab84984c31a0289dce535ef091b2bd">buffer_set_pixel4</a>(uint8_t *buffer, <span class="keywordtype">size_t</span> width, <span class="keywordtype">size_t</span> height, <span class="keywordtype">size_t</span> x, <span class="keywordtype">size_t</span> y, <span class="keywordtype">size_t</span> color);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keywordtype">void</span> clean_tty_screen_no_update();</div>
+<div class="ttc" id="acommon_8h_html"><div class="ttname"><a href="../../dc/d54/common_8h.html">common.h</a></div><div class="ttdoc">Основные определения ядра</div></div>
+<div class="ttc" id="apixel_8c_html_a301ee846d908515a21b5ccfacfa459f7"><div class="ttname"><a href="../../d0/d49/pixel_8c.html#a301ee846d908515a21b5ccfacfa459f7">drawRect</a></div><div class="ttdeci">void drawRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t color)</div><div class="ttdoc">Рисуем залитый прямоугольник</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d49/pixel_8c_source.html#l00025">pixel.c:25</a></div></div>
+<div class="ttc" id="astructva__list_html"><div class="ttname"><a href="../../d5/d6b/structva__list.html">va_list</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d1/d2d/stdarg_8h_source.html#l00009">stdarg.h:9</a></div></div>
+<div class="ttc" id="atty_8c_html_a22d890129d0650eb304809ff67a7f9df"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a22d890129d0650eb304809ff67a7f9df">tty_fontConfigurate</a></div><div class="ttdeci">void tty_fontConfigurate()</div><div class="ttdoc">Инициализация системы для печати через шрифты</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00062">tty.c:62</a></div></div>
+<div class="ttc" id="atty_8c_html_a2d27058a139029f0370f500cbe69da6e"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a2d27058a139029f0370f500cbe69da6e">stateTTY</a></div><div class="ttdeci">bool stateTTY</div><div class="ttdoc">Статус, разрешен ли вывод текста через tty_printf.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00036">tty.c:36</a></div></div>
+<div class="ttc" id="atty_8c_html_a7f7800e1950bd1e91183e645811568ba"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a7f7800e1950bd1e91183e645811568ba">setPosX</a></div><div class="ttdeci">void setPosX(uint32_t x)</div><div class="ttdoc">Изменяем позицию курсора по X.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00154">tty.c:154</a></div></div>
+<div class="ttc" id="atty_8c_html_a85e66ecea71028f65c4417865599a547"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a85e66ecea71028f65c4417865599a547">tty_changeState</a></div><div class="ttdeci">void tty_changeState(bool state)</div><div class="ttdoc">Меняет состояние печати через printf.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00076">tty.c:76</a></div></div>
+<div class="ttc" id="atty_8c_html_a976d682928d79981d744307cca1594ac"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a976d682928d79981d744307cca1594ac">_tty_print</a></div><div class="ttdeci">void _tty_print(const char *format, va_list args)</div><div class="ttdoc">Подфункция-обработчик для tty_printf.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00260">tty.c:260</a></div></div>
+<div class="ttc" id="atty_8c_html_a9ed3e46497fc8f05f335cea148b819a1"><div class="ttname"><a href="../../dc/d03/tty_8c.html#a9ed3e46497fc8f05f335cea148b819a1">setPosY</a></div><div class="ttdeci">void setPosY(uint32_t y)</div><div class="ttdoc">Изменяем позицию курсора по Y.</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00164">tty.c:164</a></div></div>
+<div class="ttc" id="atty_8c_html_aa066c0a91afb8afbaf26b5dbcd886b50"><div class="ttname"><a href="../../dc/d03/tty_8c.html#aa066c0a91afb8afbaf26b5dbcd886b50">_tty_putchar</a></div><div class="ttdeci">void _tty_putchar(char c, char c1)</div><div class="ttdoc">Вывод одного символа</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00193">tty.c:193</a></div></div>
+<div class="ttc" id="atty_8c_html_ab19864740ff5612e289b5d30d7832bf9"><div class="ttname"><a href="../../dc/d03/tty_8c.html#ab19864740ff5612e289b5d30d7832bf9">_tty_puts</a></div><div class="ttdeci">void _tty_puts(const char str[])</div><div class="ttdoc">Вывод строки</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00245">tty.c:245</a></div></div>
+<div class="ttc" id="atty_8c_html_ab2df77275751297ddc41686991153f24"><div class="ttname"><a href="../../dc/d03/tty_8c.html#ab2df77275751297ddc41686991153f24">tty_set_bgcolor</a></div><div class="ttdeci">void tty_set_bgcolor(uint32_t color)</div><div class="ttdoc">Изменение цвета заднего фона</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00121">tty.c:121</a></div></div>
+<div class="ttc" id="atty_8c_html_ad76320b21e5d5b0d64d32ace6106be10"><div class="ttname"><a href="../../dc/d03/tty_8c.html#ad76320b21e5d5b0d64d32ace6106be10">tty_setcolor</a></div><div class="ttdeci">void tty_setcolor(uint32_t color)</div><div class="ttdoc">Изменение цвета текста</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00108">tty.c:108</a></div></div>
+<div class="ttc" id="atty_8c_html_ae9ab84984c31a0289dce535ef091b2bd"><div class="ttname"><a href="../../dc/d03/tty_8c.html#ae9ab84984c31a0289dce535ef091b2bd">buffer_set_pixel4</a></div><div class="ttdeci">void buffer_set_pixel4(uint8_t *buffer, size_t width, size_t height, size_t x, size_t y, size_t color)</div><div class="ttdoc">Устновливает пиксель RGB в буфере в котором все пиксели представляют собой RGBA (альфа канал игнориру...</div><div class="ttdef"><b>Definition:</b> <a href="../../dc/d03/tty_8c_source.html#l00177">tty.c:177</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_009f605b833ac4622acd6c3c0c26c0f0.html">include</a></li><li class="navelem"><a class="el" href="../../dir_0ce41d1bfbdf4ab9b4258a3465401108.html">io</a></li><li class="navelem"><b>tty.h</b></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Дек 2024 11:15:21. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
