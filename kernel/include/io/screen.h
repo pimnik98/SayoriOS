@@ -78,6 +78,7 @@ typedef struct svga_mode_info {
 } __attribute__ ((packed)) svga_mode_info_t;
 
 #define punch() memcpy(framebuffer_addr, back_framebuffer_addr, framebuffer_size)
+// #define punch() sse_memcpy(framebuffer_addr, back_framebuffer_addr, framebuffer_size)
 //#define punch() rect_copy(0, 0, VESA_WIDTH, VESA_HEIGHT)
 
 uint32_t getDisplayPitch();
@@ -121,3 +122,5 @@ inline static __attribute__((always_inline)) uint32_t getDisplaySize(){
 
 void setPixelAlpha(uint32_t x, uint32_t y, rgba_color color);
 void rect_copy(int x, int y, int width, int height);
+void graphics_update(uint32_t new_width, uint32_t new_height, uint32_t new_pitch);
+

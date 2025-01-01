@@ -6,7 +6,7 @@
  * @date 2022-08-24
  *
  * @copyright Copyright Пиминов Никита (с) 2023
- *
+
  */
 #include <kernel.h>
 #include <io/ports.h>
@@ -23,7 +23,7 @@ uint32_t bakMenu    = -1;
 
 void headBar(){
     drawLine(2,TUI_BASE_COLOR_HEAD);
-    char* OSNAME = " SayoriOS v0.3.4 (Dev)";
+    char* OSNAME = " SayoriOS v0.3.5 (Dev)";
     setPosX(0);
     setPosY(16*1);
     tty_puts_color(OSNAME,getColorsTUI(false), TUI_BASE_COLOR_HEAD);
@@ -148,7 +148,7 @@ void menu1(bool items){
     if (items){
         setCurrentItemTUI(0);
         cleanItems();
-        addItem("OS: SayoriOS v0.3.4 (Dev)",true,"","");
+        addItem("OS: SayoriOS v0.3.5 (Dev)",true,"","");
         addItem("CPU: CX",true,"","");
         addItem("RAM: ASD kb",true,"","");
         addItem("Display: %s",true,"","");     // 2

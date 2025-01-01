@@ -18,7 +18,6 @@ extern Window_t* focused;
 void eki_start();
 
 char time_for_label[] = "--:--:--";
-char membuf[16] = {0};
 char label_for_memory[32] = {0};
 char label_for_fps[8] = {0};
 

@@ -130,6 +130,7 @@ size_t measure_vsprintf(const char *format, va_list args) {
 
                     size += digit_count(num);
                 }
+                case 'p':
                 case 'x': {
                     int num = va_arg(args, int);
                     int space = width - hex_count(num) - 2;
@@ -305,7 +306,7 @@ int vsprintf(char* buffer, const char *format, va_list args) {
 
                 case 'i':
                 case 'd': {
-                	// FIXME: IMPLEMENT PRECISION HERE!
+                    // FIXME: IMPLEMENT PRECISION HERE!
                     int num = va_arg(args, int);
 
                     if(num < 0) {
@@ -332,7 +333,7 @@ int vsprintf(char* buffer, const char *format, va_list args) {
 
                     if(!left_align) {
                         itoa(num, buffer);
-                        
+
                         buffer += digit_count(num);
                     }
 
@@ -363,8 +364,9 @@ int vsprintf(char* buffer, const char *format, va_list args) {
 
 					break;
 				}
+                case 'p':
                 case 'x': {
-                	// FIXME: IMPLEMENT PRECISION HERE!
+                	// TODO: IMPLEMENT PRECISION HERE!
                 	
                     unsigned int num = va_arg(args, unsigned int);
                     int space = (int)width - hex_count(num) - 2;

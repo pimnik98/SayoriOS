@@ -3,11 +3,6 @@
 int rand_seed = 5829466;
 
 int rand() {
-	sayori_time_t time = get_time();
-
-	rand_seed *= time.seconds;
-	rand_seed -= time.minutes * time.hours + 'Z' + 'e' + 'r' + 'a';
-	rand_seed *= time.hours;
-
+	rand_seed = (164525 * rand_seed + 101390423) % 4294967296;
 	return rand_seed;
 }

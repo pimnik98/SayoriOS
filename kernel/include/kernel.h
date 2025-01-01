@@ -10,7 +10,6 @@
 
 #include "common.h"
 #include "config.h"
-#include "rust_headers.h"
 
 #include "lib/string.h"
 #include "lib/stdlib.h"
@@ -19,6 +18,7 @@
 #include "lib/split.h"
 #include "lib/math.h"
 #include "lib/setjmp.h"
+#include "lib/fileio.h"
 
 #include "mem/pmm.h"
 #include "mem/vmm.h"
@@ -49,7 +49,6 @@
 #include <drv/disk/ata_dma.h>
 
 #include <drv/cmos.h>
-#include <drv/sb16.h>
 #include <drv/pci.h>
 #include <drv/beeper.h>
 #include <drv/psf.h>
@@ -64,6 +63,7 @@
 #include <fs/fat32.h>
 #include <fs/iso9660.h>
 #include <fs/nvfs.h>
+#include <fs/tempfs.h>
 
 #include <gui/pointutils.h>
 #include <gui/line.h>
@@ -78,3 +78,5 @@
 
 #include "debug/hexview.h"
 #include "debug/ubsan.h"
+
+#include "sys/cputemp.h"

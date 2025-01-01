@@ -2,7 +2,7 @@ ENTRY (__pre_init)
 
 SECTIONS
 {
-    . = 0x00200000;
+    . = 0x00100000;
 
     KERNEL_BASE_pos = .;
 
@@ -11,49 +11,49 @@ SECTIONS
         *(.mboot)
 
         CODE_start = .;
-        
+
         *(.text*)
 
-		CODE_end = .;
+        CODE_end = .;
     }
 
     .data ALIGN (0x1000) :
     {
-    	DATA_start = .;
+        DATA_start = .;
 
         *(.data*)
 
-		DATA_end = .;
+        DATA_end = .;
     }
 
     .rodata ALIGN (0x1000) :
     {
-    	RODATA_start = .;
-    	
-    	*(.rodata*)
+        RODATA_start = .;
 
-		RODATA_end = .;
+        *(.rodata*)
+
+        RODATA_end = .;
     }
 
     .bss ALIGN (0x1000) :
     {
-    	*(COMMON)
+        *(COMMON)
 
-		BSS_start = .;
-		
+        BSS_start = .;
+
         *(.bss*)
 
-		BSS_end = .;
+        BSS_end = .;
     }
 
     .debug_symbols ALIGN(0x1000) : {
-    	*(.debug_symbols*)
+        *(.debug_symbols*)
     }
 
     .user ALIGN(0x1000) : {
-    	USER_start = .;
-    	*(.user*)
-    	USER_end = .;
+        USER_start = .;
+        *(.user*)
+        USER_end = .;
     }
 
     KERNEL_END_pos = .;

@@ -2,9 +2,9 @@
  * @file extra/cli.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief [CLI] Sayori Command Line (SCL -> Shell)
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-10-20
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <io/ports.h>
@@ -23,13 +23,18 @@
 #include "sys/scheduler.h"
 #include "sys/timer.h"
 #include "drv/disk/dpm.h"
-#include <sys/cpuinfo.h>
 #include <fmt/tga.h>
 #include "sys/pixfmt.h"
 #include "io/rgb_image.h"
 #include <sys/cpuinfo.h>
+#include "../../include/lib/fileio.h"
+#include "sys/system.h"
+#include "debug/hexview.h"
+#include "lib/command_parser.h"
 
-size_t T_CLI_KYB = 0;				///< Индекс триггера
+#include "../ports/eBat/eBat.h"
+#include "../ports/eBat/eBatRuntime.h"
+
 int G_CLI_CURINXA = 0;
 int G_CLI_CURINXB = 0;
 int G_CLI_H_KYB = 1;
@@ -50,24 +55,24 @@ CLI_CMD_ELEM G_CLI_CMD[];
 // 	qemu_log("[F_CLI_KYB] Key:%d | Pressed: %x",(int) data1, (int) data2);	
 // }
 
-uint32_t CLI_CMD_GBA(uint32_t c, char* v[]){
-    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
-        _tty_printf("Эмулятор GameBoy.\n");
-        _tty_printf("Пример:\"GBA R:\\game.gb\".\n");
-        _tty_printf("\n");
-        return 1;
-    }
-    // gb game.gb
-    tty_printf("%d\n", c);
-
-    for(int i = 0; i < c; i++) {
-        tty_printf("#%d = %s\n", i, v[i]);
-    }
-
-    gb_main(c, v);
-
-	return 1;
-}
+//uint32_t CLI_CMD_GBA(uint32_t c, char* v[]){
+//    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
+//        _tty_printf("Эмулятор GameBoy.\n");
+//        _tty_printf("Пример:\"GBA R:\\game.gb\".\n");
+//        _tty_printf("\n");
+//        return 1;
+//    }
+//    // gb game.gb
+//    tty_printf("%d\n", c);
+//
+//    for(int i = 0; i < c; i++) {
+//        tty_printf("#%d = %s\n", i, v[i]);
+//    }
+//
+//    gb_main(c, v);
+//
+//	return 1;
+//}
 
 
 uint32_t CLI_CMD_CLS(uint32_t c, char* v[]){
@@ -87,8 +92,15 @@ uint32_t CLI_CMD_SYSINFO(uint32_t c, char* v[]){
     tty_printf("\tДата сборки:             %s\n", __TIMESTAMP__);
     tty_printf("\tАрхитектура:             %s\n", ARCH_TYPE);
     tty_printf("\tПроцессор:               %s\n", getNameBrand());
-    tty_printf("\tОЗУ:                     %d kb\n", getInstalledRam()/1024);
-    tty_printf("\tВидеоадаптер:            %s\n","Basic video adapter (Unknown)");
+
+    if(is_temperature_module_present()) {
+        tty_printf("\tТемпература:             %d *C\n", get_cpu_temperature());
+    } else {
+        tty_printf("\tТемпература:             -- *C\n");
+    }
+
+    tty_printf("\tОЗУ:                     %u kb\n", getInstalledRam()/1024);
+    tty_printf("\tВидеоадаптер:            %s\n", "Legacy framebuffer (Unknown)");
     tty_printf("\tДисплей:                 %s (%dx%d)\n", "(\?\?\?)", getScreenWidth(), getScreenHeight());
     tty_printf("\tТики:                    %d\n", getTicks());
     tty_printf("\tЧастота таймера:         %d Гц\n", getFrequency());
@@ -128,7 +140,7 @@ uint32_t CLI_CMD_CAT(uint32_t c, char* v[]){
 
     size_t filesize = fsize(cat_file);
 
-    uint8_t* buffer = kcalloc(1,filesize);
+    uint8_t* buffer = kcalloc(1,filesize + 1);
 
     fread(cat_file, 1, filesize, buffer);
 
@@ -138,6 +150,79 @@ uint32_t CLI_CMD_CAT(uint32_t c, char* v[]){
 
 	kfree(buffer);
     return 1;
+}
+
+uint32_t CLI_CMD_DEL(uint32_t c, char* v[]){
+    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
+        _tty_printf("Удаление файла\n");
+        _tty_printf("Пример:\"DEL T:\\Sayori\\tmp.log\".\n");
+        _tty_printf("\n");
+        return 1;
+    }
+
+    bool res = unlink(v[1]);
+
+    if (!res) {
+        tty_setcolor(COLOR_ERROR);
+        tty_printf("Не удалось удалить файл, возможно файл не найден или у вас недостаточно прав для его удаления.\n");
+        return 1;
+    }
+    return 0;
+}
+
+
+uint32_t CLI_CMD_RMDIR(uint32_t c, char* v[]){
+    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
+        _tty_printf("Удаление папки\n");
+        _tty_printf("Пример:\"RMDIR T:\\Sayori\\\".\n");
+        _tty_printf("\n");
+        return 1;
+    }
+
+    bool res = rmdir(v[1]);
+
+    if (!res) {
+        tty_setcolor(COLOR_ERROR);
+        tty_printf("Не удалось удалить папку, возможно папка не найдена или у вас недостаточно прав для её удаления.\n");
+        return 1;
+    }
+    return 0;
+}
+
+uint32_t CLI_CMD_TOUCH(uint32_t c, char* v[]){
+    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
+        _tty_printf("Создание файла\n");
+        _tty_printf("Пример:\"TOUCH T:\\Sayori\\tmp.log\".\n");
+        _tty_printf("\n");
+        return 1;
+    }
+
+    bool res = touch(v[1]);
+
+    if (!res) {
+        tty_setcolor(COLOR_ERROR);
+        tty_printf("Не удалось создать файл, возможно файл уже существует или у вас недостаточно прав для её создания в этой папке.\n");
+        return 1;
+    }
+    return 0;
+}
+
+uint32_t CLI_CMD_MKDIR(uint32_t c, char* v[]){
+    if (c == 0 || (c == 1 && (strcmpn(v[1],"/?")))){
+        _tty_printf("Создание папки\n");
+        _tty_printf("Пример:\"TOUCH T:\\Sayori\\\".\n");
+        _tty_printf("\n");
+        return 1;
+    }
+
+    bool res = mkdir(v[1]);
+
+    if (!res) {
+        tty_setcolor(COLOR_ERROR);
+        tty_printf("Не удалось создать папка, возможно папка уже существует или у вас недостаточно прав для её создания в этой папке.\n");
+        return 1;
+    }
+    return 0;
 }
 
 uint32_t CLI_CMD_JSE(uint32_t c, char* v[]){
@@ -206,7 +291,7 @@ uint32_t CLI_CMD_SET(uint32_t c, char* v[]){
 }
 
 uint32_t CLI_CMD_DIR(uint32_t c, char* v[]) {
-    const char* path = (c <= 1 ? G_CLI_PATH : v[1]);
+    const char* path = (c == 1 ? G_CLI_PATH : v[1]);
 
 	FSM_DIR* Dir = nvfs_dir(path);
 	if (Dir->Ready != 1){
@@ -293,7 +378,7 @@ uint32_t CLI_CMD_ECHO(uint32_t c, char* v[]){
 			_tty_printf("%s",G_CLI_PATH);
 		} else if (strcmpn(v[i],"%RANDOM%") || strcmpn(v[i],"%random%")){
 			/// Магии не будет - я хз как у нас тут работает рандом
-			_tty_printf("%d",1);
+			_tty_printf("%u", rand());
 		} else if (strcmpn(v[i],"%TIME%") || strcmpn(v[i],"%time%")){
 			_tty_printf("%s","12:34");
 		} else {
@@ -332,11 +417,11 @@ uint32_t pci_print_list(uint32_t argc, char* argv[]);
 uint32_t rust_command(uint32_t argc, char* argv[]);
 uint32_t CLI_MEMINFO(uint32_t argc, char* argv[]) {
 	tty_printf("Физическая:\n");
-	tty_printf("    Используется: %d байт (%d MB)\n", used_phys_memory_size, used_phys_memory_size / MB);
-	tty_printf("    Свободно: %d байт (%d MB)\n",  phys_memory_size - used_phys_memory_size, (phys_memory_size - used_phys_memory_size) / MB);
+	tty_printf("    Используется: %u байт (%u MB)\n", used_phys_memory_size, used_phys_memory_size / MB);
+	tty_printf("    Свободно: %u байт (%u MB)\n",  phys_memory_size - used_phys_memory_size, (phys_memory_size - used_phys_memory_size) / MB);
 	tty_printf("Виртуальная:\n");
-	tty_printf("    %d записей\n", system_heap.allocated_count);
-	tty_printf("    Используется: %d байт (%d MB)\n", system_heap.used_memory, system_heap.used_memory / MB);
+	tty_printf("    %u записей\n", system_heap.allocated_count);
+	tty_printf("    Используется: %u байт (%u MB)\n", system_heap.used_memory, system_heap.used_memory / MB);
 
 	return 0;
 }
@@ -363,73 +448,259 @@ uint32_t proc_list(uint32_t argc, char* argv[]) {
     for(int j = 0; j < thread_list.count; j++) {
         thread_t* thread = (thread_t*)item_thread;
 
-        tty_printf("    Поток: %d [Стек: (%x, %x, %d)]\n", thread->id, thread->stack_top, thread->stack, thread->stack_size);
+        tty_printf("    Поток: #%u процесса #%u; Стек: (%x, %x, %d); Состояние: %s\n",
+                   thread->id, thread->process->pid, thread->stack_top, thread->stack, thread->stack_size,
+                   thread_state_string(thread->state)
+                   );
 
         item_thread = item_thread->next;
     }
 
+    return 0;
+}
+
+uint32_t CLI_CMD_REBOOT(uint32_t argc, char* argv[]) {
+    reboot();
 
     return 0;
 }
 
-uint32_t ndpm_list(uint32_t, char**);
+
+uint32_t CLI_SPAWN(uint32_t argc, char* argv[]) {
+    qemu_log("SPAWN! %u", argc);
+    if (argc <= 1) {
+        //tty_setcolor(COLOR_ERROR);
+        tty_printf("Файл не указан.\n");
+        return 1;
+    }
+
+    const char* path = argv[1];
+
+    FILE* elf_exec = fopen(path, "r");
+
+    if(!elf_exec) {
+        fclose(elf_exec);
+        tty_error("\"%s\" не является внутренней или внешней\n командой, исполняемой программой или пакетным файлом.\n", path);
+        return 2;
+    }
+
+    if(!is_elf_file(elf_exec)) {
+        fclose(elf_exec);
+        tty_printf("\"%s\" не является программой или данный тип файла не поддерживается.\n", path);
+        return 2;
+    }
+
+    fclose(elf_exec);
+
+    spawn(path, argc, argv);
+
+    return 0;
+}
+
+uint32_t CLI_SPAWN_TEST(uint32_t argc, char* argv[]) {
+    char* cmdline[] = {"hello"};
+
+    spawn("R:\\prog", 0, cmdline);
+    sleep_ms(1000);
+    spawn("R:\\hellors", 0, cmdline);
+
+    return 0;
+}
+
+uint32_t CLI_CMD_MTRR(uint32_t argc, char* argv[]) {
+	list_mtrrs();
+
+	return 0;
+}
+
+uint32_t CLI_RD(uint32_t argc, char* argv[]) {
+    if(argc < 2) {
+        tty_error("No arguments.\n");
+        return 1;
+    }
+
+    char* disk = argv[1];
+    DPM_Disk data = dpm_info(disk[0]);
+
+    if(!data.Ready) {
+        tty_error("No disk.\n");
+        return 1;
+    }
+
+    char* newdata = kcalloc(1024, 1);
+
+    dpm_read(disk[0], 0, 0, 1024, newdata);
+
+    hexview_advanced(newdata, 1024, 26, true, _tty_printf);
+
+    punch();
+
+    kfree(newdata);
+
+    return 0;
+}
+
+uint32_t CLI_CMD_HEX(uint32_t argc, char** argv) {
+	if(argc < 2) {
+		tty_printf("No arguments\n");
+		return 1;
+	}
+
+	char* file = argv[1];
+
+	FILE* fp = fopen(file, "rb");
+
+	if(!fp) {
+		tty_error("Failed to open file: %s\n", file);
+		return 1;
+	}
+
+	size_t sz = fsize(fp);
+
+	char* data = kcalloc(512, 1);
+
+	fread(fp, 512, 1, data);
+
+	tty_printf("Showing first 512 bytes:\n");
+
+	hexview_advanced(data, 512, 26, true, _tty_printf);
+	
+	kfree(data);
+	fclose(fp);
+
+	return 0;
+}
+
+uint32_t CLI_PLAIN(uint32_t argc, char** argv) {
+	if(argc < 3) {
+		tty_error("plain <address> <file>");
+		tty_printf("Note: Address must be in HEX without 0x prefix! Example: CAFEBABE");
+		return 1;
+	}
+
+	size_t address = htoi(argv[1]);
+
+	qemu_note("Address is: %x", address);
+
+	FILE* file = fopen(argv[2], "rb");
+
+	size_t filesize = fsize(file);
+
+	qemu_note("File size is: %d", filesize);
+
+	void* a = kmalloc_common(ALIGN(filesize, PAGE_SIZE), PAGE_SIZE);
+	memset(a, 0, ALIGN(filesize, PAGE_SIZE));
+
+	size_t a_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t)a);
+
+	map_pages(get_kernel_page_directory(), (physical_addr_t)a_phys, address, ALIGN(filesize, PAGE_SIZE), PAGE_WRITEABLE);
+
+	fread(file, 1, filesize, (void*)a);
+
+	int (*entry)(int, char**) = (int(*)(int, char**))address;
+
+	qemu_log("RESULT IS: %d", entry(0, 0));
+
+	unmap_pages_overlapping(get_kernel_page_directory(), address, filesize);
+
+	kfree(a);
+	fclose(file);
+
+	return 0;
+}
+
+uint32_t pavi_view(uint32_t, char**);
 uint32_t minesweeper(uint32_t, char**);
 uint32_t shell_diskctl(uint32_t, char**);
 uint32_t calendar(uint32_t, char**);
+uint32_t forth_sys(uint32_t, char**);
 
 CLI_CMD_ELEM G_CLI_CMD[] = {
-
 	{"CLS", "cls", CLI_CMD_CLS, "Очистка экрана"},
+    {"CALENDAR", "calendar", calendar, "Календарь"},
     {"CAT", "cat", CLI_CMD_CAT, "Выводит содержимое файла на экран"},
 	{"ECHO", "echo", CLI_CMD_ECHO, "Выводит сообщение на экран."},
 	{"DIR", "dir", CLI_CMD_DIR, "Выводит список файлов и папок."},
-    {"GBA", "gba", CLI_CMD_GBA, "GameBoy Emulator"},
+    {"DISKCTL", "diskctl", shell_diskctl, "Управление ATA-дисками"},
+    {"DISKPART", "diskpart", CLI_CMD_DISKPART, "Список дисков Disk Partition Manager"},
+//    {"GBA", "gba", CLI_CMD_GBA, "GameBoy Emulator"},
 	{"HELP", "help", CLI_CMD_HELP, "Выводит справочную информацию о командах SayoriOS (CLI)."},
 	{"SET", "set", CLI_CMD_SET, "Показывает, указывает и удаляет переменные среды SayoriOS"},
-	{"NET", "net", CLI_CMD_NET, "Net info"},
+	{"NET", "net", CLI_CMD_NET, "Информация об сетевых устройствах"},
 	{"GFXBENCH", "gfxbench", gfxbench, "Тестирование скорости фреймбуфера"},
 	{"MEMINFO", "meminfo", CLI_MEMINFO, "Информация об оперативной памяти"},
 	{"MINIPLAY", "miniplay", miniplay, "WAV-проиграватель"},
 	{"DESKTOP", "desktop", parallel_desktop_start, "Рабочий стол"},
 	{"MALA", "mala", mala_draw, "Нарисовать рисунок"},
-//	{"PAVI", "pavi", pavi_view, "Программа для просмотра изображений"},
+    {"MINESWEEPER", "minesweeper", minesweeper, "Сапёр"},
+    {"MTRR", "mtrr", CLI_CMD_MTRR, "MTRR"},
+	{"PAVI", "pavi", pavi_view, "Программа для просмотра изображений"},
 	{"PCI", "pci", pci_print_list, "Список PCI устройств"},
 	// {"RS", "rs", rust_command, "Rust command"},
 	{"PROC", "proc", proc_list, "Список процессов"},
     {"SYSINFO", "sysinfo", CLI_CMD_SYSINFO, "Информация о системе"},
     {"JSE", "jse", CLI_CMD_JSE, "JavaScript Engine"},
-    {"NDPM", "ndpm", ndpm_list, "Список дисков NDPM"},
-    {"MINESWEEPER", "minesweeper", minesweeper, "Сапёр"},
-    {"DISKPART", "diskpart", CLI_CMD_DISKPART, "Список дисков Disk Partition Manager"},
-    {"DISKCTL", "diskctl", shell_diskctl, "Управление ATA-дисками"},
-    {"CALENDAR", "calendar", calendar, "Календарь"},
+    {"TOUCH", "touch", CLI_CMD_TOUCH, "Создать файл"},
+    {"DEL", "DEL", CLI_CMD_DEL, "Удалить файл"},
+    {"MKDIR", "mkdir", CLI_CMD_MKDIR, "Создать папку"},
+    {"RMDIR", "rmdir", CLI_CMD_RMDIR, "Удалить папку"},
+    {"REBOOT", "reboot", CLI_CMD_REBOOT, "Перезагрузка"},
+    {"RD", "rd", CLI_RD, "Чтение данных с диска"},
+    {"SPAWN", "spawn", CLI_SPAWN, "spawn a new process"},
+    {"PLAIN", "plain", CLI_PLAIN, "Run plain program"},
+    {"HEX", "hex", CLI_CMD_HEX, "Show hex data"},
+    {"ST", "st", CLI_SPAWN_TEST, "spawn test"},
+    {"FORTH", "forth",forth_sys, "Форт система"},
+    {"4TH", "4th",forth_sys, "Форт система"},
 	{nullptr, nullptr, nullptr}
 };
+
+int cli_handler_ebat(int argc, char** argv){
+    qemu_note("[RUNTIME] [System] [EXEC] Count: %d\n", argc);
+    int ret = 0;
+    bool found = false;
+
+    for(size_t i = 0; G_CLI_CMD[i].name != nullptr; i++) {
+        if(strcmpn(G_CLI_CMD[i].name, argv[0]) || strcmpn(G_CLI_CMD[i].alias, argv[0])) {
+            ret = G_CLI_CMD[i].funcv(argc, argv);
+            found = true;
+            break;
+        }
+    }
+
+    if(!found) {
+        ret = CLI_CMD_RUN(argc, argv);
+    }
+
+    return ret;
+}
 
 void cli_handler(const char* ncmd){
 	set_cursor_enabled(0);
 
-	uint32_t argc = str_cdsp(ncmd," ") + 1;
-    char* argv[128] = {0};
+	command_parser_t parser = {};
 
-    str_split(ncmd, argv, " ");
+	command_parser_new(&parser, ncmd);
 
-	for(size_t i = 0; i < argc; i++){
-		qemu_log("[CLI] '%s' => argc: %d => argv: %s", ncmd, i, argv[i]);
-    }
+	for(size_t i = 0; i < parser.argc; i++){
+		qemu_log("[CLI] '%s' => argc: %d => argv: %s", ncmd, i, parser.argv[i]);
+    	}
 
 	bool found = false;
 
 	for(size_t i = 0; G_CLI_CMD[i].name != nullptr; i++) {
-		if(strcmpn(G_CLI_CMD[i].name, argv[0]) || strcmpn(G_CLI_CMD[i].alias, argv[0])) {
-			G_CLI_CMD[i].funcv(argc, argv);
+		if(strcmpn(G_CLI_CMD[i].name, parser.argv[0]) || strcmpn(G_CLI_CMD[i].alias, parser.argv[0])) {
+			G_CLI_CMD[i].funcv(parser.argc, parser.argv);
 			found = true;
 			break;
 		}
 	}
+
 	if(!found) {
-		CLI_CMD_RUN(argc + 1, argv);
+		CLI_CMD_RUN(parser.argc, parser.argv);
 	}
+
+	command_parser_destroy(&parser);
 
 	set_cursor_enabled(1);
 }
@@ -437,12 +708,7 @@ void cli_handler(const char* ncmd){
 void cli(){
 	qemu_log("[CLI] Started...");
 	tty_set_bgcolor(0xFF000000);
-    tty_setcolor(0xFFFFFF);
-
-	variable_write("HOSTNAME", "SAYORISOUL");
-	variable_write("SYSTEMROOT", "R:\\Sayori\\");
-	variable_write("TEMP", "T:\\");
-	variable_write("USERNAME", "OEM");
+	tty_setcolor(0xFFFFFF);
 
 // 	T_CLI_KYB = RegTrigger(0x0001, &F_CLI_KYB);
 	
@@ -452,26 +718,47 @@ void cli(){
 
 	punch();
 
-	char* input_buffer = kcalloc(1, 256);
+	char* input_buffer = kcalloc(1, 512);
 	while(1) {
 		size_t memory_cur = system_heap.used_memory;
-        size_t memory_cnt_cur = system_heap.allocated_count;
+        	size_t memory_cnt_cur = system_heap.allocated_count;
 
-    	tty_setcolor(0xFFFFFF);
+    		tty_setcolor(0xFFFFFF);
 		tty_printf("%s>", G_CLI_PATH);
-		memset(input_buffer, 0, 256);
+		memset(input_buffer, 0, 512);
 
-        int result = gets_max(input_buffer, 255);
+		int result = gets_max(input_buffer, 512);
 
-        if(result == 1) {
-            tty_alert("\nMaximum 255 characters!\n");
-            continue;
-        }
+        	if(result == 1) {
+            		tty_alert("\nMaximum 512 characters!\n");
+            		continue;
+        	}
 
-        size_t current_time = timestamp();
+        	size_t len_cmd = strlen(input_buffer);
+        	if (len_cmd == 0) {
+            		continue;
+		}
+
+        	size_t current_time = timestamp();
 		qemu_log("cmd: %s", input_buffer);
 
-		cli_handler(input_buffer);
+        /////////////////////////////////////
+
+        int preprocessor = 0;
+
+        if (preprocessor == 0){
+            cli_handler(input_buffer);
+        } else {
+            BAT_T* token = bat_parse_string(input_buffer);
+            token->Debug = 0;
+            token->Echo = 1;
+            int ret = bat_runtime_exec(token);
+            qemu_warn("RETURN CODE: %d\n",ret);
+            bat_destroy(token);
+        }
+        ////////////////////////////////////
+
+		//
 		tty_printf("\n");
 
 		ssize_t delta = (int)system_heap.used_memory - (int)memory_cur;
@@ -482,9 +769,11 @@ void cli(){
 
 		if(delta > 0) {
 			qemu_err("Memory leak!");
+		} else if(delta == 0) {
+			qemu_ok("All right! No memory leaks! Keep it up, buddy!");
 		}
 
-        qemu_note("Time elapsed: %d milliseconds", timestamp() - current_time);
+		qemu_note("Time elapsed: %d milliseconds", timestamp() - current_time);
 	}
 
     kfree(input_buffer);

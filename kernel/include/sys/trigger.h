@@ -23,11 +23,14 @@ typedef void (*trigger_cmd_t)(void*,void*,void*,void*,void*);
 typedef struct trigger
 {
 	size_t  index;				///< Индекс триггера
-	int  type;				///< Тип триггера
-	bool ready;				///< Триггер готов к работе
-	bool ready_delete;			///< Готово к удалению
-	trigger_cmd_t cmd;		///< Команда с 5ю аргументами
+	int  type;				    ///< Тип триггера
+	bool ready;				    ///< Триггер готов к работе
+	bool is_not_delete;			///< Триггер НЕ удален и НЕ свободен
+	trigger_cmd_t cmd;		    ///< Команда с 5ю аргументами
 } trigger_t;
 
-size_t RegTrigger(int type, trigger_cmd_t handler);
+int RegTrigger(int type, trigger_cmd_t handler);
 void CallTrigger(int type, void* data1, void* data2, void* data3, void* data4, void* data5);
+void DeleteTrigger(int index);
+void OnTrigger(int index);
+void OffTrigger(int index);

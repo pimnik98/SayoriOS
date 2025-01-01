@@ -1,6 +1,5 @@
 #include "desktop/widget.h"
 #include "desktop/widget_label.h"
-#include "gui/basics.h"
 #include "lib/string.h"
 #include "drv/psf.h"
 #include "io/ports.h"
@@ -19,7 +18,7 @@ void widget_label_renderer(struct Widget* this, __attribute__((unused)) struct W
     // setColorFont(color);
 }
 
-Widget_t* new_widget_label(const char *label, ssize_t x, ssize_t y, uint32_t color) {
+Widget_t* new_widget_label(const char *label, size_t x, size_t y, uint32_t color) {
     Widget_t* wgt = new_bare_widget(
         &widget_label_renderer,
         &destroy_widget_label,

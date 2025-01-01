@@ -2,9 +2,9 @@
  * @file drv/env.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Пользовательское окружение ОС
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-11-07
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
 #include <version.h>
@@ -21,6 +21,7 @@ void configure_env(){
     system_environment.OS_VERSION_MAJOR = VERSION_MAJOR;                 ///< Версия ядра
     system_environment.OS_VERSION_MINOR = VERSION_MINOR;                 ///< Пре-Релиз
     system_environment.OS_VERSION_PATCH = VERSION_PATCH;                  ///< Патч
+    system_environment.DisplayAddress = getDisplayAddr();                     ///< Ссылка на виртуальный экран
     system_environment.DisplayFrameBuffer_Address = getFrameBufferAddr();                     ///< Ссылка на виртуальный экран
     system_environment.Display_W = getScreenWidth();                        ///< Длина экрана
     system_environment.Display_H = getScreenHeight();                        ///< Высота экрана

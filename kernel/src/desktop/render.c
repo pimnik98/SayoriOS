@@ -4,7 +4,6 @@
 #include "desktop/render.h"
 #include "drv/psf.h"
 #include "io/ports.h"
-#include <mem/vmm.h>
 #include "drv/input/mouse.h"
 
 // getConfigFonts(2) - is height of current font
@@ -18,21 +17,9 @@ Window_t* drag_window = 0;
 uint32_t dragx = 0;
 uint32_t dragy = 0;
 
-void* cursor_data = 0;
-size_t cursor_width = 0, cursor_height = 0;
-bool cursor_ok = false;
-
 Window_t* focused = 0;
 
-char* cursor_default_path = "/var/cursor_normal.duke";
-
 void gui_restore() {
-    if(cursor_ok) {
-        qemu_log("DUKE2CURSOR: Freeing cursor...");
-        kfree(cursor_data);
-        cursor_ok = false;
-    }
-
     destroy_all_windows();
     clean_screen();
 
@@ -107,7 +94,7 @@ Window_t* is_point_on_any_window_titlebar(size_t x, size_t y) {
 }
 
 Window_t* is_point_on_any_window(ssize_t x, ssize_t y) {
-    for (size_t i = get_window_count()-1; i >= 0 ; i--) {
+    for (size_t i = get_window_count() - 1; i != 0 ; i--) {
         // qemu_log("Checking #%d (%x)", current_windows[i]->id, current_windows[i]);
         if(point_in_rect(
             x,
@@ -215,8 +202,7 @@ void gui_handle_mouse() {
 	draw_filled_rectangle(mouse_x, mouse_y, 8, 8, mouse_color);
 }
 
-void gui_render_windows(vector_t* current_windows) {
-
+void gui_render_windows() {
     for(size_t i = 0, wnds = get_window_count(); i < wnds; i++){
 //        qemu_warn("Rendering %x", WINDOW(i));
         gui_render_window(WINDOW(i));
@@ -235,7 +221,7 @@ void gui_render() {
     // qemu_log("Reached render step");
     // qemu_log("Window count: %d", get_window_count());
 
-    gui_render_windows(windows);
+    gui_render_windows();
 
     gui_handle_mouse();
     punch();

@@ -9,9 +9,8 @@
 
 uint8_t default_broadcast_mac_address[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
-arp_table_entry_t arp_table[ARP_TABLE_MAX_SIZE];
-size_t arp_table_size;
-size_t arp_table_curr;
+arp_table_entry_t arp_table[ARP_TABLE_MAX_SIZE] = {0};
+size_t arp_table_curr = 0;
 
 void arp_handle_packet(netcard_entry_t* card, arp_packet_t* arp_packet, size_t len) {
     uint8_t dest_mac[6];
@@ -52,28 +51,37 @@ void arp_handle_packet(netcard_entry_t* card, arp_packet_t* arp_packet, size_t l
             // Now send it with ethernet
             ethernet_send_packet(card, dest_mac, (uint8_t*)arp_packet, sizeof(arp_packet_t), ETHERNET_TYPE_ARP);
         }
-    } else if(ntohs(arp_packet->opcode) == ARP_REPLY){
-        qemu_log("ARP REPLY");    
+	} else if(ntohs(arp_packet->opcode) == ARP_REPLY){
+		qemu_log("ARP REPLY");    
 
-        qemu_log("Source IP: %d.%d.%d.%d", arp_packet->src_ip[0], arp_packet->src_ip[1], arp_packet->src_ip[2], arp_packet->src_ip[3]);
-        qemu_log("Source MAC: %x:%x:%x:%x:%x:%x",
-				 arp_packet->src_mac[0], arp_packet->src_mac[1], arp_packet->src_mac[2], arp_packet->src_mac[3], arp_packet->src_mac[4], arp_packet->src_mac[5]);
-        qemu_log("Destination IP: %d.%d.%d.%d", arp_packet->dest_ip[0], arp_packet->dest_ip[1], arp_packet->dest_ip[2], arp_packet->dest_ip[3]);
-        qemu_log("Destination MAC: %x:%x:%x:%x:%x:%x",
-				 arp_packet->dest_mac[0], arp_packet->dest_mac[1], arp_packet->dest_mac[2], arp_packet->dest_mac[3], arp_packet->dest_mac[4], arp_packet->dest_mac[5]);
-    } else {
-        qemu_log("Got unknown ARP opcode (%d)", arp_packet->opcode);
-    }
+		qemu_log("Source IP: %d.%d.%d.%d", arp_packet->src_ip[0], arp_packet->src_ip[1], arp_packet->src_ip[2], arp_packet->src_ip[3]);
+		qemu_log("Source MAC: %x:%x:%x:%x:%x:%x",
+					 arp_packet->src_mac[0],
+					 arp_packet->src_mac[1],
+					 arp_packet->src_mac[2],
+					 arp_packet->src_mac[3],
+					 arp_packet->src_mac[4],
+					 arp_packet->src_mac[5]);
+		qemu_log("Destination IP: %d.%d.%d.%d",
+				arp_packet->dest_ip[0],
+				arp_packet->dest_ip[1],
+				arp_packet->dest_ip[2],
+				arp_packet->dest_ip[3]);
+		qemu_log("Destination MAC: %x:%x:%x:%x:%x:%x",
+					 arp_packet->dest_mac[0],
+					 arp_packet->dest_mac[1],
+					 arp_packet->dest_mac[2],
+					 arp_packet->dest_mac[3],
+					 arp_packet->dest_mac[4],
+					 arp_packet->dest_mac[5]);
+	    } else {
+		qemu_log("Got unknown ARP opcode (%d)", arp_packet->opcode);
+	    }
  
     // Now, store the ip-mac address mapping relation
-    memcpy(&arp_table[arp_table_curr].ip_addr, dest_ip, 4);
-    memcpy(&arp_table[arp_table_curr].mac_addr, dest_mac, 6);
+    
+	arp_lookup_add(dest_mac, dest_ip);
 
-    if(arp_table_size < ARP_TABLE_MAX_SIZE)
-        arp_table_size++;
-
-    if(arp_table_curr >= ARP_TABLE_MAX_SIZE)
-        arp_table_curr = 0;
 }
 
 void arp_send_packet(netcard_entry_t* card, uint8_t* dest_mac, uint8_t* dest_ip) {
@@ -112,15 +120,29 @@ void arp_send_packet(netcard_entry_t* card, uint8_t* dest_mac, uint8_t* dest_ip)
 			ETHERNET_TYPE_ARP);
 }
 
-void arp_lookup_add(uint8_t * ret_hardware_addr, uint8_t * ip_addr) {
-    memcpy(&arp_table[arp_table_curr].ip_addr, ip_addr, 4);
-    memcpy(&arp_table[arp_table_curr].mac_addr, ret_hardware_addr, 6);
+void arp_lookup_add(uint8_t* ret_hardware_addr, uint8_t * ip_addr) {
+    	qemu_note("lookup add: [%x:%x:%x:%x:%x:%x] is [%d.%d.%d.%d]", 
+			ret_hardware_addr[0],
+			ret_hardware_addr[1],
+			ret_hardware_addr[2],
+			ret_hardware_addr[3],
+			ret_hardware_addr[4],
+			ret_hardware_addr[5],
+			ip_addr[0],
+			ip_addr[1],
+			ip_addr[2],
+			ip_addr[3]);
+
+	memcpy(&arp_table[arp_table_curr].ip_addr, ip_addr, 4);
+	memcpy(&arp_table[arp_table_curr].mac_addr, ret_hardware_addr, 6);
     
-    if(arp_table_size < ARP_TABLE_MAX_SIZE)
-        arp_table_size++;
+	if(arp_table_curr < ARP_TABLE_MAX_SIZE) {
+		arp_table_curr++;
+	}
     
-    if(arp_table_curr >= ARP_TABLE_MAX_SIZE)
-        arp_table_curr = 0;
+	if(arp_table_curr >= ARP_TABLE_MAX_SIZE) {
+		arp_table_curr = 0;
+	}
 }
 
 bool arp_lookup(uint8_t* ret_hardware_addr, const uint8_t* ip_addr) {

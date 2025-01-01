@@ -2,9 +2,9 @@
  * @file io/ports.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Средства для работы с портами
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <stdarg.h>
@@ -174,7 +174,9 @@ void new_qemu_printf(const char *format, ...) {
 
     va_end(args);
 
+    scheduler_mode(false);  // Stop scheduler
     __com_writeString(PORT_COM1, container);
+    scheduler_mode(true);  // Start scheduler
 
     kfree(container);
 }

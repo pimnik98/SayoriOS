@@ -6,6 +6,7 @@
 #include <common.h>
 #include "mem/pmm.h"
 #include "mem/vmm.h"
+#include "sys/mtrr.h"
 
 uint8_t *framebuffer_addr = 0;				///< Точка монтирования
 uint32_t framebuffer_pitch;				///< Частота обновления экрана
@@ -16,6 +17,9 @@ uint32_t framebuffer_size;				///< Кол-во пикселей
 uint8_t *back_framebuffer_addr = 0;		///< Позиция буфера экрана
 bool lazyDraw = true;					///< Включен ли режим ленивой прорисовки
 bool tty_oem_mode = false;				///< Режим работы
+
+size_t fb_mtrr_idx = 0;
+size_t bfb_mtrr_idx = 0;
 
 /**
  * @brief Получение адреса расположения драйвера экрана
@@ -50,8 +54,27 @@ uint32_t getDisplayBpp(){
 
 void create_back_framebuffer() {
     qemu_log("^---- 1. Allocating");
-    back_framebuffer_addr = (uint8_t*)kcalloc(framebuffer_size, 1);
+    
+    back_framebuffer_addr = (uint8_t*)kmalloc_common(framebuffer_size, PAGE_SIZE);
+    memset(back_framebuffer_addr, 0, framebuffer_size);
 
+    size_t phys_bfb = virt2phys(get_kernel_page_directory(), (virtual_addr_t) back_framebuffer_addr);
+
+    qemu_log("Physical is: %x", phys_bfb);
+
+	bfb_mtrr_idx = find_free_mtrr();
+    write_mtrr_size(bfb_mtrr_idx, phys_bfb, framebuffer_size, 1);
+
+ //    map_pages(
+ //            get_kernel_page_directory(),
+ //            phys_bfb,
+ //            (virtual_addr_t) back_framebuffer_addr,
+ //            framebuffer_size,
+ //            PAGE_WRITEABLE | PAGE_CACHE_DISABLE
+	// );
+
+	phys_set_flags(get_kernel_page_directory(), (virtual_addr_t)back_framebuffer_addr, PAGE_WRITEABLE | PAGE_CACHE_DISABLE);
+	
     qemu_log("framebuffer_size = %d (%dK) (%dM)", framebuffer_size, framebuffer_size/1024, framebuffer_size/(1024*1024));
     qemu_log("back_framebuffer_addr = %x", back_framebuffer_addr);
 }
@@ -86,6 +109,7 @@ void init_vbe(multiboot_header_t *mboot) {
     framebuffer_bpp = mboot->framebuffer_bpp;
     framebuffer_width = mboot->framebuffer_width;
     framebuffer_height = mboot->framebuffer_height;
+    // framebuffer_pitch = framebuffer_width * (framebuffer_bpp >> 3);
     framebuffer_size = framebuffer_height * framebuffer_pitch;
 
     qemu_log("[VBE] [USING LEGACY INFO] Width: %d; Height: %d; Pitch: %d; BPP: %d; Size: %d; Address: %x",
@@ -106,13 +130,19 @@ void init_vbe(multiboot_header_t *mboot) {
 			  frame,
 			  virt,
 			  framebuffer_size,
-			  PAGE_WRITEABLE);
+			  PAGE_WRITEABLE | PAGE_CACHE_DISABLE);
 
     qemu_log("Okay mapping! (took %d millis)", (getTicks() - start_tk)/(getFrequency()/1000));
 
-    qemu_log("Creating framebuffer");
+    qemu_log("Creating second framebuffer");
+
     create_back_framebuffer();
+
     qemu_log("^---- OKAY");
+
+	fb_mtrr_idx = find_free_mtrr();
+
+    write_mtrr_size(fb_mtrr_idx, frame, framebuffer_size, 1);
 }
 
 /**
@@ -201,6 +231,33 @@ uint32_t getScreenWidth(){
  */
 uint32_t getScreenHeight(){
     return framebuffer_height;
+}
+
+void graphics_update(uint32_t new_width, uint32_t new_height, uint32_t new_pitch) {
+    unmap_pages_overlapping(get_kernel_page_directory(), (virtual_addr_t)framebuffer_addr, framebuffer_size);
+
+    framebuffer_size = ALIGN((new_width + 32) * new_height * 4, PAGE_SIZE);
+
+    map_pages(get_kernel_page_directory(),
+              (physical_addr_t)framebuffer_addr,
+              (virtual_addr_t)framebuffer_addr,
+              framebuffer_size,
+              PAGE_WRITEABLE | PAGE_CACHE_DISABLE
+    );
+
+    framebuffer_width = new_width;
+    framebuffer_height = new_height;
+    framebuffer_pitch = new_pitch;
+
+    back_framebuffer_addr = krealloc(back_framebuffer_addr, framebuffer_size);
+    memset(back_framebuffer_addr, 0x00, framebuffer_size);
+
+	phys_set_flags(get_kernel_page_directory(), (virtual_addr_t)back_framebuffer_addr, PAGE_WRITEABLE | PAGE_CACHE_DISABLE);
+
+    uint32_t bfb_new_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t)back_framebuffer_addr);
+
+    write_mtrr_size(fb_mtrr_idx, (uint32_t)framebuffer_addr, framebuffer_size, 1);
+    write_mtrr_size(bfb_mtrr_idx, (uint32_t)bfb_new_phys, framebuffer_size, 1);
 }
 
 /**

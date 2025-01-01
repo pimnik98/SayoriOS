@@ -12,6 +12,7 @@
 #include "net/arp.h"
 #include "net/udp.h"
 #include "net/icmp.h"
+#include "net/tcp.h"
 
 void ipv4_handle_packet(netcard_entry_t *card, char *packet, size_t packet_size) {
 	ETH_IPv4_PKG* ipv4_pkt = (ETH_IPv4_PKG*)packet;
@@ -26,6 +27,22 @@ void ipv4_handle_packet(netcard_entry_t *card, char *packet, size_t packet_size)
 	qemu_log("  |--- Flags: %x", ipv4_pkt->Flags);
 	qemu_log("  |--- TimeLife: %x", ipv4_pkt->TimeLife);
 	qemu_log("  |--- Protocol: %x", ipv4_pkt->Protocol);
+	qemu_log("  |--- Checksum: %x", ipv4_pkt->Checksum);
+	qemu_log("  |--- Source: %d.%d.%d.%d", ipv4_pkt->Source[0], ipv4_pkt->Source[1], ipv4_pkt->Source[2], ipv4_pkt->Source[3]);
+	qemu_log("  |--- Destination: %d.%d.%d.%d", ipv4_pkt->Destination[0], ipv4_pkt->Destination[1], ipv4_pkt->Destination[2], ipv4_pkt->Destination[3]);
+	
+	
+	ethernet_frame_t* eth_frame = (packet - sizeof(ethernet_frame_t));
+	qemu_log("  |--- Phys source: %x:%x:%x:%x:%x:%x",
+			eth_frame->src_mac[0],
+			eth_frame->src_mac[1],
+			eth_frame->src_mac[2],
+			eth_frame->src_mac[3],
+			eth_frame->src_mac[4],
+			eth_frame->src_mac[5]);
+
+	// EXPERIMENTAL!
+	arp_lookup_add(eth_frame->src_mac, ipv4_pkt->Source);
 
 	if (ipv4_pkt->Protocol == ETH_IPv4_HEAD_UDP) {
 		udp_handle_packet(card, (udp_packet_t *) (packet + sizeof(ETH_IPv4_PKG)));
@@ -33,15 +50,15 @@ void ipv4_handle_packet(netcard_entry_t *card, char *packet, size_t packet_size)
 		qemu_err("ICMP not implemented!");
 
 		icmp_handle_packet(card, packet + sizeof(ETH_IPv4_PKG));
+	} else if(ipv4_pkt->Protocol == ETH_IPv4_HEAD_TCP) {
+       		qemu_note("HANDLING TCP!");
+
+        	tcp_handle_packet(card, (tcp_packet_t*)(packet + sizeof(ETH_IPv4_PKG)));
 	} else {
 		qemu_log("  | |--- Header: [%x] %s", ipv4_pkt->Protocol, "Unknown");
 		qemu_log("  | |--- RAW: %d bytes", packet_size - sizeof(ETH_IPv4_PKG));
 		qemu_log("  | |");
 	}
-
-	qemu_log("  |--- Checksum: %x", ipv4_pkt->Checksum);
-	qemu_log("  |--- Source: %d.%d.%d.%d", ipv4_pkt->Source[0], ipv4_pkt->Source[1], ipv4_pkt->Source[2], ipv4_pkt->Source[3]);
-	qemu_log("  |--- Destination: %d.%d.%d.%d", ipv4_pkt->Destination[0], ipv4_pkt->Destination[1], ipv4_pkt->Destination[2], ipv4_pkt->Destination[3]);
 }
 
 uint16_t ipv4_checksum(ETH_IPv4_PKG* packet) {
@@ -93,7 +110,7 @@ void ipv4_send_packet(netcard_entry_t *card, uint8_t dest_ip[4], const void *dat
 	}
 
 	if(spin == 0) {
-		qemu_err("%d.%d.%d.%d is unreachable", dest_ip[0], dest_ip[1], dest_ip[2], dest_ip[3]);
+		qemu_err("%u.%u.%u.%u is unreachable", dest_ip[0], dest_ip[1], dest_ip[2], dest_ip[3]);
 
 		goto end;
 	}

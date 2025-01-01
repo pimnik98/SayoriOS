@@ -1,9 +1,9 @@
 /**
  * @brief Менеджер виртуальной памяти
  * @author NDRAEY >_
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-11-04
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 // Charmander - a new virtual memory manager by NDRAEY (c) 2023
@@ -16,14 +16,14 @@
 heap_t system_heap;
 bool vmm_debug = false;
 
-size_t pmm_alloc_and_map(size_t* page_dir, size_t virtual_addr, size_t bytes) {
-	size_t count = (bytes + 1) / PAGE_SIZE;
-	size_t pages = phys_alloc_multi_pages(count);
-
-	map_pages(page_dir, pages, virtual_addr, bytes, PAGE_WRITEABLE);
-
-	return pages;
-}
+//size_t pmm_alloc_and_map(size_t* page_dir, size_t virtual_addr, size_t bytes) {
+//	size_t count = (bytes + 1) / PAGE_SIZE;
+//	size_t pages = phys_alloc_multi_pages(count);
+//
+//	map_pages(page_dir, pages, virtual_addr, bytes, PAGE_WRITEABLE);
+//
+//	return pages;
+//}
 
 size_t pmm_alloc_and_map_self(size_t* page_dir, size_t bytes) {
 	size_t count = (bytes + 1) / PAGE_SIZE;
@@ -48,7 +48,7 @@ void vmm_init() {
     memset(system_heap.memory, 0, PAGE_SIZE);
 
 	qemu_log("CAPACITY: %d", system_heap.capacity);
-	qemu_log("MEMORY AT: %x", system_heap.memory);
+	qemu_log("MEMORY AT: %x", (size_t)system_heap.memory);
 }
 
 void heap_dump() {
@@ -172,31 +172,36 @@ void* kmalloc_common(size_t size, size_t align) {
 										   reg_addr); // is allocated region there?
 
 		if (!region) {
-            if(vmm_debug)
-    			qemu_warn("Region is not yet mapped: %x", reg_addr);
+            if(vmm_debug) {
+                qemu_warn("Region is not yet mapped: %x", reg_addr);
+            }
 
-			size_t page = phys_alloc_single_page();
+            size_t page = phys_alloc_single_page();
 
-            if(vmm_debug)
+            if(vmm_debug) {
                 qemu_log("Obtained new page: %x", page);
+            }
 
-			map_single_page(get_kernel_page_directory(),
+            map_single_page(get_kernel_page_directory(),
 							page,
 							reg_addr,
 							PAGE_WRITEABLE);
 
-            if(vmm_debug)
-    			qemu_ok("Mapped!");
+            if(vmm_debug) {
+                qemu_ok("Mapped!");
+            }
 		} else {
-            if(vmm_debug)
+            if(vmm_debug) {
                 qemu_warn("Already mapped: %x (Size: %d)", reg_addr, size);
+            }
 		}
 
 		reg_addr += PAGE_SIZE;
 	}
 
-    if(vmm_debug)
-    	qemu_ok("From %x to %x, here you are!", allocated, allocated + size);
+    if(vmm_debug) {
+    	qemu_ok("From %x to %x, here you are!", (size_t)allocated, (size_t)(allocated + size));
+    }
 
 	return allocated;
 }
@@ -255,7 +260,7 @@ void kfree(void* ptr) {
 	struct heap_entry block = heap_get_block((size_t)ptr);
 
     if(vmm_debug)
-        qemu_warn("Freeing %x", ptr);
+        qemu_printf("Freeing %x\n", (size_t)ptr);
 
 	if(!block.address) {
 		qemu_warn("No block!");
@@ -297,8 +302,8 @@ void* krealloc(void* ptr, size_t memory_size) {
 
 		size_t index = heap_get_block_idx((size_t) ptr);
 
-		if(index == system_heap.allocated_count - 1) {
-			block->length = memory_size;
+		if(index == system_heap.allocated_count - 1) { // Last block?
+//            qemu_log("LAST BLOCK!");
 
 			size_t reg_addr = block->address & ~0xfff;
 
@@ -322,8 +327,12 @@ void* krealloc(void* ptr, size_t memory_size) {
 					qemu_warn("Already mapped: %x", reg_addr);
 				}*/
 
-				reg_addr += PAGE_SIZE;
+                reg_addr += PAGE_SIZE;
 			}
+
+            system_heap.used_memory += memory_size - block->length;
+
+            block->length = memory_size;
 		} else {
 //			qemu_err("CAN USE NEXT!");
 
@@ -359,6 +368,8 @@ void* krealloc(void* ptr, size_t memory_size) {
 					reg_addr += PAGE_SIZE;
 				}
 
+                system_heap.used_memory += memory_size - block->length;
+
 				block->length = memory_size;
 			} else {
 //				qemu_err("No space between blocks! :(");  // IT'S NORMAL
@@ -375,7 +386,9 @@ void* krealloc(void* ptr, size_t memory_size) {
 //			qemu_ok("Next is %x, %d", next.address, next.length);
 		}
 	} else if(memory_size < block->length) {  // Shrink
-//		qemu_warn("SHRINKING FROM %d to %d", block->length, memory_size);
+		qemu_warn("SHRINKING FROM %d to %d", block->length, memory_size);
+
+        system_heap.used_memory -= block->length - memory_size;
 
 		block->length = memory_size;
 	}
@@ -387,19 +400,37 @@ void* krealloc(void* ptr, size_t memory_size) {
  * @brief Копирует адресное пространство ядра в новое адресное пространство
  * @return Виртуальный адрес директории страниц нового адресного пространства
  */
-void* clone_kernel_page_directory() {
+void* clone_kernel_page_directory(size_t virts_out[1024]) {
 	uint32_t* page_dir = kmalloc_common(PAGE_SIZE, PAGE_SIZE);
-    uint32_t physaddr = virt2phys(get_kernel_page_directory(), (virtual_addr_t) page_dir);
-	const uint32_t* kern_dir = get_kernel_page_directory();
+    memset(page_dir, 0, PAGE_SIZE);
 
-    for(int i = 0; i < 1024; i++) {
+    uint32_t physaddr = virt2phys(get_kernel_page_directory(), (virtual_addr_t) page_dir);
+
+    const uint32_t* kern_dir = get_kernel_page_directory();
+    const uint32_t linaddr = (const uint32_t)(page_directory_start);
+
+//    uint32_t* addresses[1024] = {0};
+
+    for(int i = 0; i < 1023; i++) {
         if (kern_dir[i]) {
-            uint32_t* page_table = kmalloc_common(PAGE_SIZE, PAGE_SIZE);
+            uint32_t *page_table = kmalloc_common(PAGE_SIZE, PAGE_SIZE);
+
+            virts_out[i] = (size_t)page_table;
+        }
+    }
+
+    for(int i = 0; i < 1023; i++) {
+        if (kern_dir[i]) {
+            uint32_t* page_table = (uint32_t*)virts_out[i];
             uint32_t physaddr_pt = virt2phys(kern_dir, (virtual_addr_t) page_table);
 
-            qemu_log("Copying from %x to %x", page_directory_start + (i * 1024), page_table);
+            qemu_log("Copying from %x to %x", linaddr + (i * PAGE_SIZE), (size_t)page_table);
 
-            memcpy(page_table, page_directory_start + (i * 1024), PAGE_SIZE);
+            memcpy(page_table, (void*)(linaddr + (i * PAGE_SIZE)), PAGE_SIZE);
+
+            for(int j = 0; j < 1024; j++) {
+                page_table[j] = (page_table[j] & ~(PAGE_DIRTY | PAGE_ACCESSED));
+            }
 
             page_dir[i] = physaddr_pt | 3;
         }
@@ -407,11 +438,11 @@ void* clone_kernel_page_directory() {
 
     page_dir[1023] = physaddr | 3;
 
-	for(int i = 0; i < 1024; i++)
-		if(kern_dir[i])
-			qemu_log("[%d] %x = %x", i, kern_dir[i], page_dir[i]);
+    for(int i = 0; i < 1024; i++)
+        if(page_dir[i])
+            qemu_log("[%d] %x = %x", i, kern_dir[i], page_dir[i]);
 
-    qemu_log("Page directory at: V%x (P%x); Here you are!", page_dir, physaddr);
+    qemu_log("Page directory at: V%x (P%x); Here you are!", (size_t)page_dir, physaddr);
 
 	return page_dir;
 }

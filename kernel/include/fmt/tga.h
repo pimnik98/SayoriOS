@@ -21,10 +21,10 @@ typedef struct {
   unsigned short cmaporig;
   unsigned short cmaplen; // must be zero
   unsigned char cmapent;            // must be zero
-  unsigned short x;                 // must be zero
-  unsigned short y;                 // image's height
-  unsigned short h;                 // image's height
+  unsigned short x;                 // what
+  unsigned short y;                 // what
   unsigned short w;                 // image's width
+  unsigned short h;                 // image's height
   unsigned char bpp;                // must be 32
   unsigned char image_descriptor;          // must be 40
 } __attribute__((packed)) tga_header_t;

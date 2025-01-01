@@ -2,9 +2,9 @@
  * @file drv/input/keyboard.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Драйвер клавиатуры
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-11-01
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 extern void tty_backspace();
 
@@ -17,6 +17,7 @@ extern void tty_backspace();
 #include "io/tty.h"
 #include "drv/psf.h"
 #include "sys/isr.h"
+#include "drv/ps2.h"
 
 #define		KEY_BUFFER_SIZE		16
 #define		KBD_IS_READDATA			(1 << 0)
@@ -27,22 +28,19 @@ extern void tty_backspace();
 #define		KBD_IS_MOUSEDATA		(1 << 5)
 #define		KBD_IS_TIMEOUT			(1 << 6)
 #define		KBD_IS_ODDERROR			(1 << 7)
-#define		KBD_DATA_PORT		0x60
 #define		KBD_CTRL_REG		0x61
-#define		KBD_STATE_REG		0x64
 
 bool    SHIFT = false,          ///< Включен ли SHIFT
-        RU = false,             ///< Печатаем русскими?
-        enabled = true;         ///< Включен ли вывод?
-int     lastKey = 0;            ///< Последний индекс клавишы
-char    kbdbuf[256] = {0};      ///< Буфер клавиатуры
+        RU = false;             ///< Печатаем русскими?
+volatile int     lastKey = 0;            ///< Последний индекс клавишы
 uint8_t kbdstatus = 0;          ///< Статус клавиатуры
 bool    echo = true;            ///< Включен ли вывод?
 bool    key_ctrl = false;
+bool    key_alt  = false;
 
-char kmode = 0;
-char* curbuf = 0;
-uint32_t chartyped = 0;
+volatile char kmode = 0;
+volatile char* curbuf = 0;
+volatile uint32_t chartyped = 0;
 
 /**
  * @brief Выводит правильный символ, в зависимости от языка и шифта
@@ -56,16 +54,6 @@ uint32_t chartyped = 0;
  */
 char* __getCharKeyboard(char* en_s, char* en_b, char* ru_s, char* ru_b){
     return (RU?(SHIFT?ru_b:ru_s):(SHIFT?en_b:en_s));
-}
-
-/**
- * @brief Смена режима работы библиотеки
- *
- * @param bool s - Вкл/Выкл клавы
- */
-void changeStageKeyboard(bool s){
-    qemu_log("changeStageKeyboard: %d",s);
-    enabled = s;
 }
 
 /**
@@ -243,39 +231,6 @@ void* getCharKeyboardWait(bool ints) {
     }
 }
 
-/**
- * @brief Получение виртуального буфера с клавиатуры
- *
- * @return char* - Или символ или код
- */
-char* getStringBufferKeyboard(){
-    memset(kbdbuf, 0, 256);
-    while(1){
-        if (strlen(kbdbuf) > 254){
-            qemu_log("Buffer FULL! Max 255!!");
-            break;
-        }
-        if (lastKey == 0) continue;
-        int ikey = getIntKeyboardWait();
-        lastKey = 0;
-        char* key = getCharKeyboard(ikey, false);
-        //qemu_log("[LK] %x | %x\n",ikey,getCharKeyboardWait(true));
-        //tty_printf("[LK] %x | %d\n",ikey,key);
-        if (ikey == 0x9C || ikey == 0xE0 || ikey == 0x1C){
-            // Нажат Enter отбрасываем обработку
-            break;
-        }
-
-        if (key != 0 && lastKey < 128){
-            strcat(kbdbuf, key);
-            //tty_printf("\n[%d/256] Buffer: %s; KEY: %s; LK: %x | %x\n", kblen, kbdbuf, key,ikey,lastKey);
-            continue;
-        }
-        lastKey = 0;
-    }
-    return kbdbuf;
-}
-
 void kbd_add_char(char *buf, char* key) {
 	if(kmode == 1 && curbuf != 0) {
 		if (!(lastKey == 0x1C || lastKey == 0x0E)) {
@@ -341,23 +296,15 @@ int gets_max(char *buffer, int length) { // TODO: Backspace
  * @brief Обработчик клавиатуры
  */
 void keyboardHandler(registers_t regs){
-    //qemu_log("%d < %d",timePresed < getTicks());
-    if (!enabled) return;
+    kbdstatus = inb(PS2_STATE_REG);
 
-    outb(0x20, 0x20);
-
-    kbdstatus = inb(KBD_STATE_REG);
     if (kbdstatus & 0x01) {
-        lastKey = inb(KBD_DATA_PORT);
+        lastKey = inb(PS2_DATA_PORT);
         int cl = 1;
-		
-        //qemu_log("[O-CL] %x | %d",cl,cl);
-		
+
         CallTrigger(
 			0x0001,
-			// (getPressReleaseKeyboard() == 0x80?(lastKey-0x80):lastKey),
 			(void*)(lastKey % 0x80),
-			// (getPressReleaseKeyboard() == 0x80?0:1),
 			(void*)!getPressReleaseKeyboard(),
 			0,
 			0,
@@ -380,6 +327,10 @@ void keyboardHandler(registers_t regs){
             key_ctrl = true;
         } else if (lastKey == 157) { // Left Ctrl release
             key_ctrl = false;
+        } else if (lastKey == 0x38) { // Left Alt press
+            key_alt = true;
+        } else if (lastKey == 0xb8) { // Left Alt release
+            key_alt = false;
         }
 
         char* key = getCharKeyboard(lastKey, false);
@@ -390,129 +341,77 @@ void keyboardHandler(registers_t regs){
             }
 			kbd_add_char(curbuf, key);
         }
-
-        /*        
-        if(lastKey & 0x80) {
-            qemu_log("[KBD] Release on key: %d", lastKey);
-        }else{
-            qemu_log("[KBD] Press on key: %d", lastKey);
-        }
-        */
-
-        return;
     }
-}
-
-uint8_t ps2_read_configuration_byte() {
-    outb(KBD_STATE_REG, 0x20);
-
-    return inb(KBD_DATA_PORT);
-}
-
-void ps2_write_configuration_byte(uint8_t byte) {
-    outb(KBD_STATE_REG, 0x60);
-    outb(KBD_DATA_PORT, byte);
-}
-
-// false - error; true - ok
-bool ps2_test() {
-    outb(KBD_STATE_REG, 0xAA); // Test
-
-    uint8_t reply = inb(KBD_DATA_PORT);
-
-    return reply == 0x55;
 }
 
 /**
  * @brief Выполняет инициализацию клавиатуры
  */
 void keyboardInit() {
-    // Disable keyboard 
-    outb(KBD_STATE_REG, 0xAD); // 1
-    outb(KBD_STATE_REG, 0xA7); // 2
+    uint8_t stat;
 
-    // Flush The Output Buffer
+    ps2_in_wait_until_empty();
 
-	draw_vga_str("Warning: Now, SayoriOS will perform PS/2 buffer flushing. Process is very fast,", 79, 0, 16, 0xffffff);
-    draw_vga_str("         but on real hardware you can encounter system hanging.", 63, 0, 32, 0xffffff);
-	draw_vga_str("         If system hangs, press any key.", 40, 0, 64, 0xffffff);
-    draw_vga_str("         And even better, help us on https://github.com/pimnik98/SayoriOS", 73, 0, 64 + 16, 0xffffff);
-    
-    punch();
-    
-    while(inb(KBD_STATE_REG) & 1) {
-        inb(KBD_DATA_PORT);
+    outb(PS2_DATA_PORT, 0xf4);
+    stat = ps2_read();
+
+    if(stat != 0xfa) {
+        qemu_err("Keyboard error: Enable fail");
+        return;
     }
 
-    uint8_t byte = ps2_read_configuration_byte();
+    ps2_in_wait_until_empty();
 
-    if((byte >> 5) & 1) {
-        qemu_log("Dual channel PS/2 controller!");
-    } else {
-        qemu_log("Not a dual channel PS/2 controller!");
+    outb(PS2_DATA_PORT, 0xf0);
+    stat = ps2_read();
+
+    if(stat != 0xfa) {
+        qemu_err("Keyboard error: Scancode set fail");
+        return;
     }
 
-    byte &= 0b10111100;
+    ps2_in_wait_until_empty();
 
-    ps2_write_configuration_byte(byte);
+    outb(PS2_DATA_PORT, 0);
+    stat = ps2_read();
 
-    bool test_ok = ps2_test();
-
-    if(test_ok) {
-        qemu_log("PS/2 test ok!");
+    if(stat != 0xfa) {
+        qemu_err("Keyboard error: Zero fail");
+        return;
     }
 
-    if((byte >> 5) & 1) { // If it's dual channel...
-        outb(KBD_STATE_REG, 0xA8); // Enable second port
+    size_t scancode = ps2_read() & 0b11;
 
-        byte = ps2_read_configuration_byte();
+    qemu_note("SCANCODE SET: %d", scancode);
 
-        if((byte >> 5) & 1) {
-            qemu_log("Bit 5 is set, can't be dual channel PS/2 controller...");
-        } else {
-            qemu_log("Dual channel! Disabling second port...");
+    ps2_in_wait_until_empty();
 
-            outb(KBD_STATE_REG, 0xA7); // Disable second port
-        }
+    outb(PS2_DATA_PORT, 0xf3);
+    stat = ps2_read();
+
+    if(stat != 0xfa) {
+        qemu_err("Keyboard error: Repeat fail");
+        return;
     }
 
-    qemu_log("Testing first port...");
+    ps2_in_wait_until_empty();
 
-    outb(KBD_STATE_REG, 0xAB); // Test first port
+    outb(PS2_DATA_PORT, 0);
+    stat = ps2_read();
 
-    uint8_t result = inb(KBD_DATA_PORT);
-
-    if(result == 0x00) {
-        qemu_log("Passed test for channel 1!");
-    } else {
-        qemu_log("Channel 1: Test failed! Result: %x", result);
+    if(stat != 0xfa) {
+        qemu_err("Keyboard error: Zero fail (phase 2)");
+        return;
     }
 
-    if(!((byte >> 5) & 1)) {
-        // Dual channel?
+    uint8_t conf = ps2_read_configuration_byte();
 
-        outb(KBD_STATE_REG, 0xA9); // Test second port
+    qemu_log("%d%d%d%d%d%d%d%d", (conf >> 0) & 1, (conf >> 1) & 1, (conf >> 2) & 1, (conf >> 3) & 1, (conf >> 4) & 1, (conf >> 5) & 1, (conf >> 6) & 1, (conf >> 7) & 1);
 
-        result = inb(KBD_DATA_PORT);
+    ps2_write_configuration_byte(conf | 0b1000001);
+}
 
-        if(result == 0x00) {
-            qemu_log("Passed test for channel 2!");
-        } else {
-            qemu_log("Channel 2: Test failed! Result: %x", result);
-        }
-    }
-
-    // Enable channels
-    outb(KBD_STATE_REG, 0xAE);
-    outb(KBD_STATE_REG, 0xA8);
-
-    // Enable interrupts
-
-    byte = ps2_read_configuration_byte();
-    byte |= 0b01000011;
-
-    ps2_write_configuration_byte(byte);
-
+void ps2_keyboard_install_irq() {
     // Register interrupts
     register_interrupt_handler(IRQ1, &keyboardHandler);
     qemu_log("Keyboard installed");

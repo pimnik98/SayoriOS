@@ -30,15 +30,16 @@ void vmm_init();
 void *alloc_no_map(size_t size, size_t align);
 void free_no_map(void* ptr);
 bool vmm_is_page_used_by_entries(size_t address);
-void* kmalloc_common(size_t size, size_t align);
+void* kmalloc_common(size_t size, size_t align)  __attribute__((__malloc__)) __attribute__((__alloc_size__(1)));
 
 SAYORI_INLINE void* kmalloc(size_t size) {
+//	return kmalloc_common(size, sizeof(size_t));  // Alignment, blyad
 	return kmalloc_common(size, 0);
 }
 
 void* krealloc(void* ptr, size_t memory_size);
 void kfree(void* ptr);
-void* clone_kernel_page_directory();
+void* clone_kernel_page_directory(size_t virts_out[1024]);
 
 void vmm_debug_switch(bool enable);
 

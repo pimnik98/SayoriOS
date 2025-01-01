@@ -12,7 +12,7 @@ typedef struct {
 	int DriverFS;			///< Загружен ли драйвер фс?
 } __attribute__((packed)) NVFS_DECINFO;
 
-NVFS_DECINFO nvfs_decode(const char* Name);
+NVFS_DECINFO* nvfs_decode(const char* Name);
 size_t nvfs_read(const char* Name, size_t Offset, size_t Count, void* Buffer);
 int nvfs_create(const char* Name, int Mode);
 int nvfs_delete(const char* Name, int Mode);

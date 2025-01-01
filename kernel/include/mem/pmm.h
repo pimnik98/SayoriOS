@@ -20,16 +20,16 @@ extern size_t kernel_end;
 #define		PAGE_TABLE_INDEX_BITS	10	
 #define		PAGE_TABLE_INDEX_MASK	0x3FF
 
-#define		PAGE_PRESENT		(1 << 0)
-#define		PAGE_WRITEABLE		(1 << 1)
-#define		PAGE_USER			(1 << 2)
-#define		PAGE_WRITE_THROUGH	(1 << 3)
-#define		PAGE_CACHE_DISABLE	(1 << 4)
-#define		PAGE_ACCESSED		(1 << 5)
-#define		PAGE_DIRTY			(1 << 6)
-#define		PAGE_GLOBAL			(1 << 8)
+#define		PAGE_PRESENT		(1U << 0)
+#define		PAGE_WRITEABLE		(1U << 1)
+#define		PAGE_USER			(1U << 2)
+#define		PAGE_WRITE_THROUGH	(1U << 3)
+#define		PAGE_CACHE_DISABLE	(1U << 4)
+#define		PAGE_ACCESSED		(1U << 5)
+#define		PAGE_DIRTY			(1U << 6)
+#define		PAGE_GLOBAL			(1U << 8)
 
-#define     PAGE_BITMAP_SIZE (131072)
+#define     PAGE_BITMAP_SIZE (131072 * 4)
 
 #define 	PD_INDEX(virt_addr) ((virt_addr) >> 22)
 #define 	PT_INDEX(virt_addr) (((virt_addr) >> 12) & 0x3ff)
@@ -61,6 +61,10 @@ void blank_page_directory(uint32_t* pagedir_addr);
 bool phys_is_used_page(physical_addr_t addr);
 void phys_mark_page_entry(physical_addr_t addr, uint8_t used);
 uint32_t phys_get_page_data(uint32_t* page_dir, virtual_addr_t virtual);
-uint32_t virt2phys(uint32_t* page_dir, virtual_addr_t virtual);
+uint32_t virt2phys(const uint32_t *page_dir, virtual_addr_t virtual);
 void init_paging();
 uint32_t* get_kernel_page_directory();
+
+void map_pages_overlapping(physical_addr_t* page_directory, size_t physical_start, size_t virtual_start, size_t size, uint32_t flags);
+void unmap_pages_overlapping(physical_addr_t* page_directory, size_t virtual, size_t size);
+void phys_set_flags(uint32_t* page_dir, virtual_addr_t virtual, uint32_t flags);

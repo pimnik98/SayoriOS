@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/net/tcp.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d4/df3/tcp_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">tcp.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Created by ndraey on 21.4.2024.</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="../../dc/d54/common_8h.html">common.h</a>&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;net/cards.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;net/ethernet.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;net/tcp.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;net/endianess.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;io/ports.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;net/ipv4.h&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;mem/vmm.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#define MAX_CONNECTIONS 64</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<a class="code" href="../../d1/dad/structtcp__connection__t.html">tcp_connection_t</a> tcp_connections[MAX_CONNECTIONS] = {};</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keywordtype">int</span> tcp_find_connection(uint8_t address[4], <span class="keywordtype">size_t</span> port) {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; MAX_CONNECTIONS; i++) {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="../../d0/d43/lib_2string_8c.html#ab8114ea2706ad7422f0dc60d4821cb76">memcmp</a>((uint8_t*)&amp;tcp_connections[i].dest_ip_addr, address, 4) == 0</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            &amp;&amp; tcp_connections[i].source_port == port</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            &amp;&amp; tcp_connections[i].status != TCP_NONE) {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            <span class="keywordflow">return</span> i;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        }</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    }</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;}</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keywordtype">bool</span> tcp_new_connection(<a class="code" href="../../d1/dbb/structnetcard__entry__t.html">netcard_entry_t</a>* card, uint8_t address[4], <span class="keywordtype">size_t</span> port, <span class="keywordtype">size_t</span> seq_nr) {</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    uint8_t empty_addr[4] = {0, 0, 0, 0};</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">int</span> index = -1;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; MAX_CONNECTIONS; i++) {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="../../d0/d43/lib_2string_8c.html#ab8114ea2706ad7422f0dc60d4821cb76">memcmp</a>((uint8_t*)&amp;tcp_connections[i].dest_ip_addr, empty_addr, 4) == 0</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                &amp;&amp; tcp_connections[i].source_port == 0</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                &amp;&amp; tcp_connections[i].status == TCP_NONE) {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            index = i;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        }</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    }</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">if</span>(index == -1) {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    }</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(&amp;tcp_connections[index].dest_ip_addr, address, 4);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    tcp_connections[index].source_port = port;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    tcp_connections[index].status = TCP_CREATED;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    tcp_connections[index].seq = seq_nr;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    tcp_connections[index].card = card;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keywordtype">void</span> tcp_handle_packet(<a class="code" href="../../d1/dbb/structnetcard__entry__t.html">netcard_entry_t</a> *card, <a class="code" href="../../d6/ddf/structtcp__packet__t.html">tcp_packet_t</a> *packet) {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    qemu_note(<span class="stringliteral">&quot;!!!!!!!!!!!!!!!!!!!!!!!! TCP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!&quot;</span>);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    ETH_IPv4_PKG *ipv4 = (ETH_IPv4_PKG *)((<span class="keywordtype">size_t</span>)packet - <span class="keyword">sizeof</span>(ETH_IPv4_PKG));</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">size_t</span> data_payload_size = ipv4-&gt;TotalLength - <span class="keyword">sizeof</span>(ETH_IPv4_PKG);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    qemu_log(<span class="stringliteral">&quot;Data payload size: %d&quot;</span>, data_payload_size);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    packet-&gt;source = ntohs(packet-&gt;source);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    packet-&gt;destination = ntohs(packet-&gt;destination);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    qemu_log(<span class="stringliteral">&quot;FROM: %u.%u.%u.%u&quot;</span>, ipv4-&gt;Source[0], ipv4-&gt;Source[1], ipv4-&gt;Source[2], ipv4-&gt;Source[3]);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    qemu_note(<span class="stringliteral">&quot;SRC: %d; DEST: %d&quot;</span>, packet-&gt;source, packet-&gt;destination);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    qemu_note(<span class="stringliteral">&quot;FLAGS: SYN: %d; ACK: %d; PSH: %d; FIN: %d&quot;</span>, packet-&gt;syn, packet-&gt;ack, packet-&gt;psh, packet-&gt;fin);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    packet-&gt;ack_seq = ntohl(packet-&gt;ack_seq);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    packet-&gt;seq = ntohl(packet-&gt;seq);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">int</span> idx = -1;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordflow">if</span>(tcp_find_connection(ipv4-&gt;Source, packet-&gt;source) == -1) {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        tcp_new_connection(card, ipv4-&gt;Source, packet-&gt;source, packet-&gt;seq);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        qemu_ok(<span class="stringliteral">&quot;Created new connection!&quot;</span>);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    }</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    idx = tcp_find_connection(ipv4-&gt;Source, packet-&gt;source);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    qemu_note(<span class="stringliteral">&quot;Connection idx: %d&quot;</span>, idx);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">bool</span> is_stage_1 = packet-&gt;syn &amp;&amp; !packet-&gt;ack &amp;&amp; !packet-&gt;psh &amp;&amp; !packet-&gt;fin;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">bool</span> is_stage_2 = !packet-&gt;syn &amp;&amp; packet-&gt;ack &amp;&amp; !packet-&gt;psh &amp;&amp; !packet-&gt;fin;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">bool</span> is_push = !packet-&gt;syn &amp;&amp; !packet-&gt;ack &amp;&amp; packet-&gt;psh &amp;&amp; !packet-&gt;fin;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <a class="code" href="../../d6/ddf/structtcp__packet__t.html">tcp_packet_t</a>* sendable_packet = kcalloc(<span class="keyword">sizeof</span>(<a class="code" href="../../d6/ddf/structtcp__packet__t.html">tcp_packet_t</a>) + 8, 1);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(sendable_packet, packet, <span class="keyword">sizeof</span>(<a class="code" href="../../d6/ddf/structtcp__packet__t.html">tcp_packet_t</a>));</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordtype">char</span>* options = (<span class="keywordtype">char</span>*)(sendable_packet) + <span class="keyword">sizeof</span>(<a class="code" href="../../d6/ddf/structtcp__packet__t.html">tcp_packet_t</a>);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    options[0] = 0x02;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    options[1] = 0x04;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    options[2] = 0xff;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    options[3] = 0xd7;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    options[4] = 0x04;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    options[5] = 0x02;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    options[6] = 0x01;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    options[7] = 0x01;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordflow">if</span>(is_stage_1) {</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        tcp_connections[idx].seq = rand();</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        tcp_connections[idx].ack = sendable_packet-&gt;seq + 1;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        sendable_packet-&gt;ack = 1;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        sendable_packet-&gt;seq = ntohl(tcp_connections[idx].seq);  <span class="comment">// it&#39;s rand();</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        sendable_packet-&gt;ack_seq = ntohl(tcp_connections[idx].ack);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        uint16_t dest = ntohs(sendable_packet-&gt;destination);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        uint16_t src = ntohs(sendable_packet-&gt;source);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        sendable_packet-&gt;source = dest;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        sendable_packet-&gt;destination = src;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        sendable_packet-&gt;doff = 7;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        ipv4_send_packet(tcp_connections[idx].card, ipv4-&gt;Source, sendable_packet, <span class="keyword">sizeof</span>(<a class="code" href="../../d6/ddf/structtcp__packet__t.html">tcp_packet_t</a>) + 8, ETH_IPv4_HEAD_TCP);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    }</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    kfree(sendable_packet);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;}</div>
+<div class="ttc" id="acommon_8h_html"><div class="ttname"><a href="../../dc/d54/common_8h.html">common.h</a></div><div class="ttdoc">Основные определения ядра</div></div>
+<div class="ttc" id="alib_2string_8c_html_a873acd8f51f646b739d45f152ef5afc3"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a></div><div class="ttdeci">void * memcpy(void *restrict destination, const void *restrict source, size_t n)</div><div class="ttdoc">Копирование непересекающихся массивов используя SSE.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00173">string.c:173</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_ab8114ea2706ad7422f0dc60d4821cb76"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#ab8114ea2706ad7422f0dc60d4821cb76">memcmp</a></div><div class="ttdeci">int32_t memcmp(const char *s1, const char *s2, size_t n)</div><div class="ttdoc">Сравнение массивов</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00305">string.c:305</a></div></div>
+<div class="ttc" id="astructnetcard__entry__t_html"><div class="ttname"><a href="../../d1/dbb/structnetcard__entry__t.html">netcard_entry_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../da/d04/cards_8h_source.html#l00005">cards.h:5</a></div></div>
+<div class="ttc" id="astructtcp__connection__t_html"><div class="ttname"><a href="../../d1/dad/structtcp__connection__t.html">tcp_connection_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d8/da5/tcp_8h_source.html#l00036">tcp.h:36</a></div></div>
+<div class="ttc" id="astructtcp__packet__t_html"><div class="ttname"><a href="../../d6/ddf/structtcp__packet__t.html">tcp_packet_t</a></div><div class="ttdef"><b>Definition:</b> <a href="../../d8/da5/tcp_8h_source.html#l00010">tcp.h:10</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_82f177c45cd488be05cef4b828696fe2.html">net</a></li><li class="navelem"><b>tcp.c</b></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Дек 2024 11:15:22. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -2,9 +2,9 @@
  * @file drv/fs/fat32.c
  * @author Павленко Андрей (pikachu.andrey@vk.com)
  * @brief Файловая система FAT32
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-12-26
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
 #include <common.h>
@@ -15,9 +15,28 @@
 #include "drv/disk/dpm.h"
 #include "mem/vmm.h"
 #include "lib/utf_conversion.h"
+#include "lib/math.h"
+#include "fmt/tga.h"
+#include "io/rgb_image.h"
+#include "lib/libstring/string.h"
+#include "lib/php/pathinfo.h"
 
 size_t fs_fat32_read(char Disk, const char* Path, size_t Offset, size_t Size,void* Buffer){
-	return 0;
+    size_t clust = fs_fat32_evaluate(Disk, Path, true);
+
+    if(clust == 0) {
+        return 0;
+    }
+
+    char* filename = pathinfo(Path, PATHINFO_BASENAME);
+
+//    fat_file_info_t info = fs_fat32_get_object_info(Disk, filename, clust);
+
+    fs_fat32_read_file_from_dir(Disk, clust, Offset, Size, filename, Buffer);
+
+    kfree(filename);
+
+	return Size;
 }
 
 size_t fs_fat32_write(char Disk, const char* Path,size_t Offset,size_t Size,void* Buffer){
@@ -25,21 +44,127 @@ size_t fs_fat32_write(char Disk, const char* Path,size_t Offset,size_t Size,void
 }
 
 FSM_FILE fs_fat32_info(char Disk, const char* Path) {
-	return (FSM_FILE){};
+    FSM_FILE file = {0};
+
+    // Get folder where file is contained
+    size_t clust = fs_fat32_evaluate(Disk, Path, true);
+
+    if(clust == 0) {
+        qemu_err("File does not exist");
+        return file;
+    }
+
+    char* filename = pathinfo(Path, PATHINFO_BASENAME);
+
+    qemu_warn("Path: %s; Filename: %s;", Path, filename);
+
+    fat_file_info_t info = fs_fat32_get_object_info(Disk, filename, clust);
+    qemu_log("OK?");
+
+    if(info.filename[0] == 0) {
+        return file;
+    }
+
+    memset(file.Name, 0, 1024);
+    memcpy(file.Name, info.filename, 256);
+
+    file.Size = info.size;
+    // PIMNIK98 MAKE MACROS FOR FSM TYPES PLEASE
+    //    file.Type = WHAT?????
+
+    file.Ready = 1;
+
+    qemu_ok("%s %d", file.Name, file.Size);
+
+    kfree(filename);
+
+    return file;
 }
 
-FSM_DIR* fs_fat32_dir(char Disk,const char* Path){
+FSM_DIR* fs_fat32_dir(char Disk, const char* Path) {
     fat_description_t* desc = dpm_metadata_read(Disk);
 
+    qemu_note("Given path is: %s", Path);
+    size_t clust = fs_fat32_evaluate(Disk, Path, true);
+
+    qemu_warn("Got cluster: %d", clust);
+
     FSM_DIR *Dir = kcalloc(sizeof(FSM_DIR), 1);
+
+    if(clust == 0) {
+        Dir->Ready = 0;
+        Dir->Count = 0;
+        Dir->CountFiles = 0;
+        Dir->CountDir = 0;
+        Dir->CountOther = 0;
+        Dir->Files = 0;
+
+        return Dir;
+    }
+
     FSM_FILE *Files = kcalloc(sizeof(FSM_FILE), 1);
 
-    // TODO: Actually provide an information about disk
+    size_t cluster_count = fs_fat32_get_cluster_count(Disk, clust);
+    char* cluster_data = kcalloc(desc->cluster_size, cluster_count);
+
+    fs_fat32_read_clusters_to_memory(Disk, clust, cluster_data);
+
+    size_t offset = 0;
+    size_t file_count = 0;
+    size_t directory_count = 0;
+
+    while(1) {
+        fat_file_info_t file = fs_fat32_read_file_info(cluster_data + offset);
+
+        if(file.advanced_info.short_file_name[0] == 0)
+            break;
+
+        size_t len = strlen(file.filename);
+        size_t skip_lfns_count = (len / 13);
+        size_t skip_lfns_remiander = (len % 13);
+
+        if(skip_lfns_remiander > 0)
+            skip_lfns_count++;
+
+        if(file.is_lfn)
+            offset += sizeof(LFN_t) * skip_lfns_count;
+
+        offset += sizeof(fat_object_info_t);
+
+        Files = krealloc(Files, sizeof(FSM_FILE) * (file_count + directory_count + 1));
+
+        Files[directory_count + file_count].LastTime.year = 1980 + ((file.advanced_info.last_modif_date >> 9) & 0b1111111);
+        Files[directory_count + file_count].LastTime.month = (file.advanced_info.last_modif_date >> 5) & 0b1111;
+        Files[directory_count + file_count].LastTime.day = (file.advanced_info.last_modif_date >> 0) & 0b11111;
+
+        Files[directory_count + file_count].LastTime.hour = ((file.advanced_info.last_modif_time >> 11) & 0b11111);
+        Files[directory_count + file_count].LastTime.minute = ((file.advanced_info.last_modif_time >> 5) & 0b111111);
+        Files[directory_count + file_count].LastTime.second = ((file.advanced_info.last_modif_time >> 0) & 0b11111);
+
+        memset(Files[directory_count + file_count].Name, 0, 1024);
+        memcpy(Files[directory_count + file_count].Name, file.filename, strlen(file.filename));
+        Files[directory_count + file_count].Size = file.size;
+        Files[directory_count + file_count].Ready = 1;
+
+        qemu_note("File: %s, Size: %d", Files[directory_count + file_count].Name, Files[directory_count + file_count].Size);
+
+        if(file.advanced_info.attributes & ATTR_DIRECTORY) {
+            Files[directory_count + file_count].Type = 5;  // What an undocumented magic?
+
+            directory_count++;
+        } else {
+            Files[directory_count + file_count].Type = 0;  // What an undocumented magic?
+
+            file_count++;
+        }
+    }
+
+    kfree(cluster_data);
 
     Dir->Ready = 1;
-    Dir->Count = 0;
-    Dir->CountFiles = 0;
-    Dir->CountDir = 0;
+    Dir->Count = file_count + directory_count;
+    Dir->CountFiles = file_count;
+    Dir->CountDir = directory_count;
     Dir->CountOther = 0;
     Dir->Files = Files;
 
@@ -70,12 +195,26 @@ vector_t* fs_fat32_get_clusters(char Disk, size_t cluster_number) {
     do {
         uint32_t old_cluster = cur_cluster;
 
-        dpm_read(Disk, desc->fat_offset + (cur_cluster * 4), 4, &cur_cluster);
+        cur_cluster = desc->fat_table[cur_cluster];
+//        dpm_read(Disk, desc->fat_offset + (cur_cluster * 4), 4, &cur_cluster);
 
         vector_push_back(container, old_cluster);
     } while(!(cur_cluster == 0x0fffffff || cur_cluster == 0x0ffffff8));
 
     return container;
+}
+
+void fs_fat32_read_entire_fat(char Disk) {
+    fat_description_t* desc = dpm_metadata_read(Disk);
+
+    if(desc->fat_table) {
+        qemu_err("Reading FAT second time is not allowed");
+        while(1);
+    }
+
+    desc->fat_table = kcalloc(1, desc->fat_size);
+
+    dpm_read(Disk, 0, desc->fat_offset, desc->fat_size, desc->fat_table);
 }
 
 // Make sure buffer size is cluster-size aligned :)
@@ -90,11 +229,131 @@ void fs_fat32_read_clusters_to_memory(char Disk, size_t cluster_number, void* bu
         size_t addr = ((desc->info.reserved_sectors + (desc->info.fat_size_in_sectors * 2)) \
  						+ ((current_cluster - 2) * desc->info.sectors_per_cluster)) * desc->info.bytes_per_sector;
 
-        dpm_read(Disk, addr, desc->cluster_size, (void*)(((size_t)buffer) + (i * desc->cluster_size)));
+        dpm_read(Disk, 0, addr, desc->cluster_size, (void*)(((size_t)buffer) + (i * desc->cluster_size)));
     }
 
     vector_destroy(cluster_list);
 }
+
+vector_t* fs_fat32_optimize(vector_t* cluster_list) {
+    vector_t* lists = vector_new();
+
+    size_t old = vector_get(cluster_list, 0).element;
+    size_t start = vector_get(cluster_list, 0).element;
+
+    for(int i = 1; i < cluster_list->size; i++) {
+        size_t current = vector_get(cluster_list, i).element;
+
+        if (current - 1 != old) {
+            vector_push_back(lists, start);
+            vector_push_back(lists, old);
+
+            start = current;
+        }
+
+        old = current;
+    }
+
+    vector_push_back(lists, start);
+    vector_push_back(lists, old);
+
+    return lists;
+}
+
+void fs_fat32_read_clusters_to_memory_precise(char Disk, size_t cluster_number, void *buffer, size_t byte_offset,
+                                              size_t len) {
+    fat_description_t* desc = dpm_metadata_read(Disk);
+
+    qemu_log("Reading cluster chain...");
+    vector_t* cluster_list = fs_fat32_get_clusters(Disk, cluster_number);
+
+#if FAT32_LINEAR_OPTIMIZATION==1
+    vector_t* optimized = fs_fat32_optimize(cluster_list);
+
+    qemu_printf("Optimized: ");
+
+    for(int i = 0; i < optimized->size; i++) {
+        qemu_printf("%u ", vector_get(optimized, i).element);
+    }
+
+    qemu_printf("\n");
+
+    vector_destroy(cluster_list);
+
+    cluster_list = optimized;
+#endif
+
+    qemu_log("Byte offset: %d; Size of read: %d; Cluster size: %d", byte_offset, len, desc->cluster_size);
+
+    size_t starting_cluster = byte_offset / desc->cluster_size;
+    size_t read_clutser_count = len / desc->cluster_size;
+
+    if(len % desc->cluster_size > 0) {
+        read_clutser_count++;
+    }
+
+    qemu_log("Calculated: Starting cluster: %d; Cluster count: %d", starting_cluster, read_clutser_count);
+    qemu_log("Reading file data...");
+
+#if FAT32_LINEAR_OPTIMIZATION==1
+    size_t buffer_index = 0;
+
+    for(int i = 0; i < cluster_list->size; i+=2) {
+        size_t start_cluster = vector_get(cluster_list, i).element;
+        size_t end_cluster = vector_get(cluster_list, i + 1).element;
+        size_t count = end_cluster - start_cluster + 1;
+
+        qemu_note("START: %u; END: %u; COUNT: %u", start_cluster, end_cluster, count);
+
+
+        qemu_note("BUFFER INDEX: %u", buffer_index);
+        qemu_note("STARTING_CLUSTER: %u", starting_cluster);
+
+        size_t addr = ((desc->info.reserved_sectors + (desc->info.fat_size_in_sectors * 2)) \
+ 						+ ((start_cluster - 2) * desc->info.sectors_per_cluster)) * desc->info.bytes_per_sector;
+
+         // TODO: byte_offset support
+
+        qemu_note("LEN: %u", MIN(desc->cluster_size * count, len));
+        qemu_note("LOAD TO: %x", (size_t)buffer);
+
+        dpm_read(
+                Disk,
+                0,
+                addr,
+                MIN(desc->cluster_size * count, len),
+                (void*)(((size_t)buffer) + (buffer_index * desc->cluster_size))
+        );
+
+        len -= MIN(desc->cluster_size * count, len);
+        buffer_index += count;
+    }
+
+    qemu_log("Remaining: %u", len);
+#else
+    for(size_t i = starting_cluster; i < starting_cluster + read_clutser_count; i++) {
+        size_t buffer_index = i - starting_cluster;
+
+        size_t current_cluster = vector_get(cluster_list, i).element;
+
+        size_t addr = ((desc->info.reserved_sectors + (desc->info.fat_size_in_sectors * 2)) \
+ 						+ ((current_cluster - 2) * desc->info.sectors_per_cluster)) * desc->info.bytes_per_sector;
+
+        dpm_read(
+                Disk,
+                0,
+                addr + byte_offset,
+                MIN(desc->cluster_size, len),
+                (void*)(((size_t)buffer) + (buffer_index * desc->cluster_size))
+        );
+
+        len -= desc->cluster_size;
+    }
+#endif
+
+    vector_destroy(cluster_list);
+}
+
 
 size_t fs_fat32_get_cluster_count(char Disk, size_t cluster_number) {
     vector_t* clusters = fs_fat32_get_clusters(Disk, cluster_number);
@@ -122,7 +381,7 @@ size_t fs_fat32_read_lfn(char* data, char* out) {
         uint8_t lfn_num = lfn.attr_number & ~LFN_LAST_ENTRY;
 
         if(lfn.reserved != 0 || lfn_num > 20 || lfn.attribute != 0x0F) {
-            // It's normal
+            // It's normal (it may indicate that LFN entries are coming to an end.
             // qemu_err("Invalid LFN!");
             return 0;
         }
@@ -142,14 +401,11 @@ size_t fs_fat32_read_lfn(char* data, char* out) {
             }
         }
 
-//        char* x = new char[encoded_characters];
         char* x = kcalloc(1, encoded_characters);
 
         utf16_to_utf8((short*)prepared_chunk,
                       (int)encoded_characters / 2,
                       x);
-
-//        qemu_note("[%d] PIECE: %.13s", encoded_characters, x);
 
         memmove(out + 13, out, strlen(x));
         memcpy(out, x, 13);
@@ -168,7 +424,7 @@ size_t fs_fat32_read_lfn(char* data, char* out) {
     return encoded_characters;
 }
 
-fat_file_info_t fs_fat32_get_file_info(char* data) {
+fat_file_info_t fs_fat32_read_file_info(char* data) {
     fat_file_info_t info = {0};
 
     size_t ecc = fs_fat32_read_lfn(data, info.filename);
@@ -192,8 +448,6 @@ fat_file_info_t fs_fat32_get_file_info(char* data) {
             info.filename[i] = info.advanced_info.short_file_name[i];
         }
 
-//        qemu_note("TODO: Read SFN and make it filename!");
-//        while(1);
         info.is_lfn = false;
     } else {
         info.is_lfn = true;
@@ -205,11 +459,93 @@ fat_file_info_t fs_fat32_get_file_info(char* data) {
     return info;
 }
 
+fat_file_info_t fs_fat32_get_object_info(char Disk, const char* filename, size_t directory_cluster) {
+    fat_description_t* desc = dpm_metadata_read(Disk);
+
+    size_t cluster_count = fs_fat32_get_cluster_count(Disk, directory_cluster);
+
+    char* cluster_data = kcalloc(desc->cluster_size, cluster_count);
+
+    fs_fat32_read_clusters_to_memory(Disk, directory_cluster, cluster_data);
+
+    size_t offset = 0;
+
+    while(1) {
+        fat_file_info_t info = fs_fat32_read_file_info(cluster_data + offset);
+
+        if(info.advanced_info.short_file_name[0] == 0)
+            break;
+
+        size_t len = strlen(info.filename);
+        size_t skip_lfns_count = (len / 13);
+        size_t skip_lfns_remiander = (len % 13);
+
+        if(skip_lfns_remiander > 0)
+            skip_lfns_count++;
+
+        if(info.is_lfn)
+            offset += sizeof(LFN_t) * skip_lfns_count;
+
+        offset += sizeof(fat_object_info_t);
+
+        if(strcmp(info.filename, filename) == 0) {
+            kfree(cluster_data);
+
+            return info;
+        }
+    }
+
+    kfree(cluster_data);
+
+    return (fat_file_info_t){0};
+}
+
+void fs_fat32_read_file_from_dir(char Disk, size_t directory_cluster, size_t byte_offset, size_t length, char *filename,
+                                 char *out) {
+    fat_description_t* desc = dpm_metadata_read(Disk);
+
+    size_t cluster_count = fs_fat32_get_cluster_count(Disk, directory_cluster);
+    char* cluster_data = kcalloc(desc->cluster_size, cluster_count);
+
+    fs_fat32_read_clusters_to_memory(Disk, directory_cluster, cluster_data);
+
+    size_t offset = 0;
+
+    while(1) {
+        fat_file_info_t file = fs_fat32_read_file_info(cluster_data + offset);
+
+        if(file.advanced_info.short_file_name[0] == 0)
+            break;
+
+        size_t len = strlen(file.filename);
+        size_t skip_lfns_count = (len / 13);
+        size_t skip_lfns_remiander = (len % 13);
+
+        if(skip_lfns_remiander > 0)
+            skip_lfns_count++;
+
+        if(file.is_lfn)
+            offset += sizeof(LFN_t) * skip_lfns_count;
+
+        offset += sizeof(fat_object_info_t);
+
+        if(memcmp(file.filename, filename, len) == 0) {
+            qemu_ok("File found!");
+
+//            fs_fat32_read_clusters_to_memory_precise(Disk, file.starting_cluster, out, byte_offset, file.size);
+            fs_fat32_read_clusters_to_memory_precise(Disk, file.starting_cluster, out, byte_offset, length);
+            break;
+        }
+    }
+
+    kfree(cluster_data);
+}
+
 void fs_fat32_scan_directory(char Disk, size_t directory_cluster) {
     fat_description_t* desc = dpm_metadata_read(Disk);
 
     size_t cluster_count = fs_fat32_get_cluster_count(Disk, directory_cluster);
-    char* cluster_data = kcalloc(1, desc->cluster_size * cluster_count);
+    char* cluster_data = kcalloc(desc->cluster_size, cluster_count);
 
     fs_fat32_read_clusters_to_memory(Disk, directory_cluster, cluster_data);
 
@@ -217,7 +553,7 @@ void fs_fat32_scan_directory(char Disk, size_t directory_cluster) {
 
     // TODO: Actually scan directory
     while(1) {
-        fat_file_info_t file = fs_fat32_get_file_info(cluster_data + offset);
+        fat_file_info_t file = fs_fat32_read_file_info(cluster_data + offset);
 
         if(file.advanced_info.short_file_name[0] == 0)
             break;
@@ -242,6 +578,70 @@ void fs_fat32_scan_directory(char Disk, size_t directory_cluster) {
     kfree(cluster_data);
 }
 
+// Return cluster number
+size_t fs_fat32_evaluate(char Disk, const char* path, bool error_on_file) {
+    size_t current_cluster = 2;  // 2 is a root directory
+    size_t old_cluster = 2;
+
+    if(strlen(path) == 0) {
+        return current_cluster;
+    }
+
+    string_t* strpath = string_from_charptr(path);
+    vector_t* pieces = string_split(strpath, "/");
+
+    fat_file_info_t temp_info = {0};
+
+    for(int i = 0; i < pieces->size; i++) {
+        char* value = ADDR2STRING(pieces->data[i])->data;
+        qemu_note("%s", value);
+
+        if(strlen(value) == 0)
+            continue;
+
+        if(strcmp(value, ".") == 0)
+            continue;
+
+        if(strcmp(value, "..") == 0) {
+            current_cluster = old_cluster;
+            continue;
+        }
+
+        temp_info = fs_fat32_get_object_info(Disk, value, current_cluster);
+
+        if(temp_info.filename[0] == 0) {
+            string_split_free(pieces);
+            string_destroy(strpath);
+
+            return 0;
+        }
+
+        if(~temp_info.advanced_info.attributes & ATTR_DIRECTORY) {
+            if(error_on_file) {
+                qemu_err("That's not a directory, can't go on...");
+
+                string_split_free(pieces);
+                string_destroy(strpath);
+
+                return current_cluster;
+            } else {
+                string_split_free(pieces);
+                string_destroy(strpath);
+
+                return temp_info.starting_cluster;
+            }
+        }
+
+        old_cluster = current_cluster;
+        current_cluster = temp_info.starting_cluster;
+    }
+
+    string_split_free(pieces);
+    string_destroy(strpath);
+
+    return current_cluster;
+}
+
 int fs_fat32_detect(char Disk) {
 // If we initialize fat32 again, bug will appear (could not read root directory)
 //    if(dpm_metadata_read(Disk)) {
@@ -251,7 +651,7 @@ int fs_fat32_detect(char Disk) {
 
     fat_description_t* fat_system = kcalloc(1, sizeof(fat_description_t));
 
-	dpm_read(Disk, 0, sizeof(fat_info_t), &fat_system->info);
+	dpm_read(Disk, 0, 0, sizeof(fat_info_t), &fat_system->info);
 
     qemu_warn("Trying FAT32...");
 
@@ -281,6 +681,9 @@ int fs_fat32_detect(char Disk) {
         // Assign FAT32 filesystem in-place
         dpm_metadata_write(Disk, (uint32_t) fat_system);
 
+        qemu_log("Reading FAT32 FAT table to memory, it may take a while...");
+        fs_fat32_read_entire_fat(Disk);
+
         vector_t* root_directory = fs_fat32_get_clusters(Disk, 2);
 
         qemu_note("[%d] Root occupies folllwing clusters:", root_directory->size);
@@ -293,6 +696,29 @@ int fs_fat32_detect(char Disk) {
         qemu_warn("SCANNING ROOT DIRECTORY");
         fs_fat32_scan_directory(Disk, 2);
         qemu_warn("END SCANNING ROOT DIRECTORY");
+
+//        FSM_FILE inf = fs_fat32_info('C', "fight.tga");
+//
+//        char* temp = kcalloc(1, inf.Size);
+//        char* pix = kcalloc(1, 6 * MB);
+//        char* pix2 = kcalloc(1, 4 * MB);
+//
+//        fs_fat32_read(Disk, "fight.tga", 0, inf.Size, temp);
+//
+//        tga_extract_pixels_from_data(temp, pix);
+//
+//        size_t origw = 800, origh = 1245;
+//        size_t targw = 400, targh = 600;
+//
+//        scale_rgb_image(pix, origw, origh, targw, targh, 1, pix2);
+//
+//        draw_rgb_image(pix2, targw, targh, 32, 0, 0);
+//
+//        kfree(temp);
+//        kfree(pix);
+//        kfree(pix2);
+//
+//        while(1);
 
         return 1;
     }

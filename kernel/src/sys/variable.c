@@ -2,10 +2,10 @@
  * @file sys/variable.c
  * @authors Пиминов Никита (github.com/pimnik98 | VK: @piminov_remont)
  * @brief Система переменных
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-06-01
  *
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  *
  */
 #include <mem/vmm.h>
@@ -13,7 +13,7 @@
 #include <io/ports.h>
 #include <sys/variable.h>  
 
-VARIABLE G_VARIABLE[512] = {0};
+VARIABLE G_VARIABLE[128] = {0};
 size_t C_VARIABLE = 0;
 
 size_t variable_freeID(char* Key){

@@ -2,9 +2,9 @@
  * @file drv/fs/tarfs.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Файловая система TarFS
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-10-14
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
 
@@ -18,8 +18,6 @@
 
 bool tarfs_debug = false;
 
-
-
 int oct2bin(char *str, int size) {
     int n = 0;
     char *c = str;
@@ -31,16 +29,21 @@ int oct2bin(char *str, int size) {
     return n;
 }
 
-size_t fs_tarfs_read(const char Disk,const char* Path,size_t Offset,size_t Size,void* Buffer){
-    if (tarfs_debug) qemu_log("[FSM] [TARFS] [READ] D:%d | N: %s | O:%d | S:%d",Disk,Path,Offset,Size);
-	TarFS_ROOT* initrd = (TarFS_ROOT*) dpm_metadata_read(Disk);
-	for (int i = 1;i < initrd->Count;i++){
+size_t fs_tarfs_read(const char Disk, const char* Path, size_t Offset, size_t Size, void* Buffer){
+    if(tarfs_debug)
+        qemu_log("[FSM] [TARFS] [READ] D:%d | N: %s | O:%d | S:%d",Disk,Path,Offset,Size);
+
+    TarFS_ROOT* initrd = (TarFS_ROOT*) dpm_metadata_read(Disk);
+
+    for (int i = 1; i < initrd->Count; i++){
 		if (!strcmpn(initrd->Files[i].Name,Path))
 			continue;
 
-		return dpm_read(Disk,initrd->Files[i].Addr+Offset, Size, Buffer);
+		return dpm_read(Disk,0,initrd->Files[i].Addr+Offset, Size, Buffer);
 	}
-    if (tarfs_debug) qemu_log("[FSM] [TARFS] [READ] NO FOUND!!");
+
+    if (tarfs_debug)
+        qemu_log("[FSM] [TARFS] [READ] NO FOUND!!");
 	return 0;
 }
 
@@ -63,7 +66,7 @@ FSM_FILE fs_tarfs_info(const char Disk,const char* Path){
 
 	TarFS_ROOT* initrd = (TarFS_ROOT*) dpm_metadata_read(Disk);
 
-	for (int i = 1; i < initrd->Count; i++){
+	for (int i = 1; i < initrd->Count; i++) {
 		//qemu_log("[%d] '%s' != '%s'",strcmp(initrd->Files[i].Name,Path),initrd->Files[i].Name,Path);
 		if (!strcmpn(initrd->Files[i].Name,Path)) continue;
 //		file->Ready = 1;
@@ -79,6 +82,7 @@ FSM_FILE fs_tarfs_info(const char Disk,const char* Path){
 
         memcpy(file.Path,zpath,strlen(zpath));
         memcpy(file.Name,initrd->Files[i].Name,strlen(initrd->Files[i].Name));
+        file.CHMOD = (initrd->Files[i].Type == 48?FSM_CHMOD_READ | FSM_CHMOD_EXEC:FSM_CHMOD_READ);
         file.Mode = 'r';
         file.Size = initrd->Files[i].Size;
         file.Type = initrd->Files[i].Type - 48;
@@ -99,7 +103,7 @@ void fs_tarfs_label(const char Disk, char* Label){
 int fs_tarfs_detect(const char Disk){
 	char* Buffer = kmalloc(5);
 
-	dpm_read(Disk, 257, 5,Buffer);
+	dpm_read(Disk,0,257, 5,Buffer);
 
 	bool isTarFS = ((Buffer[0]  != 0x75 || Buffer[1]  != 0x73 || Buffer[2]  != 0x74 || Buffer[3]  != 0x61 || Buffer[4]  != 0x72)?false:true);
     if (tarfs_debug) qemu_log("[0] = %x",Buffer[0]);
@@ -108,6 +112,7 @@ int fs_tarfs_detect(const char Disk){
     if (tarfs_debug) qemu_log("[3] = %x",Buffer[3]);
     if (tarfs_debug) qemu_log("[4] = %x",Buffer[4]);
     if (tarfs_debug) qemu_log("[TarFS] is: %d",isTarFS);
+
 	kfree(Buffer);
 	return (int)isTarFS;
 }
@@ -119,7 +124,7 @@ FSM_DIR* fs_tarfs_dir(const char Disk,const char* Path){
     FSM_FILE *Files = kcalloc(sizeof(FSM_FILE), initrd->Count);
 
 	size_t CA = 0, CF = 0, CD = 0, CO = 0;
-	for (int i = 1;i < initrd->Count;i++){
+	for (int i = 1; i < initrd->Count; i++){
 		//////////////////////////
 		//// Обращаю внимание, для за путь принимается сейчас R:\\Sayori\\
 		//// Если вам искать только файлы, то вот вариант
@@ -135,14 +140,14 @@ FSM_DIR* fs_tarfs_dir(const char Disk,const char* Path){
 		char* zpath = pathinfo(initrd->Files[i].Name, PATHINFO_DIRNAME);
 
 		fsm_convertUnix(atoi(initrd->Files[i].LastTime), &Files[CA].LastTime);
-
+        Files[CA].CHMOD = FSM_CHMOD_READ;
 		Files[CA].Mode = 'r';
 		Files[CA].Size = initrd->Files[i].Size;
 		Files[CA].Type = initrd->Files[i].Type - 48;
 		Files[CA].Ready = 1;
 
 		memcpy(Files[CA].Path, zpath, strlen(zpath));
-		
+
 		substr(Files[CA].Name, 
 			initrd->Files[i].Name, 
 			strlen(Path), 
@@ -208,8 +213,9 @@ TarFS_ROOT* fs_tarfs_init(uint32_t in, uint32_t size, int Mode){
 
 	size_t currentInx = 0;
 	ssize_t sizeDir = -1;
-	TarFS_File* tffs = kmalloc((count+1) * sizeof(TarFS_File));
-	TarFS_ROOT* root = kmalloc(sizeof(TarFS_ROOT));
+
+	TarFS_File* tffs = kcalloc(count + 1, sizeof(TarFS_File));
+	TarFS_ROOT* root = kcalloc(sizeof(TarFS_ROOT), 1);
 
 	size_t pos = 0;
 
@@ -219,11 +225,11 @@ TarFS_ROOT* fs_tarfs_init(uint32_t in, uint32_t size, int Mode){
 		int filesize = oct2bin(file->Size, 11);
 
 		if (sizeDir == -1 && Mode == 1){
-			//qemu_log("Mode:1 | s:%d | m:%d",sizeDir,Mode);
-			sizeDir = strlen(file->Name);
+			qemu_log("Mode:1 | s:%d | m:%d",sizeDir,Mode);
+			sizeDir = strlen(file->Name) - 1;
 		} else if (sizeDir == -1) {
-			//qemu_log("Mode:0");
-			sizeDir = 2;
+			qemu_log("Mode:0");
+			sizeDir = 1;
 		}
 
 		tffs[currentInx].Ready = (currentInx==0?0:1);
@@ -236,7 +242,7 @@ TarFS_ROOT* fs_tarfs_init(uint32_t in, uint32_t size, int Mode){
 		memcpy(tffs[currentInx].Mode,file->Mode, 8);
 		memcpy(tffs[currentInx].LastTime,file->LastTime,12);
 		substr(tffs[currentInx].Name,file->Name,sizeDir,100-sizeDir);
-		//qemu_log("[%d] fix name:%s",strlen(tffs[currentInx].Name),tffs[currentInx].Name);
+		qemu_log("[%d] fix name:%s",strlen(tffs[currentInx].Name),tffs[currentInx].Name);
 		currentInx++;
 
         if (tarfs_debug) qemu_log("[%x] Name: %s; Size: %d", file, file->Name, filesize);
@@ -246,7 +252,7 @@ TarFS_ROOT* fs_tarfs_init(uint32_t in, uint32_t size, int Mode){
 		//        ptr += (((filesize + 511) / 512) + 1) * 512;
     }
 
-//	while(1);
+	//while(1);
 	
 	root->Ready = 1;
 	root->Count = count;

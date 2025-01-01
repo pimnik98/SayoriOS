@@ -12,7 +12,7 @@ void tty_fontConfigurate();
 
 void _tty_puts(const char str[]);
 void _tty_print(const char *format, va_list args);
-void _tty_printf(char *text, ...);
+void _tty_printf(const char *text, ...);
 
 #define tty_print(format, args) _tty_print(format, args); punch()
 #define tty_puts(str) _tty_puts(str); punch()

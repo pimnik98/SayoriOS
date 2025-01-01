@@ -6,6 +6,7 @@
 #include "mem/pmm.h"
 #include "drv/disk/ata.h"
 #include "debug/hexview.h"
+#include "lib/math.h"
 
 #define ATA_PCI_VEN 0x8086
 #define ATA_PCI_DEV 0x7010
@@ -24,6 +25,7 @@ size_t ata_dma_phys_prdt = 0;
 size_t prdt_entry_count = 16;
 
 extern ata_drive_t drives[4];
+
 
 void ata_dma_init() {
     pci_find_device(ATA_PCI_VEN, ATA_PCI_DEV, &ata_busnum, &ata_slot, &ata_func);
@@ -393,9 +395,11 @@ status_t ata_dma_read(uint8_t drive, char *buf, uint32_t location, uint32_t leng
 	});
 
 	if(!drives[drive].online) {
-		qemu_log("Attempted read from drive that does not exist.");
+		qemu_err("Attempted read from drive that does not exist.");
 		return E_DEVICE_NOT_ONLINE;
 	}
+
+    qemu_log("DRIVE: %d; Buffer: %x, Location: %x, len: %d", drive, buf, location, length);
 
 	size_t start_sector = location / drives[drive].block_size;
 	size_t end_sector = (location + length - 1) / drives[drive].block_size;
@@ -419,6 +423,8 @@ status_t ata_dma_read(uint8_t drive, char *buf, uint32_t location, uint32_t leng
 		if(remaining_count != 0)
 			ata_dma_read_sectors(drive, real_buf + (i * (65536 * 2)), start_sector + (i * 256), remaining_count);
 	}
+
+//    hexview_advanced(real_buf, 512, 32, true, new_qemu_printf);
 
 	memcpy(buf, real_buf + (location % drives[drive].block_size), length);
 
@@ -470,3 +476,4 @@ status_t ata_dma_write(uint8_t drive, const char *buf, uint32_t location, uint32
 
 	return OK;
 }
+

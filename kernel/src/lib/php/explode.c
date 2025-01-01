@@ -2,9 +2,9 @@
  * @file lib/php/explode.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Функция замены строк
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-07-30
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 #include <mem/vmm.h>
 #include "lib/string.h"
@@ -18,7 +18,7 @@
  *
  * @return uint32_t - Количество строк
  */
-uint32_t str_cdsp2(const char a_str[], char del){
+uint32_t str_cdsp2(const char* a_str, char del){
     int x = 0;
     for(size_t i = 0, len = strlen(a_str); i < len; i++){
         if (a_str[i] == del) {

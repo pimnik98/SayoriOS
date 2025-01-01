@@ -11,11 +11,11 @@
 .set INIT_MBOOT_HEADER_FLAGS,           ALIGN | MEMINFO | VBE_MODE
 .set INIT_MBOOT_CHECKSUM,               0x00000000 - (INIT_MBOOT_HEADER_MAGIC + INIT_MBOOT_HEADER_FLAGS)
 
-.set STACK_SIZE, 1024 * 64  # 64 KB
+.set STACK_SIZE, 1024 * 128  # 128 KB
 
-.extern kernel
+.extern kmain
 
-.section .mboot
+.section .mboot, "a", @progbits
 
 .int INIT_MBOOT_HEADER_MAGIC
 .int INIT_MBOOT_HEADER_FLAGS
@@ -25,37 +25,37 @@
 .long 800, 600, 32      # Ширина, длина, глубина
 
 .section .bss
-	.align 16
-	stack_bottom:
-		.skip STACK_SIZE
-	stack_top:
+    .align 16
+    stack_bottom:
+        .skip STACK_SIZE
+    stack_top:
 
 .section	.text
 
 .global		__pre_init
 
 __pre_init:
-		cli 
+        cli
 
-		# init FPU
-		fninit
-		fldcw (conword)
+        # init FPU
+        fninit
+        fldcw (conword)
 
-		call sse_enable
+        call sse_enable
 
-		mov $stack_top, %esp
+        mov $stack_top, %esp
 
-		push	%esp
-		push	%ebx
+        push	%esp
+        push	%ebx
 
-		xor %ebp, %ebp
+        xor %ebp, %ebp
 
-		call	kernel
+        call	kmain
 
-		hlt
+        hlt
 
 conword:
-		.word 0x37f
+        .word 0x37f
 
 loop:
-		jmp	loop
+        jmp	loop

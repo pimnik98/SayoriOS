@@ -2,9 +2,9 @@
  * @file lib/php/str_replace.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Функция замены строк
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-07-30
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 #include "common.h"
 #include "lib/string.h"
@@ -40,6 +40,6 @@ uint32_t char_replace(char search, char replace, char* subject){
  *
  * @return uint32_t - Количество произведенных замен
  */
-uint32_t str_replace(char* search, char* replace, char* subject){
-    return 0;
-}
+//uint32_t str_replace(char* search, char* replace, char* subject){
+//    return 0;
+//}

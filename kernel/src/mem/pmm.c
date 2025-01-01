@@ -1,9 +1,9 @@
 /**
  * @brief Менеджер физической памяти
  * @author NDRAEY >_
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-11-04
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 // Scyther Physical Memory Manager by NDRAEY (c) 2023
@@ -17,7 +17,6 @@
 
 extern size_t KERNEL_BASE_pos;
 extern size_t KERNEL_END_pos;
-extern size_t last_module_end;
 
 size_t kernel_start;
 size_t kernel_end;
@@ -313,7 +312,7 @@ void map_single_page(physical_addr_t* page_dir, physical_addr_t physical, virtua
 	uint32_t pdi = PD_INDEX(virtual);
 	uint32_t pti = PT_INDEX(virtual);
 
-	uint32_t* pt = 0;
+	uint32_t* pt;
 
 	// Check if page table not present.
 	if((page_dir[pdi] & 1) == 0) {
@@ -351,7 +350,7 @@ void map_single_page(physical_addr_t* page_dir, physical_addr_t physical, virtua
 void unmap_single_page(uint32_t* page_dir, virtual_addr_t virtual) {
 	virtual &= ~0xfff;
 	
-	uint32_t* pt = 0;
+	uint32_t* pt;
 	
 	// Check if page table not present.
 	if((page_dir[PD_INDEX(virtual)] & 1) == 0) {
@@ -372,7 +371,7 @@ void unmap_single_page(uint32_t* page_dir, virtual_addr_t virtual) {
 uint32_t phys_get_page_data(uint32_t* page_dir, virtual_addr_t virtual) {
 	virtual &= ~0x3ff;
 	
-	uint32_t* pt = 0;
+	uint32_t* pt;
 	
 	// Check if page table not present.
 	if((page_dir[PD_INDEX(virtual)] & 1) == 0) {
@@ -384,11 +383,11 @@ uint32_t phys_get_page_data(uint32_t* page_dir, virtual_addr_t virtual) {
 	return pt[PT_INDEX(virtual)];
 }
 
-uint32_t virt2phys(uint32_t* page_dir, virtual_addr_t virtual) {
+uint32_t virt2phys(const uint32_t *page_dir, virtual_addr_t virtual) {
 //	virtual &= ~0x3ff;
 	virtual &= ~0xfff;
 
-	uint32_t* pt = 0;
+	uint32_t* pt;
 	
 	// Check if page table not present.
 	if((page_dir[PD_INDEX(virtual)] & 1) == 0) {
@@ -399,6 +398,22 @@ uint32_t virt2phys(uint32_t* page_dir, virtual_addr_t virtual) {
 
 	return pt[PT_INDEX(virtual)] & ~0x3ff;
 }
+
+void phys_set_flags(uint32_t* page_dir, virtual_addr_t virtual, uint32_t flags) {
+    virtual &= ~0xfff;
+
+    uint32_t* pt;
+
+    // Check if page table not present.
+    if((page_dir[PD_INDEX(virtual)] & 1) == 0) {
+        return;
+    } else {
+        pt = get_page_table_by_vaddr(page_dir, virtual);
+    }
+
+    pt[PT_INDEX(virtual)] = (pt[PT_INDEX(virtual)] & ~0x3ff) | flags | PAGE_PRESENT;
+}
+
 
 /**
  * @brief Map pages
@@ -427,7 +442,7 @@ void map_pages(uint32_t* page_dir, physical_addr_t physical, virtual_addr_t virt
 }
 
 void check_memory_map(memory_map_entry_t* mmap_addr, uint32_t length){
-	int i = 0;
+	int i;
 	/* Entries number in memory map structure */
 	mmap_length = length;
 	size_t n = length / sizeof(memory_map_entry_t);
@@ -444,6 +459,7 @@ void check_memory_map(memory_map_entry_t* mmap_addr, uint32_t length){
 
 		phys_memory_size += entry.len_low;
 	}
+
 	qemu_log("RAM: %d MB | %d KB | %d B", phys_memory_size/(1024*1024), phys_memory_size/1024, phys_memory_size);
 }
 
@@ -452,7 +468,7 @@ size_t getInstalledRam(){
 }
 
 void mark_reserved_memory_as_used(memory_map_entry_t* mmap_addr, uint32_t length){
-	int i = 0;
+	int i;
 	/* Entries number in memory map structure */
 	mmap_length = length;
 	size_t n = length / sizeof(memory_map_entry_t);
@@ -483,19 +499,22 @@ uint32_t* get_kernel_page_directory() {
 }
 
 void init_paging() {
+    extern size_t grub_last_module_end;
+
+    qemu_log("Memory bitmap covers: %d MB", (sizeof(pages_bitmap) * 8) >> 10);
+
 	kernel_start = (size_t)&KERNEL_BASE_pos;
 	kernel_end = (size_t)&KERNEL_END_pos;
 
-	qemu_log("Kenrel end: %x", kernel_end);
-	qemu_log("Last module end: %x", last_module_end);
+    qemu_log("MODEND: %x; &MODEND: %x", grub_last_module_end, (size_t)&grub_last_module_end);
 
-	size_t real_end = MAX(kernel_end, last_module_end);
+	size_t real_end = (size_t)grub_last_module_end;
 
 	size_t kernel_size = real_end - kernel_start;
 
 	qemu_log("Kernel starts at: %x", kernel_start);
-	qemu_log("Kernel ends   at: %x", real_end);
-	qemu_log("Kernel ends (aligned) at: %x", ALIGN(real_end, PAGE_SIZE));
+	qemu_log("Kernel ends   at: %x (only kernel)", kernel_end);
+	qemu_log("Kernel ends   at: %x (everything)", real_end);
 
 	qemu_log("Kernel size is: %d (%d kB) (%d MB)", (kernel_end - kernel_start), (kernel_end - kernel_start) >> 10, (kernel_end - kernel_start) >> 20);
 	qemu_log("Kernel size (initrd included) is: %d (%d kB) (%d MB)", kernel_size, kernel_size >> 10, kernel_size >> 20);
@@ -539,6 +558,51 @@ void init_paging() {
 		if(pd[i] != 0)
 			qemu_log("[%d]: %x", i, pd[i]);
 	}
+}
+
+
+/**
+ * @brief Map pages (but physical address can be unaligned)
+ *
+ * @param page_dir Page directory address
+ * @param physical Address of physical memory
+ * @param virtual Address of virtual memory
+ * @param size Amount of BYTES to map (can be without align, if you want)
+ * @param flags Page flags
+ */
+void map_pages_overlapping(physical_addr_t* page_directory, size_t physical_start, size_t virtual_start, size_t size, uint32_t flags) {
+    // Explanation: We want to map address 0xd000abcd with size 2345
+    // If we will use map_pages it will map only one page, because addresses gets aligned to PAGE_SIZE
+    // (0xd000abcd -> 0xd000a000), and size too (2345 -> 4096)
+    // So it uses memory from 0xd000abcd to 0xd000b4f6 (2 pages)
+    //
+    // We need to calculate how many pages we need to map
+//    size_t pages_to_map = (size + PAGE_SIZE - 1) / PAGE_SIZE;
+    // And then map them
+
+    size_t nth1 = virtual_start / PAGE_SIZE;
+    size_t nth2 = (virtual_start + size) / PAGE_SIZE;
+
+    size_t pages_to_map = (nth2 - nth1) + 1;
+
+    qemu_log("Range: %x - %x", virtual_start, virtual_start + size);
+
+    qemu_note("Mapping %u pages to %x", pages_to_map, physical_start);
+    map_pages(page_directory, physical_start, virtual_start, pages_to_map * PAGE_SIZE, flags);
+}
+
+void unmap_pages_overlapping(physical_addr_t* page_directory, size_t virtual, size_t size) {
+//    size_t pages_to_map = (size + PAGE_SIZE - 1) / PAGE_SIZE;
+    virtual &= ~0xfff;
+
+    size_t nth1 = virtual / PAGE_SIZE;
+    size_t nth2 = (virtual + size) / PAGE_SIZE;
+
+    size_t pages_to_map = (nth2 - nth1) + 1;
+
+    for(size_t i = 0; i < pages_to_map; i++) {
+        unmap_single_page(page_directory, virtual + (i * PAGE_SIZE));
+    }
 }
 
 void phys_not_enough_memory() {

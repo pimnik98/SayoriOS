@@ -2,9 +2,9 @@
  * @file drv/input/mouse.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), Рустем Гимадутдинов (https://github.com/rgimad/EOS)
  * @brief Драйвер мыши
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-12-11
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <io/ports.h>
@@ -12,11 +12,12 @@
 #include <drv/input/mouse.h>
 #include "io/screen.h"
 #include "sys/isr.h"
+#include "drv/ps2.h"
 
 uint8_t mouse_ready = 0;        ///< Готова ли мышь к работе
 
-int32_t mouse_x  = 0;           ///< Позиция мыши по X
-int32_t mouse_y  = 0;           ///< Позиция мыши по Y
+uint32_t mouse_x  = 0;           ///< Позиция мыши по X
+uint32_t mouse_y  = 0;           ///< Позиция мыши по Y
 
 
 int32_t mouse_ox  = 0;           ///< Позиция мыши по X (старое значение)
@@ -171,13 +172,15 @@ void mouse_wait(uint8_t a_type) {
  */
 void mouse_write(uint8_t a_write) { //unsigned char
     // Ожидаем возможности, пока можно будет отправить команду
-    mouse_wait(1);
+//    mouse_wait(1);
+    ps2_in_wait_until_empty();
     // Говорим мышке, что мы отправляем команду
-    outb(0x64, 0xD4);
+    outb(PS2_STATE_REG, 0xD4);
     // Ожидаем ответа
-    mouse_wait(1);
+//    mouse_wait(1);
+    ps2_in_wait_until_empty();
     // Отправляем данные
-    outb(0x60, a_write);
+    outb(PS2_DATA_PORT, a_write);
 }
 
 /**
@@ -187,8 +190,9 @@ void mouse_write(uint8_t a_write) { //unsigned char
  */
 uint8_t mouse_read() {
     // Получаем ответ от мыши
-    mouse_wait(0);
-    return inb(0x60);
+//    mouse_wait(0);
+    ps2_out_wait_until_full();
+    return inb(PS2_DATA_PORT);
 }
 
 /**
@@ -197,37 +201,26 @@ uint8_t mouse_read() {
  * @warning Не нужно вызывать самостоятельно, только для обработчика мыши!
  */
 void mouse_install() {
-    uint8_t _status;  //unsigned char
+    uint8_t status = ps2_read_configuration_byte();
 
-    // Включить вспомогательное устройство мыши
-    mouse_wait(1);
-    outb(0x64, 0xA8);
-
-    // Включить прерывания
-    mouse_wait(1);
-    outb(0x64, 0x20);
-    mouse_wait(0);
-    _status = (inb(0x60) | 2);
-    mouse_wait(1);
-    outb(0x64, 0x60);
-    mouse_wait(1);
-    outb(0x60, _status);
+    ps2_write_configuration_byte(status | 2);
 
     // Скажите мыши использовать настройки по умолчанию
     mouse_write(0xF6);
     mouse_read(); // Acknowledge
 
-    // Включить мышь
+    // // Включить мышь
     mouse_write(0xF4);
     mouse_read(); // Acknowledge
 
     // Установить координаты курсора в середине экрана
     mouse_x = getScreenWidth() / 2;
     mouse_y = getScreenHeight() / 2;
+}
 
+void ps2_mouse_install_irq() {
     register_interrupt_handler(IRQ12, &mouse_handler);
     mouse_ready = 1;
-    qemu_log("[MOUSE] Status: %x | %d",_status,_status);
 }
 
 uint32_t mouse_get_x() {return mouse_x;}

@@ -3,15 +3,19 @@
  * @file drv/pci.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), Арен Елчинян (SynapseOS), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Драйвер PCI (Peripheral Component Interconnect)
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-01-14
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  */
 
 #include <lib/stdio.h>
 #include <io/ports.h>
 #include <drv/pci.h>
 #include "io/tty.h"
+#include "../lib/libvector/include/vector.h"
+#include "mem/vmm.h"
+
+vector_t* pci_device_list = 0;
 
 /**
  * @brief [PCI] Чтение 16-битных полей из пространства механизма конфигураций 1
@@ -27,11 +31,11 @@
  */
 uint16_t pci_read_confspc_word(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset) {
     uint32_t addr;
-    uint32_t bus32 = bus;
+    // uint32_t bus32 = bus;
     uint32_t slot32 = slot;
     uint32_t func32 = function;
     
-    addr = (uint32_t)((bus32 << 16) | (slot32 << 11) |
+    addr = (uint32_t)(((uint32_t)bus << 16) | (slot32 << 11) |
            (func32 << 8) | (offset & 0xfc) | ((uint32_t)0x80000000)); //yes, this line is copied from osdev
 
     outl(PCI_ADDRESS_PORT, addr);
@@ -53,9 +57,10 @@ uint32_t pci_read32(uint8_t bus, uint8_t slot, uint8_t function, uint8_t offset)
     uint32_t slot32 = slot;
     uint32_t func32 = function;
     addr = (uint32_t)((bus32 << 16) | (slot32 << 11) |
-           (func32 << 8) | (offset & 0xfc) | ((uint32_t)0x80000000)); //yes, this line is copied from osdev
+           (func32 << 8) | offset | 0x80000000); //yes, this line is copied from osdev
     outl(PCI_ADDRESS_PORT, addr);
-    return ((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffffffff); //this too... I'm too lazy to write them
+    // return ((inl(PCI_DATA_PORT) >> ((offset & 2) * 8)) & 0xffffffff); //this too... I'm too lazy to write them
+    return inl(PCI_DATA_PORT); //this too... I'm too lazy to write them
 }
 
 
@@ -93,6 +98,7 @@ static struct {
     {0x04, 0x00, "Видео-устройство"},
     {0x04, 0x01, "Аудио-устройство"},
     {0x04, 0x02, "Компьютерное телефонное устройство"},
+    {0x04, 0x03, "Аудио-устройство (4.3)"},
     {0x04, 0x80, "Другое мультимедийное устройство"},
     {0x05, 0x00, "Контроллер оперативной памяти"},
     {0x05, 0x01, "Флэш-контроллер"},
@@ -356,37 +362,50 @@ void pci_write(uint8_t bus, uint8_t slot, uint8_t func, uint32_t offset, uint32_
 void pci_find_device(uint16_t vendor, uint16_t device, uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret) {
 //	qemu_log("Checking device: %x:%x\n", vendor, device);
 
-	for (uint32_t bus = 0; bus < 256; bus++) {
-		for (uint32_t slot = 0; slot < 32; slot++) {
-			for (uint32_t func = 0; func < 8; func++) {
-				if (pci_get_device(bus, slot, func) == device
-					&& pci_get_vendor(bus, slot, func) == vendor) {
-					*bus_ret = bus;
-					*slot_ret = slot;
-					*func_ret = func;
-					return;
-				}
-			}
-		}
-	}
+//	for (uint32_t bus = 0; bus < 256; bus++) {
+//		for (uint32_t slot = 0; slot < 32; slot++) {
+//			for (uint32_t func = 0; func < 8; func++) {
+//				if (pci_get_device(bus, slot, func) == device
+//					&& pci_get_vendor(bus, slot, func) == vendor) {
+//					*bus_ret = bus;
+//					*slot_ret = slot;
+//					*func_ret = func;
+//					return;
+//				}
+//			}
+//		}
+//	}
+
+    assert(pci_device_list == 0, "DEVICE LIST IS NULL!");
+
+    for(int i = 0; i < pci_device_list->size; i++) {
+        pci_device_t *dev = (pci_device_t*)pci_device_list->data[i];
+        if(dev->vendor_id == vendor && dev->device_id == device) {
+            *bus_ret = dev->bus;
+            *slot_ret = dev->slot;
+            *func_ret = dev->func;
+            return;
+        }
+    }
 
 	*bus_ret = *slot_ret = *func_ret = 0xFF;
 }
 
 void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, uint16_t *vendor_ret, uint16_t *deviceid_ret,
 										   uint8_t *bus_ret, uint8_t *slot_ret, uint8_t *func_ret) {
-    uint8_t func = 0;
+    uint8_t func;
 
 	for (uint32_t bus = 0; bus < 256; bus++) {
 		for (uint32_t slot = 0; slot < 32; slot++) {
-
-            if (pci_get_class(bus, slot, func) == class
-                && pci_get_subclass(bus, slot, func) == subclass) {
-                *vendor_ret = pci_get_vendor(bus, slot, func);
-                *deviceid_ret = pci_get_device(bus, slot, func);
+            if (pci_get_class(bus, slot, 0) == class
+                && pci_get_subclass(bus, slot, 0) == subclass) {
+                *vendor_ret = pci_get_vendor(bus, slot, 0);
+                *deviceid_ret = pci_get_device(bus, slot, 0);
                 *bus_ret = bus;
                 *slot_ret = slot;
-                *func_ret = func;
+                *func_ret = 0;
+
+				qemu_ok("! FOUND %d.%d.%d", *bus_ret, *slot_ret, *func_ret);
                 return;
             }
 
@@ -399,6 +418,9 @@ void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, ui
                         *bus_ret = bus;
                         *slot_ret = slot;
                         *func_ret = func;
+
+
+						qemu_ok("!! FOUND %d.%d.%d", *bus_ret, *slot_ret, *func_ret);
                         return;
                     }
                 }
@@ -406,32 +428,89 @@ void pci_find_device_by_class_and_subclass(uint16_t class, uint16_t subclass, ui
 		}
 	}
 
+	*vendor_ret = *deviceid_ret = 0;
 	*bus_ret = *slot_ret = *func_ret = 0xFF;
 }
 
-/**
- * @brief [PCI] Ищет все устройства и выводит на экран
- */
-void pci_print_list() {
-    uint8_t clid;
-    uint8_t sclid;
-    uint8_t hdrtype;
-    uint16_t vendor;
-    uint16_t device;
+void pci_enable_bus_mastering(uint8_t bus, uint8_t slot, uint8_t func) {
+    uint16_t command_register = pci_read_confspc_word(bus, slot, func, 4);
 
-    tty_printf("PCI список устройств:\n");
+    command_register |= 0x05;
+
+    pci_write(bus, slot, func, 4, command_register);
+}
+
+void pci_print_nth(uint8_t class, uint8_t subclass, uint8_t bus, uint8_t slot, uint8_t hdr, uint16_t vendor, uint16_t device, uint8_t func) {
+    _tty_printf("%d:%d:%d:%d.%d %s: %s (%x), девайс: %x ",
+                class,
+                subclass,
+                bus,
+                slot,
+                func,
+                pci_get_device_type(class, subclass),
+                pci_get_vendor_name(vendor),
+                vendor,
+                device);
+
+    if((hdr & 0x80) == 0) {
+        _tty_printf("[Multifunc]");
+    }
+
+    uint32_t bar0 = pci_read32(bus, slot, func, 0x10 + (0 * 4));
+    uint32_t bar1 = pci_read32(bus, slot, func, 0x10 + (1 * 4));
+    uint32_t bar2 = pci_read32(bus, slot, func, 0x10 + (2 * 4));
+    uint32_t bar3 = pci_read32(bus, slot, func, 0x10 + (3 * 4));
+    uint32_t bar4 = pci_read32(bus, slot, func, 0x10 + (4 * 4));
+    uint32_t bar5 = pci_read32(bus, slot, func, 0x10 + (5 * 4));
+
+    tty_printf("\nAddresses: [%-10x, %-10x, %-10x, %-10x, %-10x, %-10x]",
+                bar0,
+                bar1,
+                bar2,
+                bar3,
+                bar4,
+                bar5);
+
+    _tty_printf("\n");
+}
+
+void pci_scan_everything() {
+    if(pci_device_list == 0) {
+        pci_device_list = vector_new();
+    } else {
+        for(int i = 0; i < pci_device_list->size; i++) {
+            kfree((void *) vector_get(pci_device_list, i).element);
+        }
+
+        vector_erase_all(pci_device_list);
+    }
+
+    size_t start_time = timestamp();
+
     for (uint32_t bus = 0; bus < 256; bus++) {
         for (uint8_t slot = 0; slot < 32; slot++) {
             uint32_t func = 0;
+            uint16_t hdrtype = 0, clid = 0, sclid = 0, device = 0;
 
-            vendor = pci_get_vendor(bus, slot, func);
+            uint16_t vendor = pci_get_vendor(bus, slot, func);
 
             if (vendor != 0xFFFF) {
                 clid = pci_get_class(bus, slot, func);
                 sclid = pci_get_subclass(bus, slot, func);
                 hdrtype = pci_get_hdr_type(bus, slot, func);
                 device = pci_get_device(bus, slot, func);
-                _tty_printf("\t%d:%d:%d:%d.%d %s: %s (%x), девайс: %x\n", clid, sclid, bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
+
+                pci_device_t* dev = kcalloc(1, sizeof(pci_device_t));
+                dev->klass = clid;
+                dev->subclass = sclid;
+                dev->bus = bus;
+                dev->slot = slot;
+                dev->func = func;
+                dev->hdrtype = hdrtype | 0x80;
+                dev->vendor_id = vendor;
+                dev->device_id = device;
+
+                vector_push_back(pci_device_list, (size_t)dev);
             }
 
             if ((hdrtype & 0x80) == 0) {
@@ -442,12 +521,84 @@ void pci_print_list() {
                         clid = pci_get_class(bus, slot, func);
                         sclid = pci_get_subclass(bus, slot, func);
                         device = pci_get_device(bus, slot, func);
-                        _tty_printf("\t%d:%d:%d:%d.%d %s: %s (%x), девайс: %x\n", clid, sclid, bus, slot, func, pci_get_device_type(clid, sclid), pci_get_vendor_name(vendor),vendor, device);
+
+                        pci_device_t* dev = kcalloc(1, sizeof(pci_device_t));
+                        dev->klass = clid;
+                        dev->subclass = sclid;
+                        dev->bus = bus;
+                        dev->slot = slot;
+                        dev->hdrtype = hdrtype;
+                        dev->func = func;
+                        dev->vendor_id = vendor;
+                        dev->device_id = device;
+
+                        vector_push_back(pci_device_list, (size_t)dev);
                     }
                 }
             }
         }
     }
 
-    qemu_log("PCI scan end");
+    size_t elapsed = timestamp() - start_time;
+    qemu_log("PCI scan end in %d ms", elapsed);
+    qemu_log("Found %d devices", pci_device_list->size);
+}
+
+//void pci_print_list() {
+//    uint8_t clid;
+//    uint8_t sclid;
+//    uint8_t hdrtype;
+//    uint16_t vendor;
+//    uint16_t device;
+//
+//    tty_printf("PCI список устройств:\n");
+//    for (uint32_t bus = 0; bus < 256; bus++) {
+//        for (uint8_t slot = 0; slot < 32; slot++) {
+//            uint32_t func = 0;
+//
+//            vendor = pci_get_vendor(bus, slot, func);
+//
+//            if (vendor != 0xFFFF) {
+//                clid = pci_get_class(bus, slot, func);
+//                sclid = pci_get_subclass(bus, slot, func);
+//                hdrtype = pci_get_hdr_type(bus, slot, func);
+//                device = pci_get_device(bus, slot, func);
+//
+//                pci_print_nth(clid, sclid, bus, slot, hdrtype | 0x80, vendor, device, func);
+//            }
+//
+//            if ((hdrtype & 0x80) == 0) {
+//                for (func = 1; func < 8; func++) {
+//                    vendor = pci_get_vendor(bus, slot, func);
+//
+//                    if (vendor != 0xFFFF) {
+//                        clid = pci_get_class(bus, slot, func);
+//                        sclid = pci_get_subclass(bus, slot, func);
+//                        device = pci_get_device(bus, slot, func);
+//
+//                        pci_print_nth(clid, sclid, bus, slot, hdrtype, vendor, device, func);
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    qemu_log("PCI scan end");
+//}
+
+void pci_print_list() {
+    for(int i = 0; i < pci_device_list->size; i++) {
+        pci_device_t* device = (pci_device_t*)pci_device_list->data[i];
+
+        pci_print_nth(
+                device->klass,
+                device->subclass,
+                device->bus,
+                device->slot,
+                device->hdrtype,
+                device->vendor_id,
+                device->device_id,
+                device->func
+        );
+    }
 }

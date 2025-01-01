@@ -1,71 +1,73 @@
-/**
- * @file drv/disk/mbr.c
- * @author Пиминов Никита (nikita.piminoff@yandex.ru)
- * @brief MBR Info
- * @version 0.3.4
- * @date 2023-08-03
- * @copyright Copyright SayoriOS Team (c) 2022-2023
-*/
-
-#include "common.h"
+#include "drv/disk/mbr.h"
+#include "drv/disk/dpm.h"
+#include "io/ports.h"
+#include "debug/hexview.h"
 #include "io/tty.h"
-#include <io/ports.h>
 
-typedef struct {
-	uint8_t Attr;			///< Атрибуты диска (7 = активный)
-	uint8_t StartCHS[3];	///< CHS Адрес начала раздела
-	uint8_t Type;			///< Тип раздела
-	uint8_t EndCHS[3];		///< CHS Адрес последнего сектора раздела
-	uint32_t LBA;			///< Начало раздела LBA
-	uint32_t Size;			///< Количество секторов
-} __attribute__((packed)) MBR_PARTITION_INFO; 
+void ebr_recursive_dump(char disk, uint64_t abs_lba, uint64_t lba, int depth) {
+    struct mbr_parition w = {};
 
+    dpm_read(disk, 0, ((lba + abs_lba) * 512) + 446,  sizeof(w), (uint8_t *)&w);
 
-typedef struct {
-	char Bootstrap[440];		///< Загрузщик
-	uint8_t UniqueDiskID[4];	///< Уникальный индентификатор диска
-	uint8_t Reserved[2];		///< Зарезервировано 0x0000 | 0x5a5a - ReadOnly
-	MBR_PARTITION_INFO Part0;	///< Первая запись в таблице разделов
-	MBR_PARTITION_INFO Part1;	///< Вторая запись в таблице разделов
-	MBR_PARTITION_INFO Part2;	///< Третья запись в таблице разделов
-	MBR_PARTITION_INFO Part3;	///< Четвертая запись в таблице разделов
-	uint16_t Sign;			///< Подпись
-} MBR_INFO; 
+    qemu_log("%*s Active: %d; [C: %d; H: %d; S: %d] Type: %d; [C: %d; H: %d; S: %d] Start LBA: %d; Num Sectors: %d\n",
+           depth + 3, "|--",
+           w.activity,
+           w.start_cylinder, w.start_head, w.start_sector,
+           w.type,
+           w.end_cylinder, w.end_head, w.end_sector,
+           w.start_sector_lba, w.num_sectors);
 
-void _mbr_info(){
-	// Выделяем место и копируем байты
-	MBR_INFO *mbr = kcalloc(sizeof(MBR_INFO), 1);
+    tty_printf("%*s A: %d; [%d:%d:%d] Type: %d; [%d:%d:%d] SLBA: %d; COUNT: %d\n",
+           depth + 3, "|--",
+           w.activity,
+           w.start_cylinder, w.start_head, w.start_sector,
+           w.type,
+           w.end_cylinder, w.end_head, w.end_sector,
+           w.start_sector_lba, w.num_sectors);
 
-	ata_read(0, mbr, 0, sizeof(MBR_INFO));
-	tty_printf("[MBR] Sign:  %x\n", mbr[0].Sign);
+    dpm_read(disk, 0, ((lba + abs_lba) * 512) + 446 + 16,  sizeof(w), (uint8_t *)&w);
 
-	//memcpy(mbr, addr, sizeof(MBR_INFO));
-	// Выводим инфу
-	//int x = (mbr[0].UniqueDiskID[2] « 16) | (mbr[0].UniqueDiskID[1] « 8) | mbr[0].UniqueDiskID[0];
-	tty_printf("[MBR] UniqueDiskID: %d-%d-%d-%d\n",
-				mbr[0].UniqueDiskID[0],
-				mbr[0].UniqueDiskID[1],
-				mbr[0].UniqueDiskID[2],
-				mbr[0].UniqueDiskID[3]
-	);
+    if(w.type == 5) {
+        ebr_recursive_dump(disk, abs_lba, w.start_sector_lba, depth);
+    }
+}
 
-	//tty_printf("[MBR] UniqueDiskID: %d | %x\n", x, x);
-	tty_printf("[MBR] Part0: Attr: %x\n",mbr[0].Part0.Attr);
-	tty_printf("[MBR] Part0: Type: %x\n",mbr[0].Part0.Type);
-	tty_printf("[MBR] Part0: Size: %x\n",mbr[0].Part0.Size);
+void mbr_dump(char disk, uint64_t i) {
+    struct mbr_parition p = {};
 
+    dpm_read(disk, 0, 446 + (i * 16), sizeof(p), (uint8_t *)&p);
 
-	tty_printf("[MBR] Part1: Attr: %x\n",mbr[0].Part1.Attr);
-	tty_printf("[MBR] Part1: Type: %x\n",mbr[0].Part1.Type);
-	tty_printf("[MBR] Part1: Size: %x\n",mbr[0].Part1.Size);
+    qemu_log("[%d] Active: %d; [C: %d; H: %d; S: %d] Type: %d; [C: %d; H: %d; S: %d] Start LBA: %d; Num Sectors: %d",
+           i,
+           p.activity,
+           p.start_cylinder, p.start_head, p.start_sector,
+           p.type,
+           p.end_cylinder, p.end_head, p.end_sector,
+           p.start_sector_lba, p.num_sectors);
 
+   tty_printf("[%d] A: %d; [%d:%d:%d] Type: %d; [%d:%d:%d] SLBA: %d; COUNT: %d\n",
+           i,
+           p.activity,
+           p.start_cylinder, p.start_head, p.start_sector,
+           p.type,
+           p.end_cylinder, p.end_head, p.end_sector,
+           p.start_sector_lba, p.num_sectors);
 
-	tty_printf("[MBR] Part2: Attr: %x\n",mbr[0].Part2.Attr);
-	tty_printf("[MBR] Part2: Type: %x\n",mbr[0].Part2.Type);
-	tty_printf("[MBR] Part2: Size: %x\n",mbr[0].Part2.Size);
+    if(p.type == 5 || p.type == 15) {
+        ebr_recursive_dump(disk, p.start_sector_lba, 0, 1);
+    }
+}
 
+void mbr_dump_all(char disk) {
+    uint16_t p;
 
-	tty_printf("[MBR] Part3: Attr: %x\n",mbr[0].Part3.Attr);
-	tty_printf("[MBR] Part3: Type: %x\n",mbr[0].Part3.Type);
-	tty_printf("[MBR] Part3: Size: %x\n",mbr[0].Part3.Size);
+    dpm_read(disk, 0, 510, 2, (uint8_t *)&p);
+
+    if(p == 0xaa55) {
+        mbr_dump(disk, 0);
+        mbr_dump(disk, 1);
+        mbr_dump(disk, 2);
+        mbr_dump(disk, 3);
+        tty_printf("\n");
+    }
 }

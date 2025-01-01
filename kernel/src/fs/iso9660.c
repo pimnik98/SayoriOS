@@ -2,9 +2,9 @@
  * @file drv/fs/iso9660.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief Файловая система ISO 9660
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-12-23
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
 #include <kernel.h>
@@ -46,7 +46,7 @@ int fs_iso9660_delete(const char Disk,const char* Path,int Mode){
 
 void fs_iso9660_label(const char Disk, char* Label){
     char* l = kcalloc(1, 33);
-    int buf_read = dpm_read(Disk, 0x8028, 32, l);
+    int buf_read = dpm_read(Disk, 0, 0x8028, 32, l);
     if (buf_read != 32){
         memcpy(Label,"Unsupported disk",strlen("Unsupported disk"));
     } else {
@@ -59,7 +59,7 @@ void fs_iso9660_label(const char Disk, char* Label){
 
 int fs_iso9660_detect(const char Disk){
     ISO9660_PVD* pvd = kcalloc(1, sizeof(ISO9660_PVD));
-    int buf_read = dpm_read(Disk, 0x8000, sizeof(ISO9660_PVD), pvd);
+    int buf_read = dpm_read(Disk, 0, 0x8000, sizeof(ISO9660_PVD), pvd);
     if (
     pvd->Version != 0x1 ||
     pvd->ID[0]   != 0x43 ||

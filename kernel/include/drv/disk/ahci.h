@@ -66,15 +66,21 @@ typedef enum {
 } AHCI_FIS_TYPE;
 
 typedef struct {
+    // 0
 	uint8_t  fis_type;	// FIS_TYPE_REG_H2D
 
+    // 1
 	uint8_t  pmport:4;	// Port multiplier
 	uint8_t  rsv0:3;		// Reserved
 	uint8_t  c:1;		// 1: Command, 0: Control
 
+    // 2
 	uint8_t  command;	// Command register
-	uint8_t  featurel;	// Feature register, 7:0
 
+    // 3
+    uint8_t  featurel;	// Feature register, 7:0
+
+    // 4 - 8
 	uint8_t  lba0;		// LBA low register, 7:0
 	uint8_t  lba1;		// LBA mid register, 15:8
 	uint8_t  lba2;		// LBA high register, 23:16
@@ -256,7 +262,7 @@ typedef struct {
 	uint32_t dbc:22;		// Byte count, 4M max
 	uint32_t rsv1:9;		// Reserved
 	uint32_t i:1;		// Interrupt on completion
-} AHCI_HBA_PRDT_ENTRY;
+} __attribute__((packed)) AHCI_HBA_PRDT_ENTRY;
 
 #define COMMAND_TABLE_PRDT_ENTRY_COUNT 8
 
@@ -274,7 +280,6 @@ typedef struct {
 #define FIS_SIZE sizeof(AHCI_HBA_FIS)
 
 #define COMMAND_TABLE_ENTRY_SIZE sizeof(HBA_CMD_TBL)
-#define COMMAND_TABLE_ENTRY_COUNT 32
 #define COMMAND_TABLE_SIZE (COMMAND_TABLE_ENTRY_SIZE * COMMAND_LIST_ENTRY_COUNT)
 
 #define MEMORY_PER_AHCI_PORT (COMMAND_LIST_SIZE + FIS_SIZE + COMMAND_TABLE_SIZE)
@@ -291,6 +296,8 @@ struct ahci_port_descriptor {
 
     size_t fis_virt;
     size_t fis_phys;
+
+    bool is_atapi;
 };
 
 void ahci_init();
@@ -299,6 +306,7 @@ int ahci_free_cmd_slot(size_t port_num);
 void ahci_start_cmd(size_t port_num);
 void ahci_stop_cmd(size_t port_num);
 void ahci_rebase_memory_for(size_t port_num);
-void ahci_identify(size_t port_num);
-void ahci_read_sectors(size_t port_num, size_t location, size_t sector_count, void* buffer);
+void ahci_eject_cdrom(size_t port_num);
+void ahci_read_sectors(size_t port_num, uint64_t location, size_t sector_count, void* buffer);
 void ahci_write_sectors(size_t port_num, size_t location, size_t sector_count, void* buffer);
+void ahci_identify(size_t port_num, bool is_atapi);

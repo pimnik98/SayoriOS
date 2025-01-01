@@ -210,10 +210,6 @@ void window_send_signal(Window_t* window, WindowSignal_t signal, void* data) {
     qemu_log("Func end");
 }
 
-void window_system_init() {
-
-}
-
 // For debugging purposes only!!!
 void log_window_manager_state() {
     qemu_log("===============[WINDOW MANAGER STATE]===================");

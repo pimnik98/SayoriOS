@@ -2,13 +2,14 @@
  * @file lib/string.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru), NDRAEY >_ (pikachu_andrey@vk.com)
  * @brief Функции для работы со строками
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2022-10-01
- * @copyright Copyright SayoriOS Team (c) 2022-2023 
+ * @copyright Copyright SayoriOS Team (c) 2022-2024 
  */
 #include "common.h"
 #include "lib/string.h"
-#include <emmintrin.h>  // SSE functions and types
+#include "lib/math.h"
+//#include <emmintrin.h>  // SSE functions and types
 
 bool isalnum(char c){
 	return  (c >= '0' && c <= '9') ||
@@ -136,7 +137,7 @@ size_t struntil(const char* str, const char find) {
  * @param src - Указатель на массив источник копируемых данных.
  * @param size - Количество байт для копирования
  */
-void sse_memcpy(void* restrict dest, const void* restrict src, size_t size) {
+/*void sse_memcpy(void* restrict dest, const void* restrict src, size_t size) {
     __m128i* d = (__m128i*)dest;
     const __m128i* s = (const __m128i*)src;
 
@@ -160,7 +161,7 @@ void sse_memcpy(void* restrict dest, const void* restrict src, size_t size) {
     }
 
 	_mm_sfence();
-}
+}*/
 
 /**
  * @brief Копирование непересекающихся массивов
@@ -576,13 +577,33 @@ uint32_t atoi(const char s[]){
     return n;
 }
 
+size_t htoi(const char* hex) {
+    const char* p = hex;
+    size_t result = 0;
+
+    while (*p != '\0') {
+        if (*p >= '0' && *p <= '9') {
+            result = (result << 4) + (*p - '0');
+        } else if (*p >= 'A' && *p <= 'F') {
+            result = (result << 4) + (*p - 'A' + 10);
+        } else if (*p >= 'a' && *p <= 'f') {
+            result = (result << 4) + (*p - 'a' + 10);
+        } else {
+            break;
+        }
+        p++;
+    }
+
+    return result;
+}
+
 /**
  * @brief Переворачивает строку задом наперед
  *
  * @param  str - строка символов, которая должна быть обращена
  */
 void strver(char *str) {
-    int32_t j = strlen(str) - 1;
+    size_t j = strlen(str) - 1;
 
     for (int32_t i = 0; i < j; i++) {
         char c = str[i];
@@ -678,7 +699,7 @@ int dcmpstr( const char *s1, const char *s2 )
            ( ( unsigned char )*s1 < ( unsigned char )*s2 );
 }
 
-char digit_count(size_t num) {
+char digit_count(uint64_t num) {
     if(num == 0)
         return 1;
     
@@ -760,7 +781,7 @@ char* strstr(const char* haystack, const char* needle) {
 
 double strtod(const char* str, char** endptr) {
     double result = 0.0;
-    bool negative = false;
+//    bool negative = false;
     int exponent = 0;
     int sign = 1;
 

@@ -2,11 +2,11 @@
  * @file sys/trigger.c
  * @authors Пиминов Никита (github.com/pimnik98 | VK: @piminov_remont)
  * @brief Система триггеров
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-06-01
  *
  * @warning А зачем они нам нужны если более выгодно вручную проверять клавиатуру и мышь, при этом производительность падает при триггерах
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
  *
  */
 #include <io/ports.h>
@@ -18,28 +18,60 @@
 #include "sys/timer.h"
 
 trigger_t Triggers[1024] = {0};		///< Сетка смонтированных триггеров
-size_t TriggersCount = 0;		///< Колво активных триггеров
+size_t TriggersCount = 0;		    ///< Колво активных триггеров
+
+int _FoundFreeIndexTrigger(){
+    for(int i = 0; i < 1024; i++){
+        if (Triggers[i].is_not_delete == 0) return i;
+    }
+    return -1;
+}
 
 /**
  * @brief Регистрация триггера
+ *
+ * @return int - номер триггера, в противном случае -1 если ошибка
  */
-size_t RegTrigger(int type,trigger_cmd_t handler){
+int RegTrigger(int type,trigger_cmd_t handler){
 	///< Попытка регистрации триггера
 	qemu_log("[Trigger] An attempt to register trigger '%x' was detected.",type);
-	Triggers[TriggersCount].index = TriggersCount;
-	Triggers[TriggersCount].type = type;
-	Triggers[TriggersCount].ready = 1;
-	Triggers[TriggersCount].cmd = handler;
-	qemu_log("[Trigger] Format %x trigger has successfully registered and has index number %d.",type,TriggersCount);
+    int idx = _FoundFreeIndexTrigger();
+    if (idx == -1) {
+        qemu_err("[Trigger] ERROR NO FREE TRIGGERS SPACE!!");
+        return -1;
+    }
+	Triggers[idx].index = TriggersCount;
+	Triggers[idx].type = type;
+	Triggers[idx].ready = 1;
+    Triggers[idx].is_not_delete = 1;
+	Triggers[idx].cmd = handler;
+	qemu_ok("[Trigger] Format %x trigger has successfully registered and has index number %d.",type,idx);
 	TriggersCount++;
-	return (TriggersCount)-1;
+	return idx;
+}
+
+/**
+ * @brief Удаление триггера
+ */
+void DeleteTrigger(int index){
+    if (index > 1024 || Triggers[index].is_not_delete == 0){
+        qemu_err("[Trigger] Unknown #%d trigger",index);
+        return;
+    }
+    qemu_log("[Trigger] Trigger #%d has been deleted",index);
+    Triggers[index].is_not_delete = 0;
+    Triggers[index].ready = 0;
 }
 
 /**
  * @brief Включить триггер
  */
 void OnTrigger(int index){
-	qemu_log("[Trigger] Trigger #%d has been enabled",index);
+    if (index > 1024 || Triggers[index].is_not_delete == 0){
+        qemu_err("[Trigger] Unknown #%d trigger",index);
+        return;
+    }
+
 	Triggers[index].ready = 1;
 }
 
@@ -47,6 +79,10 @@ void OnTrigger(int index){
  * @brief Выключить триггер
  */
 void OffTrigger(int index){
+    if (index > 1024 || Triggers[index].is_not_delete == 0){
+        qemu_err("[Trigger] Unknown #%d trigger",index);
+        return;
+    }
 	qemu_log("[Trigger] Trigger #%d has been disabled",index);
 	Triggers[index].ready = 0;
 }

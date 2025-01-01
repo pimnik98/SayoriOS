@@ -2,9 +2,9 @@
  * @file drv/fs/fsm.c
  * @author Пиминов Никита (nikita.piminoff@yandex.ru)
  * @brief File System Manager (Менеджер файловых систем)
- * @version 0.3.4
+ * @version 0.3.5
  * @date 2023-10-16
- * @copyright Copyright SayoriOS Team (c) 2022-2023
+ * @copyright Copyright SayoriOS Team (c) 2022-2024
 */
 
 #include <io/ports.h>
@@ -20,6 +20,36 @@
 FSM G_FSM[255] = {0};
 int C_FSM = 0;
 bool fsm_debug = false;
+
+size_t fsm_DateConvertToUnix(FSM_TIME time) {
+    uint32_t seconds_per_day = 24 * 60 * 60;
+    size_t unix_time = 0;
+
+    // Подсчет количества дней с начала Unix эпохи
+    for (uint32_t year = 1970; year < time.year; year++) {
+        uint32_t days_in_year = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) ? 366 : 365;
+        unix_time += days_in_year * seconds_per_day;
+    }
+
+    int8_t month_days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (time.year % 4 == 0 && (time.year % 100 != 0 || time.year % 400 == 0)) {
+        month_days[1] = 29;
+    }
+
+    // Добавление количества дней в текущем году
+    for (uint32_t month = 0; month < time.month - 1; month++) {
+        unix_time += month_days[month] * seconds_per_day;
+    }
+
+    // Добавление количества дней в текущем месяце
+    unix_time += (time.day - 1) * seconds_per_day;
+
+    // Добавление компонентов времени
+    unix_time += time.hour * 3600 + time.minute * 60 + time.second;
+
+    return unix_time;
+}
+
 
 void fsm_convertUnix(uint32_t unix_time, FSM_TIME* time) {
 	if (fsm_debug) qemu_log("[FSM] Convert unix: %d",unix_time);
@@ -101,7 +131,6 @@ int fsm_isPathToFile(const char* Path,const char* Name){
 	qemu_log(" |--- %d == %d",c3,c4);*/
 	bool isPassed = ((isCheck1 && !isCheck2 && isCheck3) || (!isCheck1 && isCheck2 && isCheck3 && (isCheck4 || isCheck5)));
 
-	// pimnik98, ставь kfree если есть kmalloc!!!!!!!!!!!!!!!!!!!!!!1111
 	kfree(zpath);
 	kfree(bpath);
 
@@ -208,17 +237,33 @@ void fsm_dpm_update(char Letter){
             dpm_LabelUpdate(DISKID, BLANK);
             dpm_FileSystemUpdate(DISKID, BLANK);
             DPM_Disk dpm = dpm_info(DISKID);
-            if (dpm.Ready != 1) continue;
+
+            if (dpm.Ready != 1) {
+            	continue;
+            }
+
+            qemu_note("SCANNING PARTITIONS ON: %c", DISKID);
+            mbr_dump_all(DISKID);
+
             for(int f = 0; f < C_FSM; f++){
                 qemu_note("[FSM] [DPM] >>> Disk %c | Test %s", DISKID, G_FSM[f].Name);
+
                 int detect = G_FSM[f].Detect(DISKID);
-                if (detect != 1) continue;
+
+                if (detect != 1)
+                	continue;
+
                 char* lab_test = kcalloc(1,129);
+
                 G_FSM[f].Label(DISKID,lab_test);
+
                 dpm_LabelUpdate(DISKID, lab_test);
                 dpm_FileSystemUpdate(DISKID, G_FSM[f].Name);
+
                 qemu_note("                       | Label: %s", lab_test);
+
                 kfree(lab_test);
+
                 break;
             }
         }
@@ -235,11 +280,14 @@ void fsm_dpm_update(char Letter){
                 continue;
 
             char* lab_test = kcalloc(1,129);
+
             G_FSM[f].Label(DISKID, lab_test);
             dpm_LabelUpdate(DISKID, lab_test);
             dpm_FileSystemUpdate(DISKID, G_FSM[f].Name);
             qemu_note("[FSM] [DPM] ^^^ Disk %c | Label: %s", DISKID, lab_test);
+
             kfree(lab_test);
+
             break;
         }
     }

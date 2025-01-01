@@ -6,8 +6,9 @@
 #define DPM_ERROR_NOT_READY (-2)    ///< Устройство не готово к работе
 #define DPM_ERROR_NO_READ (-3)		///< Не удалось прочитать файл
 
-// disk, offset, size, buffer
-typedef int (*dpm_disk_rw_cmd)(size_t,size_t,size_t,void*);
+// disk, offset_h, offset_l, size, buffer
+// typedef int (*dpm_disk_rw_cmd)(size_t,size_t,size_t,void*);
+typedef size_t (*dpm_disk_rw_cmd)(size_t,uint64_t,uint64_t,size_t,void*);
 
 typedef struct {
 	bool Ready;				///< Устройство подключено? (1 - да | 0 - нет)
@@ -25,12 +26,27 @@ typedef struct {
 	dpm_disk_rw_cmd Write;	///< Команда для записи данных
 } __attribute__((packed)) DPM_Disk;
 
+// TODO: Save model, manufacturer, serial number, firmware version in that dpm structure.
+enum dpm_disk_type {
+    NONE,
+    MEMORY,
+    IDE_ATA,
+    IDE_ATAPI,
+    AHCI_SATA,
+    AHCI_SATAPI
+};
 
+struct dpm_disk_info {
+    enum dpm_disk_type type;
+};
 
 void* dpm_metadata_read(char Letter);
 void dpm_metadata_write(char Letter, uint32_t Addr);
-size_t dpm_read(char Letter, size_t Offset, size_t Size, void *Buffer);
+size_t dpm_read(char Letter, uint64_t high_offset, uint64_t low_offset, size_t Size, void *Buffer);
+size_t dpm_write(char Letter, uint64_t high_offset, uint64_t low_offset, size_t Size, char* Buffer);
 int dpm_reg(char Letter, char* Name, char* FS, int Status, size_t Size, size_t Sectors, size_t SectorSize, int AddrMode, char* Serial, void *Point);
 DPM_Disk dpm_info(char Letter);
 int dpm_unmount(char Letter, bool FreeReserved);
 void dpm_LabelUpdate(char Letter, char* Label);
+void dpm_fnc_write(char Letter, dpm_disk_rw_cmd Read, dpm_disk_rw_cmd Write);
+int dpm_searchFreeIndex(int Index);

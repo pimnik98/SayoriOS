@@ -4,7 +4,6 @@
 
 char* __getCharKeyboard(char* en_s,char* en_b,char* ru_s,char* ru_b);
 char* getCharKeyboard(int key, bool mode);
-char* getStringBufferKeyboard();
 void keyboardHandler(registers_t regs);
 void keyboardctl(uint8_t param, bool value);
 int getCharRaw();

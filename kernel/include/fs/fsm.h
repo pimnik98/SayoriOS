@@ -2,6 +2,10 @@
 
 #include <common.h>
 
+#define FSM_CHMOD_EXEC               0x01  /// Права выполнения
+#define FSM_CHMOD_WRITE              0x02  /// Права записи
+#define FSM_CHMOD_READ               0x04  /// Права чтения
+#define FSM_CHMOD_SYS                0x08  /// Права системы
 
 typedef struct {
 	uint16_t year;	///< Год
@@ -20,6 +24,7 @@ typedef struct {
     size_t Size;			///< Размер файла в байтах (oсt2bin)
     FSM_TIME LastTime;		///< Время последнего изменения файла
     int Type;				///< Тип элемента
+    uint8_t CHMOD;			///< CHMOD файла
 } __attribute__((packed)) FSM_FILE;
 
 typedef struct {
@@ -87,3 +92,4 @@ void fsm_convertUnix(uint32_t unix_time, FSM_TIME* time);
 int fsm_isPathToFile(const char* Path,const char* Name);
 char* fsm_timePrintable(FSM_TIME time);
 void fsm_dpm_update(char Letter);
+size_t fsm_DateConvertToUnix(FSM_TIME time);
