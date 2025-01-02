@@ -20,7 +20,7 @@ PSP_LARGE_MEMORY 		= 1
 EXTRA_TARGETS 			= EBOOT.PBP
 PSP_EBOOT_NAME 			= SayoriOS Whisper
 PSP_EBOOT_TITLE 		= SayoriOS Whisper
-PSPSDK=$(shell psp-config --pspsdk-path)
+PSPSDK					= $(shell psp-config --pspsdk-path)
 #PSP_EBOOT_ICON 		= ICON0.PNG
 
 ### Настройка сборки Android
