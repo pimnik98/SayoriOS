@@ -10,6 +10,7 @@
 *.vhd
 *.tmp
 *.pcap
+*.pcap
 .vscode/
 *.d
 /rust/target
@@ -20,3 +21,8 @@ disk*.img
 builds/
 compile_commands.json
 .cache/
+/out/
+/out/*
+*.prx
+*.PBP
+*.SFO

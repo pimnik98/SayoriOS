@@ -1,4 +1,5 @@
 ### ПРОЧИЕ НАСТРОЙКИ
+CURRENT_USER 			:= $(shell whoami)
 WSL_ADB 				= /mnt/c/SayoriDev/adb.exe
 SRC_MAIN 				= $(wildcard src/os/*.c) $(wildcard src/os/apps/*.c) $(wildcard src/os/libs/*.c) $(wildcard src/os/modules/*.c)
 
@@ -19,6 +20,7 @@ PSP_LARGE_MEMORY 		= 1
 EXTRA_TARGETS 			= EBOOT.PBP
 PSP_EBOOT_NAME 			= SayoriOS Whisper
 PSP_EBOOT_TITLE 		= SayoriOS Whisper
+PSPSDK=$(shell psp-config --pspsdk-path)
 #PSP_EBOOT_ICON 		= ICON0.PNG
 
 ### Настройка сборки Android
@@ -35,14 +37,22 @@ ANDROID_OUTPUT_NAME 	= whisper.elf
 ANDROID_SRC_MAIN 		= $(wildcard src/devices/android/*.c) $(wildcard src/devices/android/drivers/*.c)
 
 ### ПРАВИЛА СБОРКИ
-
-all:
-	$(MAKE) build_android
+include /home/pimnik98/pspdev/psp/sdk/lib/build.mak
 
 build_android:
 	$(ANDROID_CROSS_CC) --sysroot=$(ANDROID_SYSROOT_DIR) -std=c99 -I $(ANDROID_PLAT_DIR)include/ -L $(ANDROID_PLAT_DIR)lib/ -fPIE -static -o $(ANDROID_OUTPUT_NAME) $(ANDROID_SRC_MAIN) -D__ARM -O0 -w $(ANDROID_LINK_LIBS)
 	python3 tools/fix_tls_alignment.py $(ANDROID_OUTPUT_NAME)
 
 build_psp:
-	PSPSDK=$(shell psp-config --pspsdk-path)
-	include $(PSPSDK)/lib/build.mak
+	@-rm -rf out/psp/*
+	make
+	@-mkdir out/psp/ -p
+	@-mv EBOOT.PBP out/psp/EBOOT.PBP
+	@-mv PARAM.SFO out/psp/PARAM.SFO
+	@-mv sayori_whisper.prx out/psp/sayori_whisper.prx
+	@-mv sayori_whisper.elf out/psp/sayori_whisper.elf
+
+wsl_copy_psp:
+	@-mkdir /mnt/c/SayoriDev/Whisper/PSP/ -p
+	@-rm -rf /mnt/c/SayoriDev/Whisper/PSP/*
+	@-cp -r out/psp/ /mnt/c/SayoriDev/Whisper/
