@@ -1,3 +1,11 @@
+/**
+ * @file src/devices/psp/loader.c
+ * @author Пиминов Никита (nikita.piminoff@yandex.ru)
+ * @brief Загрузщик ОС для PSP
+ * @version 0.4.0
+ * @date 2025-01-03
+ * @copyright Copyright SayoriOS Team (c) 2025
+ */
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspctrl.h>
