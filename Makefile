@@ -53,6 +53,8 @@ build_psp:
 	@-mv sayori_whisper.elf out/psp/sayori_whisper.elf
 
 wsl_copy_psp:
-	@-mkdir /mnt/c/SayoriDev/Whisper/PSP/ -p
+	@-mkdir /mnt/c/SayoriDev/Whisper/PSP/Whisper/ -p
 	@-rm -rf /mnt/c/SayoriDev/Whisper/PSP/*
 	@-cp -r out/psp/ /mnt/c/SayoriDev/Whisper/
+	@-mkdir /mnt/c/SayoriDev/Whisper/PSP/Whisper/ -p
+	@-cp -r res/* /mnt/c/SayoriDev/Whisper/PSP/Whisper/
