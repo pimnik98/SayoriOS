@@ -6,8 +6,9 @@
 #include <psprtc.h>
 #include <stdio.h>
 #include <time.h>
+#include "../loader.h"
 
-PSP_MODULE_INFO("Whisper",0,1,0);
+PSP_MODULE_INFO("Whisper",0,4,0);
 
 int psp_setup_callback_exit(int arg1, int arg2, void* common){
     sceKernelExitGame();
@@ -35,6 +36,19 @@ int main(){
     /// Инициализация
     psp_setup_callbacks();
     pspDebugScreenInit();
+    psp_display_init();
+
+    for (int x = 0; x <display_width();  x++){
+        for (int y = 0; y < display_height(); y++){
+            display_set_pixel(x, y, 0xFFFFFFFF);
+        }
+    }
+
+    display_update();
+
+    while(1){
+
+    }
     /// Выход
     sceKernelExitGame();
     return 0;

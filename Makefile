@@ -34,7 +34,7 @@ ANDROID_SYSROOT_DIR 	?= $(ANDROID_NDK_DIR)/platforms/android-17/arch-arm/
 ANDROID_PLAT_DIR 		?= $(ANDROID_SYSROOT_DIR)/usr/
 ANDROID_LINK_LIBS 		= -lm
 ANDROID_OUTPUT_NAME 	= whisper.elf
-ANDROID_SRC_MAIN 		= $(wildcard src/devices/android/*.c) $(wildcard src/devices/android/drivers/*.c)
+ANDROID_SRC_MAIN 		= $(SRC_MAIN) $(wildcard src/devices/android/*.c) $(wildcard src/devices/android/drivers/*.c)
 
 ### ПРАВИЛА СБОРКИ
 include /home/pimnik98/pspdev/psp/sdk/lib/build.mak
