@@ -21,6 +21,8 @@
 PSP_MODULE_INFO("Whisper",0,4,0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 
+void whisper();
+
 int psp_setup_callback_exit(int arg1, int arg2, void* common){
     sceKernelExitGame();
     return 0;
@@ -48,22 +50,9 @@ int main(){
     psp_setup_callbacks();
     pspDebugScreenInit();
     psp_display_init();
-    int psf = psf1_init("./Whisper/Fonts/EN-RU.psf");
-    for (int x = 0; x <display_width();  x++){
-        for (int y = 0; y < display_height(); y++){
-            display_set_pixel(x, y, 0xFFFFFFFF);
-        }
-    }
-
     
-    char* PSF1_TEST = "SayoriOS Whisper | PSF1 Passed";
-    psf1_write_str(PSF1_TEST, strlen(PSF1_TEST), 32, 32, 0xFFDDDDDD);
+    whisper();
 
-    display_update();
-
-    while(1){
-
-    }
     /// Выход
     sceKernelExitGame();
     return 0;
