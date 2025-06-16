@@ -37,7 +37,7 @@ $(KERNEL): $(KERNEL_NEED)
 build: $(SOURCES)
 
 # Запуск
-run:
+run:	disk.img
 	$(QEMU) -serial file:Qemu.log $(QEMU_FLAGS)
 
 lite:
@@ -53,7 +53,7 @@ runLocalMode:
 run_remote_mon:
 	$(QEMU) $(QEMU_FLAGS) -serial mon:stdio -monitor tcp:127.0.0.1:1234,server
 
-run_ahci_sata:
+run_ahci_sata: disk.img
 	$(QEMU) $(QEMU_FLAGS) -serial mon:stdio \
 	-device ahci,id=ahci,debug=3 \
 	-trace "ahci*" \
@@ -91,7 +91,7 @@ runlive:
 	$(QEMU) -serial mon:stdio $(QEMU_FLAGS)
 
 # Запуск в режиме UEFI с логами в файл
-uefi:
+uefi:	disk.img
 	qemu-system-x86_64 -bios /usr/share/qemu/OVMF.fd -cdrom SayoriOS_UEFI.iso -serial file:Qemu.log -accel kvm \
 					   -m 128M -name "SayoriOS Soul" -d guest_errors -rtc base=localtime -device ahci,id=ahci \
 						-drive id=thatdisk,file=disk.img,if=none \
@@ -111,6 +111,9 @@ geniso: $(KERNEL)
 # Генерация ISO-файла с поддержкой UEFI
 genuefi:
 	$(shell bash $(BUILD_PREFIX)tools/grub.sh) -d /usr/lib/grub/x86_64-efi -o SayoriOS_UEFI.iso iso/ --locale-directory=/usr/share/locale/ -V "SayoriOS Soul"
+
+disk.img:
+	echo hello >disk.img
 
 # Удаление оригинального файла и *.о файлов
 clean:
