@@ -31,6 +31,10 @@ __attribute__((aligned(PAGE_SIZE))) AC97_BDL_t ac97_buffer[32];
 char* ac97_audio_buffer = 0;
 size_t ac97_audio_buffer_phys;
 
+size_t ac97_lvi = 0;
+
+#define AUDIO_BUFFER_SIZE (128 * KB)
+
 // Volume in dB, not % (max 64)
 void ac97_set_master_volume(uint8_t left, uint8_t right, bool mute) {
     const uint16_t value = (right & 63) << 0
@@ -153,12 +157,11 @@ void ac97_init() {
     // ac97_global_status_t* statusptr = &status;
 
     const uint32_t status = inl(native_audio_bus_master + NABM_GLOBAL_STATUS);
-    qemu_log("Status: %x", status);
 
-    // qemu_log("Status: %d (%x)\n", status, status);
-    // qemu_log("Status Reserved: %d\n", status.reserved);
-    // qemu_log("Status Channels: %d\n", (status.channel==0?2:(status.channel==1?4:(status.channel==2?6:0))));
-    // qemu_log("Status Samples: %s\n", status.sample==1?"16 and 20 bits":"only 16 bits");
+    qemu_log("Status: %d (%x)\n", status, status);
+//    qemu_log("Status Reserved: %d\n", status.reserved);
+//    qemu_log("Status Channels: %d\n", (status.channel==0?2:(status.channel==1?4:(status.channel==2?6:0))));
+//    qemu_log("Status Samples: %s\n", status.sample==1?"16 and 20 bits":"only 16 bits");
     
     // */
 
@@ -178,7 +181,13 @@ void ac97_init() {
     ac97_set_master_volume(0, 0, false);
     ac97_set_pcm_volume(0, 0, false);
 
+    ac97_audio_buffer = kmalloc_common(AUDIO_BUFFER_SIZE, PAGE_SIZE);
+    ac97_audio_buffer_phys = virt2phys(get_kernel_page_directory(),
+                                       (virtual_addr_t)ac97_audio_buffer);
+
     qemu_log("Updated capabilities\n");
+
+    ac97_FillBDLs();
 
     ac97_initialized = true;
 
@@ -189,57 +198,67 @@ bool ac97_is_initialized() {
     return ac97_initialized;
 }
 
-size_t ac97_copy_user_memory_to_dma(const char* data, size_t length) {
-    currently_pages_count = length / PAGE_SIZE;
+void ac97_FillBDLs() {
+    size_t sample_divisor = 2;
+    // We need to fill ALL BDL entries.
+    // If we don't do that, we can encounter lags and freezes, because DMA doesn't stop
+    // even when its read pointer reached the end marker. (It will scroll to the end)
+    // So we need to spread buffer on BDL array
 
-    ac97_audio_buffer = kmalloc_common(length, PAGE_SIZE);
-	ac97_audio_buffer_phys = virt2phys(get_kernel_page_directory(), (virtual_addr_t) ac97_audio_buffer);
+    size_t bdl_span = AUDIO_BUFFER_SIZE / 32; // It's the size of each transfer (32 is the count of BDLs)
 
-	memcpy(ac97_audio_buffer, data, length);
+    size_t filled = 0;
+    for (size_t j = 0; j < AUDIO_BUFFER_SIZE; j += bdl_span) {
+        ac97_buffer[filled].memory_pos = (void*)(ac97_audio_buffer_phys + j);
+        ac97_buffer[filled].sample_count = (bdl_span / sample_divisor) + 2;
 
-    qemu_log("Made user buffer with %d pages on a board", currently_pages_count);
-
-    return currently_pages_count;
-}
-
-void ac97_destroy_user_buffer() {
-//    if(!physpages_ac97)
-//        return;
-//
-//    for (size_t i = 0; i < currently_pages_count; i++) {
-//        phys_free_single_page(physpages_ac97[i]);
-//    }
-    
-//    memset(physpages_ac97, 0, sizeof(size_t) * currently_pages_count);
-//    kfree(physpages_ac97);
-    kfree(ac97_audio_buffer);
-
-    currently_pages_count = 0;
-//    physpages_ac97 = 0;
-
-    qemu_log("Destroyed buffer");
-}
-
-void ac97_single_page_write_wait(size_t page_num) {
-	size_t remaining_pages = currently_pages_count - page_num;
-    for (size_t j = 0; j < MIN(remaining_pages, 32); j++) {
-//        ac97_buffer[j].memory_pos = physpages_ac97[(remaining_pages) + j];
-        ac97_buffer[j].memory_pos = (void *) (ac97_audio_buffer_phys + ((page_num + j) * PAGE_SIZE));
-        ac97_buffer[j].sample_count = PAGE_SIZE / 2;
+//            LOG("[%d] %x; %x", filled, ac97_data_buffer.second[filled].memory_pos, ac97_data_buffer.second[filled].sample_count);
+        filled++;
     }
 
-    ac97_buffer[remaining_pages >= 31 ? 31 : remaining_pages].flags = 1 << 14;
+    qemu_log("Fills: %d", filled);
+
+    filled--;
+
+    ac97_buffer[filled].flags = (1 << 14) | (1 << 15);
 
     ac97_update_bdl();
-    ac97_update_lvi(remaining_pages >= 31 ? 31 : remaining_pages);
-    
-    ac97_set_play_sound(true);
-    ac97_clear_status_register();
+    ac97_update_lvi(filled);
 
-    while(inb(native_audio_bus_master + 0x16) == 0) {}
-
-    memset(&ac97_buffer, 0, sizeof(AC97_BDL_t)*31);
+    ac97_lvi = filled;
 }
+
+void ac97_WriteAll(void* buffer, size_t size) {
+    qemu_log("Start");
+
+    size_t loaded = 0;
+
+    for(; loaded < size; loaded += AUDIO_BUFFER_SIZE) {
+        size_t block_size = MIN(size - loaded, AUDIO_BUFFER_SIZE);
+
+        memcpy(ac97_audio_buffer,
+                     (char*)buffer + loaded,
+                     block_size);
+
+        if (block_size < AUDIO_BUFFER_SIZE) {
+            memset((char *) ac97_audio_buffer + block_size,
+                     0,
+                     AUDIO_BUFFER_SIZE - block_size);
+        }
+
+        ac97_update_lvi(ac97_lvi);
+
+        ac97_set_play_sound(true);
+        ac97_clear_status_register();
+
+        while ((inb(native_audio_bus_master + 0x16) & (1 << 1)) == 0) {
+            __asm__ volatile("nop");
+        }
+    }
+
+    qemu_log("Finish");
+}
+
 
 void ac97_test() {
     FILE* file = fopen("R:\\Sayori\\a.wav", "rb");
@@ -252,16 +271,14 @@ void ac97_test() {
     char* data = kmalloc(filesize);
     fread(file, filesize, 1, data);
 
-    size_t page_count = ac97_copy_user_memory_to_dma(data, filesize);
+//    size_t page_count = ac97_copy_user_memory_to_dma(data, filesize);
 
-    qemu_log("Allocated %d pages for user memory in DMA", page_count);
+//    qemu_log("Allocated %d pages for user memory in DMA", page_count);
 
     ac97_set_master_volume(2, 2, false);
     ac97_set_pcm_volume(2, 2, false);
 
-    for(ssize_t i = 0; i < page_count; i += 32) {
-        ac97_single_page_write_wait(i);
-    }
+    ac97_WriteAll(data, filesize);
 
     qemu_log("Exiting");
     ac97_reset_channel();
@@ -269,5 +286,5 @@ void ac97_test() {
     kfree(data);
     fclose(file);
 
-    ac97_destroy_user_buffer();
+//    ac97_destroy_user_buffer();
 }

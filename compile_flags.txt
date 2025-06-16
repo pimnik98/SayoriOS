@@ -1,0 +1,11 @@
+-O0
+-nostdlib
+-fno-stack-protector
+-fno-builtin
+-Ikernel/include/
+-ffreestanding
+-Wall
+-Wno-div-by-zero
+-Wno-address-of-packed-member
+-Wno-implicit-function-declaration
+-mno-red-zone

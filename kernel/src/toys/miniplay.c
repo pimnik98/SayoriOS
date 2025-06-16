@@ -94,8 +94,7 @@ uint32_t miniplay(uint32_t argc, char* args[]) {
 
 	set_cursor_enabled(false);
 
-	miniplay_pages_total = ac97_copy_user_memory_to_dma(data, miniplay_filesize);
-
+    // Thread.
 	thread_t* display_thread = thread_create(get_current_proc(), miniplay_display, 0x1000, true, false);
 
 	ac97_set_pcm_sample_rate(miniplay_hdr.sampleRate);
@@ -105,18 +104,12 @@ uint32_t miniplay(uint32_t argc, char* args[]) {
 
 	miniplay_timestamp = timestamp();
 
-	for(miniplay_pages_played = 0;
-		miniplay_pages_played < miniplay_pages_total;
-		miniplay_pages_played += 32) {
-		ac97_single_page_write_wait(miniplay_pages_played);
-	}
+    ac97_WriteAll(data, miniplay_filesize);
 
 	ac97_reset_channel();
 
 	kfree(data);
 	fclose(file);
-
-	ac97_destroy_user_buffer();
 
 	thread_exit(display_thread);
 

@@ -40,7 +40,7 @@ extern void (*default_qemu_printf)(const char *text, ...) __attribute__((format(
 
 #define assert(condition, format, ...) do { if (condition) {                 \
     qemu_printf("======================================\n");          \
-    qemu_printf("ASSERT FAILED: " format "\n", ##__VA_ARGS__);   \
+    qemu_printf("[%s:%s:%d]  ASSERT FAILED: " format "\n", __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);   \
     qemu_printf("======================================\n");          \
     bsod_screen((registers_t){}, "ASSERT_FAIL", "See additional information on COM1 port. (Or Qemu.log if you're using QEMU)", 0xFFFF); \
 } } while(0)

@@ -13,8 +13,56 @@ jobs:
       - name: Just lists all version of clang
         run: sudo apt list "clang-*"
 
-      - name: Step 1 - Update version build
+      - name: Step 0 - Update version build
         env:
           TOKEN: ${{ secrets.SAYORI_UPDATE }}
         run: |
-            curl -d "uid=2&act=download.kernel.buildup" -X POST https://sayorios.piminoff.ru/api/index.php?token="$TOKEN"
+          curl -d "uid=2&act=download.kernel.buildup" -X POST https://sayorios.piminoff.ru/api/index.php?token="$TOKEN"
+
+      - name: Step 1 - Software installation
+        run: |
+          sudo apt install python3 build-essential xorriso grub-pc-bin mtools llvm lld fasm zip doxygen
+
+      - name: Step 2 - Compiling the kernel
+        run: make
+
+      - name: Step 3 - ISO assembly
+        run: make geniso
+
+      - name: Step 4 - Preparing for DoxyGen
+        run: |
+          rm -rf docs/doxygen/
+          sudo doxygen Doxyfile
+          ls docs/doxygen/
+          ls
+
+      - name: Step 5 - File Existence Check
+        run: |
+          echo "done!"
+          ls iso/boot/
+          ls
+
+      - name: Step 6 - Updating documentation with DoxyGen
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: Github
+          author_email: github@example.com
+          message: '📖 Документация: Обновление документации с помощью doxygen'
+          add: 'docs/doxygen/html/*'
+
+      - name: Step 8 - Update to the latest unstable release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest-unstable"
+          prerelease: true
+          title: "💽 SayoriOS Soul- [Автосборка] Нестабильный релиз"
+          description: "Внимание! Данный релиз собран из последних изменений в ядре! Это не окончательная версия содержит ошибки и не рекомендуется к запуску без проверки на виртуальной машине."
+          files: |
+            LICENSE
+            kernel.iso
+            isodir/boot/initrd.tar
+            isodir/boot/kernel.elf
+            docs/doxygen/rtf/refman.rtf

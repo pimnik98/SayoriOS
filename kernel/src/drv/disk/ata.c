@@ -18,6 +18,28 @@
 const char possible_dpm_letters_for_ata[4] = "CDEF";
 ata_drive_t drives[4] = {0};
 
+bool ide_poll_drq(uint16_t io) {
+	while(1) {
+		uint8_t status = inb(io + ATA_REG_STATUS);
+        if(status & ATA_SR_DRQ) {
+			return true;
+        } else if ((status & ATA_SR_ERR) || (status & ATA_SR_DF)) {
+            return false;
+        }
+	}
+}
+
+bool ide_poll_bsy(uint16_t io) {
+	while(1) {
+		uint8_t status = inb(io + ATA_REG_STATUS);
+		if(!(status & ATA_SR_BSY)) {
+			return true;
+        } else if ((status & ATA_SR_ERR) || (status & ATA_SR_DF)) {
+            return false;
+        }
+	}
+}
+
 void ide_select_drive(uint8_t bus, bool slave) {
 	if(bus == ATA_PRIMARY)
 		outb(ATA_PRIMARY_IO + ATA_REG_HDDEVSEL, (0xA0 | ((uint8_t)slave << 4)));
@@ -182,7 +204,6 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 
             if (disk_inx < 0){
                 qemu_err("[ATA] [DPM] [ERROR] An error occurred during disk registration, error code: %d",disk_inx);
-
             } else {
                 qemu_ok("[ATA] [DPM] [Successful] [is_packet: %d] Your disk index: %d",drives[drive_num].is_packet, disk_inx);
                 dpm_fnc_write(disk_inx + 65, &dpm_ata_read, &dpm_ata_write);
@@ -198,7 +219,7 @@ uint8_t ide_identify(uint8_t bus, uint8_t drive) {
 		}
 
 		/* Now, poll until BSY is clear. */
-		while((status & ATA_SR_BSY) != 0){
+        while((status & ATA_SR_BSY) != 0){
 			qemu_log("Got status %x", status);
 			if(status & ATA_SR_ERR) {
 				qemu_log("%s %s has ERR set. Disabled.", PRIM_SEC(bus), MAST_SLV(drive));
