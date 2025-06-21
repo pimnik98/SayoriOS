@@ -113,7 +113,7 @@ genuefi:
 	$(shell bash $(BUILD_PREFIX)tools/grub.sh) -d /usr/lib/grub/x86_64-efi -o SayoriOS_UEFI.iso iso/ --locale-directory=/usr/share/locale/ -V "SayoriOS Soul"
 
 disk.img:
-	echo hello >disk.img
+	fallocate -l 128M disk.img
 
 # Удаление оригинального файла и *.о файлов
 clean:
