@@ -1,4 +1,4 @@
-// AC'97 driver by NDRAEY (Drew Pavlenko >_)
+// AC'97 driver by NDRAEY
 
 // FIXME: Not working in VirtualBox, only in QEMU
 
