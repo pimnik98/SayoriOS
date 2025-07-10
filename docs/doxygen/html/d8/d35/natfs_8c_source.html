@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SayoriOS: Исходный файл kernel/src/fs/natfs.c</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtreedata.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<link href="../../search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../search/searchdata.js"></script>
+<script type="text/javascript" src="../../search/search.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+<link href="../../doxygen-style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SayoriOS
+   &#160;<span id="projectnumber">0.3.3</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "../../search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('../../',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('d8/d35/natfs_8c_source.html','../../'); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">natfs.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;kernel.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;io/ports.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;fs/fsm.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;fs/natfs.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;lib/php/pathinfo.h&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keywordtype">size_t</span> fs_natfs_read(<span class="keyword">const</span> <span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path, <span class="keywordtype">size_t</span> Offset, <span class="keywordtype">size_t</span> Size,<span class="keywordtype">void</span>* Buffer){</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">char</span>* buf = __milla_getFile(Path);</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    qemu_log(<span class="stringliteral">&quot;NatSuki:\n\t Path: %s\n\tSize: %d | %d\n\tContent: %s&quot;</span>, Path, Size, <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(buf), buf);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(Buffer, buf, Size);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="comment">//substr(Buffer, (void*)__milla_getFile(Path), Offset, Size);</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    kfree(buf);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">return</span> Size;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;}</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keywordtype">size_t</span> fs_natfs_write(<span class="keyword">const</span> <span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path,<span class="keywordtype">size_t</span> Offset,<span class="keywordtype">size_t</span> Size,<span class="keywordtype">void</span>* Buffer){</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;FSM_FILE fs_natfs_info(<span class="keyword">const</span> <span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path){</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    FSM_FILE file = {};</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    file.Size = __milla_getSizeFile(Path);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">if</span> (__milla_isFile(__milla_findID(Path,<span class="stringliteral">&quot;file&quot;</span>)) != 1){</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        qemu_warn(<span class="stringliteral">&quot;[NatFS] File no found???&quot;</span>);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">return</span> file;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    file.Ready = 1;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="comment">//fsm_convertUnix(atoi(_m_s[3]), &amp;file.LastTime);</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">char</span>* zpath = pathinfo(Path, PATHINFO_DIRNAME);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">char</span>* zname = pathinfo(Path, PATHINFO_BASENAME);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    file.Mode = <span class="charliteral">&#39;r&#39;</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="comment">//file.Type = ((strcmpn(_m_s[0], &quot;file&quot;)?0:5));</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    file.Type = 0;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    file.Ready = 1;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(file.Path, Path, <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(Path));</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(file.Name, zname, <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(zname));</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordflow">return</span> file;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;FSM_DIR* fs_natfs_dir(<span class="keyword">const</span> <span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path){</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">size_t</span> inxDir = __milla_findID(Path,<span class="stringliteral">&quot;DIR&quot;</span>);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordflow">if</span> (inxDir &lt; 0){</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        qemu_warn(<span class="stringliteral">&quot;[NatSuki] When searching for a folder, the error %d was returned, perhaps the folder was not found or the device is not ready to work.&quot;</span>, inxDir);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    qemu_log(<span class="stringliteral">&quot;[NatSuki] Get path: %s&quot;</span>,Path);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    FSM_DIR *Dir = kcalloc(<span class="keyword">sizeof</span>(FSM_DIR), 1);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">size_t</span> CA = 0, CF = 0, CD = 0, CO = 0;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">char</span>* listt = __milla_getList(Path);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">char</span>* _m_d[256] = {0};</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">char</span>* _m_s[256] = {0};</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    uint32_t _m_d2 = 0;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    uint32_t _m_d1 = <a class="code" href="../../d7/de7/split_8c.html#a1cb6c6e5b0c438bb71740297b55d2755">str_cdsp</a>(listt,<span class="stringliteral">&quot;\n&quot;</span>);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <a class="code" href="../../d7/de7/split_8c.html#a24918ad4127aceed4091988f01bb6e12">str_split</a>(listt,_m_d,<span class="stringliteral">&quot;\n&quot;</span>);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="comment">//tty_printf(&quot;Найдено файлов и папок: %d\n&quot;,_m_d1-1);</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    FSM_FILE *Files = kcalloc(<span class="keyword">sizeof</span>(FSM_FILE), _m_d1);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="comment">//struct dirent* testFS = kcalloc(_m_d1, sizeof(struct dirent));</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">if</span> (_m_d1 == 0){</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        Dir-&gt;Ready = 1;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        Dir-&gt;Count = CA;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        Dir-&gt;CountFiles = CF;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        Dir-&gt;CountDir = CD;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        Dir-&gt;CountOther = CO;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        Dir-&gt;Files = Files;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">return</span> Dir;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    }</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> ind = 0; ind &lt; _m_d1; ind++){</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        _m_d2 = <a class="code" href="../../d7/de7/split_8c.html#a1cb6c6e5b0c438bb71740297b55d2755">str_cdsp</a>(_m_d[ind],<span class="stringliteral">&quot;::&quot;</span>);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">if</span> (_m_d2 &lt; 1) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <a class="code" href="../../d0/d43/lib_2string_8c.html#a701fc29ed547cc81722d77e9fe9160a6">memset</a>(_m_s,0,256);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <a class="code" href="../../d7/de7/split_8c.html#a24918ad4127aceed4091988f01bb6e12">str_split</a>(_m_d[ind],_m_s,<span class="stringliteral">&quot;::&quot;</span>);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        fsm_convertUnix(<a class="code" href="../../d0/d43/lib_2string_8c.html#a13aa2b1f1874fa40ba248ceab96b8727">atoi</a>(_m_s[3]), &amp;Files[CA].LastTime);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment">//        Files[CA].Mode = &#39;rw&#39;;  // INVALID!</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        Files[CA].Mode = <span class="charliteral">&#39;r&#39;</span>;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        Files[CA].Size = (<a class="code" href="../../d0/d43/lib_2string_8c.html#a13aa2b1f1874fa40ba248ceab96b8727">atoi</a>(_m_s[4]));</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        Files[CA].Type = ((<a class="code" href="../../d0/d43/lib_2string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a>(_m_s[0], <span class="stringliteral">&quot;file&quot;</span>)?0:5));</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        Files[CA].Ready = 1;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(Files[CA].Path, Path, <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(Path));</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(Files[CA].Name, _m_s[1], <a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(_m_s[1]));</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keywordflow">if</span> (Files[CA].Type == 0) {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            CF++;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (Files[CA].Type == 5){</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            CD++;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            CO++;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        }</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        CA++;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="comment">//testFS[inxFile].type = ((strcmpn(_m_s[0], &quot;file&quot;)?FS_FILE:FS_DIRECTORY));</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="comment">//testFS[inxFile].ino = inxFile;</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="comment">//testFS[inxFile].next = inxFile+1;</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="comment">//testFS[inxFile].length = (atoi(_m_s[4]));</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="comment">//strcpy(testFS[inxFile].name, _m_s[1]);</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        qemu_log(<span class="stringliteral">&quot;[Milla] [%s] %s (%d b.) Date: %s Owner: %s&quot;</span>,_m_s[0],_m_s[1],(<a class="code" href="../../d0/d43/lib_2string_8c.html#a13aa2b1f1874fa40ba248ceab96b8727">atoi</a>(_m_s[4])),_m_s[3],_m_s[5]);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    }</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    kfree(listt);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    Dir-&gt;Ready = 1;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    Dir-&gt;Count = CA;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    Dir-&gt;CountFiles = CF;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    Dir-&gt;CountDir = CD;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    Dir-&gt;CountOther = CO;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    Dir-&gt;Files = Files;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordflow">return</span> Dir;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;}</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="keywordtype">int</span> fs_natfs_create(<span class="keyword">const</span> <span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path,<span class="keywordtype">int</span> Mode){</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;}</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="keywordtype">int</span> fs_natfs_delete(<span class="keyword">const</span> <span class="keywordtype">char</span> Disk,<span class="keyword">const</span> <span class="keywordtype">char</span>* Path,<span class="keywordtype">int</span> Mode){</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;}</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="keywordtype">void</span> fs_natfs_label(<span class="keyword">const</span> <span class="keywordtype">char</span> Disk, <span class="keywordtype">char</span>* Label){</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <a class="code" href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a>(Label,<span class="stringliteral">&quot;NatFS&quot;</span>,<a class="code" href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a>(<span class="stringliteral">&quot;NatFS&quot;</span>));</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;}</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="keywordtype">int</span> fs_natfs_detect(<span class="keyword">const</span> <span class="keywordtype">char</span> Disk){</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="keywordflow">return</span> (0);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;}</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="keywordtype">char</span>* __milla_getDiskInfo_Name();</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="keywordtype">int</span> __milla_getDiskInfo_All();</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="keywordtype">int</span> fs_natfs_init(){</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keywordtype">int</span> _m = <a class="code" href="../../d2/d97/_nat_suki_8c.html#a639e5670d757928ec050644d54f1249f">__milla_init</a>();</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keywordflow">if</span> (_m != 0){</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        qemu_warn(<span class="stringliteral">&quot;[NatFS] An error occurred during initialization, the server returned a response: %d&quot;</span>,_m);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    }</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keywordtype">int</span> dsize = __milla_getDiskInfo_All();</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordtype">char</span>* dname = __milla_getDiskInfo_Name();</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordtype">int</span> dpm = <a class="code" href="../../d4/dbc/dpm_8c.html#a3406828a8864d8fbf87ca18a1f4b6bfa">dpm_reg</a>(<span class="charliteral">&#39;N&#39;</span>, dname, <span class="stringliteral">&quot;NatFS&quot;</span>, 2, dsize, 0, 0, 3, <span class="stringliteral">&quot;NAT0-SUKI&quot;</span>, (<span class="keywordtype">void</span> *) _m);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordflow">if</span> (dpm != 1){</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        qemu_warn(<span class="stringliteral">&quot;[NatFS] An error occurred while initializing the disk in the operating system! DPM returned the code: %d&quot;</span>, dpm);</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    }</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;}</div>
+<div class="ttc" id="a_nat_suki_8c_html_a639e5670d757928ec050644d54f1249f"><div class="ttname"><a href="../../d2/d97/_nat_suki_8c.html#a639e5670d757928ec050644d54f1249f">__milla_init</a></div><div class="ttdeci">int __milla_init()</div><div class="ttdoc">Инициализация проекта Милла</div><div class="ttdef"><b>Definition:</b> <a href="../../d2/d97/_nat_suki_8c_source.html#l00327">NatSuki.c:327</a></div></div>
+<div class="ttc" id="adpm_8c_html_a3406828a8864d8fbf87ca18a1f4b6bfa"><div class="ttname"><a href="../../d4/dbc/dpm_8c.html#a3406828a8864d8fbf87ca18a1f4b6bfa">dpm_reg</a></div><div class="ttdeci">int dpm_reg(char Letter, char *Name, char *FS, int Status, size_t Size, size_t Sectors, size_t SectorSize, int AddrMode, char *Serial, void *Point)</div><div class="ttdoc">[DPM] Регистрация дискового раздела</div><div class="ttdef"><b>Definition:</b> <a href="../../d4/dbc/dpm_8c_source.html#l00187">dpm.c:187</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_a008e171a518fe0e0352f31b245e03875"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a008e171a518fe0e0352f31b245e03875">strlen</a></div><div class="ttdeci">size_t strlen(const char *str)</div><div class="ttdoc">Возращает длину строки</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00088">string.c:88</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_a13aa2b1f1874fa40ba248ceab96b8727"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a13aa2b1f1874fa40ba248ceab96b8727">atoi</a></div><div class="ttdeci">uint32_t atoi(const char s[])</div><div class="ttdoc">Превращает строку в число</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00565">string.c:565</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_a1a4814aa8c5608eab160349cfa3023f4"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a1a4814aa8c5608eab160349cfa3023f4">strcmpn</a></div><div class="ttdeci">bool strcmpn(const char *str1, const char *str2)</div><div class="ttdoc">Сравнение строк</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00270">string.c:270</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_a701fc29ed547cc81722d77e9fe9160a6"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a701fc29ed547cc81722d77e9fe9160a6">memset</a></div><div class="ttdeci">void * memset(void *ptr, char value, size_t num)</div><div class="ttdoc">Заполнение массива указанными символами</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00203">string.c:203</a></div></div>
+<div class="ttc" id="alib_2string_8c_html_a873acd8f51f646b739d45f152ef5afc3"><div class="ttname"><a href="../../d0/d43/lib_2string_8c.html#a873acd8f51f646b739d45f152ef5afc3">memcpy</a></div><div class="ttdeci">void * memcpy(void *restrict destination, const void *restrict source, size_t n)</div><div class="ttdoc">Копирование непересекающихся массивов используя SSE.</div><div class="ttdef"><b>Definition:</b> <a href="../../d0/d43/lib_2string_8c_source.html#l00173">string.c:173</a></div></div>
+<div class="ttc" id="asplit_8c_html_a1cb6c6e5b0c438bb71740297b55d2755"><div class="ttname"><a href="../../d7/de7/split_8c.html#a1cb6c6e5b0c438bb71740297b55d2755">str_cdsp</a></div><div class="ttdeci">uint32_t str_cdsp(const char *a_str, const char *del)</div><div class="ttdoc">Функция отладки</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/de7/split_8c_source.html#l00022">split.c:22</a></div></div>
+<div class="ttc" id="asplit_8c_html_a24918ad4127aceed4091988f01bb6e12"><div class="ttname"><a href="../../d7/de7/split_8c.html#a24918ad4127aceed4091988f01bb6e12">str_split</a></div><div class="ttdeci">void str_split(const char a_str[], char *out[], char *del)</div><div class="ttdoc">Функция для деления строк</div><div class="ttdef"><b>Definition:</b> <a href="../../d7/de7/split_8c_source.html#l00040">split.c:40</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="../../dir_dc43877d82dd332f9fb2071fcca799d6.html">kernel</a></li><li class="navelem"><a class="el" href="../../dir_3dd30a497388ee684638f120a124721c.html">src</a></li><li class="navelem"><a class="el" href="../../dir_498935ec878ac05008e5d1178f2d281c.html">fs</a></li><li class="navelem"><b>natfs.c</b></li>
+    <li class="footer">Документация по SayoriOS. Последние изменения: Вс 8 Дек 2024 11:15:22. Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
